@@ -10,52 +10,60 @@ class Row extends React.Component {
   }
 
   render() {
-    let id = this.props.package.id;
+    let versions = this.props.package.versions
+
+    let options = versions.map((version, i) => {
+      return <option key={i}>{version}</option>
+    })
+
+    let id = this.props.package.name;
     return (
-      <tr id={id}>
+      <tr>
         <td>{this.props.package.name}</td>
-        <td>{this.props.package.version}</td>
-        <td>{String(this.props.package.running)}</td>
-        <td>{this.props.package.ports}</td>
+        <td>{this.props.package.status}</td>
+        <td>
+          <select class="form-control" id={id+'@version'}>
+            {options}
+          </select>
+        </td>
         <td>
           <button class='bttn'
             id={id}
-            onClick={this.props.removePackage}
-          >remove</button>
+            onClick={this.props.installPackage}
+          >install</button>
         </td>
       </tr>
     );
   }
 }
 
-export default class PackageList extends React.Component {
+export default class PackageDirectory extends React.Component {
   constructor(props) {
     super(props);
   }
 
   render() {
     let rows = [];
-    for (let i = 0; i < this.props.packageList.length; i++) {
-      let _package = this.props.packageList[i];
+    for (let i = 0; i < this.props.directory.length; i++) {
+      let _package = this.props.directory[i];
       rows.push(
         <Row
           package={_package}
           key={i}
-          removePackage={this.props.removePackage}
+          installPackage={this.props.installPackage}
         />
       );
     }
 
     return (
       <div>
-        <h1>Package list</h1>
+        <h1>Package Directory</h1>
         <table class='Table'>
           <thead>
             <tr>
               <th>Name</th>
-              <th>version</th>
-              <th>running</th>
-              <th>ports</th>
+              <th>status</th>
+              <th>versions</th>
               <th></th>
             </tr>
           </thead>

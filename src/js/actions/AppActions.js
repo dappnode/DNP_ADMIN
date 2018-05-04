@@ -22,6 +22,13 @@ export function updatePackageList(packageList) {
   });
 }
 
+export function updateDirectory(directory) {
+  dispatcher.dispatch({
+    type: AppStore.tag.UPDATE_DIRECTORY,
+    directory: directory
+  });
+}
+
 export function addPackage(_package) {
   dispatcher.dispatch({
     type: AppStore.tag.ADD_DEVICE,

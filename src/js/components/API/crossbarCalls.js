@@ -13,6 +13,7 @@ connection.onopen = function (_session) {
   session = _session;
   listDevices();
   listPackages();
+  listDirectory();
 
   session.subscribe("log.installer.repo.dappnode.eth", function(res){
     let log = res[0];
@@ -56,7 +57,6 @@ export function addDevice(name) {
     function (res) {
       console.log('Adding device RES',res)
       handleResponseMessage(res, 'Device successfully added');
-      listDevices();
     }
   );
 };
@@ -83,23 +83,46 @@ export function listDevices() {
 };
 
 /* PACKAGE */
+function handlePackageResponse(res) {
+
+  let resParsed = JSON.parse(res)
+  console.log('handlePackageResponse: ',resParsed)
+  // resParsed = {
+  //   success: true / false,
+  //   msg: "String"
+  // }
+
+  AppActions.updateLog({
+    component: 'installer',
+    topic: 'RPC CALL',
+    msg:  resParsed.message,
+    type: resParsed.success ? "success" : "error"
+  });
+
+  listPackages();
+
+}
 
 export function addPackage(link) {
+
   console.log('Adding package, link: ',link);
-  session.call('installPackage.installer.dnp.dappnode.eth', [link]).then(
-    function (res) {
-      let resParsed = JSON.parse(res)
-      handleResponseMessage('Package successfully added: ',resParsed);
-      listPackages();
-    }
-  );
+  AppActions.updateLog({
+    component: 'installer',
+    topic: 'RPC CALL',
+    msg:  'Adding package ' + link,
+  });
+
+  session
+    .call('installPackage.installer.dnp.dappnode.eth', [link])
+    .then(handlePackageResponse);
 };
 
 export function removePackage(id) {
   console.log('Removing package, id: ',id)
   session.call('removePackage.installer.repo.dappnode.eth', [id]).then(
     function (res) {
-      handleResponseMessage(res, 'Package successfully removed')
+      console.log('RECEIVED RES after removing ',res)
+      // handleResponseMessage(res, 'Package successfully removed')
       listPackages();
     }
   );
@@ -110,7 +133,20 @@ export function listPackages() {
     function (res) {
       let resParsed = JSON.parse(res)
       console.log('Listing packages ',resParsed)
-      AppActions.updatePackageList(resParsed.packages);
+      AppActions.updatePackageList(resParsed.result);
+    }
+  );
+};
+
+export function listDirectory() {
+  // [ { name: 'rinkeby.dnp.dappnode.eth',
+  //   status: 'Preparing',
+  //   versions: [ '0.0.1', '0.0.2' ] },
+  session.call('listDirectory.installer.repo.dappnode.eth', []).then(
+    function (res) {
+      let resParsed = JSON.parse(res)
+      console.log('Listing directory ',resParsed)
+      AppActions.updateDirectory(resParsed.result);
     }
   );
 };

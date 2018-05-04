@@ -1,6 +1,7 @@
 import React from 'react';
-import * as VPNcall from './API/crossbarCalls';
+import * as crossbarCalls from './API/crossbarCalls';
 import PackageList from './PackageList';
+import PackageDirectory from './PackageDirectory';
 import LogMessage from './LogMessage';
 import Log from './Log';
 import AppStore from 'Store';
@@ -13,32 +14,42 @@ export default class PackageInstallerInterface extends React.Component {
       packageLink: 'otpweb.dnp.dappnode.eth',
       packageId: '',
       packageList: AppStore.getPackageList(),
+      directory: AppStore.getDirectory(),
       log: AppStore.getLog('installer')
     };
   }
   componentWillMount() {
     AppStore.on("CHANGE", this.updatePackageList.bind(this));
     AppStore.on("CHANGE", this.updateLog.bind(this));
+    AppStore.on("CHANGE", this.updateDirectory.bind(this));
   }
 
   componentWillUnmount() {
     AppStore.removeListener("CHANGE", this.updatePackageList.bind(this));
     AppStore.removeListener("CHANGE", this.updateLog.bind(this));
+    AppStore.removeListener("CHANGE", this.updateDirectory.bind(this));
   }
 
   handleAddPackage() {
-    VPNcall.addPackage(this.state.packageLink);
+    crossbarCalls.addPackage(this.state.packageLink);
     // session.'vpn.dappnode.addPackage'
   }
   handleRemovePackage() {
-    VPNcall.removePackage(this.state.packageId);
+    crossbarCalls.removePackage(this.state.packageId);
   }
   handleReloadPackageList() {
-    VPNcall.listPackages();
+    crossbarCalls.listPackages();
   }
 
   removePackageInTable(e) {
-    VPNcall.removePackage(e.currentTarget.id);
+    console.log('e.currentTarget.id',e.currentTarget.id)
+    crossbarCalls.removePackage(e.currentTarget.id);
+  }
+
+  installPackageInTable(e) {
+    let packageName = e.currentTarget.id
+    var version = document.getElementById(packageName+'@version').value;
+    crossbarCalls.addPackage(packageName + '@' + version);
   }
 
   updatePackageLink(e) {
@@ -56,6 +67,12 @@ export default class PackageInstallerInterface extends React.Component {
   updatePackageList() {
     this.setState({
       packageList: AppStore.getPackageList()
+    });
+  }
+
+  updateDirectory() {
+    this.setState({
+      directory: AppStore.getDirectory()
     });
   }
 
@@ -82,6 +99,10 @@ export default class PackageInstallerInterface extends React.Component {
         />
         <LogMessage />
         <br></br>
+        <PackageDirectory
+          directory={this.state.directory}
+          installPackage={this.installPackageInTable.bind(this)}
+        />
         <PackageList
           packageList={this.state.packageList}
           removePackage={this.removePackageInTable.bind(this)}
