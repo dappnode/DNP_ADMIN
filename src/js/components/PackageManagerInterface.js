@@ -58,20 +58,9 @@ export default class PackageInterface extends React.Component {
   render() {
     return (
       <div class='body'>
-        <br></br>
-        Package link:
-        <input value={this.state.packageLink}
-        onChange={this.updatePackageLink.bind(this)}/>
-        <button
-        onClick={this.handleAddPackage.bind(this)}>Add package</button>
-        <br></br>
-        <br></br>
-        <LogMessage />
-        <br></br>
-        <PackageList
-          packageList={this.state.packageList}
-          removePackage={this.removePackageInTable.bind(this)}
-        />
+        <h1>Upcoming...</h1>
+        <br></br><br></br>
+        <p>Nice grid of DAap icons with options and stats</p>
       </div>
     );
   }

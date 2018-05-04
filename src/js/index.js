@@ -1,17 +1,18 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { HashRouter, Route } from 'react-router-dom'
 import SidebarWrapper from './components/SidebarWrapper'
 
 import '../css/main.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Layout(props) {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div>
         <SidebarWrapper />
       </div>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 

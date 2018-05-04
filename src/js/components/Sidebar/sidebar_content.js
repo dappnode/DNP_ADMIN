@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import params from 'Params';
 
-const styles = {
+let styles = {
   sidebar: {
     width: 200,
     height: '100%',
@@ -27,13 +27,15 @@ const styles = {
   },
 };
 
-const SidebarContent = (props) => {
-  const style = props.style ? {...styles.sidebar, ...props.style} : styles.sidebar;
+let SidebarContent = (props) => {
+  let style = props.style ? {...styles.sidebar, ...props.style} : styles.sidebar;
 
-  const links = [];
-  const labels = {
-    dev: 'Devices',
-    pkg: 'Packages'
+  let links = [];
+  let labels = {
+    deviceManager: 'Device Manager',
+    pakageInstaller: 'Package Installer',
+    pakageManager: 'Package Manager',
+    status: 'DAppNode Status'
   }
 
   for (let link in labels) {

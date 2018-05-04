@@ -6,18 +6,18 @@ import SidebarContent from './Sidebar/sidebar_content';
 
 import App from './App';
 
-const styles = {
+let styles = {
   contentHeaderMenuLink: {
     textDecoration: 'none',
     color: 'white',
     padding: 8,
   },
   content: {
-    padding: '16px',
+    padding: '0px',
   },
 };
 
-const mql = window.matchMedia(`(min-width: 800px)`);
+let mql = window.matchMedia(`(min-width: 800px)`);
 
 export default class SidebarWrapper extends React.Component {
   constructor(props) {
@@ -70,16 +70,16 @@ export default class SidebarWrapper extends React.Component {
 
 
   render() {
-    const sidebar = <SidebarContent />;
+    let sidebar = <SidebarContent />;
 
-    const contentHeader = (
+    let contentHeader = (
       <span>
         {!this.state.docked &&
          <a onClick={this.menuButtonClick} href="#" style={styles.contentHeaderMenuLink}>=</a>}
         <span> DAppNode</span>
       </span>);
 
-    const sidebarProps = {
+    let sidebarProps = {
       sidebar: sidebar,
       docked: this.state.docked,
       sidebarClassName: 'custom-sidebar-class',

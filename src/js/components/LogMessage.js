@@ -1,5 +1,6 @@
-import React from "react";
-import AppStore from 'Store';
+import React from "react"
+import AppStore from 'Store'
+import * as AppActions from 'Action';
 
 export default class LogMessage extends React.Component {
   constructor(props) {
@@ -22,12 +23,24 @@ export default class LogMessage extends React.Component {
   }
 
   render() {
-
-    return (
-      <div>
-        <span>Message log: </span>
-        <span><strong>{this.state.logMessage}</strong></span>
-      </div>
-    );
+    if (this.state.logMessage.msg == '') {
+      return null;
+    } else {
+      if (this.state.logMessage.success) {
+        return (
+          <div class="alert alert-success" role="alert">
+            {this.state.logMessage.msg}
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <div class="alert alert-danger" role="alert">
+              {this.state.logMessage.msg}
+            </div>
+          </div>
+        );
+      }
+    }
   }
 }

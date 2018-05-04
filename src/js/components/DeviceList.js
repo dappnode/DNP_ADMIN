@@ -10,12 +10,11 @@ class Row extends React.Component {
   }
 
   render() {
-    let url = params.otpUrl + '#' + this.props.otp;
+    let url = this.props.otp;
     return (
       <tr id={this.props.id}>
-        <td>{this.props.id}</td>
         <td>{this.props.name}</td>
-        <td>{this.props.creationtime}</td>
+        <td>{this.props.ip}</td>
         <td>
           <div class='otpUrlContainer'>
             <a class='otpUrl' href={url}>{url}</a>
@@ -26,7 +25,6 @@ class Row extends React.Component {
           copy
           </button>
         </td>
-        <td>{this.props.optexpirationtime}</td>
         <td>
           <button class='bttn'
             id={this.props.id}
@@ -49,8 +47,9 @@ export default class DeviceList extends React.Component {
       let device = this.props.deviceList[i];
       rows.push(
         <Row
-          id={device.id}
+          id={device.name}
           name={device.name}
+          ip={device.ip}
           creationtime={device.creationtime}
           otp={device.otp}
           optexpirationtime={device.optexpirationtime}
@@ -66,12 +65,11 @@ export default class DeviceList extends React.Component {
         <table class='Table'>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Name</th>
-              <th>Creation time</th>
+              <th>IP</th>
               <th>OTP</th>
-              <th></th>
-              <th>OTP expiration time</th>
+              <th>Copy</th>
+              <th>Remove</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>

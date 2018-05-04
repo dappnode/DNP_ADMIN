@@ -46,9 +46,27 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: extractPlugin.extract({
-          use: ['css-loader', 'sass-loader']
-        })
+        use: [{
+          loader: 'style-loader', // inject CSS to page
+        }, {
+          loader: 'css-loader', // translates CSS into CommonJS modules
+        }, {
+          loader: 'postcss-loader', // Run post css actions
+          options: {
+            plugins: function () { // post css plugins, can be exported to postcss.config.js
+              return [
+                require('precss'),
+                require('autoprefixer')
+              ];
+            }
+          }
+        }, {
+          loader: 'sass-loader' // compiles Sass to CSS
+        }]
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.html$/,
@@ -79,7 +97,10 @@ module.exports = {
 
     new webpack.ProvidePlugin({
       _: 'lodash',
-      Pubsub: 'pubsub-js'
+      Pubsub: 'pubsub-js',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      Popper: ['popper.js', 'default'],
     }),
     // Always instiate (new) plugins and import them
     // You can do both at the beggining and then reference the var

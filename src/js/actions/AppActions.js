@@ -22,6 +22,13 @@ export function updatePackageList(packageList) {
   });
 }
 
+export function updateDirectory(directory) {
+  dispatcher.dispatch({
+    type: AppStore.tag.UPDATE_DIRECTORY,
+    directory: directory
+  });
+}
+
 export function addPackage(_package) {
   dispatcher.dispatch({
     type: AppStore.tag.ADD_DEVICE,
@@ -33,6 +40,13 @@ export function updateLogMessage(logMessage) {
   dispatcher.dispatch({
     type: AppStore.tag.UPDATE_LOGMESSAGE,
     logMessage: logMessage
+  });
+}
+
+export function updateLog(log) {
+  dispatcher.dispatch({
+    type: AppStore.tag.UPDATE_LOG,
+    log: log
   });
 }
 

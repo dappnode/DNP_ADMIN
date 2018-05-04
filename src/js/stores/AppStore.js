@@ -5,14 +5,23 @@ import dispatcher from '../dispatcher';
 class AppStore extends EventEmitter {
   constructor() {
     super()
-    this.deviceList = {};
-    this.packageList = {};
-    this.logMessage = '';
+    this.deviceList = [];
+    this.packageList = [];
+    this.directory = [];
+    this.logMessage = {success: true, msg: ''};
+    this.log = {};
+    // The log object is
+    // log[component][topic] = {msg: 'Package installed', type: 'success'}
+    // messages for the same component and topic get overwritten
+    // when a RPC returns something to a component, all topics are erased
+    // when a RPC is sent, all topics are erased
 
     this.tag = {
       UPDATE_DEVICE_LIST: 'UPDATE_DEVICE_LIST',
       UPDATE_PACKAGE_LIST: 'UPDATE_PACKAGE_LIST',
+      UPDATE_DIRECTORY: 'UPDATE_DIRECTORY',
       UPDATE_LOGMESSAGE: 'UPDATE_LOGMESSAGE',
+      UPDATE_LOG: 'UPDATE_LOG',
       ADD_DEVICE: 'ADD_DEVICE',
       CHANGE: 'CHANGE'
     }
@@ -26,8 +35,16 @@ class AppStore extends EventEmitter {
     return this.packageList;
   }
 
+  getDirectory() {
+    return this.directory;
+  }
+
   getLogMessage() {
     return this.logMessage;
+  }
+
+  getLog(component) {
+    return this.log[component] || {};
   }
 
   handleActions(action) {
@@ -42,6 +59,11 @@ class AppStore extends EventEmitter {
         this.emit(this.tag.CHANGE);
         break;
       }
+      case this.tag.UPDATE_DIRECTORY: {
+        this.directory = action.directory;
+        this.emit(this.tag.CHANGE);
+        break;
+      }
       case this.tag.ADD_DEVICE: {
         this.deviceList.push(action.device)
         this.emit(this.tag.CHANGE);
@@ -49,6 +71,20 @@ class AppStore extends EventEmitter {
       }
       case this.tag.UPDATE_LOGMESSAGE: {
         this.logMessage = action.logMessage
+        this.emit(this.tag.CHANGE);
+        break;
+      }
+      case this.tag.UPDATE_LOG: {
+        if (!(action.log.component in this.log)) {
+          this.log[action.log.component] = {}
+        }
+        if (action.log.topic == 'RPC CALL') {
+          this.log[action.log.component] = {}
+        }
+        this.log[action.log.component][action.log.topic] = {
+          msg: action.log.msg,
+          type: action.log.type
+        }
         this.emit(this.tag.CHANGE);
         break;
       }

@@ -17,11 +17,9 @@ export default class VPNCalls extends React.Component {
   componentWillMount() {
     AppStore.on("CHANGE", this.updateDeviceList.bind(this));
   }
-
   componentWillUnmount() {
     AppStore.removeListener("CHANGE", this.updateDeviceList.bind(this));
   }
-
   handleAddDevice() {
     VPNcall.addDevice(this.state.deviceName);
     // session.'vpn.dappnode.addDevice'

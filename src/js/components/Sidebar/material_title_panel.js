@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import params from 'Params';
 
-const styles = {
+let styles = {
   root: {
     fontFamily: '"HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif',
     fontWeight: 300,
@@ -15,8 +15,8 @@ const styles = {
   },
 };
 
-const MaterialTitlePanel = (props) => {
-  const rootStyle = props.style ? {...styles.root, ...props.style} : styles.root;
+let MaterialTitlePanel = (props) => {
+  let rootStyle = props.style ? {...styles.root, ...props.style} : styles.root;
 
   return (
     <div style={rootStyle}>
