@@ -15,7 +15,7 @@ class Row extends React.Component {
       <tr id={id}>
         <td>{this.props.package.name}</td>
         <td>{this.props.package.version}</td>
-        <td>{String(this.props.package.running)}</td>
+        <td>{this.props.package.state}</td>
         <td>{this.props.package.ports}</td>
         <td>
           <button class='bttn'
@@ -54,7 +54,7 @@ export default class PackageList extends React.Component {
             <tr>
               <th>Name</th>
               <th>version</th>
-              <th>running</th>
+              <th>state</th>
               <th>ports</th>
               <th></th>
             </tr>
