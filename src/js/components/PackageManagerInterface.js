@@ -1,52 +1,50 @@
 import React from 'react';
-import * as VPNcall from './API/crossbarCalls';
+import * as crossbarCalls from './API/crossbarCalls';
 import PackageList from './PackageList';
 import LogMessage from './LogMessage';
+import Log from './Log';
 import AppStore from 'Store';
 
 export default class PackageInterface extends React.Component {
   constructor() {
     super();
     this.state = {
-      // Initial states of variables must be defined in the constructor
-      packageLink: '',
-      packageId: '',
-      packageList: AppStore.getPackageList()
+      packageList: AppStore.getPackageList(),
+      log: AppStore.getLog('packageManager')
     };
   }
-  componentWillMount() {
+  componentDidMount() {
     AppStore.on("CHANGE", this.updatePackageList.bind(this));
+    AppStore.on("CHANGE", this.updateLog.bind(this));
   }
 
   componentWillUnmount() {
     AppStore.removeListener("CHANGE", this.updatePackageList.bind(this));
+    AppStore.removeListener("CHANGE", this.updateLog.bind(this));
   }
 
   handleAddPackage() {
-    VPNcall.addPackage(this.state.packageLink);
+    crossbarCalls.addPackage(this.state.packageLink);
     // session.'vpn.dappnode.addPackage'
   }
   handleRemovePackage() {
-    VPNcall.removePackage(this.state.packageId);
+    crossbarCalls.removePackage(this.state.packageId);
   }
   handleReloadPackageList() {
-    VPNcall.listPackages();
+    crossbarCalls.listPackages();
   }
 
   removePackageInTable(e) {
-    VPNcall.removePackage(e.currentTarget.id);
+    console.log('e.currentTarget.id',e.currentTarget.id)
+    crossbarCalls.removePackage(e.currentTarget.id);
   }
 
-  updatePackageLink(e) {
-    this.setState({
-      packageLink: e.target.value
-    });
+  togglePackageInTable(e) {
+    crossbarCalls.togglePackage(e.currentTarget.id);
   }
 
-  updatePackageId(e) {
-    this.setState({
-      packageId: e.target.value
-    });
+  logPackageInTable(e) {
+    crossbarCalls.logPackage(e.currentTarget.id);
   }
 
   updatePackageList() {
@@ -55,12 +53,28 @@ export default class PackageInterface extends React.Component {
     });
   }
 
+  updateLog() {
+    this.setState({
+      log: AppStore.getLog('installer')
+    });
+  }
+
   render() {
+
     return (
       <div class='body'>
-        <h1>Upcoming...</h1>
-        <br></br><br></br>
-        <p>Nice grid of DAap icons with options and stats</p>
+        <h1>Package manager</h1>
+        <Log
+          log={this.state.log}
+        />
+        <LogMessage />
+        <br></br>
+        <PackageList
+          packageList={this.state.packageList}
+          removePackage={this.removePackageInTable.bind(this)}
+          togglePackage={this.togglePackageInTable.bind(this)}
+          logPackage={this.logPackageInTable.bind(this)}
+        />
       </div>
     );
   }

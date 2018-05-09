@@ -1,8 +1,9 @@
-import React from "react";
-import params from "Params";
-import ClipboardJS from 'clipboard';
+import React from "react"
+import params from "Params"
+import ClipboardJS from 'clipboard'
+import classNames from 'classnames'
 
-new ClipboardJS('.btn');
+new ClipboardJS('.btn')
 
 class Row extends React.Component {
   constructor(props) {
@@ -10,18 +11,40 @@ class Row extends React.Component {
   }
 
   render() {
-    let id = this.props.package.id;
+    let id = this.props.package.name
+    let state = this.props.package.state
+
+    let toggleButtonTag = ''
+    if (state == 'running') toggleButtonTag = 'Pause'
+    if (state == 'exited') toggleButtonTag = 'Start'
+
+    let dotClass = 'text-danger'
+    if (state == 'running') dotClass = 'text-success'
+
     return (
       <tr id={id}>
         <td>{this.props.package.name}</td>
         <td>{this.props.package.version}</td>
-        <td>{this.props.package.state}</td>
+        <td>
+          <span className={classNames("small", "state-light", dotClass)}>⬤  </span>
+          <span className="state-label">{state}</span>
+        </td>
         <td>{this.props.package.ports}</td>
         <td>
-          <button class='bttn'
-            id={id}
-            onClick={this.props.removePackage}
-          >remove</button>
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-outline-secondary tableAction-button"
+              id={id}
+              onClick={this.props.togglePackage}
+            >{toggleButtonTag}</button>
+            <button type="button" class="btn btn-outline-secondary tableAction-button"
+              id={id}
+              onClick={this.props.logPackage}
+            >Logs</button>
+            <button type="button" class="btn btn-outline-danger tableAction-button"
+              id={id}
+              onClick={this.props.removePackage}
+            >Remove</button>
+          </div>
         </td>
       </tr>
     );
@@ -42,20 +65,21 @@ export default class PackageList extends React.Component {
           package={_package}
           key={i}
           removePackage={this.props.removePackage}
+          togglePackage={this.props.togglePackage}
+          logPackage={this.props.logPackage}
         />
       );
     }
 
     return (
       <div>
-        <h1>Package list</h1>
-        <table class='Table'>
+        <table class='table'>
           <thead>
             <tr>
               <th>Name</th>
-              <th>version</th>
-              <th>state</th>
-              <th>ports</th>
+              <th>Version</th>
+              <th>State</th>
+              <th>Ports</th>
               <th></th>
             </tr>
           </thead>

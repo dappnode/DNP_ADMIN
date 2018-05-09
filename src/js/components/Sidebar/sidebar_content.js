@@ -32,10 +32,10 @@ let SidebarContent = (props) => {
 
   let links = [];
   let labels = {
-    deviceManager: 'Device Manager',
-    pakageInstaller: 'Package Installer',
-    pakageManager: 'Package Manager',
-    status: 'DAppNode Status'
+    deviceManager: 'Devices',
+    pakageInstaller: 'DApp Store',
+    pakageManager: 'Packages',
+    status: 'Status'
   }
 
   for (let link in labels) {
@@ -46,7 +46,7 @@ let SidebarContent = (props) => {
   }
 
   return (
-    <MaterialTitlePanel title="Menu" style={style}>
+    <MaterialTitlePanel title="DAppNode" style={style}>
       <div style={styles.content}>
         <Link key={'home'} to='/' style={styles.sidebarLink}>Home</Link>
         <div style={styles.divider} />

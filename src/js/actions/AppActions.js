@@ -50,6 +50,13 @@ export function updateLog(log) {
   });
 }
 
+export function updateChainStatus(status) {
+  dispatcher.dispatch({
+    type: AppStore.tag.UPDATE_CHAINSTATUS,
+    status: status
+  });
+}
+
 export function deleteTodo(id) {
   dispatcher.dispatch({
     type: "DELETE_TODO",

@@ -30,6 +30,7 @@ module.exports = {
       Lib: path.resolve(__dirname, 'src', 'js', 'lib'),
       Audio: path.resolve(__dirname, 'src', 'audio'),
       Img: path.resolve(__dirname, 'src', 'img'),
+      Vendor: path.resolve(__dirname, 'src', 'vendor')
     },
   },
   // Modules are applied to single files before bundling
@@ -88,6 +89,15 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.otf$/,
+        use: {
+          loader: "url-loader",
+          options: {
+            limit: 50000,
+          },
+        },
       }
     ]
   },

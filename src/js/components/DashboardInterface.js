@@ -21,7 +21,7 @@ export default class PackageInterface extends React.Component {
     };
     this.handleSync = this.handleSync.bind(this);
   }
-  componentWillMount() {
+  componentDidMount() {
     AppStore.on("CHANGE", this.updatePackageList.bind(this));
   }
 
@@ -74,15 +74,23 @@ export default class PackageInterface extends React.Component {
 
   render() {
     return (
-      <div class='body'>
-        <p>Parity WebSocket provider</p>
-        <input size="45" value={this.state.inputValue}
-        onChange={this.updateInputValue.bind(this)}/>
-        <button
-        onClick={this.handleLaunchWeb3.bind(this)}>Launch web3 synching</button>
-        <br></br>
-        <br></br>
-        <p>{this.state.stateMessage}</p>
+      <div>
+        <h1>Status</h1>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Parity WebSocket provider" aria-label="Parity WebSocket provider" aria-describedby="basic-addon2"
+            value={this.state.inputValue}
+            onChange={this.updateInputValue.bind(this)}
+          ></input>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button"
+              onClick={this.handleLaunchWeb3.bind(this)}
+            >Launch web3 synching</button>
+          </div>
+        </div>
+
+        <div class="alert alert-secondary" role="alert">
+          {this.state.stateMessage}
+        </div>
       </div>
     );
   }

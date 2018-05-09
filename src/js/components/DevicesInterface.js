@@ -14,7 +14,7 @@ export default class VPNCalls extends React.Component {
       deviceList: AppStore.getDeviceList()
     };
   }
-  componentWillMount() {
+  componentDidMount() {
     AppStore.on("CHANGE", this.updateDeviceList.bind(this));
   }
   componentWillUnmount() {
@@ -55,21 +55,30 @@ export default class VPNCalls extends React.Component {
 
   render() {
     return (
-      <div class='body'>
-        <br></br>
-        Device name:
-        <input value={this.state.deviceName}
-        onChange={this.updateDeviceName.bind(this)}/>
-        <button
-        onClick={this.handleAddDevice.bind(this)}>Add device</button>
-        <br></br>
-        <br></br>
-        <LogMessage />
-        <br></br>
+      <div>
+
+        <h1>Device manager</h1>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Device's unique name" aria-label="Device's unique name" aria-describedby="basic-addon2"
+            value={this.state.deviceName}
+            onChange={this.updateDeviceName.bind(this)}
+          ></input>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button"
+              onClick={this.handleAddDevice.bind(this)}
+            >Add device</button>
+          </div>
+        </div>
+
         <DeviceList
           deviceList={this.state.deviceList}
           removeDevice={this.removeDeviceInTable.bind(this)}
         />
+        <br></br>
+        <br></br>
+
+        <LogMessage />
+
       </div>
     );
   }

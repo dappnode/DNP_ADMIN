@@ -83,13 +83,14 @@ export function listDevices() {
 };
 
 /* PACKAGE */
-function handlePackageResponse(res) {
+function handleRPCResponse(res) {
 
   let resParsed = JSON.parse(res)
   console.log('handlePackageResponse: ',resParsed)
   // resParsed = {
   //   success: true / false,
-  //   msg: "String"
+  //   message: "String"
+  //   result: [optional]
   // }
 
   AppActions.updateLog({
@@ -114,18 +115,59 @@ export function addPackage(link) {
 
   session
     .call('installPackage.installer.dnp.dappnode.eth', [link])
-    .then(handlePackageResponse);
+    .then(handleRPCResponse);
 };
 
 export function removePackage(id) {
+
   console.log('Removing package, id: ',id)
-  session.call('removePackage.installer.repo.dappnode.eth', [id]).then(
+  AppActions.updateLog({
+    component: 'installer',
+    topic: 'RPC CALL',
+    msg:  'Removing package... ',
+  });
+
+  session
+    .call('removePackage.installer.dnp.dappnode.eth', [id])
+    .then(handleRPCResponse);
+};
+
+export function togglePackage(id) {
+
+  console.log('Toggling package, id: ',id)
+  AppActions.updateLog({
+    component: 'installer',
+    topic: 'RPC CALL',
+    msg:  'Toggling package... ',
+  });
+
+  session
+    .call('togglePackage.installer.dnp.dappnode.eth', [id])
+    .then(handleRPCResponse);
+};
+
+export function logPackage(id) {
+
+  console.log('Logging package, id: ',id)
+  AppActions.updateLog({
+    component: 'installer',
+    topic: 'RPC CALL',
+    msg:  'Logging package... ',
+  })
+
+  session.call('logPackage.installer.dnp.dappnode.eth', [id]).then(
     function (res) {
-      console.log('RECEIVED RES after removing ',res)
-      // handleResponseMessage(res, 'Package successfully removed')
-      listPackages();
+      let resParsed = JSON.parse(res)
+      console.log('Package log',resParsed.result)
+      AppActions.updateLog({
+        component: 'installer',
+        topic: 'RPC CALL',
+        msg:  resParsed.success ? resParsed.result : resParsed.message,
+        type: resParsed.success ? "success" : "error"
+      });
     }
   );
+
 };
 
 export function listPackages() {

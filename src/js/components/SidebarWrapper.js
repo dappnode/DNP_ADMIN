@@ -35,7 +35,7 @@ export default class SidebarWrapper extends React.Component {
     this.menuButtonClick = this.menuButtonClick.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     mql.addListener(this.mediaQueryChanged);
     this.setState({mql: mql, docked: mql.matches});
   }

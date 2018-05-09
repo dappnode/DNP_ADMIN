@@ -22,15 +22,21 @@ class Row extends React.Component {
         <td>{this.props.package.name}</td>
         <td>{this.props.package.status}</td>
         <td>
-          <select class="form-control" id={id+'@version'}>
-            {options}
-          </select>
-        </td>
-        <td>
-          <button class='bttn'
-            id={id}
-            onClick={this.props.installPackage}
-          >install</button>
+          <div class="input-group mb-3">
+            <select class="form-control custom-select"
+              id={id+'@version'}
+              >
+                {options}
+            </select>
+            <div class="input-group-append">
+              <label class="input-group-text" for={id+'@version'}
+                id={id}
+                onClick={this.props.installPackage}
+                >
+                  Install
+              </label>
+            </div>
+          </div>
         </td>
       </tr>
     );
@@ -57,13 +63,12 @@ export default class PackageDirectory extends React.Component {
 
     return (
       <div>
-        <h1>Package Directory</h1>
-        <table class='Table'>
+        <table class='table'>
           <thead>
             <tr>
               <th>Name</th>
-              <th>status</th>
-              <th>versions</th>
+              <th>Status</th>
+              <th>Versions</th>
               <th></th>
             </tr>
           </thead>

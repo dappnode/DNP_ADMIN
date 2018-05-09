@@ -1,0 +1,55 @@
+.tableAction-button {
+  min-width: 75px;
+}
+
+.fixed-nav {
+  padding-top: 56px;
+}
+
+.state-light {
+  font-size: 50%;
+  font-weight: 400;
+  position: relative;
+  top: -3px;
+  margin-right: 8px;
+}
+
+.state-label {
+  text-transform: uppercase;
+  font-size: 15px;
+  color: #666;
+  letter-spacing: 0.01em;
+  padding-top: 13px;
+}
+
+.logo-image {
+  margin: 50px;
+}
+
+.logo-image-container {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+/* #eeeeee */
+
+.app-content {
+  padding: 30px;
+}
+
+.nav-item-bigger {
+  font-size: 110%;
+}
+
+.nav-link-icon {
+  margin-right: 6px;
+  position: relative;
+  top: -1px;
+  opacity: 0.9;
+}
+
+.nav-item-infoText {
+  text-transform: uppercase;
+  margin-left: 20px;
+  margin-right: 20px;
+}

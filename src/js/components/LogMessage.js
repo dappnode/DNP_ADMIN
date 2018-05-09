@@ -10,7 +10,7 @@ export default class LogMessage extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     AppStore.on("CHANGE", this.updateLogMessage.bind(this));
   }
   componentWillUnmount() {

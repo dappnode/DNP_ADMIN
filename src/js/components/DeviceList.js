@@ -42,9 +42,10 @@ export default class DeviceList extends React.Component {
   }
 
   render() {
-    let rows = [];
-    for (let i = 0; i < this.props.deviceList.length; i++) {
-      let device = this.props.deviceList[i];
+    let rows = []
+    let deviceList = this.props.deviceList || []
+    for (let i = 0; i < deviceList.length; i++) {
+      let device = deviceList[i]
       rows.push(
         <Row
           id={device.name}
@@ -61,8 +62,7 @@ export default class DeviceList extends React.Component {
 
     return (
       <div>
-        <h1>Device list</h1>
-        <table class='Table'>
+        <table class='table'>
           <thead>
             <tr>
               <th>Name</th>

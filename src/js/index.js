@@ -1,18 +1,27 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { HashRouter, Route } from 'react-router-dom'
-import SidebarWrapper from './components/SidebarWrapper'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import App from './components/App'
 
-import '../css/main.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
+// import '../css/main.scss';
+import '../css/sb-admin.css';
+import '../css/admin_UI.css';
+
+import './vendor/jquery.min.js'
+import './vendor/bootstrap.bundle.min.js'
+import './vendor/jquery.easing.min.js'
+
+// APIs
+import './components/API/chainStatus'
 
 function Layout(props) {
   return (
-    <HashRouter>
+    <Router>
       <div>
-        <SidebarWrapper />
+        <App />
       </div>
-    </HashRouter>
+    </Router>
   )
 }
 

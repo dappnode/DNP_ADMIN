@@ -10,6 +10,7 @@ class AppStore extends EventEmitter {
     this.directory = [];
     this.logMessage = {success: true, msg: ''};
     this.log = {};
+    this.chainStatus = {}
     // The log object is
     // log[component][topic] = {msg: 'Package installed', type: 'success'}
     // messages for the same component and topic get overwritten
@@ -22,6 +23,7 @@ class AppStore extends EventEmitter {
       UPDATE_DIRECTORY: 'UPDATE_DIRECTORY',
       UPDATE_LOGMESSAGE: 'UPDATE_LOGMESSAGE',
       UPDATE_LOG: 'UPDATE_LOG',
+      UPDATE_CHAINSTATUS: 'UPDATE_CHAINSTATUS',
       ADD_DEVICE: 'ADD_DEVICE',
       CHANGE: 'CHANGE'
     }
@@ -45,6 +47,10 @@ class AppStore extends EventEmitter {
 
   getLog(component) {
     return this.log[component] || {};
+  }
+
+  getChainStatus() {
+    return this.chainStatus || {};
   }
 
   handleActions(action) {
@@ -85,6 +91,11 @@ class AppStore extends EventEmitter {
           msg: action.log.msg,
           type: action.log.type
         }
+        this.emit(this.tag.CHANGE);
+        break;
+      }
+      case this.tag.UPDATE_CHAINSTATUS: {
+        this.chainStatus[action.status.name] = action.status
         this.emit(this.tag.CHANGE);
         break;
       }

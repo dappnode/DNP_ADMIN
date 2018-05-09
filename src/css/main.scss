@@ -24,6 +24,10 @@ $margin: 10px;
   text-align: center;
 }
 
+.alert {
+  white-space: pre;
+}
+
 header, footer {
   width: 100%;
   padding: $padding;
