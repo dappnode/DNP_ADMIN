@@ -15,22 +15,25 @@ class Row extends React.Component {
       <tr id={this.props.id}>
         <td>{this.props.name}</td>
         <td>{this.props.ip}</td>
+
         <td>
-          <div class='otpUrlContainer'>
-            <a class='otpUrl' href={url}>{url}</a>
+          <div class="input-group mb-3">
+            <a class="input-group-text" href={url}>link</a>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" data-clipboard-text={url}>
+              copy
+              </button>
+            </div>
           </div>
         </td>
+
         <td>
-          <button class="btn" data-clipboard-text={url}>
-          copy
-          </button>
-        </td>
-        <td>
-          <button class='bttn'
+          <button type="button" class="btn btn-outline-danger"
             id={this.props.id}
             onClick={this.props.removeDevice}
           >remove</button>
         </td>
+
       </tr>
     );
   }
@@ -68,7 +71,6 @@ export default class DeviceList extends React.Component {
               <th>Name</th>
               <th>IP</th>
               <th>OTP</th>
-              <th>Copy</th>
               <th>Remove</th>
             </tr>
           </thead>
