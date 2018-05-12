@@ -1,0 +1,69 @@
+$main: #E6E8F4;
+$secondary: #323545;
+$toneDark: #3C457D;
+$toneMid: #536ADE;
+
+$main: #027bf4;
+$grey: #757575;
+$white: #ffffff;
+$black: #000000;
+
+$padding: 10px;
+$paddingText: 4px;
+$margin: 10px;
+
+@import "buttons";
+@import "table";
+@import "deviceListTable";
+
+* {
+  margin: 0px;
+  padding: 0px;
+  font-family: 'Verdana';
+  clear: left;
+  text-align: center;
+}
+
+.alert {
+  white-space: pre;
+}
+
+header, footer {
+  width: 100%;
+  padding: $padding;
+  color: $white;
+  background-color: $main;
+}
+
+.body {
+  font-size: 80%;
+  padding: $padding;
+  color: $black;
+  background-color: $white;
+}
+
+input {
+  color: $black;
+  background-color: $white;
+  padding: $paddingText;
+  font-size: 100%;
+}
+
+footer {
+  font-size: 60%;
+}
+footer a {
+  text-decoration: none;
+}
+footer a { /* unvisited link */
+    color: $white;
+}
+footer a:visited { /* visited link */
+    color: $white;
+}
+footer a:hover { /* mouse over link */
+    color: $white;
+}
+footer a:active { /* selected link */
+    color: $white;
+}
