@@ -71,7 +71,7 @@ class SubmitInstall extends React.Component {
             </div>
           </div>
         </div>
-        <button class="btn btn-primary" type="submit"
+        <button class="btn btn-primary" type="submit" data-dismiss="modal"
           onClick={this.submit.bind(this)}
           >
           Install package

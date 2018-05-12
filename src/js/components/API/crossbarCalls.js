@@ -5,9 +5,10 @@ import AppStore from 'Store';
 // let url = 'ws://localhost:8080/ws';
 // let url = 'ws://206.189.162.209:8080/ws';
 // Produccion
-let url = 'ws://my.wamp.dnp.dappnode.eth:8080/ws';
+let url = 'ws://my.wamp.dnp.dappnode.eth:8080/ws'
+let realm = 'realm1'
 
-let connection = new autobahn.Connection({url: url, realm: 'dappnode_admin'});
+let connection = new autobahn.Connection({ url, realm });
 let session;
 connection.onopen = function (_session) {
   session = _session;

@@ -30,15 +30,13 @@ class Card extends React.Component {
           <img class="card-img-top" src={img} alt="Card image cap" />
           <div class="card-body">
             <div class="input-group mb-3">
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button"
-                  data-toggle="modal"
-                  data-target={this.props.modalTarget}
-                  onClick={this.props.preInstallPackage}
-                  id={id}
-                  >Install
-                </button>
-              </div>
+              <button class="btn btn-outline-secondary" type="button"
+                data-toggle="modal"
+                data-target={this.props.modalTarget}
+                onClick={this.props.preInstallPackage}
+                id={id}
+                >Install
+              </button>
             </div>
             <h5 class="card-title">{namePretty}</h5>
             <p class="card-text">Status: {status}</p>

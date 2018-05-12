@@ -4,7 +4,7 @@ import DeviceList from './DeviceList';
 import LogMessage from './LogMessage';
 import AppStore from 'Store';
 
-export default class VPNCalls extends React.Component {
+export default class DevicesInterface extends React.Component {
   constructor() {
     super();
     this.state = {
