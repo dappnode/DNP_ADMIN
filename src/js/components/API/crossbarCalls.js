@@ -7,7 +7,7 @@ import AppStore from 'Store';
 // Produccion
 let url = 'ws://my.wamp.dnp.dappnode.eth:8080/ws';
 
-let connection = new autobahn.Connection({url: url, realm: 'realm1'});
+let connection = new autobahn.Connection({url: url, realm: 'dappnode_admin'});
 let session;
 connection.onopen = function (_session) {
   session = _session;
@@ -55,8 +55,10 @@ export function addDevice(name) {
   console.log('Adding device, name: ',name);
   session.call('addDevice.vpn.repo.dappnode.eth', [name]).then(
     function (res) {
-      console.log('Adding device RES',res)
-      handleResponseMessage(res, 'Device successfully added');
+      let resParsed = JSON.parse(res)
+      console.log('Adding device RES',resParsed)
+      handleResponseMessage(resParsed, 'Device successfully added');
+      listDevices();
     }
   );
 };
@@ -65,8 +67,9 @@ export function removeDevice(deviceName) {
   console.log('Removing device, id: ',deviceName)
   session.call('removeDevice.vpn.repo.dappnode.eth', [deviceName]).then(
     function (res) {
-      console.log('Removing device RES',res)
-      handleResponseMessage(res, 'Device successfully removed')
+      let resParsed = JSON.parse(res)
+      console.log('Removing device RES',resParsed)
+      handleResponseMessage(resParsed, 'Device successfully removed')
       listDevices();
     }
   );
@@ -76,8 +79,9 @@ export function listDevices() {
   console.log('Listing devices')
   session.call('listDevices.vpn.repo.dappnode.eth', []).then(
     function (res) {
-      console.log('Listing devices RES ',res)
-      AppActions.updateDeviceList(res.devices);
+      let resParsed = JSON.parse(res)
+      console.log('Listing devices RES ',resParsed)
+      AppActions.updateDeviceList(resParsed.devices);
     }
   );
 };
