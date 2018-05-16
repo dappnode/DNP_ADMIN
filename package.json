@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint",
-    "start": "webpack-dev-server --open --config webpack.dev.js --port 9000 --host 0.0.0.0",
+    "start": "webpack-dev-server --open --config webpack.dev.js --port 8000 --host 0.0.0.0",
     "start:localOnly": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },

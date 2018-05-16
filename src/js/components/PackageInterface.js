@@ -6,6 +6,77 @@ import Terminal from './Terminal'
 import Log from './Log'
 import AppStore from 'Store'
 
+let envInputTag = "envPckgInput_"
+
+class EnvVariables extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      envs: this.props.envs
+    }
+  }
+
+  changeEnv(env) {
+    return function(e) {
+      let envs = this.props.envs
+      envs[env] = e.target.value
+      this.setState({ envs })
+    }
+  }
+
+  updateEnvs(e) {
+    let id = e.currentTarget.id
+    this.props.updateEnvs(id, this.state.envs)
+  }
+
+  render() {
+
+    let envs = this.state.envs
+    if (!envs) {
+      return null
+    }
+
+    let envsList = Object.getOwnPropertyNames(envs).map((env, i) => {
+      console.log(env + ' '+ envs[env])
+      console.log('this.state.envs',this.state.envs)
+      return (
+        <div key={i} class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">{env}</span>
+          </div>
+          <input type="text" class="form-control"
+            id={envInputTag+i}
+            value={envs[env]}
+            onChange={this.changeEnv(env).bind(this)}
+            aria-label={env} aria-describedby="basic-addon1">
+          </input>
+        </div>
+      )
+    })
+
+    return (
+      <div>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+          <h4>Environment variables</h4>
+          <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+              <button type="button" class="btn btn-outline-secondary tableAction-button"
+                id={this.props.id}
+                onClick={this.updateEnvs.bind(this)}
+              >Update environment variables</button>
+            </div>
+          </div>
+        </div>
+        <div class='border-bottom mb-4'>
+          {envsList}
+        </div>
+      </div>
+    )
+  }
+}
+
+
+
 export default class PackageInterface extends React.Component {
   constructor() {
     super();
@@ -54,6 +125,10 @@ export default class PackageInterface extends React.Component {
     crossbarCalls.logPackage(e.currentTarget.id);
   }
 
+  callUpdateEnvs(id, envs) {
+    crossbarCalls.updatePackageEnv(id, envs);
+  }
+
   updatePackageList() {
     this.setState({
       packageList: AppStore.getPackageList()
@@ -85,7 +160,7 @@ export default class PackageInterface extends React.Component {
       )
     }
 
-    let id = _package.name || 'id'
+    let id = _package.name
     let state = _package.state
 
     let toggleButtonTag = ''
@@ -110,27 +185,6 @@ export default class PackageInterface extends React.Component {
     let CONTAINER_NAME_PREFIX = "DAppNodePackage-"
     let rawLogs = this.state.packageLog[id] || ''
     let logs = rawLogs.replaceAll(CONTAINER_NAME_PREFIX+_package.name, _package.shortName)
-
-    // Environment variable
-    let envs = {
-      OTP_LINK: 'github.com/otp',
-      SERVER_NUMBER: 5
-    }
-    let envsList = Object.getOwnPropertyNames(envs).map((env, i) => {
-      return (
-        <div key={i} class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">{env}</span>
-          </div>
-          <input type="text" class="form-control"
-            deafultvalue={envs[env]}
-            placeholder={env+'...'}
-            aria-label={env} aria-describedby="basic-addon1">
-          </input>
-        </div>
-      )
-    })
-
 
     return (
       <div>
@@ -160,20 +214,11 @@ export default class PackageInterface extends React.Component {
           </table>
         </div>
 
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
-          <h4>Environment variables</h4>
-          <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group mr-2">
-              <button type="button" class="btn btn-outline-secondary tableAction-button"
-                id={id}
-                onClick={this.logPackageInTable.bind(this)}
-              >Update environment variables</button>
-            </div>
-          </div>
-        </div>
-        <div class='border-bottom mb-4'>
-          {envsList}
-        </div>
+        <EnvVariables
+          envs={_package.envs}
+          id={id}
+          updateEnvs={this.callUpdateEnvs.bind(this)}
+        />
 
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
           <h4>Logs</h4>

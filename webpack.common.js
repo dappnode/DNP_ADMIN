@@ -13,7 +13,7 @@ var extractPlugin = new ExtractTextPlugin({
 module.exports = {
   // Where webpack starts analyzing the project (relative path from the config)
   // You can have multiple entry points
-  entry: './src/js/index.js',
+  entry: ['babel-polyfill', './src/js/index.js'],
   output: {
     // The path module helps you write absolute paths easier
     path: path.resolve(__dirname, 'dist'),

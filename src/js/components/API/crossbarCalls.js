@@ -6,28 +6,111 @@ import AppStore from 'Store';
 // let url = 'ws://206.189.162.209:8080/ws';
 // Produccion
 let url = 'ws://my.wamp.dnp.dappnode.eth:8080/ws'
-let realm = 'realm1'
+let realm = 'dappnode_admin'
 
-let connection = new autobahn.Connection({ url, realm });
-let session;
-connection.onopen = function (_session) {
-  session = _session;
-  listDevices();
-  listPackages();
-  listDirectory();
+// Initalize app
+let session; // make this variable global
+start()
 
-  session.subscribe("log.installer.repo.dappnode.eth", function(res){
-    let log = res[0];
-    AppActions.updateLog({
-      component: 'installer',
-      topic: log.topic,
-      msg: log.msg,
-      type: log.type
+async function start() {
+
+  const credentials = await getCredentials('admin')
+  console.log('Successfully fetched credentials for: '+credentials.id)
+  const onchallenge = createOnchallenge(credentials.key)
+
+  const autobahnUrl = url
+  const autobahnRealm = realm
+  const connection = new autobahn.Connection({
+    url: autobahnUrl,
+    realm: autobahnRealm,
+    authmethods: ["wampcra"],
+    authid: credentials.id,
+    onchallenge: onchallenge
+  })
+
+  connection.onopen = function (_session) {
+    session = _session;
+    console.log("CONNECTED to DAppnode's WAMP "+
+      "\n   url "+autobahnUrl+
+      "\n   realm: "+autobahnRealm)
+
+    listDevices();
+    listPackages();
+    listDirectory();
+
+    session.subscribe("log.installer.repo.dappnode.eth", function(res){
+      let log = res[0];
+      AppActions.updateLog({
+        component: 'installer',
+        topic: log.topic,
+        msg: log.msg,
+        type: log.type
+      });
     });
-  });
+  }
+
+  connection.open();
 }
 
-connection.open();
+
+///////////////////////////////
+// Connection helper functions
+
+
+async function getCredentials(type) {
+
+  let url, id
+  switch (type) {
+    case 'core':
+      url = 'http://my.wamp.dnp.dappnode.eth:8080/core'
+      id = 'coredappnode'
+      break
+    case 'admin':
+      url = 'http://my.wamp.dnp.dappnode.eth:8080/admin'
+      id = 'dappnodeadmin'
+      break
+    default:
+      throw Error('Unkown user type')
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    body: '{"procedure": "authenticate.wamp.dnp.dappnode.eth", "args": [{},{},{}]}',
+    headers: { 'Content-Type': 'application/json' }
+  })
+
+  const resParsed = await res.json()
+  const key = resParsed.args[0]
+  return {
+    id,
+    key
+  }
+}
+
+var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("POST", "demo_post2.asp", true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send("fname=Henry&lname=Ford");
+
+function createOnchallenge(key) {
+
+  return function(session, method, extra) {
+    console.log("onchallenge", method, extra);
+    if (method === "wampcra") {
+       console.log("authenticating via '" + method + "' and challenge '" + extra.challenge + "'");
+       return autobahn.auth_cra.sign(key, extra.challenge);
+    } else {
+       throw "don't know how to authenticate using '" + method + "'";
+    }
+  }
+}
+
+
 
 
 let handleResponseMessage = function(res, successMessage) {
@@ -149,6 +232,15 @@ export function togglePackage(id) {
   session
     .call('togglePackage.installer.dnp.dappnode.eth', [id])
     .then(handleRPCResponse);
+};
+
+export function updatePackageEnv(id, envs) {
+
+  console.log('Updating package envs, id: ',id,' envs: ',envs)
+
+  session
+    .call('updatePackageEnv.installer.dnp.dappnode.eth', [id, JSON.stringify(envs)])
+    .then(handleRPCResponse)
 };
 
 export function logPackage(id) {

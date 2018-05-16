@@ -87,9 +87,18 @@ class PackageInfoTable extends React.Component {
     // verify manifest's integrity
     let manifest = this.props.manifest
     if (!manifest) return null
-    if (typeof manifest != 'object') return (
+    if (typeof manifest == 'string') return (
+      <div class="alert alert-danger" role="alert">Error fetching manifest: {manifest}</div>
+    )
+    else if (typeof manifest != 'object') return (
       <div class="alert alert-danger" role="alert">Broken package manifest</div>
     )
+    else if (manifest.hasOwnProperty('error') && manifest.error) {
+      console.log('Error fetching manifest, error progragated from the back end: ', manifest)
+      return (
+        <div class="alert alert-danger" role="alert">Error fetching manifest, open console for more info</div>
+      )
+    }
 
     let tableItems = [
       {key: 'Description', val: manifest.description},
@@ -125,8 +134,8 @@ export default class PackageInstallerModal extends React.Component {
     super();
   }
 
-  changeVersion(event) {
-    this.props.changeVersion(event.target.value)
+  changeVersion(e) {
+    this.props.changeVersion(e.target.value)
   }
 
   render() {
