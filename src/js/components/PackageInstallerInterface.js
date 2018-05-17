@@ -6,6 +6,7 @@ import PackageInstallerModal from './PackageInstallerModal'
 import PackageStore from './PackageStore'
 import LogMessage from './LogMessage'
 import Log from './Log'
+import LogProgress from './LogProgress'
 import AppStore from 'Store'
 
 export default class PackageInstallerInterface extends React.Component {
@@ -16,23 +17,27 @@ export default class PackageInstallerInterface extends React.Component {
       packageId: '',
       directory: AppStore.getDirectory(),
       log: AppStore.getLog('installer'),
+      progressLog: AppStore.getProgressLog(),
       packageInfo: AppStore.getPackageInfo(),
       targetPackageName: '',
       versionIndex: 0,
       version: ''
     };
     this.updateLog = this.updateLog.bind(this)
+    this.updateProgressLog = this.updateProgressLog.bind(this)
     this.updateDirectory = this.updateDirectory.bind(this)
     this.updatePackageInfo = this.updatePackageInfo.bind(this)
   }
   componentDidMount() {
     AppStore.on("CHANGE", this.updateLog);
+    AppStore.on("CHANGE", this.updateProgressLog);
     AppStore.on("CHANGE", this.updateDirectory);
     AppStore.on("CHANGE", this.updatePackageInfo);
   }
 
   componentWillUnmount() {
     AppStore.removeListener("CHANGE", this.updateLog);
+    AppStore.removeListener("CHANGE", this.updateProgressLog);
     AppStore.removeListener("CHANGE", this.updateDirectory);
     AppStore.removeListener("CHANGE", this.updatePackageInfo);
   }
@@ -70,7 +75,9 @@ export default class PackageInstallerInterface extends React.Component {
     'envs:',envs)
     // let packageName = e.currentTarget.id
     // var version = document.getElementById(packageName+'@version').value;
-    crossbarCalls.addPackage(packageName + '@' + version, envs);
+    crossbarCalls.addPackage(packageName + '@' + version)
+    // The third argument of updatePackageEnv must be false otherwise the install will throw
+    crossbarCalls.updatePackageEnv(packageName, envs, false)
   }
 
   changeVersion(version) {
@@ -105,6 +112,13 @@ export default class PackageInstallerInterface extends React.Component {
     });
   }
 
+  updateProgressLog() {
+    this.setState({
+      progressLog: AppStore.getProgressLog()
+    });
+    console.log('this.state.progressLog',JSON.stringify(this.state.progressLog))
+  }
+
   updatePackageInfo() {
     this.setState({
       packageInfo: AppStore.getPackageInfo()
@@ -116,7 +130,7 @@ export default class PackageInstallerInterface extends React.Component {
   render() {
 
     let modalId = "exampleModal"
-    console.log('PACKAGE INSTALLER LOGS',this.state.log,'this.state.packageInfo',this.state.packageInfo)
+    // console.log('PACKAGE INSTALLER LOGS',this.state.log,'this.state.packageInfo',this.state.packageInfo)
 
     return (
       <div>
@@ -137,6 +151,10 @@ export default class PackageInstallerInterface extends React.Component {
 
         <Log
           log={this.state.log}
+        />
+
+        <LogProgress
+          progressLog={this.state.progressLog}
         />
 
         <PackageStore

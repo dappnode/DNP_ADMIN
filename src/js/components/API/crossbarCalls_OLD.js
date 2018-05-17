@@ -27,14 +27,19 @@ async function start() {
       "\n   url "+autobahnUrl+
       "\n   realm: "+autobahnRealm)
 
-    listDevices()
-    listPackages()
-    listDirectory()
+    listDevices();
+    listPackages();
+    listDirectory();
 
     session.subscribe("log.installer.repo.dappnode.eth", function(res){
-      let log = res[0]
-      AppActions.updateProgressLog(log)
-    })
+      let log = res[0];
+      AppActions.updateLog({
+        component: 'installer',
+        topic: log.topic,
+        msg: log.msg,
+        type: log.type
+      });
+    });
   }
 
   connection.open();
@@ -124,29 +129,7 @@ function handleRPCResponse(res) {
 
 }
 
-function logOnlyErrors(res) {
-
-  let resParsed = JSON.parse(res)
-  console.log('handlePackageResponse: ',resParsed)
-  // resParsed = {
-  //   success: true / false,
-  //   message: "String"
-  //   result: [optional]
-  // }
-  if (!resParsed.success) {
-    AppActions.updateLog({
-      component: 'installer',
-      topic: 'RPC CALL',
-      msg:  resParsed.message,
-      type: resParsed.success ? "success" : "error"
-    });
-  }
-
-  listPackages();
-
-}
-
-export function addPackage(link) {
+export function addPackage(link, envs) {
 
   console.log('Adding package, link: ',link);
   AppActions.updateLog({
@@ -156,7 +139,7 @@ export function addPackage(link) {
   });
 
   session
-    .call('installPackage.installer.dnp.dappnode.eth', [link])
+    .call('installPackage.installer.dnp.dappnode.eth', [link, JSON.stringify(envs)])
     .then(handleRPCResponse);
 };
 
@@ -188,13 +171,13 @@ export function togglePackage(id) {
     .then(handleRPCResponse);
 };
 
-export function updatePackageEnv(id, envs, restart) {
+export function updatePackageEnv(id, envs) {
 
   console.log('Updating package envs, id: ',id,' envs: ',envs)
 
   session
-    .call('updatePackageEnv.installer.dnp.dappnode.eth', [id, JSON.stringify(envs), restart])
-    .then(logOnlyErrors)
+    .call('updatePackageEnv.installer.dnp.dappnode.eth', [id, JSON.stringify(envs)])
+    .then(handleRPCResponse)
 };
 
 export function logPackage(id) {
@@ -204,7 +187,7 @@ export function logPackage(id) {
   session.call('logPackage.installer.dnp.dappnode.eth', [id]).then(
     function (res) {
       let resParsed = JSON.parse(res)
-      AppActions.updatePackageLog(id, resParsed.result.logs)
+      AppActions.updatePackageLog(id, resParsed.result)
     }
   );
 

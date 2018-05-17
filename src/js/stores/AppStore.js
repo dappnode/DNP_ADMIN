@@ -12,6 +12,7 @@ class AppStore extends EventEmitter {
     this.packageInfo = {}
     this.logMessage = {success: true, msg: ''}
     this.log = {}
+    this.progressLog = {}
     this.chainStatus = {}
     // The log object is
     // log[component][topic] = {msg: 'Package installed', type: 'success'}
@@ -25,12 +26,14 @@ class AppStore extends EventEmitter {
       UPDATE_DIRECTORY: 'UPDATE_DIRECTORY',
       UPDATE_LOGMESSAGE: 'UPDATE_LOGMESSAGE',
       UPDATE_LOG: 'UPDATE_LOG',
+      UPDATE_PROGRESSLOG: 'UPDATE_PROGRESSLOG',
       UPDATE_PACKAGE_LOG: 'UPDATE_PACKAGE_LOG',
       UPDATE_PACKAGE_INFO: 'UPDATE_PACKAGE_INFO',
       UPDATE_CHAINSTATUS: 'UPDATE_CHAINSTATUS',
       ADD_DEVICE: 'ADD_DEVICE',
       CHANGE: 'CHANGE',
-      CHANGE_CHAINSTATUS: 'CHANGE_CHAINSTATUS'
+      CHANGE_CHAINSTATUS: 'CHANGE_CHAINSTATUS',
+      CHANGE_PROGRESSLOG: 'CHANGE_PROGRESSLOG'
     }
   }
 
@@ -60,6 +63,10 @@ class AppStore extends EventEmitter {
 
   getLog(component) {
     return this.log[component] || {};
+  }
+
+  getProgressLog() {
+    return this.progressLog
   }
 
   getChainStatus() {
@@ -113,6 +120,25 @@ class AppStore extends EventEmitter {
         this.log[action.log.component][action.log.topic] = {
           msg: action.log.msg,
           type: action.log.type
+        }
+        this.emit(this.tag.CHANGE);
+        break;
+      }
+      case this.tag.UPDATE_PROGRESSLOG: {
+        // action.log = data (object), the object may contain
+        // pkg: PACKAGE_NAME
+        // clear: true
+        // msg: 'download'
+        // order: [packageName1, ...]
+        const log = action.log
+        if (log.clear) {
+          this.progressLog = {msg: {}, order: []}
+        }
+        if (log.order) {
+          log.order.map((name, i) => { this.progressLog.order.push(name) })
+        }
+        if (log.pkg) {
+          this.progressLog.msg[log.pkg] = log.msg
         }
         this.emit(this.tag.CHANGE);
         break;

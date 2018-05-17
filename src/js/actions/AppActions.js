@@ -50,6 +50,13 @@ export function updateLog(log) {
   });
 }
 
+export function updateProgressLog(log) {
+  dispatcher.dispatch({
+    type: AppStore.tag.UPDATE_PROGRESSLOG,
+    log: log
+  });
+}
+
 export function updatePackageLog(id, logs) {
   dispatcher.dispatch({
     type: AppStore.tag.UPDATE_PACKAGE_LOG,

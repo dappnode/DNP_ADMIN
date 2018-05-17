@@ -126,7 +126,7 @@ export default class PackageInterface extends React.Component {
   }
 
   callUpdateEnvs(id, envs) {
-    crossbarCalls.updatePackageEnv(id, envs);
+    crossbarCalls.updatePackageEnv(id, envs, true);
   }
 
   updatePackageList() {
