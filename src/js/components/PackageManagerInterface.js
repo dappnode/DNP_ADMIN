@@ -57,7 +57,7 @@ export default class PackageInterface extends React.Component {
 
   updateLog() {
     this.setState({
-      log: AppStore.getLog('installer')
+      log: AppStore.getLog('packageManager')
     });
   }
 

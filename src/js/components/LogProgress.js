@@ -12,10 +12,10 @@ export default class LogProgress extends React.Component {
     const progressLog = this.props.progressLog
     const msgs = progressLog.msg || {}
     const pakagesOrder = progressLog.order || []
-    const items = pakagesOrder.map(name => {
+    const items = pakagesOrder.map((name, i) => {
       let msg = msgs[name] || 'loading...'
       return (
-        <li class="list-group-item">{name + ': ' + msg}</li>
+        <li key={i}>{name + ': ' + msg}</li>
       )
     })
     // alert alert-success
@@ -25,9 +25,10 @@ export default class LogProgress extends React.Component {
     } else {
       return (
         <div class="alert alert-warning" role="alert">
-          <ul class="list-group">
-            {items}
-          </ul>
+          <h4 class="alert-heading">Installation progress</h4>
+            <ul>
+              {items}
+            </ul>
         </div>
       );
     }

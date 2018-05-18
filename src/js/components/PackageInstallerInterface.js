@@ -43,7 +43,7 @@ export default class PackageInstallerInterface extends React.Component {
   }
 
   handleAddPackage() {
-    crossbarCalls.addPackage(this.state.packageLink);
+    this.preInstallPackage(this.state.packageLink)
     // session.'vpn.dappnode.addPackage'
   }
   handleRemovePackage() {
@@ -57,6 +57,11 @@ export default class PackageInstallerInterface extends React.Component {
   preInstallPackageInTable(e) {
     // Update target package (targetPackageName)
     let targetPackageName = e.currentTarget.id
+    this.preInstallPackage(targetPackageName)
+  }
+
+  preInstallPackage(targetPackageName) {
+    // Update target package (targetPackageName)
     this.setState({ targetPackageName });
     // Fetch package info
     crossbarCalls.fetchPackageInfo(targetPackageName);
@@ -129,7 +134,8 @@ export default class PackageInstallerInterface extends React.Component {
 
   render() {
 
-    let modalId = "exampleModal"
+    const modalId = "exampleModal"
+    const modalTarget = "#"+modalId
     // console.log('PACKAGE INSTALLER LOGS',this.state.log,'this.state.packageInfo',this.state.packageInfo)
 
     return (
@@ -145,7 +151,10 @@ export default class PackageInstallerInterface extends React.Component {
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button"
               onClick={this.handleAddPackage.bind(this)}
-            >Add package</button>
+              data-toggle="modal"
+              data-target={modalTarget}
+              preInstallPackage={this.preInstallPackageInTable.bind(this)}
+            >Install</button>
           </div>
         </div>
 
@@ -160,7 +169,7 @@ export default class PackageInstallerInterface extends React.Component {
         <PackageStore
           directory={this.state.directory}
           preInstallPackage={this.preInstallPackageInTable.bind(this)}
-          modalTarget={"#"+modalId}
+          modalTarget={modalTarget}
         />
 
         <PackageInstallerModal

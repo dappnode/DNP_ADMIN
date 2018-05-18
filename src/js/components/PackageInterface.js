@@ -114,7 +114,8 @@ export default class PackageInterface extends React.Component {
 
   removePackageInTable(e) {
     console.log('e.currentTarget.id',e.currentTarget.id)
-    crossbarCalls.removePackage(e.currentTarget.id);
+    crossbarCalls.removePackage(e.currentTarget.id)
+    this.props.history.push('/packages')
   }
 
   togglePackageInTable(e) {

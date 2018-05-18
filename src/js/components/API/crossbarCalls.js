@@ -103,48 +103,33 @@ export function listDevices() {
 };
 
 /* PACKAGE */
-function handleRPCResponse(res) {
+function createHandleRPCResponse (component, displaySuccessAndError = true) {
 
-  let resParsed = JSON.parse(res)
-  console.log('handlePackageResponse: ',resParsed)
-  // resParsed = {
-  //   success: true / false,
-  //   message: "String"
-  //   result: [optional]
-  // }
+  return function handleRPCResponse(res) {
 
-  AppActions.updateLog({
-    component: 'installer',
-    topic: 'RPC CALL',
-    msg:  resParsed.message,
-    type: resParsed.success ? "success" : "error"
-  });
+    let resParsed = JSON.parse(res)
+    console.log('handlePackageResponse: ',resParsed)
+    // resParsed = {
+    //   success: true / false,
+    //   message: "String"
+    //   result: [optional]
+    // }
+    // 'installer'
+    if (displaySuccessAndError || !resParsed.success) {
+      AppActions.updateLog({
+        component,
+        topic: 'RPC CALL',
+        msg:  resParsed.message,
+        type: resParsed.success ? "success" : "error"
+      });
+    }
 
-  listPackages();
+    listPackages()
+    listDirectory()
 
-}
-
-function logOnlyErrors(res) {
-
-  let resParsed = JSON.parse(res)
-  console.log('handlePackageResponse: ',resParsed)
-  // resParsed = {
-  //   success: true / false,
-  //   message: "String"
-  //   result: [optional]
-  // }
-  if (!resParsed.success) {
-    AppActions.updateLog({
-      component: 'installer',
-      topic: 'RPC CALL',
-      msg:  resParsed.message,
-      type: resParsed.success ? "success" : "error"
-    });
   }
-
-  listPackages();
-
 }
+
 
 export function addPackage(link) {
 
@@ -157,35 +142,38 @@ export function addPackage(link) {
 
   session
     .call('installPackage.installer.dnp.dappnode.eth', [link])
-    .then(handleRPCResponse);
+    .then(createHandleRPCResponse('installer'))
+    .then(() => {
+      AppActions.updateProgressLog({clear: true}) // #### autocleaning progress log
+    })
 };
 
 export function removePackage(id) {
 
   console.log('Removing package, id: ',id)
   AppActions.updateLog({
-    component: 'installer',
+    component: 'packageManager',
     topic: 'RPC CALL',
     msg:  'Removing package... ',
   });
 
   session
     .call('removePackage.installer.dnp.dappnode.eth', [id])
-    .then(handleRPCResponse);
+    .then(createHandleRPCResponse('packageManager'));
 };
 
 export function togglePackage(id) {
 
   console.log('Toggling package, id: ',id)
   AppActions.updateLog({
-    component: 'installer',
+    component: 'packageManager',
     topic: 'RPC CALL',
     msg:  'Toggling package... ',
   });
 
   session
     .call('togglePackage.installer.dnp.dappnode.eth', [id])
-    .then(handleRPCResponse);
+    .then(createHandleRPCResponse('packageManager'));
 };
 
 export function updatePackageEnv(id, envs, restart) {
@@ -194,7 +182,7 @@ export function updatePackageEnv(id, envs, restart) {
 
   session
     .call('updatePackageEnv.installer.dnp.dappnode.eth', [id, JSON.stringify(envs), restart])
-    .then(logOnlyErrors)
+    .then(createHandleRPCResponse('packageManager', false))
 };
 
 export function logPackage(id) {

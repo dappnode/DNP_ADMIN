@@ -22,7 +22,9 @@ class Card extends React.Component {
     let id = name;
 
     let namePretty = capitalize( name.split('.dnp.dappnode.eth')[0] )
-    let img = imageArchie[name] || defaultImg
+    let img = this.props._package.avatar || defaultImg
+    let allowInstall = Boolean(this.props._package.disableInstall)
+    let tag = this.props._package.tag
 
     return (
       <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item">
@@ -35,7 +37,8 @@ class Card extends React.Component {
                 data-target={this.props.modalTarget}
                 onClick={this.props.preInstallPackage}
                 id={id}
-                >Install
+                disabled={allowInstall}
+                >{tag}
               </button>
             </div>
             <h5 class="card-title">{namePretty}</h5>
