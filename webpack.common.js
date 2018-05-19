@@ -88,7 +88,7 @@ module.exports = {
               // Store the images in a separate folder (Personal opinion)
               outputPath: 'img/',
               // Put img/imageName in the html reference in the index.html
-              publicPath: '/'
+              publicPath: './'
             }
           }
         ]
