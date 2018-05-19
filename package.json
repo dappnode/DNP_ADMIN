@@ -56,6 +56,7 @@
     "clipboard": "^2.0.0",
     "event-pubsub": "^4.3.0",
     "express": "^4.16.2",
+    "favicons-webpack-plugin": "0.0.9",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "object-assign": "^4.1.1",

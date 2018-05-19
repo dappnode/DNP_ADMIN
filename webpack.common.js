@@ -3,6 +3,8 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+
 
 var extractPlugin = new ExtractTextPlugin({
    filename: 'main.css'
@@ -120,6 +122,11 @@ module.exports = {
       template: 'src/index.html'
     }),
     // This will clean the dist folder before building, so all files are fresh and new
-    new CleanWebpackPlugin(['dist'])
+    new CleanWebpackPlugin(['dist']),
+    new FaviconsWebpackPlugin({
+      logo: './src/img/DAppNodeFavicon.png',
+      inject: true,
+      prefix: 'img/icons/',
+    }),
   ]
 }
