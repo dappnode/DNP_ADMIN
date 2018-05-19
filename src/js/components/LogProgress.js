@@ -30,7 +30,7 @@ export default class LogProgress extends React.Component {
               {items}
             </ul>
         </div>
-      );
+      )
     }
   }
 }
