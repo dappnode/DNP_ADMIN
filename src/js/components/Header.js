@@ -7,7 +7,7 @@ export default class Header extends React.Component {
     super();
     this.state = {
       // Initial states of variables must be defined in the constructor
-      title: "Private UI",
+      title: "Admin",
     };
   }
 
