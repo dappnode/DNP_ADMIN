@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import ErrorBoundary from 'react-error-boundary'
 import AppStore from 'Store'
 import SyncStatus from './SyncStatus'
 
@@ -230,8 +231,12 @@ export default class Navbar extends React.Component {
         </button>
 
         <div class="collapse navbar-collapse" id="navbarResponsive">
-          <NavbarSide />
-          <NavbarTop />
+          <ErrorBoundary>
+            <NavbarSide />
+          </ErrorBoundary>
+          <ErrorBoundary>
+            <NavbarTop />
+          </ErrorBoundary>
         </div>
 
       </nav>

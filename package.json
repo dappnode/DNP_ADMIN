@@ -63,6 +63,7 @@
     "oo7": "^0.5.8",
     "oo7-parity": "^0.6.13",
     "pubsub": "^3.2.1",
+    "react-error-boundary": "^1.2.3",
     "react-icons": "^2.2.7",
     "react-router-dom": "^4.2.2",
     "react-sidebar": "^2.3.2",
