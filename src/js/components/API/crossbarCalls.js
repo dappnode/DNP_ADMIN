@@ -2,6 +2,8 @@ import autobahn from 'autobahn';
 import * as AppActions from 'Action';
 import AppStore from 'Store';
 
+import { toast } from 'react-toastify';
+
 // let url = 'ws://localhost:8080/ws';
 // let url = 'ws://206.189.162.209:8080/ws';
 // Produccion
@@ -27,9 +29,11 @@ async function start() {
       "\n   url "+autobahnUrl+
       "\n   realm: "+autobahnRealm)
 
-    listDevices()
-    listPackages()
-    listDirectory()
+    setTimeout(function(){
+      listDevices()
+      listPackages()
+      listDirectory()
+    }, 300);
 
     session.subscribe("log.installer.repo.dappnode.eth", function(res){
       let log = res[0]
@@ -70,10 +74,10 @@ let handleResponseMessage = function(res, successMessage) {
 export function addDevice(name) {
   console.log('Adding device, name: ',name);
   session.call('addDevice.vpn.repo.dappnode.eth', [name]).then(
-    function (res) {
-      let resParsed = JSON.parse(res)
-      console.log('Adding device RES',resParsed)
-      handleResponseMessage(resParsed, 'Device successfully added');
+    function (resUnparsed) {
+      let res = parseResponse(resUnparsed)
+      console.log('Adding device RES',res)
+      handleResponseMessage(res, 'Device successfully added');
       listDevices();
     }
   );
@@ -82,10 +86,10 @@ export function addDevice(name) {
 export function removeDevice(deviceName) {
   console.log('Removing device, id: ',deviceName)
   session.call('removeDevice.vpn.repo.dappnode.eth', [deviceName]).then(
-    function (res) {
-      let resParsed = JSON.parse(res)
-      console.log('Removing device RES',resParsed)
-      handleResponseMessage(resParsed, 'Device successfully removed')
+    function (resUnparsed) {
+      let res = parseResponse(resUnparsed)
+      console.log('Removing device RES',res)
+      handleResponseMessage(res, 'Device successfully removed')
       listDevices();
     }
   );
@@ -94,142 +98,164 @@ export function removeDevice(deviceName) {
 export function listDevices() {
   console.log('Listing devices')
   session.call('listDevices.vpn.repo.dappnode.eth', []).then(
-    function (res) {
-      let resParsed = JSON.parse(res)
-      console.log('Listing devices RES ',resParsed)
-      AppActions.updateDeviceList(resParsed.devices);
+    function (resUnparsed) {
+      let res = parseResponse(resUnparsed)
+      console.log('Listing devices RES ',res)
+      AppActions.updateDeviceList(res.devices);
     }
   );
 };
 
+
 /* PACKAGE */
-function createHandleRPCResponse (component, displaySuccessAndError = true) {
 
-  return function handleRPCResponse(res) {
 
-    let resParsed = JSON.parse(res)
-    console.log('handlePackageResponse: ',resParsed)
-    // resParsed = {
-    //   success: true / false,
-    //   message: "String"
-    //   result: [optional]
-    // }
-    // 'installer'
-    if (displaySuccessAndError || !resParsed.success) {
-      AppActions.updateLog({
-        component,
-        topic: 'RPC CALL',
-        msg:  resParsed.message,
-        type: resParsed.success ? "success" : "error"
-      });
-    }
+export async function addPackage(link) {
 
-    listPackages()
-    listDirectory()
+  let toastId = toast('Adding package ' + link, { autoClose: false });
 
-  }
+  let resUnparsed = await session.call('installPackage.installer.dnp.dappnode.eth', [link])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
+  });
+
+  AppActions.updateProgressLog({clear: true})
+  updateData()
+
+};
+
+
+export async function removePackage(id) {
+
+  let toastId = toast('Removing package ' + id, { autoClose: false });
+
+  let resUnparsed = await session.call('removePackage.installer.dnp.dappnode.eth', [id])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
+  });
+
+  updateData()
+
+};
+
+
+export async function togglePackage(id) {
+
+  let toastId = toast('Toggling package ' + id, { autoClose: false });
+
+  let resUnparsed = await session.call('togglePackage.installer.dnp.dappnode.eth', [id])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
+  });
+
+  updateData()
+
+};
+
+
+// ######
+function parseResponse(resUnparsed) {
+  return JSON.parse(resUnparsed)
+}
+
+function updateData() {
+
 }
 
 
-export function addPackage(link) {
+export async function updatePackageEnv(id, envs, restart) {
 
-  console.log('Adding package, link: ',link);
-  AppActions.updateLog({
-    component: 'installer',
-    topic: 'RPC CALL',
-    msg:  'Adding package ' + link,
+  let toastId = toast('Updating '+id+' envs: '+JSON.stringify(envs), { autoClose: false });
+
+  let resUnparsed = await session.call('updatePackageEnv.installer.dnp.dappnode.eth', [id, JSON.stringify(envs), restart])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
   });
 
-  session
-    .call('installPackage.installer.dnp.dappnode.eth', [link])
-    .then(createHandleRPCResponse('installer'))
-    .then(() => {
-      AppActions.updateProgressLog({clear: true}) // #### autocleaning progress log
-    })
+  updateData()
+
 };
 
-export function removePackage(id) {
+export async function logPackage(id) {
 
-  console.log('Removing package, id: ',id)
-  AppActions.updateLog({
-    component: 'packageManager',
-    topic: 'RPC CALL',
-    msg:  'Removing package... ',
+  let toastId = toast('Logging '+id, { autoClose: false });
+
+  let resUnparsed = await session.call('logPackage.installer.dnp.dappnode.eth', [id])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
   });
 
-  session
-    .call('removePackage.installer.dnp.dappnode.eth', [id])
-    .then(createHandleRPCResponse('packageManager'));
+  if (res.success && res.result && res.result.logs)
+    AppActions.updatePackageLog(id, res.result.logs)
+
+  updateData()
+
 };
 
-export function togglePackage(id) {
 
-  console.log('Toggling package, id: ',id)
-  AppActions.updateLog({
-    component: 'packageManager',
-    topic: 'RPC CALL',
-    msg:  'Toggling package... ',
+export async function fetchPackageInfo(id) {
+
+  let toastId = toast('Fetching '+id+' info', { autoClose: false });
+
+  let resUnparsed = await session.call('fetchPackageInfo.installer.dnp.dappnode.eth', [id])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
   });
 
-  session
-    .call('togglePackage.installer.dnp.dappnode.eth', [id])
-    .then(createHandleRPCResponse('packageManager'));
-};
+  if (res.success && res.result)
+    AppActions.updatePackageInfo(id, res.result)
 
-export function updatePackageEnv(id, envs, restart) {
-
-  console.log('Updating package envs, id: ',id,' envs: ',envs)
-
-  session
-    .call('updatePackageEnv.installer.dnp.dappnode.eth', [id, JSON.stringify(envs), restart])
-    .then(createHandleRPCResponse('packageManager', false))
-};
-
-export function logPackage(id) {
-
-  console.log('Logging package, id: ',id)
-
-  session.call('logPackage.installer.dnp.dappnode.eth', [id]).then(
-    function (res) {
-      let resParsed = JSON.parse(res)
-      AppActions.updatePackageLog(id, resParsed.result.logs)
-    }
-  );
+  updateData()
 
 };
 
-export function fetchPackageInfo(id) {
+export async function listPackages() {
 
-  console.log('Fetching package info, id: ',id)
+  let resUnparsed = await session.call('listPackages.installer.repo.dappnode.eth', [])
+  let res = parseResponse(resUnparsed)
 
-  session.call('fetchPackageInfo.installer.dnp.dappnode.eth', [id]).then(
-    function (res) {
-      let resParsed = JSON.parse(res)
-      AppActions.updatePackageInfo(id, resParsed.result)
-    }
-  );
+  if (res.success && res.result)
+    AppActions.updatePackageList(res.result)
+  else
+    toast.error("Error listing packages: "+res.message)
 
 };
 
-export function listPackages() {
-  session.call('listPackages.installer.repo.dappnode.eth', []).then(
-    function (res) {
-      let resParsed = JSON.parse(res)
-      console.log('Listing packages ',resParsed)
-      AppActions.updatePackageList(resParsed.result);
-    }
-  );
-};
-
-export function listDirectory() {
+export async function listDirectory() {
   // [ { name: 'rinkeby.dnp.dappnode.eth',
   //   status: 'Preparing',
   //   versions: [ '0.0.1', '0.0.2' ] },
-  session.call('listDirectory.installer.repo.dappnode.eth', []).then(
-    function (res) {
-      let resParsed = JSON.parse(res)
-      console.log('Listing directory ',resParsed)
-      AppActions.updateDirectory(resParsed.result);
-    }
-  );
+
+  let resUnparsed = await session.call('listDirectory.installer.repo.dappnode.eth', [])
+  let res = parseResponse(resUnparsed)
+
+  if (res.success && res.result)
+    AppActions.updateDirectory(res.result)
+  else
+    toast.error("Error listing packages: "+res.message)
+
 };

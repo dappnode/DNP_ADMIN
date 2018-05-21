@@ -10,6 +10,9 @@ import Home from './Home'
 import Header from './Header'
 import Footer from './Footer'
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function App(props) {
   return (
     <div class="wrapper fixed-nav">
@@ -24,6 +27,7 @@ export default function App(props) {
           <Route path='/package/:packageName' component={PackageInterface}/>
         </div>
       </div>
+      <ToastContainer />
     </div>
   )
 }
