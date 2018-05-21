@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
+import ErrorBoundary from 'react-error-boundary'
 import DevicesInterface from './DevicesInterface'
 import PackageInstallerInterface from './PackageInstallerInterface'
 import PackageManagerInterface from './PackageManagerInterface'
@@ -16,12 +17,14 @@ export default function App(props) {
       <Navbar />
       <div class="content-wrapper">
         <div class="container-fluid app-content">
-          <Route exact path='/' component={Home}/>
-          <Route path='/dashboard' component={DashboardInterface}/>
-          <Route path='/devices' component={DevicesInterface}/>
-          <Route path='/installer' component={PackageInstallerInterface}/>
-          <Route path='/packages' component={PackageManagerInterface}/>
-          <Route path='/package/:packageName' component={PackageInterface}/>
+          <ErrorBoundary>
+            <Route exact path='/' component={Home}/>
+            <Route path='/dashboard' component={DashboardInterface}/>
+            <Route path='/devices' component={DevicesInterface}/>
+            <Route path='/installer' component={PackageInstallerInterface}/>
+            <Route path='/packages' component={PackageManagerInterface}/>
+            <Route path='/package/:packageName' component={PackageInterface}/>
+          </ErrorBoundary>
         </div>
       </div>
     </div>
