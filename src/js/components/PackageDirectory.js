@@ -50,8 +50,9 @@ export default class PackageDirectory extends React.Component {
 
   render() {
     let rows = [];
-    for (let i = 0; i < this.props.directory.length; i++) {
-      let _package = this.props.directory[i];
+    const directory = this.props.directory || []
+    for (let i = 0; i < directory.length; i++) {
+      let _package = directory[i];
       rows.push(
         <Row
           package={_package}

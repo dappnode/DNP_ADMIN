@@ -57,8 +57,9 @@ export default class PackageDirectory extends React.Component {
 
   render() {
     let cards = [];
-    for (let i = 0; i < this.props.directory.length; i++) {
-      let _package = this.props.directory[i];
+    const directory = this.props.directory || []
+    for (let i = 0; i < directory.length; i++) {
+      let _package = directory[i];
       cards.push(
         <Card
           _package={_package}
