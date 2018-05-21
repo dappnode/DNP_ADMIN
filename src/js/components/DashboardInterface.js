@@ -6,6 +6,8 @@ import AppStore from 'Store'
 import Api from '@parity/api'
 import Web3 from 'Lib/web3.min'
 
+import { toast } from 'react-toastify';
+
 // let api = new Api(new Parity.Api.Transport.Http('http://my.ethchain.dnp.dappnode.eth:8545'))
 
 // ws://my.ethchain.dnp.dappnode.eth:8546
@@ -30,6 +32,10 @@ export default class DashboardInterface extends React.Component {
     });
   }
 
+  notify() {
+    toast("Wow so easy !")
+  }
+
   render() {
     let ethchainNames = Object.getOwnPropertyNames(this.state.chainStatus)
     let listItems = ethchainNames.map((ethchainName, i) => {
@@ -41,6 +47,7 @@ export default class DashboardInterface extends React.Component {
             <h5 class="card-title">{this.state.chainStatus[ethchainName].name}</h5>
             <p class={"card-text text-"+type}>{this.state.chainStatus[ethchainName].status}</p>
           </div>
+          <button onClick={this.notify}>Notify !</button>
         </div>
       )
     })

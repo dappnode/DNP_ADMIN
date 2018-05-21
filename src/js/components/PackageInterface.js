@@ -123,7 +123,7 @@ export default class PackageInterface extends React.Component {
   }
 
   logPackageInTable(e) {
-    crossbarCalls.logPackage(e.currentTarget.id);
+    crossbarCalls.logPackage(e.currentTarget.id)
   }
 
   callUpdateEnvs(id, envs) {

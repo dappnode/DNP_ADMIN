@@ -67,6 +67,7 @@
     "react-router-dom": "^4.2.2",
     "react-sidebar": "^2.3.2",
     "react-table": "^6.8.0",
+    "react-toastify": "^4.0.1",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "url-loader": "^1.0.1",
     "ws": "^2.3.1"
