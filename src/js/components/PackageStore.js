@@ -27,7 +27,7 @@ class Card extends React.Component {
     let tag = this.props._package.tag
 
     return (
-      <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item">
+      <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item mb-4 box-shadow card-max-width">
         <div class="card h-100">
           <img class="card-img-top" src={img} alt="Card image cap" />
           <div class="card-body">

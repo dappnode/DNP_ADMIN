@@ -167,7 +167,7 @@ export async function togglePackage(id) {
 
 export async function restartPackage(id, isCORE) {
 
-  let toastId = toast('Restarting package ' + id, { autoClose: false });
+  let toastId = toast('Restarting '+id+' '+(isCORE ? '(CORE)' : ''), { autoClose: false });
 
   let resUnparsed = await session.call('restartPackage.installer.dnp.dappnode.eth', [id, isCORE])
   let res = parseResponse(resUnparsed)
@@ -181,6 +181,24 @@ export async function restartPackage(id, isCORE) {
   updateData()
 
 };
+
+
+export async function restartPackageVolumes(id, isCORE) {
+
+  let toastId = toast('Restarting '+id+' '+(isCORE ? '(CORE)' : '')+' volumes', { autoClose: false });
+  let resUnparsed = await session.call('restartPackageVolumes.installer.dnp.dappnode.eth', [id, isCORE])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
+  });
+
+  updateData()
+
+};
+
 
 
 // ######
@@ -213,7 +231,7 @@ export async function updatePackageEnv(id, envs, restart) {
 
 export async function logPackage(id, isCORE) {
 
-  let toastId = toast('Logging '+id, { autoClose: false });
+  let toastId = toast('Logging '+id+(isCORE ? ' (CORE)' : ''), { autoClose: false });
 
   let resUnparsed = await session.call('logPackage.installer.dnp.dappnode.eth', [id, isCORE])
   let res = parseResponse(resUnparsed)
