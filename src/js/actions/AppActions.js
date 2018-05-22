@@ -16,6 +16,7 @@ export function addDevice(device) {
 }
 
 export function updatePackageList(packageList) {
+  console.log('Updating packageList ',packageList)
   dispatcher.dispatch({
     type: AppStore.tag.UPDATE_PACKAGE_LIST,
     packageList: packageList
@@ -23,6 +24,7 @@ export function updatePackageList(packageList) {
 }
 
 export function updateDirectory(directory) {
+  console.log('Updating directory ',directory)
   dispatcher.dispatch({
     type: AppStore.tag.UPDATE_DIRECTORY,
     directory: directory

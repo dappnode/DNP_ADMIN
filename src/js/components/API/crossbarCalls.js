@@ -129,11 +129,11 @@ export async function addPackage(link) {
 };
 
 
-export async function removePackage(id) {
+export async function removePackage(id, deleteVolumes) {
 
-  let toastId = toast('Removing package ' + id, { autoClose: false });
+  let toastId = toast('Removing package ' + id + (deleteVolumes ? ' and volumes' : ''), { autoClose: false });
 
-  let resUnparsed = await session.call('removePackage.installer.dnp.dappnode.eth', [id])
+  let resUnparsed = await session.call('removePackage.installer.dnp.dappnode.eth', [id, deleteVolumes])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -165,13 +165,32 @@ export async function togglePackage(id) {
 };
 
 
+export async function restartPackage(id, isCORE) {
+
+  let toastId = toast('Restarting package ' + id, { autoClose: false });
+
+  let resUnparsed = await session.call('restartPackage.installer.dnp.dappnode.eth', [id, isCORE])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
+  });
+
+  updateData()
+
+};
+
+
 // ######
 function parseResponse(resUnparsed) {
   return JSON.parse(resUnparsed)
 }
 
 function updateData() {
-
+  listPackages()
+  listDirectory()
 }
 
 
@@ -192,11 +211,11 @@ export async function updatePackageEnv(id, envs, restart) {
 
 };
 
-export async function logPackage(id) {
+export async function logPackage(id, isCORE) {
 
   let toastId = toast('Logging '+id, { autoClose: false });
 
-  let resUnparsed = await session.call('logPackage.installer.dnp.dappnode.eth', [id])
+  let resUnparsed = await session.call('logPackage.installer.dnp.dappnode.eth', [id, isCORE])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {

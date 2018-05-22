@@ -12,13 +12,13 @@ class EnvVariables extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      envs: this.props.envs
+      envs: this.props.envs || {}
     }
   }
 
   changeEnv(env) {
     return function(e) {
-      let envs = this.props.envs
+      let envs = this.props.envs || {}
       envs[env] = e.target.value
       this.setState({ envs })
     }
@@ -32,7 +32,7 @@ class EnvVariables extends React.Component {
   render() {
 
     let envs = this.state.envs
-    if (!envs) {
+    if (Object.getOwnPropertyNames(envs).length == 0) {
       return null
     }
 
@@ -76,6 +76,145 @@ class EnvVariables extends React.Component {
 }
 
 
+class DisplayLogs extends React.Component {
+
+  logPackage(e) {
+    this.props.logPackage(this.props.id, this.props.isCORE)
+  }
+
+  render() {
+    return (
+      <div>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+          <h4>Logs</h4>
+          <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+              <button type="button" class="btn btn-outline-secondary tableAction-button"
+                onClick={this.logPackage.bind(this)}
+              >Load logs</button>
+            </div>
+          </div>
+        </div>
+        <Terminal
+        text={this.props.logs}
+        />
+      </div>
+    )
+  }
+}
+
+
+class RemovePackage extends React.Component {
+
+  removePackage(e) {
+    this.props.removePackage(this.props.id, false)
+  }
+
+  removePackageAndVolumes(e) {
+    this.props.removePackage(this.props.id, true)
+  }
+
+  render() {
+    const isCORE = this.props.isCORE
+    if (isCORE) return null
+
+    return (
+      <div>
+
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+          <h4>Remove package</h4>
+          <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+              <button type="button" class="btn btn-outline-danger tableAction-button"
+                onClick={this.removePackage.bind(this)}
+              >Remove package</button>
+              <button type="button" class="btn btn-outline-danger tableAction-button"
+                onClick={this.removePackageAndVolumes.bind(this)}
+              >Remove package and its data</button>
+            </div>
+          </div>
+        </div>
+
+        <p>Deleting a package is a permanent action and all data not stored in volumes will be lost.</p>
+
+      </div>
+    )
+  }
+}
+
+
+class PackageDetails extends React.Component {
+
+  render() {
+    const _package = this.props._package
+
+    let packageProperties = ['name', 'state', 'version', 'created', 'image', 'ports']
+    let tableItems = packageProperties.map((prop, i) => {
+      return (
+        <tr key={i}>
+          <th scope="row">{prop}</th>
+          <td>{_package[prop]}</td>
+        </tr>
+      )
+    })
+
+    return (
+      <div>
+
+        <div class='border-bottom mb-4'>
+          <h4>Package details</h4>
+          <table class="table table-hover">
+            <tbody>
+              {tableItems}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    )
+  }
+}
+
+
+class PackageHeader extends React.Component {
+
+  togglePackage(e) {
+    this.props.togglePackage(this.props.id, this.props.isCORE)
+  }
+
+  restartPackage(e) {
+    this.props.restartPackage(this.props.id, this.props.isCORE)
+  }
+
+  render() {
+
+    let state = this.props.state
+    let toggleButtonTag = ''
+    if (state == 'running') toggleButtonTag = 'Pause'
+    if (state == 'exited') toggleButtonTag = 'Start'
+
+    return (
+      <div>
+
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+        <h1 class="h2">{capitalize(this.props.displayName)} settings</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group mr-2">
+            <button type="button" class="btn btn-outline-secondary tableAction-button"
+              onClick={this.togglePackage.bind(this)}
+            >{toggleButtonTag}</button>
+            <button type="button" class="btn btn-outline-danger tableAction-button"
+              onClick={this.restartPackage.bind(this)}
+            >Restart</button>
+          </div>
+        </div>
+      </div>
+
+      </div>
+    )
+  }
+}
+
 
 export default class PackageInterface extends React.Component {
   constructor() {
@@ -112,9 +251,8 @@ export default class PackageInterface extends React.Component {
     crossbarCalls.listPackages();
   }
 
-  removePackageInTable(e) {
-    console.log('e.currentTarget.id',e.currentTarget.id)
-    crossbarCalls.removePackage(e.currentTarget.id)
+  removePackageInTable(id, deleteVolumes) {
+    crossbarCalls.removePackage(id, deleteVolumes)
     this.props.history.push('/packages')
   }
 
@@ -122,8 +260,12 @@ export default class PackageInterface extends React.Component {
     crossbarCalls.togglePackage(e.currentTarget.id);
   }
 
-  logPackageInTable(e) {
-    crossbarCalls.logPackage(e.currentTarget.id)
+  restartPackageInTable(id, isCORE) {
+    crossbarCalls.restartPackage(id, isCORE);
+  }
+
+  logPackageInTable(id, isCORE) {
+    crossbarCalls.logPackage(id, isCORE)
   }
 
   callUpdateEnvs(id, envs) {
@@ -162,79 +304,50 @@ export default class PackageInterface extends React.Component {
     }
 
     let id = _package.name
-    let state = _package.state
-
-    let toggleButtonTag = ''
-    if (state == 'running') toggleButtonTag = 'Pause'
-    if (state == 'exited') toggleButtonTag = 'Start'
 
     // let packageProperties = Object.getOwnPropertyNames(_package)
     // remove(packageProperties, ['id', 'isDNP', 'running', 'shortName'])
 
-    let packageProperties = ['name', 'state', 'version', 'created', 'image', 'ports']
-
-    let tableItems = packageProperties.map((prop, i) => {
-      return (
-        <tr key={i}>
-          <th scope="row">{prop}</th>
-          <td>{_package[prop]}</td>
-        </tr>
-      )
-    })
-
     // Prepare logs
-    let CONTAINER_NAME_PREFIX = "DAppNodePackage-"
     let rawLogs = this.state.packageLog[id] || ''
+    let CONTAINER_NAME_PREFIX = "DAppNodePackage-"
     let logs = rawLogs.replaceAll(CONTAINER_NAME_PREFIX+_package.name, _package.shortName)
 
     return (
       <div>
 
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
-          <h1 class="h2">{capitalize(_package.shortName)} settings</h1>
-          <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group mr-2">
-              <button type="button" class="btn btn-outline-secondary tableAction-button"
-                id={id}
-                onClick={this.togglePackageInTable.bind(this)}
-              >{toggleButtonTag}</button>
-              <button type="button" class="btn btn-outline-danger tableAction-button"
-                id={id}
-                onClick={this.removePackageInTable.bind(this)}
-              >Remove</button>
-            </div>
-          </div>
-        </div>
+        <PackageHeader
+          id={id}
+          isCORE={_package.isCORE}
+          displayName={_package.shortName}
+          state={_package.state}
+          togglePackage={this.togglePackageInTable.bind(this)}
+          restartPackage={this.restartPackageInTable.bind(this)}
+        />
 
-        <div class='border-bottom mb-4'>
-          <h4>Package details</h4>
-          <table class="table table-hover">
-            <tbody>
-              {tableItems}
-            </tbody>
-          </table>
-        </div>
+        <PackageDetails
+          _package={_package}
+        />
 
         <EnvVariables
-          envs={_package.envs}
           id={id}
+          envs={_package.envs}
           updateEnvs={this.callUpdateEnvs.bind(this)}
         />
 
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
-          <h4>Logs</h4>
-          <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group mr-2">
-              <button type="button" class="btn btn-outline-secondary tableAction-button"
-                id={id}
-                onClick={this.logPackageInTable.bind(this)}
-              >Load logs</button>
-            </div>
-          </div>
-        </div>
-        <Terminal
-        text={logs}
+        <DisplayLogs
+          id={id}
+          isCORE={_package.isCORE}
+          logs={logs}
+          logPackage={this.logPackageInTable.bind(this)}
         />
+
+        <RemovePackage
+          id={id}
+          isCORE={_package.isCORE}
+          removePackage={this.removePackageInTable.bind(this)}
+        />
+
       </div>
 
     );
