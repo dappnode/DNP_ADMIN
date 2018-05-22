@@ -3,6 +3,7 @@ import { render } from 'react-dom'
 import { HashRouter as Router, Route } from 'react-router-dom'
 import App from './components/App'
 
+import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import '../css/main.scss';
 import '../css/sb-admin.css';
