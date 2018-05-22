@@ -143,6 +143,36 @@ class RemovePackage extends React.Component {
 }
 
 
+class RestartPackageVolumes extends React.Component {
+
+  restartPackageVolumes(e) {
+    this.props.restartPackageVolumes(this.props.id, this.props.isCORE)
+  }
+
+  render() {
+
+    return (
+      <div>
+
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+          <h4>Remove package volumes</h4>
+          <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+              <button type="button" class="btn btn-outline-danger tableAction-button"
+                onClick={this.restartPackageVolumes.bind(this)}
+              >Restart</button>
+            </div>
+          </div>
+        </div>
+
+        <p>Deleting this package volumes is a permanent action and all data will be lost. In the case of the ethcahin core package, resyncing may take a few days</p>
+
+      </div>
+    )
+  }
+}
+
+
 class PackageDetails extends React.Component {
 
   render() {
@@ -264,6 +294,10 @@ export default class PackageInterface extends React.Component {
     crossbarCalls.restartPackage(id, isCORE);
   }
 
+  restartPackageVolumes(id, isCORE) {
+    crossbarCalls.restartPackageVolumes(id, isCORE);
+  }
+
   logPackageInTable(id, isCORE) {
     crossbarCalls.logPackage(id, isCORE)
   }
@@ -340,6 +374,12 @@ export default class PackageInterface extends React.Component {
           isCORE={_package.isCORE}
           logs={logs}
           logPackage={this.logPackageInTable.bind(this)}
+        />
+
+        <RestartPackageVolumes
+          id={id}
+          isCORE={_package.isCORE}
+          restartPackageVolumes={this.restartPackageVolumes.bind(this)}
         />
 
         <RemovePackage

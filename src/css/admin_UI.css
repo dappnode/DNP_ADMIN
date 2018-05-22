@@ -13,6 +13,10 @@
   padding-top: 56px;
 }
 
+.card-max-width {
+  max-width: 18rem;
+}
+
 .state-light {
   font-size: 50%;
   font-weight: 400;
