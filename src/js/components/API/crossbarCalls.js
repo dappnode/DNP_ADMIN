@@ -72,8 +72,11 @@ let handleResponseMessage = function(res, successMessage) {
 /* DEVICE CALLS */
 
 export function addDevice(name) {
-  console.log('Adding device, name: ',name);
-  session.call('addDevice.vpn.repo.dappnode.eth', [name]).then(
+  // Ensure name contains only alphanumeric characters
+  const correctedName = name.replace(/\W/g, '')
+
+  console.log('Adding device, name: ',correctedName);
+  session.call('addDevice.vpn.repo.dappnode.eth', [correctedName]).then(
     function (resUnparsed) {
       let res = parseResponse(resUnparsed)
       console.log('Adding device RES',res)
