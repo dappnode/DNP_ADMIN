@@ -115,7 +115,10 @@ export function listDevices() {
 
 export async function addPackage(link) {
 
-  let toastId = toast('Adding package ' + link, { autoClose: false });
+  let toastId = toast('Adding package ' + link, {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
 
   let resUnparsed = await session.call('installPackage.installer.dnp.dappnode.eth', [link])
   let res = parseResponse(resUnparsed)
@@ -134,7 +137,10 @@ export async function addPackage(link) {
 
 export async function removePackage(id, deleteVolumes) {
 
-  let toastId = toast('Removing package ' + id + (deleteVolumes ? ' and volumes' : ''), { autoClose: false });
+  let toastId = toast('Removing package ' + id + (deleteVolumes ? ' and volumes' : ''), {
+    autoClose: false, position:
+    toast.POSITION.BOTTOM_RIGHT
+  });
 
   let resUnparsed = await session.call('removePackage.installer.dnp.dappnode.eth', [id, deleteVolumes])
   let res = parseResponse(resUnparsed)
@@ -152,7 +158,10 @@ export async function removePackage(id, deleteVolumes) {
 
 export async function togglePackage(id) {
 
-  let toastId = toast('Toggling package ' + id, { autoClose: false });
+  let toastId = toast('Toggling package ' + id, {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
 
   let resUnparsed = await session.call('togglePackage.installer.dnp.dappnode.eth', [id])
   let res = parseResponse(resUnparsed)
@@ -170,7 +179,10 @@ export async function togglePackage(id) {
 
 export async function restartPackage(id, isCORE) {
 
-  let toastId = toast('Restarting '+id+' '+(isCORE ? '(CORE)' : ''), { autoClose: false });
+  let toastId = toast('Restarting '+id+' '+(isCORE ? '(CORE)' : ''), {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
 
   let resUnparsed = await session.call('restartPackage.installer.dnp.dappnode.eth', [id, isCORE])
   let res = parseResponse(resUnparsed)
@@ -188,7 +200,11 @@ export async function restartPackage(id, isCORE) {
 
 export async function restartPackageVolumes(id, isCORE) {
 
-  let toastId = toast('Restarting '+id+' '+(isCORE ? '(CORE)' : '')+' volumes', { autoClose: false });
+  let toastId = toast('Restarting '+id+' '+(isCORE ? '(CORE)' : '')+' volumes', {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
+
   let resUnparsed = await session.call('restartPackageVolumes.installer.dnp.dappnode.eth', [id, isCORE])
   let res = parseResponse(resUnparsed)
 
@@ -217,7 +233,10 @@ function updateData() {
 
 export async function updatePackageEnv(id, envs, restart) {
 
-  let toastId = toast('Updating '+id+' envs: '+JSON.stringify(envs), { autoClose: false });
+  let toastId = toast('Updating '+id+' envs: '+JSON.stringify(envs), {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
 
   let resUnparsed = await session.call('updatePackageEnv.installer.dnp.dappnode.eth', [id, JSON.stringify(envs), restart])
   let res = parseResponse(resUnparsed)
@@ -234,7 +253,10 @@ export async function updatePackageEnv(id, envs, restart) {
 
 export async function logPackage(id, isCORE) {
 
-  let toastId = toast('Logging '+id+(isCORE ? ' (CORE)' : ''), { autoClose: false });
+  let toastId = toast('Logging '+id+(isCORE ? ' (CORE)' : ''), {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
 
   let resUnparsed = await session.call('logPackage.installer.dnp.dappnode.eth', [id, isCORE])
   let res = parseResponse(resUnparsed)
@@ -255,7 +277,10 @@ export async function logPackage(id, isCORE) {
 
 export async function fetchPackageInfo(id) {
 
-  let toastId = toast('Fetching '+id+' info', { autoClose: false });
+  let toastId = toast('Fetching '+id+' info', {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
 
   let resUnparsed = await session.call('fetchPackageInfo.installer.dnp.dappnode.eth', [id])
   let res = parseResponse(resUnparsed)
@@ -281,7 +306,9 @@ export async function listPackages() {
   if (res.success && res.result)
     AppActions.updatePackageList(res.result)
   else
-    toast.error("Error listing packages: "+res.message)
+    toast.error("Error listing packages: "+res.message, {
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
 
 };
 
@@ -296,6 +323,8 @@ export async function listDirectory() {
   if (res.success && res.result)
     AppActions.updateDirectory(res.result)
   else
-    toast.error("Error listing packages: "+res.message)
+    toast.error("Error listing packages: "+res.message, {
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
 
 };
