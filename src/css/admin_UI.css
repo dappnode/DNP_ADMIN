@@ -1,4 +1,12 @@
 
+.toastify-content--success {border-color: #5cb85c; }
+.toastify-content--warning {border-color: #f0ad4e;  }
+.toastify-content--error {border-color: #d9534f; }
+
+.toastify__progress--success { background-color: #5cb85c; }
+.toastify__progress--warning { background-color: #f0ad4e; }
+.toastify__progress--error { background-color: #d9534f; }
+
 .terminal {
   white-space: pre;
   font-family: Consolas, monaco, monospace;
