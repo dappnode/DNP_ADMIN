@@ -153,7 +153,6 @@ export default class PackageInstallerInterface extends React.Component {
               onClick={this.handleAddPackage.bind(this)}
               data-toggle="modal"
               data-target={modalTarget}
-              preInstallPackage={this.preInstallPackageInTable.bind(this)}
             >Install</button>
           </div>
         </div>
