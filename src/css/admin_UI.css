@@ -1,4 +1,18 @@
 
+.jumbotron {
+  background-color: #f8f8f8;
+}
+
+.dappnode-background-color {
+  color: white;
+  border: #2FBCB2;
+  background-color: #2FBCB2;
+}
+.dappnode-background-color:hover {
+  border: #218a82;
+  background-color: #218a82;
+}
+
 .Toastify__toast--success { background: #5cb85c; }
 .Toastify__toast--warning { background: #f0ad4e; }
 .Toastify__toast--error { background: #d9534f; }
@@ -61,6 +75,11 @@
   position: relative;
   top: -1px;
   opacity: 0.9;
+}
+
+.home-icon {
+  width: 28px;
+  height: 28px;
 }
 
 .nav-item-infoText {
