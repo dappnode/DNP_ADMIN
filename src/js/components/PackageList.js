@@ -33,10 +33,6 @@ class Row extends React.Component {
         <td>{this.props._package.ports}</td>
         <td>
           <div class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-outline-secondary tableAction-button"
-              id={id}
-              onClick={this.props.togglePackage}
-            >{toggleButtonTag}</button>
             <Link
               class="btn btn-outline-secondary tableAction-button"
               to={'package/'+this.props._package.shortName}
