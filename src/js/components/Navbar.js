@@ -153,23 +153,27 @@ class NavbarTop extends React.Component {
       }
     })
 
+    // ###### This code is to incorporate the bell again
+
+    // <NavbarTopDropdownMessages
+    //   name={'Alerts'}
+    //   messages={alerts}
+    //   icon={FaBell}
+    // />
+
     return (
       <ul class="navbar-nav ml-auto">
-        <NavbarTopDropdownMessages
-          name={'Alerts'}
-          messages={alerts}
-          icon={FaBell}
-        />
+
         <NavbarTopDropdownMessages
           name={'ChainStatus'}
           messages={chainInfo}
           icon={FaChain}
         />
         <li class="nav-item nav-item-infoText">
-          <a class="nav-link">About</a>
+          <a href="https://dappnode.io/" class="nav-link">About</a>
         </li>
         <li class="nav-item nav-item-infoText">
-          <a class="nav-link">Donate</a>
+          <a href="https://leaderboard.dappnode.io/" class="nav-link">Donate</a>
         </li>
       </ul>
     )

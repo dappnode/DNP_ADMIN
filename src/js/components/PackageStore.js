@@ -26,12 +26,18 @@ class Card extends React.Component {
     let allowInstall = Boolean(this.props._package.disableInstall)
     let tag = this.props._package.tag
 
+    // ##### Text under the card's title showing the status
+    // <p class="card-text">Status: {status}</p>
+
     return (
       <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item mb-4 box-shadow card-max-width">
         <div class="card h-100">
-          <img class="card-img-top" src={img} alt="Card image cap" />
-          <div class="card-body">
-            <div class="input-group mb-3">
+          <div class="p-1">
+            <img class="card-img-top" src={img} alt="Card image cap" />
+          </div>
+          <div class="card-body text-center text-nowrap">
+            <h5 class="card-title">{namePretty}</h5>
+            <div class="center-block">
               <button class="btn btn-outline-secondary" type="button"
                 data-toggle="modal"
                 data-target={this.props.modalTarget}
@@ -41,8 +47,6 @@ class Card extends React.Component {
                 >{tag}
               </button>
             </div>
-            <h5 class="card-title">{namePretty}</h5>
-            <p class="card-text">Status: {status}</p>
           </div>
         </div>
       </div>
