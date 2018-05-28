@@ -1,8 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'
 import { MdDashboard, MdDevices, MdSettingsApplications,
-    MdAddBox, MdCreateNewFolder, MdFolder,
-  MdSync } from 'react-icons/lib/md'
+  MdAddBox, MdCreateNewFolder, MdFolder, MdSync } from 'react-icons/lib/md'
+
+const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22"
 
 let navbarItemsInfo = [
   {
@@ -57,7 +58,7 @@ export default class Home extends React.Component {
         <h1 class="display-4">Welcome to DAppNode</h1>
         <p class="lead">If you have just finished the installation, please help the team telling us how it went in the survey below</p>
         <p class="lead">
-          <a class="btn dappnode-background-color btn-lg" href="#" role="button">Fill survey</a>
+          <a class="btn dappnode-background-color btn-lg" href={SURVEY_LINK} role="button">Fill survey</a>
         </p>
         </div>
 
