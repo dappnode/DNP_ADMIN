@@ -160,7 +160,7 @@ class RestartPackageVolumes extends React.Component {
             <div class="btn-group mr-2">
               <button type="button" class="btn btn-outline-danger tableAction-button"
                 onClick={this.restartPackageVolumes.bind(this)}
-              >Restart</button>
+              >Restart volumes</button>
             </div>
           </div>
         </div>
@@ -223,6 +223,15 @@ class PackageHeader extends React.Component {
     if (state == 'running') toggleButtonTag = 'Pause'
     if (state == 'exited') toggleButtonTag = 'Start'
 
+    let pauseButton = null
+    if (!this.props.isCORE) {
+      pauseButton = (
+        <button type="button" class="btn btn-outline-secondary tableAction-button"
+          onClick={this.togglePackage.bind(this)}
+        >{toggleButtonTag}</button>
+      )
+    }
+
     return (
       <div>
 
@@ -230,9 +239,7 @@ class PackageHeader extends React.Component {
         <h1 class="h2">{capitalize(this.props.displayName)} settings</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
-            <button type="button" class="btn btn-outline-secondary tableAction-button"
-              onClick={this.togglePackage.bind(this)}
-            >{toggleButtonTag}</button>
+            {pauseButton}
             <button type="button" class="btn btn-outline-danger tableAction-button"
               onClick={this.restartPackage.bind(this)}
             >Restart</button>
