@@ -71,42 +71,62 @@ let handleResponseMessage = function(res, successMessage) {
 // {"result":"ERR","resultStr":"QmWhzrpqcrR5N4xB6nR5iX9q3TyN5LUMxBLHdMedquR8nr it is not accesible"}"
 /* DEVICE CALLS */
 
-export function addDevice(name) {
+export async function addDevice(name) {
   // Ensure name contains only alphanumeric characters
   const correctedName = name.replace(/\W/g, '')
 
-  console.log('Adding device, name: ',correctedName);
-  session.call('addDevice.vpn.repo.dappnode.eth', [correctedName]).then(
-    function (resUnparsed) {
-      let res = parseResponse(resUnparsed)
-      console.log('Adding device RES',res)
-      handleResponseMessage(res, 'Device successfully added');
-      listDevices();
-    }
-  );
+  let toastId = toast('Adding device: '+correctedName), {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
+
+  let resUnparsed = await session.call('addDevice.vpn.repo.dappnode.eth', [correctedName])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
+  });
+
+  listDevices()
+
 };
+
 
 export function removeDevice(deviceName) {
-  console.log('Removing device, id: ',deviceName)
-  session.call('removeDevice.vpn.repo.dappnode.eth', [deviceName]).then(
-    function (resUnparsed) {
-      let res = parseResponse(resUnparsed)
-      console.log('Removing device RES',res)
-      handleResponseMessage(res, 'Device successfully removed')
-      listDevices();
-    }
-  );
+
+  let toastId = toast('Removing device: '+deviceName), {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
+
+  let resUnparsed = await session.call('removeDevice.vpn.repo.dappnode.eth', [deviceName])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
+  });
+
+  listDevices()
+
 };
 
+
 export function listDevices() {
-  console.log('Listing devices')
-  session.call('listDevices.vpn.repo.dappnode.eth', []).then(
-    function (resUnparsed) {
-      let res = parseResponse(resUnparsed)
-      console.log('Listing devices RES ',res)
-      AppActions.updateDeviceList(res.devices);
-    }
-  );
+
+  let resUnparsed = await session.call('listDevices.vpn.repo.dappnode.eth', [])
+  let res = parseResponse(resUnparsed)
+
+  if (res.success && res.result)
+    AppActions.updateDeviceList(res.result)
+  else
+    toast.error("Error listing devices: "+res.message, {
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
+
 };
 
 
