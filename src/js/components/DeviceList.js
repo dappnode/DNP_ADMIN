@@ -4,6 +4,8 @@ import ClipboardJS from 'clipboard';
 
 new ClipboardJS('.btn');
 
+const ADMIN_STATIC_IP_PREFIX = '172.33.10.'
+
 class Row extends React.Component {
   constructor(props) {
     super(props);
@@ -11,6 +13,8 @@ class Row extends React.Component {
 
   render() {
     let url = this.props.otp;
+    const disableRemove = this.props.ip.includes(ADMIN_STATIC_IP_PREFIX)
+
     return (
       <tr id={this.props.id}>
         <td>{this.props.name}</td>
@@ -29,6 +33,7 @@ class Row extends React.Component {
 
         <td>
           <button type="button" class="btn btn-outline-danger"
+            disabled={disableRemove}
             id={this.props.id}
             onClick={this.props.removeDevice}
           >remove</button>
