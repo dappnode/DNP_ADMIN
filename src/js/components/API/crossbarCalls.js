@@ -75,7 +75,7 @@ export async function addDevice(name) {
   // Ensure name contains only alphanumeric characters
   const correctedName = name.replace(/\W/g, '')
 
-  let toastId = toast('Adding device: '+correctedName), {
+  let toastId = toast('Adding device: '+correctedName, {
     autoClose: false,
     position: toast.POSITION.BOTTOM_RIGHT
   });
@@ -94,9 +94,9 @@ export async function addDevice(name) {
 };
 
 
-export function removeDevice(deviceName) {
+export async function removeDevice(deviceName) {
 
-  let toastId = toast('Removing device: '+deviceName), {
+  let toastId = toast('Removing device: '+deviceName, {
     autoClose: false,
     position: toast.POSITION.BOTTOM_RIGHT
   });
@@ -115,7 +115,7 @@ export function removeDevice(deviceName) {
 };
 
 
-export function listDevices() {
+export async function listDevices() {
 
   let resUnparsed = await session.call('listDevices.vpn.repo.dappnode.eth', [])
   let res = parseResponse(resUnparsed)
@@ -158,8 +158,8 @@ export async function addPackage(link) {
 export async function removePackage(id, deleteVolumes) {
 
   let toastId = toast('Removing package ' + id + (deleteVolumes ? ' and volumes' : ''), {
-    autoClose: false, position:
-    toast.POSITION.BOTTOM_RIGHT
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
   });
 
   let resUnparsed = await session.call('removePackage.installer.dnp.dappnode.eth', [id, deleteVolumes])
