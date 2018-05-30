@@ -8,7 +8,6 @@ export default class LogProgress extends React.Component {
   render() {
 
     // this.progressLog = {msg: {}, order: []
-    console.log(JSON.stringify(this.props))
     const progressLog = this.props.progressLog
     const msgs = progressLog.msg || {}
     const pakagesOrder = progressLog.order || []

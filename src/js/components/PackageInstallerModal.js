@@ -101,11 +101,11 @@ class PackageInfoTable extends React.Component {
     }
 
     let tableItems = [
-      {key: 'Description', val: manifest.description},
-      {key: 'Mantainer', val: manifest.author},
-      {key: 'Package type', val: manifest.type},
-      {key: 'Package size', val: manifest.image.size},
-      {key: 'Image path', val: manifest.image.path}
+      {key: 'Description', val: manifest.description || ''},
+      {key: 'Mantainer', val: manifest.author || ''},
+      {key: 'Package type', val: manifest.type || ''},
+      {key: 'Package size', val: manifest.image ? manifest.image.size || '' : ''},
+      {key: 'Image path', val: manifest.image ? manifest.image.path || '' : ''}
     ]
 
     let rows = tableItems.map((row, i) => {

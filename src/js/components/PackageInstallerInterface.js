@@ -121,7 +121,6 @@ export default class PackageInstallerInterface extends React.Component {
     this.setState({
       progressLog: AppStore.getProgressLog()
     });
-    console.log('this.state.progressLog',JSON.stringify(this.state.progressLog))
   }
 
   updatePackageInfo() {

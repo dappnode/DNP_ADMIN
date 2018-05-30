@@ -311,6 +311,8 @@ export async function fetchPackageInfo(id) {
     autoClose: 5000
   });
 
+  console.log('FETCHED', res.result)
+
   if (res.success && res.result)
     AppActions.updatePackageInfo(id, res.result)
 
