@@ -35,7 +35,7 @@ async function start() {
       listDirectory()
     }, 300);
 
-    session.subscribe("log.installer.repo.dappnode.eth", function(res){
+    session.subscribe("log.dappmanager.dnp.dappnode.eth", function(res){
       let log = res[0]
       AppActions.updateProgressLog(log)
     })
@@ -140,7 +140,7 @@ export async function addPackage(link) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('installPackage.installer.dnp.dappnode.eth', [link])
+  let resUnparsed = await session.call('installPackage.dappmanager.dnp.dappnode.eth', [link])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -162,7 +162,7 @@ export async function removePackage(id, deleteVolumes) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('removePackage.installer.dnp.dappnode.eth', [id, deleteVolumes])
+  let resUnparsed = await session.call('removePackage.dappmanager.dnp.dappnode.eth', [id, deleteVolumes])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -183,7 +183,7 @@ export async function togglePackage(id) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('togglePackage.installer.dnp.dappnode.eth', [id])
+  let resUnparsed = await session.call('togglePackage.dappmanager.dnp.dappnode.eth', [id])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -204,7 +204,7 @@ export async function restartPackage(id, isCORE) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('restartPackage.installer.dnp.dappnode.eth', [id, isCORE])
+  let resUnparsed = await session.call('restartPackage.dappmanager.dnp.dappnode.eth', [id, isCORE])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -225,7 +225,7 @@ export async function restartPackageVolumes(id, isCORE) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('restartPackageVolumes.installer.dnp.dappnode.eth', [id, isCORE])
+  let resUnparsed = await session.call('restartPackageVolumes.dappmanager.dnp.dappnode.eth', [id, isCORE])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -258,7 +258,7 @@ export async function updatePackageEnv(id, envs, restart, isCORE) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('updatePackageEnv.installer.dnp.dappnode.eth', [id, JSON.stringify(envs), restart, isCORE])
+  let resUnparsed = await session.call('updatePackageEnv.dappmanager.dnp.dappnode.eth', [id, JSON.stringify(envs), restart, isCORE])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -278,7 +278,7 @@ export async function logPackage(id, isCORE) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('logPackage.installer.dnp.dappnode.eth', [id, isCORE])
+  let resUnparsed = await session.call('logPackage.dappmanager.dnp.dappnode.eth', [id, isCORE])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -302,7 +302,7 @@ export async function fetchPackageInfo(id) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('fetchPackageInfo.installer.dnp.dappnode.eth', [id])
+  let resUnparsed = await session.call('fetchPackageInfo.dappmanager.dnp.dappnode.eth', [id])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -322,7 +322,7 @@ export async function fetchPackageInfo(id) {
 
 export async function listPackages() {
 
-  let resUnparsed = await session.call('listPackages.installer.repo.dappnode.eth', [])
+  let resUnparsed = await session.call('listPackages.dappmanager.dnp.dappnode.eth', [])
   let res = parseResponse(resUnparsed)
 
   if (res.success && res.result)
@@ -339,7 +339,7 @@ export async function listDirectory() {
   //   status: 'Preparing',
   //   versions: [ '0.0.1', '0.0.2' ] },
 
-  let resUnparsed = await session.call('listDirectory.installer.repo.dappnode.eth', [])
+  let resUnparsed = await session.call('listDirectory.dappmanager.dnp.dappnode.eth', [])
   let res = parseResponse(resUnparsed)
 
   if (res.success && res.result)

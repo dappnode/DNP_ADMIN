@@ -14,14 +14,14 @@ const callTags = {
   // removeDevice: 'removeDevice.vpn.repo.dappnode.eth',
   // listDevices: 'listDevices.vpn.repo.dappnode.eth',
   // Package manager
-  installPackage: 'installPackage.installer.dnp.dappnode.eth',
-  removePackage: 'removePackage.installer.dnp.dappnode.eth',
-  togglePackage: 'togglePackage.installer.dnp.dappnode.eth',
-  updatePackageEnv: 'updatePackageEnv.installer.dnp.dappnode.eth',
-  logPackage: 'logPackage.installer.dnp.dappnode.eth',
-  fetchPackageInfo: 'fetchPackageInfo.installer.dnp.dappnode.eth',
-  listPackages: 'listPackages.installer.repo.dappnode.eth',
-  listDirectory: 'listDirectory.installer.repo.dappnode.eth'
+  installPackage: 'installPackage.dappmanager.dnp.dappnode.eth',
+  removePackage: 'removePackage.dappmanager.dnp.dappnode.eth',
+  togglePackage: 'togglePackage.dappmanager.dnp.dappnode.eth',
+  updatePackageEnv: 'updatePackageEnv.dappmanager.dnp.dappnode.eth',
+  logPackage: 'logPackage.dappmanager.dnp.dappnode.eth',
+  fetchPackageInfo: 'fetchPackageInfo.dappmanager.dnp.dappnode.eth',
+  listPackages: 'listPackages.dappmanager.dnp.dappnode.eth',
+  listDirectory: 'listDirectory.dappmanager.dnp.dappnode.eth'
 }
 
 const handlers = {
@@ -79,7 +79,7 @@ connection.onopen = function (_session) {
   listPackages();
   listDirectory();
 
-  session.subscribe("log.installer.repo.dappnode.eth", function(res){
+  session.subscribe("log.dappmanager.dnp.dappnode.eth", function(res){
     let log = res[0];
     AppActions.updateLog({
       component: 'installer',
