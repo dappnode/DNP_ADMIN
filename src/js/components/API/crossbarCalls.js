@@ -251,14 +251,14 @@ function updateData() {
 }
 
 
-export async function updatePackageEnv(id, envs, restart) {
+export async function updatePackageEnv(id, envs, restart, isCORE) {
 
   let toastId = toast('Updating '+id+' envs: '+JSON.stringify(envs), {
     autoClose: false,
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('updatePackageEnv.installer.dnp.dappnode.eth', [id, JSON.stringify(envs), restart])
+  let resUnparsed = await session.call('updatePackageEnv.installer.dnp.dappnode.eth', [id, JSON.stringify(envs), restart, isCORE])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
