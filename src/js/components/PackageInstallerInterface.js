@@ -82,7 +82,9 @@ export default class PackageInstallerInterface extends React.Component {
     // var version = document.getElementById(packageName+'@version').value;
     crossbarCalls.addPackage(packageName + '@' + version)
     // The third argument of updatePackageEnv must be false otherwise the install will throw
-    crossbarCalls.updatePackageEnv(packageName, envs, false)
+    if (Object.getOwnPropertyNames(envs).length > 0) {
+      crossbarCalls.updatePackageEnv(packageName, envs, false)
+    }
   }
 
   changeVersion(version) {
