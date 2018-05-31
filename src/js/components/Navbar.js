@@ -2,15 +2,22 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import ErrorBoundary from 'react-error-boundary'
 import AppStore from 'Store'
-import SyncStatus from './SyncStatus'
 
 import LogoImg from 'Img/DAppNode-black.png'
-import { MdDashboard, MdDevices, MdSettingsApplications,
-    MdAddBox, MdCreateNewFolder, MdFolder,
-  MdSync } from 'react-icons/lib/md'
+// Icons
+import Devices from './Icons/Devices'
+import Dashboard from './Icons/Dashboard'
+import Folder from './Icons/Folder'
+import NewFolder from './Icons/NewFolder'
+import Circle from './Icons/Circle'
+import Bell from './Icons/Bell'
+import Chain from './Icons/Chain'
+import Link from './Icons/Link'
 
-import { FaCircle, FaArrowUp, FaBell, FaSync, FaChain } from 'react-icons/lib/fa'
-import { GoSync } from 'react-icons/lib/go'
+// import { MdDashboard, MdDevices, MdCreateNewFolder, MdFolder } from 'react-icons/lib/md'
+
+// import { FaCircle, FaBell, FaChain } from 'react-icons/lib/fa'
+// import { GoSync } from 'react-icons/lib/go'
 
 // FontAwesome.FaTachometerAlt
 // FontAwesome.FaMobileAlt
@@ -22,22 +29,22 @@ let navbarItemsInfo = [
   {
     name: 'Dashboard',
     href: '/dashboard',
-    icon: MdDashboard
+    icon: Dashboard
   },
   {
     name: 'Devices',
     href: '/devices',
-    icon: MdDevices
+    icon: Devices
   },
   {
     name: 'Installer',
     href: '/installer',
-    icon: MdCreateNewFolder
+    icon: NewFolder
   },
   {
     name: 'Packages',
     href: '/packages',
-    icon: MdFolder
+    icon: Folder
   }
 ]
 
@@ -55,7 +62,7 @@ class DropdownIcon extends React.Component {
           <span class={"badge badge-pill badge-"+this.props.type}>·</span>
         </span>
         <span class={"indicator d-none d-lg-block text-"+this.props.type}>
-          <FaCircle />
+          <Circle scale={1.3}/>
         </span>
       </a>
     )
@@ -158,7 +165,7 @@ class NavbarTop extends React.Component {
     // <NavbarTopDropdownMessages
     //   name={'Alerts'}
     //   messages={alerts}
-    //   icon={FaBell}
+    //   icon={Bell}
     // />
 
     return (
@@ -167,7 +174,7 @@ class NavbarTop extends React.Component {
         <NavbarTopDropdownMessages
           name={'ChainStatus'}
           messages={chainInfo}
-          icon={FaChain}
+          icon={Link}
         />
         <li class="nav-item nav-item-infoText">
           <a href="https://dappnode.io/" class="nav-link">About</a>
@@ -204,7 +211,7 @@ class NavbarSide extends React.Component {
     })
 
     return (
-      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+      <ul class="navbar-nav navbar-sidenav navbar-sidebar-fix" id="exampleAccordion">
         <li class="nav-item">
           <div class="logo-image-container nav-link text-center">
             <img src={LogoImg} class="img-fluid" alt="Responsive image"/>

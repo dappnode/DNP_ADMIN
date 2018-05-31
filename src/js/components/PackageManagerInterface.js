@@ -1,6 +1,6 @@
 import React from 'react';
 import * as crossbarCalls from './API/crossbarCalls';
-import PackageList from './PackageList';
+import PackageList from './Package/PackageList';
 import LogMessage from './LogMessage';
 import Log from './Log';
 import AppStore from 'Store';

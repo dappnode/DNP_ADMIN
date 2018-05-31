@@ -1,7 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'
-import { MdDashboard, MdDevices, MdSettingsApplications,
-  MdAddBox, MdCreateNewFolder, MdFolder, MdSync } from 'react-icons/lib/md'
+// Icons
+import Devices from './Icons/Devices'
+import Dashboard from './Icons/Dashboard'
+import Folder from './Icons/Folder'
+import NewFolder from './Icons/NewFolder'
+
 
 const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22"
 
@@ -9,22 +13,22 @@ let navbarItemsInfo = [
   {
     name: 'Dashboard',
     href: '/dashboard',
-    icon: MdDashboard
+    icon: Dashboard
   },
   {
     name: 'Devices',
     href: '/devices',
-    icon: MdDevices
+    icon: Devices
   },
   {
     name: 'Installer',
     href: '/installer',
-    icon: MdCreateNewFolder
+    icon: NewFolder
   },
   {
     name: 'Packages',
     href: '/packages',
-    icon: MdFolder
+    icon: Folder
   }
 ]
 
@@ -43,7 +47,7 @@ export default class Home extends React.Component {
             to={item.href}
             >
             <button type="button" class="btn btn-outline-dark btn-lg btn-block">
-              <div class="nav-link-icon"><item.icon size={60}/></div>
+              <div class="nav-link-icon"><item.icon scale={2.5}/></div>
               <div>{item.name}</div>
             </button>
           </NavLink>

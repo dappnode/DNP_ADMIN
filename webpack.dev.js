@@ -7,4 +7,8 @@ module.exports = merge(common, {
     contentBase: './dist',
     historyApiFallback: true
   }
+  // , plugins: [
+  //   // #### Don't keep this uncommented
+  //   new BundleAnalyzerPlugin()
+  // ]
 });
