@@ -32,16 +32,24 @@ class SubmitInstall extends React.Component {
     let envs = manifest.image.environment || []
 
     let rows = envs.map((env, i) => {
+      const envName = env.split('=')[0]
+      const envValue = env.split('=')[1] || ''
       return (
         <div key={i} class="form-row">
           <div class="mb-3">
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroupPrepend">
-                  {env}
+                  {envName}
                 </span>
               </div>
-              <input type="text" class="form-control" id={envInputTag+i} placeholder={env} aria-describedby="inputGroupPrepend" required>
+              <input type="text" class="form-control"
+                id={envInputTag+i}
+                placeholder={'enter value...'}
+                aria-describedby="inputGroupPrepend"
+                required
+                defaultValue={envValue}
+              >
               </input>
               <div class="invalid-feedback">
                 Please provide a valid variable
@@ -57,7 +65,7 @@ class SubmitInstall extends React.Component {
 
 
     return (
-      <form class="needs-validation" novalidate>
+      <form class="needs-validation">
         {rows}
         <div class="form-group">
           <div class="form-check">
@@ -103,8 +111,8 @@ class PackageInfoTable extends React.Component {
     let tableItems = [
       {key: 'Description', val: manifest.description || ''},
       {key: 'Mantainer', val: manifest.author || ''},
-      {key: 'Package type', val: manifest.type || ''},
-      {key: 'Package size', val: manifest.image ? manifest.image.size || '' : ''},
+      {key: 'Type', val: manifest.type || ''},
+      {key: 'Size', val: manifest.image ? manifest.image.size || '' : ''},
       {key: 'Image path', val: manifest.image ? manifest.image.path || '' : ''}
     ]
 
