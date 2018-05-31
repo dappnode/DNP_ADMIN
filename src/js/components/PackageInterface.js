@@ -26,7 +26,7 @@ class EnvVariables extends React.Component {
 
   updateEnvs(e) {
     let id = e.currentTarget.id
-    this.props.updateEnvs(id, this.state.envs)
+    this.props.updateEnvs(id, this.state.envs, this.props.isCORE)
   }
 
   render() {
@@ -37,8 +37,6 @@ class EnvVariables extends React.Component {
     }
 
     let envsList = Object.getOwnPropertyNames(envs).map((env, i) => {
-      console.log(env + ' '+ envs[env])
-      console.log('this.state.envs',this.state.envs)
       return (
         <div key={i} class="input-group mb-3">
           <div class="input-group-prepend">
@@ -309,8 +307,8 @@ export default class PackageInterface extends React.Component {
     crossbarCalls.logPackage(id, isCORE)
   }
 
-  callUpdateEnvs(id, envs) {
-    crossbarCalls.updatePackageEnv(id, envs, true);
+  callUpdateEnvs(id, envs, isCORE) {
+    crossbarCalls.updatePackageEnv(id, envs, true, isCORE);
   }
 
   updatePackageList() {
@@ -372,6 +370,7 @@ export default class PackageInterface extends React.Component {
 
         <EnvVariables
           id={id}
+          isCORE={_package.isCORE}
           envs={_package.envs}
           updateEnvs={this.callUpdateEnvs.bind(this)}
         />
