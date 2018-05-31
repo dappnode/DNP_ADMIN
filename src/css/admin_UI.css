@@ -3,6 +3,10 @@
   background-color: #f8f8f8;
 }
 
+.installer-filter-by {
+  padding-right: 50px;
+}
+
 .dappnode-background-color {
   color: white;
   border: #2FBCB2;

@@ -1,20 +1,21 @@
 import React from 'react'
 import * as crossbarCalls from './API/crossbarCalls'
-import PackageList from './PackageList'
-import PackageDirectory from './PackageDirectory'
-import PackageInstallerModal from './PackageInstallerModal'
-import PackageStore from './PackageStore'
+import InstallerModal from './Package/InstallerModal'
+import TypeFilter from './Package/TypeFilter'
+import PackageStore from './Package/PackageStore'
 import LogMessage from './LogMessage'
 import Log from './Log'
 import LogProgress from './LogProgress'
 import AppStore from 'Store'
 
+
 export default class PackageInstallerInterface extends React.Component {
   constructor() {
     super();
     this.state = {
-      packageLink: 'otpweb.dnp.dappnode.eth',
+      packageLink: '',
       packageId: '',
+      selectedTypes: [],
       directory: AppStore.getDirectory(),
       log: AppStore.getLog('installer'),
       progressLog: AppStore.getProgressLog(),
@@ -131,9 +132,27 @@ export default class PackageInstallerInterface extends React.Component {
     });
   }
 
+  updateSelectedTypes(selectedTypes) {
+    this.setState({ selectedTypes });
+  }
 
 
   render() {
+
+    const filteredDirectory = this.state.directory
+    // Filter by name
+    .filter(p => p.name.includes(this.state.packageLink))
+    // Filter by type
+    .filter(p => {
+      if (this.state.selectedTypes.length == 0) return true
+      // Prevent the app from crashing with defective packages
+      if (p && p.manifest && p.manifest.type) {
+        return this.state.selectedTypes.includes(p.manifest.type)
+      } else {
+        return false
+      }
+    })
+
 
     const modalId = "exampleModal"
     const modalTarget = "#"+modalId
@@ -145,7 +164,8 @@ export default class PackageInstallerInterface extends React.Component {
           <h1>Package installer</h1>
         </div>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Package .eth link" aria-describedby="basic-addon2"
+          <input type="text" class="form-control"
+            placeholder="enter package's .eth address..." aria-label="Package name" aria-describedby="basic-addon2"
             value={this.state.packageLink}
             onChange={this.updatePackageLink.bind(this)}
           ></input>
@@ -158,6 +178,12 @@ export default class PackageInstallerInterface extends React.Component {
           </div>
         </div>
 
+        <TypeFilter
+          directory={this.state.directory}
+          selectedTypes={this.state.selectedTypes}
+          updateSelectedTypes={this.updateSelectedTypes.bind(this)}
+        />
+
         <Log
           log={this.state.log}
         />
@@ -167,12 +193,12 @@ export default class PackageInstallerInterface extends React.Component {
         />
 
         <PackageStore
-          directory={this.state.directory}
+          directory={filteredDirectory}
           preInstallPackage={this.preInstallPackageInTable.bind(this)}
           modalTarget={modalTarget}
         />
 
-        <PackageInstallerModal
+        <InstallerModal
           targetPackageName={this.state.targetPackageName}
           packageInfo={this.state.packageInfo[this.state.targetPackageName]}
           installPackage={this.installPackageInTable.bind(this)}

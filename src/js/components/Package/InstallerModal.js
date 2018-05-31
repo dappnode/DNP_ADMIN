@@ -1,10 +1,5 @@
 import React from 'react';
-import * as crossbarCalls from './API/crossbarCalls';
-import PackageList from './PackageList';
-import PackageDirectory from './PackageDirectory';
-import PackageStore from './PackageStore';
-import LogMessage from './LogMessage';
-import Log from './Log';
+import * as crossbarCalls from '../API/crossbarCalls';
 import AppStore from 'Store';
 
 let envInputTag = "envInput_"
@@ -137,7 +132,7 @@ class PackageInfoTable extends React.Component {
 }
 
 
-export default class PackageInstallerModal extends React.Component {
+export default class InstallerModal extends React.Component {
   constructor() {
     super();
   }

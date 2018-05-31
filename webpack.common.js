@@ -3,6 +3,7 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 
@@ -15,7 +16,7 @@ var extractPlugin = new ExtractTextPlugin({
 module.exports = {
   // Where webpack starts analyzing the project (relative path from the config)
   // You can have multiple entry points
-  entry: ['babel-polyfill', './src/js/index.js'],
+  entry: ['./src/js/index.js'],
   output: {
     // The path module helps you write absolute paths easier
     path: path.resolve(__dirname, 'dist'),
@@ -107,7 +108,6 @@ module.exports = {
   // Plugins are applied to the bundled code before exporting
   // f.e. a minifier (but webpack already does that)
   plugins: [
-
     new webpack.ProvidePlugin({
       _: 'lodash',
       Pubsub: 'pubsub-js',

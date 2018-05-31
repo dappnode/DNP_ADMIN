@@ -1,10 +1,6 @@
 import React from 'react'
 import * as VPNcall from './API/crossbarCalls'
-import PackageList from './PackageList'
-import LogMessage from './LogMessage'
 import AppStore from 'Store'
-import Api from '@parity/api'
-import Web3 from 'Lib/web3.min'
 
 // let api = new Api(new Parity.Api.Transport.Http('http://my.ethchain.dnp.dappnode.eth:8545'))
 
