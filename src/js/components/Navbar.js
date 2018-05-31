@@ -14,11 +14,6 @@ import Bell from './Icons/Bell'
 import Chain from './Icons/Chain'
 import Link from './Icons/Link'
 
-// import { MdDashboard, MdDevices, MdCreateNewFolder, MdFolder } from 'react-icons/lib/md'
-
-// import { FaCircle, FaBell, FaChain } from 'react-icons/lib/fa'
-// import { GoSync } from 'react-icons/lib/go'
-
 // FontAwesome.FaTachometerAlt
 // FontAwesome.FaMobileAlt
 // FontAwesome.FaPlusSquare

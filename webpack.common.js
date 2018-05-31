@@ -26,7 +26,6 @@ module.exports = {
   // resolve module
   resolve: {
     alias: {
-      EventBusAlias$: path.resolve(__dirname, 'src', 'js', 'components', 'event-bus.js'),
       Store$: path.resolve(__dirname, 'src', 'js', 'stores', 'AppStore.js'),
       Action$: path.resolve(__dirname, 'src', 'js', 'actions', 'AppActions.js'),
       Params$: path.resolve(__dirname, 'src', 'js', 'params.js'),

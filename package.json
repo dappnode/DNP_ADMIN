@@ -1,5 +1,5 @@
 {
-  "name": "privateUI",
+  "name": "dn-admin-ui",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,7 @@
     "start:localOnly": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },
-  "author": "Lion",
+  "author": "dappLion",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^8.2.0",
@@ -49,29 +49,18 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
-    "@parity/api": "^2.1.20",
     "ansi_up": "^3.0.0",
     "autobahn": "^17.5.2",
     "bootstrap": "^4.0.0",
     "classnames": "^2.2.5",
     "clipboard": "^2.0.0",
-    "event-pubsub": "^4.3.0",
-    "express": "^4.16.2",
     "favicons-webpack-plugin": "0.0.9",
-    "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
-    "object-assign": "^4.1.1",
-    "oo7": "^0.5.8",
-    "oo7-parity": "^0.6.13",
     "pubsub": "^3.2.1",
     "react-error-boundary": "^1.2.3",
-    "react-icons": "^2.2.7",
     "react-router-dom": "^4.2.2",
-    "react-sidebar": "^2.3.2",
-    "react-table": "^6.8.0",
     "react-toastify": "^4.0.1",
     "uglifyjs-webpack-plugin": "^1.2.4",
-    "url-loader": "^1.0.1",
-    "ws": "^2.3.1"
+    "url-loader": "^1.0.1"
   }
 }

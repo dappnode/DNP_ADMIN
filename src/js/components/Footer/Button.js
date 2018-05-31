@@ -1,5 +1,5 @@
 import React from "react";
-import EventBus from 'EventBusAlias';
+
 
 export default class Button extends React.Component {
   constructor() {
@@ -8,12 +8,7 @@ export default class Button extends React.Component {
   }
 
   handleOnClick() {
-    
-    EventBus.emit(EventBus.tag.dog,
-      {
-        msg:'Bark, bark!'
-      }
-    )
+
   }
 
   render() {
