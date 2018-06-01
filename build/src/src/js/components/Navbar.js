@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import ErrorBoundary from 'react-error-boundary'
 import AppStore from 'Store'
 
-import LogoImg from 'Img/DAppNode-black.png'
+import LogoImg from '../../img/DAppNode-Black.png'
 // Icons
 import Devices from './Icons/Devices'
 import Dashboard from './Icons/Dashboard'
