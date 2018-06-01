@@ -2,6 +2,10 @@ import Web3 from 'Lib/web3.min'
 import * as AppActions from 'Action'
 
 
+// import the actual Api class
+import Api from '@parity/api';
+
+
 let ethchains = [
   {
     name: 'Mainnet',
@@ -11,16 +15,32 @@ let ethchains = [
 
 ethchains.forEach(function(ethchain) {
   console.log('ethchain.url',ethchain.url)
-  const provider = new Web3.providers.HttpProvider(ethchain.url)
-  let web3 = new Web3(provider);
 
   let web3WatchLoop = setInterval(function(){
     try {
 
-      web3.eth.isSyncing()
+      // Web3
+      const web3Provider = new Web3.providers.HttpProvider(ethchain.url)
+      let web3 = new Web3(web3Provider);
+
+      // @Parity, do the setup
+      const parityProvider = new Api.Provider.Http('http://my.ethchain.dnp.dappnode.eth:8545');
+      const api = new Api(parityProvider);
+
+      api.eth.syncing()
       .then(function(isSyncing){
         if (isSyncing) {
-          log(ethchain.name, 'warning', 'Blocks synced: '+isSyncing.currentBlock+' / '+isSyncing.highestBlock)
+          if (isSyncing.warpChunksAmount.c[0] == 0) {
+            // Regular syncing
+            const cB = isSyncing.currentBlock.c[0]
+            const hB = isSyncing.highestBlock.c[0]
+            log(ethchain.name, 'warning', 'Blocks synced: '+cB+' / '+hB+' ('+Math.floor(100*cB/hB)+'%)')
+          } else {
+            // From SNAPSHOT
+            const cC = isSyncing.warpChunksProcessed.c[0]
+            const hC = isSyncing.warpChunksAmount.c[0]
+            log(ethchain.name, 'warning', 'Syncing from SNAPSHOT: '+cC+' / '+hC+' ('+Math.floor(100*cC/hC)+'%)')
+          }
         } else {
           web3.eth.getBlockNumber()
           .then(function(blockNumber){

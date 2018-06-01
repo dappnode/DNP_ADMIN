@@ -3,6 +3,11 @@
   background-color: #f8f8f8;
 }
 
+.dropdown-item {
+  white-space: normal;
+  width: 300px;
+}
+
 .navbar-sidebar-fix {
   margin-top: 62px !important;
 }
