@@ -176,7 +176,7 @@ export async function removePackage(id, deleteVolumes) {
 };
 
 
-export async function togglePackage(id) {
+export async function togglePackage(id, isCORE) {
 
   let toastId = toast('Toggling package ' + id, {
     autoClose: false,

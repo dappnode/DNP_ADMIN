@@ -77,18 +77,6 @@ module.exports = {
         use: ['html-loader']
       },
       {
-        // Use this loader for both jpg and png
-        test: /\.(jpg|png)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              outputPath: '/img/'
-            }
-          }
-        ]
-      },
-      {
         test: /\.otf$/,
         use: {
           loader: "url-loader",

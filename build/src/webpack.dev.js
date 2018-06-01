@@ -6,7 +6,21 @@ module.exports = merge(common, {
   devServer: {
     contentBase: './dist',
     historyApiFallback: true
-  }
+  },
+  module: {
+    rules: [
+      {
+        // Use this loader for both jpg and png
+        test: /\.(jpg|png)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {}
+          }
+        ]
+      },
+    ]
+  },
   // , plugins: [
   //   // #### Don't keep this uncommented
   //   new BundleAnalyzerPlugin()
