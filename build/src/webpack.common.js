@@ -77,23 +77,6 @@ module.exports = {
         use: ['html-loader']
       },
       {
-        // Use this loader for both jpg and png
-        test: /\.(jpg|png)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              // Dont't let file-loader use hashes (Personal opinion)
-              name: '[name].[ext]',
-              // Store the images in a separate folder (Personal opinion)
-              outputPath: 'img/',
-              // Put img/imageName in the html reference in the index.html
-              publicPath: './'
-            }
-          }
-        ]
-      },
-      {
         test: /\.otf$/,
         use: {
           loader: "url-loader",

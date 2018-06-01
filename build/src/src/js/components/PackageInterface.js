@@ -291,8 +291,8 @@ export default class PackageInterface extends React.Component {
     this.props.history.push('/packages')
   }
 
-  togglePackageInTable(e) {
-    crossbarCalls.togglePackage(e.currentTarget.id);
+  togglePackageInTable(id, isCORE) {
+    crossbarCalls.togglePackage(id, isCORE);
   }
 
   restartPackageInTable(id, isCORE) {

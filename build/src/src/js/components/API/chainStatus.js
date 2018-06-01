@@ -41,6 +41,9 @@ ethchains.forEach(function(ethchain) {
 
 
 function log(name, type, status) {
+  if (status && status.includes('Invalid JSON RPC response')) {
+    status = 'Can\'t connect to ETHCHAIN.'
+  }
   // console.log(name, type, status)
   AppActions.updateChainStatus({
     name,
