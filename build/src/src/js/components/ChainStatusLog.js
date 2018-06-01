@@ -31,7 +31,7 @@ export default class ChainStatusLog extends React.Component {
     if (chainStatus.type == 'warning') {
       return (
         <div className={"alert alert-"+chainStatus.type} role="alert">
-          <h4 className="alert-heading">Warning, {chainStatus.name} is still syncing</h4>
+          <h4 className="alert-heading">{chainStatus.name} is still syncing</h4>
           <p>Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names.</p>
           <p>Status: {chainStatus.status}</p>
         </div>
