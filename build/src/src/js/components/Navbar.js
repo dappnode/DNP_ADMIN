@@ -141,7 +141,7 @@ class NavbarTop extends React.Component {
   }
   updateChainStatus() {
     this.setState({
-      deviceList: AppStore.getChainStatus()
+      chainStatus: AppStore.getChainStatus()
     });
   }
 

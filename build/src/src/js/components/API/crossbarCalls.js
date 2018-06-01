@@ -345,7 +345,7 @@ export async function listDirectory() {
   if (res.success && res.result)
     AppActions.updateDirectory(res.result)
   else
-    toast.error("Error listing packages: "+res.message, {
+    toast.error("Error fetching directory: "+res.message, {
       position: toast.POSITION.BOTTOM_RIGHT
     })
 

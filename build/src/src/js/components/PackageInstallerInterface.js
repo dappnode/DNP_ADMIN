@@ -4,6 +4,7 @@ import InstallerModal from './Package/InstallerModal'
 import TypeFilter from './Package/TypeFilter'
 import PackageStore from './Package/PackageStore'
 import LogMessage from './LogMessage'
+import ChainStatusLog from './ChainStatusLog'
 import Log from './Log'
 import LogProgress from './LogProgress'
 import AppStore from 'Store'
@@ -158,6 +159,7 @@ export default class PackageInstallerInterface extends React.Component {
     const modalTarget = "#"+modalId
     // console.log('PACKAGE INSTALLER LOGS',this.state.log,'this.state.packageInfo',this.state.packageInfo)
 
+
     return (
       <div>
         <div class="page-header">
@@ -187,6 +189,8 @@ export default class PackageInstallerInterface extends React.Component {
         <Log
           log={this.state.log}
         />
+
+        <ChainStatusLog/>
 
         <LogProgress
           progressLog={this.state.progressLog}

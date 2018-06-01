@@ -1,5 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'
+// Components
+import ChainStatusLog from './ChainStatusLog'
 // Icons
 import Devices from './Icons/Devices'
 import Dashboard from './Icons/Dashboard'
@@ -65,6 +67,8 @@ export default class Home extends React.Component {
           <a class="btn dappnode-background-color btn-lg" href={SURVEY_LINK} role="button">Fill survey</a>
         </p>
         </div>
+
+        <ChainStatusLog/>
 
         <div class="row mt-4">
           {items}

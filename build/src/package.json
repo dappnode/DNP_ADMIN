@@ -49,6 +49,7 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
+    "@parity/api": "^2.1.22",
     "ansi_up": "^3.0.0",
     "autobahn": "^17.5.2",
     "bootstrap": "^4.0.0",
