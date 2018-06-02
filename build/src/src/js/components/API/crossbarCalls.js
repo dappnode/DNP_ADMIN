@@ -39,6 +39,13 @@ async function start() {
       let log = res[0]
       AppActions.updateProgressLog(log)
     })
+
+    // Verify that the installer is alive
+    session.register('ping.dappmanager.dnp.dappnode.eth', x => x).then(
+      function (reg) { console.error('dappmanager.dnp.dappnode.eth is offline') },
+      function (err) {}
+    )
+
   }
 
   connection.open();

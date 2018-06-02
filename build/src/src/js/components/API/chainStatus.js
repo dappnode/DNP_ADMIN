@@ -5,6 +5,10 @@ import * as AppActions from 'Action'
 // import the actual Api class
 import Api from '@parity/api';
 
+// @Parity, do the setup
+const parityProvider = new Api.Provider.Http('http://my.ethchain.dnp.dappnode.eth:8545');
+const api = new Api(parityProvider);
+
 
 let ethchains = [
   {
@@ -13,19 +17,16 @@ let ethchains = [
   }
 ]
 
+
 ethchains.forEach(function(ethchain) {
   console.log('ethchain.url',ethchain.url)
 
+  // Web3
+  const web3Provider = new Web3.providers.HttpProvider(ethchain.url)
+  let web3 = new Web3(web3Provider);
+
   let web3WatchLoop = setInterval(function(){
     try {
-
-      // Web3
-      const web3Provider = new Web3.providers.HttpProvider(ethchain.url)
-      let web3 = new Web3(web3Provider);
-
-      // @Parity, do the setup
-      const parityProvider = new Api.Provider.Http('http://my.ethchain.dnp.dappnode.eth:8545');
-      const api = new Api(parityProvider);
 
       api.eth.syncing()
       .then(function(isSyncing){
