@@ -208,9 +208,14 @@ class NavbarSide extends React.Component {
     return (
       <ul class="navbar-nav navbar-sidenav navbar-sidebar-fix" id="exampleAccordion">
         <li class="nav-item">
-          <div class="logo-image-container nav-link text-center">
-            <img src={LogoImg} class="img-fluid" alt="Responsive image"/>
-          </div>
+          <NavLink
+          class="nav-link"
+          to={'/'}
+          >
+            <div class="logo-image-container nav-link text-center">
+              <img src={LogoImg} class="img-fluid" alt="Responsive image"/>
+            </div>
+          </NavLink>
         </li>
         {navbarItems}
       </ul>
@@ -230,7 +235,9 @@ export default class Navbar extends React.Component {
     return (
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
 
-        <a class="navbar-brand" href="index.html">ADMIN UI</a>
+        <NavLink class="navbar-brand" to={'/'}>
+          ADMIN UI
+        </NavLink>
 
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
