@@ -74,11 +74,26 @@ export default class PackageDirectory extends React.Component {
       );
     }
 
-    return (
-      <div class="row">
-        {cards}
-      </div>
-    );
+    if(!this.props.isSyncing && this.props.directory.length == 0) {
+      return (
+        <div>
+          <div class="d-flex justify-content-center mt-3">
+            <p>Loading package directory...</p>
+          </div>
+          <div class="d-flex justify-content-center mt-3">
+            <div class="loader"></div>
+          </div>
+        </div>
+      )
+
+    } else {
+      return (
+        <div class="row">
+          {cards}
+        </div>
+      );
+    }
+
   }
 }
 

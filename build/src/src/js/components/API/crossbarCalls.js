@@ -345,15 +345,26 @@ export async function listDirectory() {
   // [ { name: 'rinkeby.dnp.dappnode.eth',
   //   status: 'Preparing',
   //   versions: [ '0.0.1', '0.0.2' ] },
+  const chainsStatus = AppStore.getChainStatus()
+  const chainStatus = chainsStatus.Mainnet || {}
 
-  let resUnparsed = await session.call('listDirectory.dappmanager.dnp.dappnode.eth', [])
-  let res = parseResponse(resUnparsed)
+  if (chainStatus.isSyncing) {
+    console.warn('Mainnet is still syncing, preventing directory listing')
 
-  if (res.success && res.result)
-    AppActions.updateDirectory(res.result)
-  else
-    toast.error("Error fetching directory: "+res.message, {
-      position: toast.POSITION.BOTTOM_RIGHT
-    })
+  } else {
+
+    let resUnparsed = await session.call('listDirectory.dappmanager.dnp.dappnode.eth', [])
+    let res = parseResponse(resUnparsed)
+
+    if (res.success && res.result)
+      AppActions.updateDirectory(res.result)
+    else
+      toast.error("Error fetching directory: "+res.message, {
+        position: toast.POSITION.BOTTOM_RIGHT
+      })
+
+  }
+
+
 
 };

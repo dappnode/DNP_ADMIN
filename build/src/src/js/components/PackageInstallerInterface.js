@@ -22,6 +22,7 @@ export default class PackageInstallerInterface extends React.Component {
       progressLog: AppStore.getProgressLog(),
       packageInfo: AppStore.getPackageInfo(),
       targetPackageName: '',
+      chainStatus: AppStore.getChainStatus(),
       versionIndex: 0,
       version: ''
     };
@@ -29,12 +30,14 @@ export default class PackageInstallerInterface extends React.Component {
     this.updateProgressLog = this.updateProgressLog.bind(this)
     this.updateDirectory = this.updateDirectory.bind(this)
     this.updatePackageInfo = this.updatePackageInfo.bind(this)
+    this.updateChainStatus = this.updateChainStatus.bind(this)
   }
   componentDidMount() {
     AppStore.on("CHANGE", this.updateLog);
     AppStore.on("CHANGE", this.updateProgressLog);
     AppStore.on("CHANGE", this.updateDirectory);
     AppStore.on("CHANGE", this.updatePackageInfo);
+    AppStore.on(AppStore.tag.CHANGE_CHAINSTATUS, this.updateChainStatus);
   }
 
   componentWillUnmount() {
@@ -42,6 +45,7 @@ export default class PackageInstallerInterface extends React.Component {
     AppStore.removeListener("CHANGE", this.updateProgressLog);
     AppStore.removeListener("CHANGE", this.updateDirectory);
     AppStore.removeListener("CHANGE", this.updatePackageInfo);
+    AppStore.removeListener(AppStore.tag.CHANGE_CHAINSTATUS, this.updateChainStatus);
   }
 
   handleAddPackage() {
@@ -87,6 +91,7 @@ export default class PackageInstallerInterface extends React.Component {
     if (Object.getOwnPropertyNames(envs).length > 0) {
       crossbarCalls.updatePackageEnv(packageName, envs, false)
     }
+
   }
 
   changeVersion(version) {
@@ -137,6 +142,12 @@ export default class PackageInstallerInterface extends React.Component {
     this.setState({ selectedTypes });
   }
 
+  updateChainStatus() {
+    this.setState({
+      chainStatus: AppStore.getChainStatus()
+    });
+  }
+
 
   render() {
 
@@ -159,10 +170,11 @@ export default class PackageInstallerInterface extends React.Component {
     const modalTarget = "#"+modalId
     // console.log('PACKAGE INSTALLER LOGS',this.state.log,'this.state.packageInfo',this.state.packageInfo)
 
+    const chainStatus = this.state.chainStatus.Mainnet || {}
 
     return (
       <div>
-        <div class="page-header">
+        <div class="page-header" id="top">
           <h1>Package installer</h1>
         </div>
         <div class="input-group mb-3">
@@ -198,6 +210,7 @@ export default class PackageInstallerInterface extends React.Component {
 
         <PackageStore
           directory={filteredDirectory}
+          isSyncing={chainStatus.isSyncing}
           preInstallPackage={this.preInstallPackageInTable.bind(this)}
           modalTarget={modalTarget}
         />

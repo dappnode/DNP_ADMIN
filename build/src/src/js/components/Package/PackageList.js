@@ -24,7 +24,7 @@ class Row extends React.Component {
 
     return (
       <tr id={id}>
-        <td>{this.props._package.name}</td>
+        <td><a href={'http://my.'+this.props._package.name}>{'my.'+this.props._package.name}</a></td>
         <td>{this.props._package.version}</td>
         <td>
           <span className={classNames("small", "state-light", dotClass)}>⬤  </span>
