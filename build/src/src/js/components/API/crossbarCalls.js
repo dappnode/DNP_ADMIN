@@ -345,8 +345,7 @@ export async function listDirectory() {
   // [ { name: 'rinkeby.dnp.dappnode.eth',
   //   status: 'Preparing',
   //   versions: [ '0.0.1', '0.0.2' ] },
-  const chainsStatus = AppStore.getChainStatus()
-  const chainStatus = chainsStatus.Mainnet || {}
+  const chainStatus = AppStore.getChainStatus() || {}
 
   if (chainStatus.isSyncing) {
     console.warn('Mainnet is still syncing, preventing directory listing')

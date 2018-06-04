@@ -144,7 +144,7 @@ class AppStore extends EventEmitter {
         break;
       }
       case this.tag.UPDATE_CHAINSTATUS: {
-        this.chainStatus[action.status.name] = action.status
+        this.chainStatus = action.status
         this.emit(this.tag.CHANGE_CHAINSTATUS);
         break;
       }

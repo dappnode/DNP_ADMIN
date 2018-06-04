@@ -11,73 +11,69 @@ const api = new Api(parityProvider);
 
 const MIN_BLOCK_DIFF_SYNC = 10
 
-let ethchains = [
-  {
-    name: 'Mainnet',
-    url: 'http://my.ethchain.dnp.dappnode.eth:8545'
-  }
-]
+let ETHCHAIN_URL = 'http://my.ethchain.dnp.dappnode.eth:8545'
 
+console.log('Attempting to connect to ', ETHCHAIN_URL)
 
-ethchains.forEach(function(ethchain) {
-  console.log('ethchain.url',ethchain.url)
+// Web3
+const web3Provider = new Web3.providers.HttpProvider(ETHCHAIN_URL)
+let web3 = new Web3(web3Provider);
 
-  // Web3
-  const web3Provider = new Web3.providers.HttpProvider(ethchain.url)
-  let web3 = new Web3(web3Provider);
+let web3WatchLoop = setInterval(function(){
+  try {
 
-  let web3WatchLoop = setInterval(function(){
-    try {
+    api.eth.syncing()
+    .then(function(isSyncing){
 
-      api.eth.syncing()
-      .then(function(isSyncing){
+      if (
+        isSyncing
+        // Condition 1, big enough difference between current and highest block
+        && isSyncing.highestBlock.c[0] - isSyncing.currentBlock.c[0] > MIN_BLOCK_DIFF_SYNC
+      ) {
 
-        if (
-          isSyncing
-          // Condition 1, big enough difference between current and highest block
-          && syncing.highestBlock.c[0] - syncing.currentBlock.c[0] > MIN_BLOCK_DIFF_SYNC
-        ) {
-
-          if (isSyncing.warpChunksAmount.c[0] == 0) {
-            // Regular syncing
-            const cB = isSyncing.currentBlock.c[0]
-            const hB = isSyncing.highestBlock.c[0]
-            log(ethchain.name, true, 'warning', 'Blocks synced: '+cB+' / '+hB+' ('+Math.floor(100*cB/hB)+'%)')
-          } else {
-            // From SNAPSHOT
-            const cC = isSyncing.warpChunksProcessed.c[0]
-            const hC = isSyncing.warpChunksAmount.c[0]
-            log(ethchain.name, true, 'warning', 'Syncing from SNAPSHOT: '+cC+' / '+hC+' ('+Math.floor(100*cC/hC)+'%)')
-          }
-
+        if (isSyncing.warpChunksAmount.c[0] == 0) {
+          // Regular syncing
+          const cB = isSyncing.currentBlock.c[0]
+          const hB = isSyncing.highestBlock.c[0]
+          log(true, 'warning', 'Blocks synced: '+cB+' / '+hB+' ('+Math.floor(100*cB/hB)+'%)')
         } else {
-
-          web3.eth.getBlockNumber()
-          .then(function(blockNumber){
-            log(ethchain.name, false, 'success', 'Syncronized, block: '+blockNumber)
-          })
+          // From SNAPSHOT
+          const cC = isSyncing.warpChunksProcessed.c[0]
+          const hC = isSyncing.warpChunksAmount.c[0]
+          log(true, 'warning', 'Syncing from SNAPSHOT: '+cC+' / '+hC+' ('+Math.floor(100*cC/hC)+'%)')
         }
-      })
 
-      .catch(function(e){
-        log(ethchain.name, 'danger', 'Error: '+e.message)
-      })
+      } else {
 
-    } catch(e) {
-      log(ethchain.name, 'danger', 'Error: '+e.message)
-    }
-  }, 1000);
+        web3.eth.getBlockNumber()
+        .then(function(blockNumber){
+          log(false, 'success', 'Syncronized, block: '+blockNumber)
+        })
+      }
+    })
 
-})
+    .catch(function(e){
+      log('danger', 'Error: '+e.message)
+    })
+
+  } catch(e) {
+    log('danger', 'Error: '+e.message)
+  }
+}, 1000);
 
 
-function log(name, isSyncing, type, status) {
+
+
+function log(isSyncing, type, status) {
   if (status && status.includes('Invalid JSON RPC response')) {
     status = 'Can\'t connect to ETHCHAIN.'
   }
-  // console.log(name, type, status)
+  console.log({
+    isSyncing,
+    type,
+    status
+  })
   AppActions.updateChainStatus({
-    name,
     isSyncing,
     type,
     status

@@ -26,12 +26,12 @@ export default class ChainStatusLog extends React.Component {
 
   render() {
     // ChainStatus
-    const chainStatus = this.state.chainStatus.Mainnet || {}
+    const chainStatus = this.state.chainStatus || {}
 
     if (chainStatus.type == 'warning') {
       return (
         <div className={"alert alert-"+chainStatus.type} role="alert">
-          <h4 className="alert-heading">{chainStatus.name} is still syncing</h4>
+          <h4 className="alert-heading">Mainnet is still syncing</h4>
           <p>Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names.</p>
           <p>Status: {chainStatus.status}</p>
         </div>
@@ -40,7 +40,7 @@ export default class ChainStatusLog extends React.Component {
     } else if (chainStatus.type == 'danger') {
       return (
         <div className={"alert alert-"+chainStatus.type} role="alert">
-          <h4 className="alert-heading">Unable to connect to {chainStatus.name}</h4>
+          <h4 className="alert-heading">Unable to connect to Mainnet</h4>
           <p>Until connected to DAppNode ethereum chain you will not be able to navigate to decentralized websites or install packages via .eth names.</p>
           <p>{chainStatus.status}</p>
         </div>

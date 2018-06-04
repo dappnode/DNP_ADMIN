@@ -170,7 +170,7 @@ export default class PackageInstallerInterface extends React.Component {
     const modalTarget = "#"+modalId
     // console.log('PACKAGE INSTALLER LOGS',this.state.log,'this.state.packageInfo',this.state.packageInfo)
 
-    const chainStatus = this.state.chainStatus.Mainnet || {}
+    const chainStatus = this.state.chainStatus || {}
 
     return (
       <div>

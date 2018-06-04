@@ -146,14 +146,13 @@ class NavbarTop extends React.Component {
   }
 
   render() {
-    let ethchainNames = Object.getOwnPropertyNames(this.state.chainStatus)
-    let chainInfo = ethchainNames.map((ethchainName) => {
-      return {
-        title: this.state.chainStatus[ethchainName].name,
-        body: this.state.chainStatus[ethchainName].status,
-        type: this.state.chainStatus[ethchainName].type
+    let chainInfo = [
+      {
+        title: 'Mainnet',
+        body: this.state.chainStatus.status,
+        type: this.state.chainStatus.type
       }
-    })
+    ]
 
     // ###### This code is to incorporate the bell again
 
