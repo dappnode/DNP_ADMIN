@@ -19,6 +19,8 @@ console.log('Attempting to connect to ', ETHCHAIN_URL)
 const web3Provider = new Web3.providers.HttpProvider(ETHCHAIN_URL)
 let web3 = new Web3(web3Provider);
 
+let chunks = []
+
 let web3WatchLoop = setInterval(function(){
   try {
 
@@ -40,7 +42,9 @@ let web3WatchLoop = setInterval(function(){
           // From SNAPSHOT
           const cC = isSyncing.warpChunksProcessed.c[0]
           const hC = isSyncing.warpChunksAmount.c[0]
-          log(true, 'warning', 'Syncing from SNAPSHOT: '+cC+' / '+hC+' ('+Math.floor(100*cC/hC)+'%)')
+          chunks[cC] = Date.now()
+          let time = getTimeRemaining(chunks, hC)
+          log(true, 'warning', 'Syncing from SNAPSHOT: '+cC+' / '+hC+' ('+Math.floor(100*cC/hC)+'%) '+time+' remaining')
         }
 
       } else {
@@ -78,4 +82,22 @@ function log(isSyncing, type, status) {
     type,
     status
   })
+}
+
+
+function getTimeRemaining(chunks, highestChunk) {
+  let chunksValid = chunks.filter(e => e)
+  if (chunksValid.length < 2) {
+    return '-'
+  }
+
+  // Compute difference
+  let timeDiff = []
+  for (let i = 0; i < chunksValid.length-1; i++) {
+    timeDiff.push(timeDiff[i+1] - timeDiff[i])
+  }
+
+  // Compute average
+  const timeAvg = timeDiff => timeDiff.reduce((a,b) => a + b, 0) / timeDiff.length
+  
 }
