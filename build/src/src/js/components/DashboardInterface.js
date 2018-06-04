@@ -27,24 +27,20 @@ export default class DashboardInterface extends React.Component {
   }
 
   render() {
-    let ethchainNames = Object.getOwnPropertyNames(this.state.chainStatus)
-    let listItems = ethchainNames.map((ethchainName, i) => {
-      let type = this.state.chainStatus[ethchainName].type || 'default'
-      return (
-        <div key={i} class="card">
-          <div class="card-header">Chain status</div>
-          <div class="card-body">
-            <h5 class="card-title">{this.state.chainStatus[ethchainName].name}</h5>
-            <p class={"card-text text-"+type}>{this.state.chainStatus[ethchainName].status}</p>
-          </div>
-        </div>
-      )
-    })
+
+    let type = this.state.chainStatus.type || 'default'
+    let status = this.state.chainStatus.status
 
     return (
       <div>
         <h1>Dashboard</h1>
-        {listItems}
+        <div class="card">
+          <div class="card-header">Chain status</div>
+          <div class="card-body">
+            <h5 class="card-title">Mainnet</h5>
+            <p class={"card-text text-"+type}>{status}</p>
+          </div>
+        </div>
       </div>
     );
   }
