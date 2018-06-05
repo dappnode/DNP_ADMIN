@@ -40,14 +40,19 @@ async function start() {
       AppActions.updateProgressLog(log)
     })
 
-    // Verify that the installer is alive
-    session.register('ping.dappmanager.dnp.dappnode.eth', x => x).then(
-      function (reg) { console.error('dappmanager.dnp.dappnode.eth is offline') },
-      function (err) {}
-    )
+    window.call = function(call, args) {
+      return session.call(call, args).then(res => {
+        return res
+      })
+    }
 
   }
 
+  connection.onclose = function (reason, details) {
+    console.log('CONNECTION ERROR: ','reason',reason,'details',details)
+   // connection closed, lost or unable to connect
+  };
+  console.log('OPENING CONNECTION')
   connection.open();
 }
 
@@ -87,7 +92,7 @@ export async function addDevice(name) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('addDevice.vpn.repo.dappnode.eth', [correctedName])
+  let resUnparsed = await session.call('addDevice.vpn.dnp.dappnode.eth', [correctedName])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -108,7 +113,7 @@ export async function removeDevice(deviceName) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
-  let resUnparsed = await session.call('removeDevice.vpn.repo.dappnode.eth', [deviceName])
+  let resUnparsed = await session.call('removeDevice.vpn.dnp.dappnode.eth', [deviceName])
   let res = parseResponse(resUnparsed)
 
   toast.update(toastId, {
@@ -124,7 +129,7 @@ export async function removeDevice(deviceName) {
 
 export async function listDevices() {
 
-  let resUnparsed = await session.call('listDevices.vpn.repo.dappnode.eth', [])
+  let resUnparsed = await session.call('listDevices.vpn.dnp.dappnode.eth', [])
   let res = parseResponse(resUnparsed)
 
   if (res.success && res.result)
