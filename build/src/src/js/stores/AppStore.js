@@ -14,6 +14,7 @@ class AppStore extends EventEmitter {
     this.log = {}
     this.progressLog = {}
     this.chainStatus = {}
+    this.status = {}
     // The log object is
     // log[component][topic] = {msg: 'Package installed', type: 'success'}
     // messages for the same component and topic get overwritten
@@ -30,9 +31,11 @@ class AppStore extends EventEmitter {
       UPDATE_PACKAGE_LOG: 'UPDATE_PACKAGE_LOG',
       UPDATE_PACKAGE_INFO: 'UPDATE_PACKAGE_INFO',
       UPDATE_CHAINSTATUS: 'UPDATE_CHAINSTATUS',
+      UPDATE_STATUS: 'UPDATE_STATUS',
       ADD_DEVICE: 'ADD_DEVICE',
       CHANGE: 'CHANGE',
       CHANGE_CHAINSTATUS: 'CHANGE_CHAINSTATUS',
+      CHANGE_STATUS: 'CHANGE_STATUS',
       CHANGE_PROGRESSLOG: 'CHANGE_PROGRESSLOG'
     }
   }
@@ -71,6 +74,10 @@ class AppStore extends EventEmitter {
 
   getChainStatus() {
     return this.chainStatus || {};
+  }
+
+  getStatus() {
+    return this.status || {};
   }
 
   handleActions(action) {
@@ -146,6 +153,20 @@ class AppStore extends EventEmitter {
       case this.tag.UPDATE_CHAINSTATUS: {
         this.chainStatus = action.status
         this.emit(this.tag.CHANGE_CHAINSTATUS);
+        break;
+      }
+      case this.tag.UPDATE_STATUS: {
+        // action = { pkg: 'dappmanager', item: 'crossbar', on: true, msg: 'works' }
+        if (!('pkg' in action && 'item' in action)) throw Error('UPDATE STATUS object is not correctly constructed')
+        // Initialize objects
+        if (!this.status[action.pkg]) this.status[action.pkg] = {}
+        if (!this.status[action.pkg][action.item]) this.status[action.pkg][action.item] = {}
+        // store info
+        this.status[action.pkg][action.item] = {
+          on: action.on || false,
+          msg: action.msg || ''
+        }
+        this.emit(this.tag.CHANGE_STATUS);
         break;
       }
     }

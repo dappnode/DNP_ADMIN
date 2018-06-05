@@ -15,6 +15,12 @@ import './vendor/jquery.easing.min.js'
 
 // APIs
 import './components/API/chainStatus'
+import './components/API/dns'
+import './watchers'
+
+// // OFFLINE component
+// import './lib/offline.min.js'
+// import './lib/offline-theme-default.css'
 
 function Layout(props) {
   return (

@@ -81,3 +81,13 @@ export function updateChainStatus(status) {
     status: status
   });
 }
+
+export function updateStatus(pkg, item, on, msg = '') {
+  dispatcher.dispatch({
+    type: AppStore.tag.UPDATE_STATUS,
+    pkg,
+    item,
+    on,
+    msg
+  });
+}
