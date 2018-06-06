@@ -31,8 +31,12 @@ export default class DevicesInterface extends React.Component {
     VPNcall.listDevices();
   }
 
-  removeDeviceInTable(e) {
-    VPNcall.removeDevice(e.currentTarget.id);
+  removeDevice(id) {
+    VPNcall.removeDevice(id);
+  }
+
+  toggleAdmin(id, isAdmin) {
+    VPNcall.toggleAdmin(id, isAdmin)
   }
 
   updateDeviceName(e) {
@@ -72,7 +76,8 @@ export default class DevicesInterface extends React.Component {
 
         <DeviceList
           deviceList={this.state.deviceList}
-          removeDevice={this.removeDeviceInTable.bind(this)}
+          removeDevice={this.removeDevice.bind(this)}
+          toggleAdmin={this.toggleAdmin.bind(this)}
         />
         <br></br>
         <br></br>

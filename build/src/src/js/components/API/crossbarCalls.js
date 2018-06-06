@@ -127,6 +127,27 @@ export async function removeDevice(deviceName) {
 };
 
 
+export async function toggleAdmin(deviceName, isAdmin) {
+
+  let toastId = toast((isAdmin) ? ('Giving admin credentials to '+deviceName) : ('Removing admin credentials from '+deviceName), {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
+
+  let resUnparsed = await session.call('toggleAdmin.vpn.dnp.dappnode.eth', [deviceName])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
+  });
+
+  listDevices()
+
+};
+
+
 export async function listDevices() {
 
   let resUnparsed = await session.call('listDevices.vpn.dnp.dappnode.eth', [])
@@ -152,6 +173,19 @@ export async function addPackage(link) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
+  // Prevent reinstallation
+  if (AppStore.getDisabled()[link]) {
+    toast.update(toastId, {
+      render: 'Package '+link+' is already being installed',
+      type: toast.TYPE.ERROR,
+      autoClose: 5000
+    });
+    return
+  }
+
+  // Disable package installation
+  AppActions.updateDisabled({name: link, disabled: true})
+
   let resUnparsed = await session.call('installPackage.dappmanager.dnp.dappnode.eth', [link])
   let res = parseResponse(resUnparsed)
 
@@ -160,6 +194,9 @@ export async function addPackage(link) {
     type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
     autoClose: 5000
   });
+
+  // Enable package installation
+  AppActions.updateDisabled({name: link, disabled: false})
 
   AppActions.updateProgressLog({clear: true})
   updateData()

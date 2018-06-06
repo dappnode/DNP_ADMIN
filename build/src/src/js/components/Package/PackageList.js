@@ -12,8 +12,8 @@ class Row extends React.Component {
   }
 
   render() {
-    let id = this.props._package.name
-    let state = this.props._package.state
+    let id = this.props.pkg.name
+    let state = this.props.pkg.state
 
     let toggleButtonTag = ''
     if (state == 'running') toggleButtonTag = 'Pause'
@@ -22,20 +22,36 @@ class Row extends React.Component {
     let dotClass = 'text-danger'
     if (state == 'running') dotClass = 'text-success'
 
+    let accessLinks = ''
+    if (this.props.pkg.manifest && this.props.pkg.manifest.homepage) {
+
+      if (typeof this.props.pkg.manifest.homepage == typeof {}) {
+        accessLinks = Object.getOwnPropertyNames(this.props.pkg.manifest.homepage).map((e, i) => (
+          <a class="package-link" key={i} href={this.props.pkg.manifest.homepage[e]}>{e} </a>
+        ))
+
+      } else if (typeof this.props.pkg.manifest.homepage == typeof 'String') {
+        accessLinks = (<a class="package-link" href={this.props.pkg.manifest.homepage}>homepage</a>)
+      }
+
+    }
+
     return (
       <tr id={id}>
-        <td><a href={'http://my.'+this.props._package.name}>{'my.'+this.props._package.name}</a></td>
-        <td>{this.props._package.version}</td>
+        <td>{'my.'+this.props.pkg.name}</td>
+        <td>{this.props.pkg.version}</td>
         <td>
           <span className={classNames("small", "state-light", dotClass)}>⬤  </span>
           <span className="state-label">{state}</span>
         </td>
-        <td>{this.props._package.ports}</td>
+        <td>
+          {accessLinks}
+        </td>
         <td>
           <div class="btn-group" role="group" aria-label="Basic example">
             <Link
               class="btn btn-outline-secondary tableAction-button"
-              to={'package/'+this.props._package.shortName}
+              to={'package/'+this.props.pkg.shortName}
               >
               Settings
             </Link>
@@ -53,10 +69,10 @@ export default class PackageList extends React.Component {
 
   render() {
     let DNProws = [];
-    this.props.packageList.filter(p => p.isDNP).map((_package, i) => {
+    this.props.packageList.filter(p => p.isDNP).map((pkg, i) => {
       DNProws.push(
         <Row key={i}
-          _package={_package}
+          pkg={pkg}
           removePackage={this.props.removePackage}
           togglePackage={this.props.togglePackage}
           logPackage={this.props.logPackage}
@@ -65,10 +81,10 @@ export default class PackageList extends React.Component {
     })
 
     let CORErows = [];
-    this.props.packageList.filter(p => p.isCORE).map((_package, i) => {
+    this.props.packageList.filter(p => p.isCORE).map((pkg, i) => {
       CORErows.push(
         <Row key={i}
-          _package={_package}
+          pkg={pkg}
           removePackage={this.props.removePackage}
           togglePackage={this.props.togglePackage}
           logPackage={this.props.logPackage}
@@ -77,14 +93,14 @@ export default class PackageList extends React.Component {
     })
 
     return (
-      <div>
+      <div class="table-responsive">
         <table class='table'>
           <thead>
             <tr>
               <th>Name</th>
               <th>Version</th>
               <th>State</th>
-              <th>Ports</th>
+              <th></th>
               <th></th>
             </tr>
           </thead>

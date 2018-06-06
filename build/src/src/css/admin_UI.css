@@ -1,4 +1,86 @@
 
+
+.otp-link-th {
+  min-width: 135px;
+}
+
+.shadow {
+  box-shadow: 2px 3px 20px 0 rgba(0, 0, 0, 0.12);
+}
+
+.package-link {
+  text-transform: capitalize;
+}
+
+.card-type {
+  text-transform: capitalize;
+}
+.card-tag {
+  text-transform: uppercase;
+}
+.card-tag.active {
+  color: #2FBCB2;
+  font-weight: bold;
+}
+.card-tag.unactive {
+  color: grey;
+}
+
+.card-clickable {
+  box-shadow: 1px 1px 15px 0 rgba(0, 0, 0, 0.07);
+  -webkit-transition: box-shadow 0.25s; /* Safari */
+  transition: box-shadow 0.25s;
+}
+.card-clickable:hover {
+  box-shadow: 2px 4px 20px 0 rgba(0, 0, 0, 0.2);
+}
+.card-clickable:active {
+  box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0.03);
+}
+
+.hover-animation{
+  width: 100%;
+  /* height: 250px; */
+  display: inline-block;
+  -webkit-background-size: cover;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+.hover-animation:before,
+.hover-animation:after {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  content: '';
+  position: absolute;
+  background: inherit;
+  transition: .3s;
+}
+.hover-animation:after {
+  padding: 10px;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #515151;
+  /* font-size: 22px; */
+  background: #fff;
+  transform: translateY(100%);
+  content: attr(data-text);
+}
+.hover-animation:hover:before {
+  transform: translateY(-50%);
+}
+.hover-animation:hover:after {
+  transform: translateY(0);
+}
+
 .jumbotron {
   background-color: #f8f8f8;
 }
@@ -25,6 +107,11 @@
   color: white;
   border: #218a82;
   background-color: #218a82;
+}
+.dappnode-background-color:disabled {
+  color: white;
+  border: #9cc7c4;
+  background-color: #9cc7c4;
 }
 
 .Toastify__toast--success { background: #5cb85c; }
@@ -123,4 +210,80 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+
+/* DEFAULT CHECKMARK */
+/* DEFAULT CHECKMARK */
+/* DEFAULT CHECKMARK */
+/* DEFAULT CHECKMARK */
+/* DEFAULT CHECKMARK */
+/* DEFAULT CHECKMARK */
+/* DEFAULT CHECKMARK */
+
+/* Customize the label (the container) */
+.container {
+  display: block;
+  position: relative;
+  margin-top: 5px;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #2FBCB2;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }

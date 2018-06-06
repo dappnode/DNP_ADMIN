@@ -46,12 +46,6 @@ class SubmitInstall extends React.Component {
                 defaultValue={envValue}
               >
               </input>
-              <div class="invalid-feedback">
-                Please provide a valid variable
-              </div>
-              <div class="valid-feedback">
-                Looks good!
-              </div>
             </div>
           </div>
         </div>
@@ -62,22 +56,11 @@ class SubmitInstall extends React.Component {
     return (
       <form class="needs-validation">
         {rows}
-        <div class="form-group">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-            </input>
-            <label class="form-check-label" for="invalidCheck">
-              Agree to terms and conditions
-            </label>
-            <div class="invalid-feedback">
-              You must agree before submitting.
-            </div>
-          </div>
-        </div>
-        <button class="btn btn-primary" type="submit" data-dismiss="modal"
+        <button class="btn btn-primary dappnode-background-color" type="submit" data-dismiss="modal"
           onClick={this.submit.bind(this)}
+          disabled={this.props.disabled}
           >
-          Install package
+          {this.props.disabled ? 'INSTALLED' : 'INSTALL'}
         </button>
       </form>
     )
@@ -121,12 +104,13 @@ class PackageInfoTable extends React.Component {
     })
 
     return (
-      <table class="table">
-        <tbody>
-          {rows}
-        </tbody>
-      </table>
-
+      <div class="table-responsive">
+        <table class="table">
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+      </div>
     )
   }
 }
@@ -206,6 +190,7 @@ export default class InstallerModal extends React.Component {
 
               <SubmitInstall
                 manifest={manifest}
+                disabled={this.props.disabled}
                 installPackage={this.props.installPackage}
               />
 

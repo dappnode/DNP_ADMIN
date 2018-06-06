@@ -1,6 +1,9 @@
 import React from 'react'
 
 
+const defaultTypes = ['library']
+
+
 function add(e, array) {
   if (array.includes(e)) return array
   else array.push(e)
@@ -34,7 +37,8 @@ export default class TypeFilter extends React.Component {
 
   render() {
     const directory = this.props.directory || []
-    let uniqueTypes = []
+    // Adding default types
+    let uniqueTypes = defaultTypes
     directory.map(p => {
       if (p && p.manifest && p.manifest.type
         && !uniqueTypes.includes(p.manifest.type)) {

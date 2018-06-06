@@ -18,6 +18,7 @@ export default class PackageInstallerInterface extends React.Component {
       packageId: '',
       selectedTypes: [],
       directory: AppStore.getDirectory(),
+      disabled: AppStore.getDisabled(),
       log: AppStore.getLog('installer'),
       progressLog: AppStore.getProgressLog(),
       packageInfo: AppStore.getPackageInfo(),
@@ -31,12 +32,14 @@ export default class PackageInstallerInterface extends React.Component {
     this.updateDirectory = this.updateDirectory.bind(this)
     this.updatePackageInfo = this.updatePackageInfo.bind(this)
     this.updateChainStatus = this.updateChainStatus.bind(this)
+    this.updateDisabled = this.updateDisabled.bind(this)
   }
   componentDidMount() {
     AppStore.on("CHANGE", this.updateLog);
     AppStore.on("CHANGE", this.updateProgressLog);
     AppStore.on("CHANGE", this.updateDirectory);
     AppStore.on("CHANGE", this.updatePackageInfo);
+    AppStore.on("CHANGE", this.updateDisabled);
     AppStore.on(AppStore.tag.CHANGE_CHAINSTATUS, this.updateChainStatus);
   }
 
@@ -45,6 +48,7 @@ export default class PackageInstallerInterface extends React.Component {
     AppStore.removeListener("CHANGE", this.updateProgressLog);
     AppStore.removeListener("CHANGE", this.updateDirectory);
     AppStore.removeListener("CHANGE", this.updatePackageInfo);
+    AppStore.removeListener("CHANGE", this.updateDisabled);
     AppStore.removeListener(AppStore.tag.CHANGE_CHAINSTATUS, this.updateChainStatus);
   }
 
@@ -103,49 +107,32 @@ export default class PackageInstallerInterface extends React.Component {
   }
 
   updatePackageLink(e) {
-    this.setState({
-      packageLink: e.target.value
-    });
+    this.setState({ packageLink: e.target.value });
   }
-
   updatePackageId(e) {
-    this.setState({
-      packageId: e.target.value
-    });
+    this.setState({ packageId: e.target.value });
   }
-
-  updateDirectory() {
-    this.setState({
-      directory: AppStore.getDirectory()
-    });
-  }
-
-  updateLog() {
-    this.setState({
-      log: AppStore.getLog('installer')
-    });
-  }
-
-  updateProgressLog() {
-    this.setState({
-      progressLog: AppStore.getProgressLog()
-    });
-  }
-
-  updatePackageInfo() {
-    this.setState({
-      packageInfo: AppStore.getPackageInfo()
-    });
-  }
-
   updateSelectedTypes(selectedTypes) {
     this.setState({ selectedTypes });
   }
 
+  updateDirectory() {
+    this.setState({ directory: AppStore.getDirectory() });
+  }
+  updateLog() {
+    this.setState({ log: AppStore.getLog('installer') });
+  }
+  updateProgressLog() {
+    this.setState({ progressLog: AppStore.getProgressLog() });
+  }
+  updatePackageInfo() {
+    this.setState({ packageInfo: AppStore.getPackageInfo() });
+  }
   updateChainStatus() {
-    this.setState({
-      chainStatus: AppStore.getChainStatus()
-    });
+    this.setState({ chainStatus: AppStore.getChainStatus() });
+  }
+  updateDisabled() {
+    this.setState({ disabled: AppStore.getDisabled() });
   }
 
 
@@ -160,6 +147,8 @@ export default class PackageInstallerInterface extends React.Component {
       // Prevent the app from crashing with defective packages
       if (p && p.manifest && p.manifest.type) {
         return this.state.selectedTypes.includes(p.manifest.type)
+      } else if (p && p.manifest && !p.manifest.type) {
+        return this.state.selectedTypes.includes('library')
       } else {
         return false
       }
@@ -210,6 +199,7 @@ export default class PackageInstallerInterface extends React.Component {
 
         <PackageStore
           directory={filteredDirectory}
+          disabled={this.state.disabled}
           isSyncing={chainStatus.isSyncing}
           preInstallPackage={this.preInstallPackageInTable.bind(this)}
           modalTarget={modalTarget}
@@ -218,6 +208,7 @@ export default class PackageInstallerInterface extends React.Component {
         <InstallerModal
           targetPackageName={this.state.targetPackageName}
           packageInfo={this.state.packageInfo[this.state.targetPackageName]}
+          disabled={this.state.disabled[this.state.targetPackageName]}
           installPackage={this.installPackageInTable.bind(this)}
           changeVersion={this.changeVersion.bind(this)}
           versionIndex={this.state.versionIndex}

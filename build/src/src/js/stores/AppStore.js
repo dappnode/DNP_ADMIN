@@ -15,6 +15,7 @@ class AppStore extends EventEmitter {
     this.progressLog = {}
     this.chainStatus = {}
     this.status = {}
+    this.disabled = {}
     // The log object is
     // log[component][topic] = {msg: 'Package installed', type: 'success'}
     // messages for the same component and topic get overwritten
@@ -32,6 +33,7 @@ class AppStore extends EventEmitter {
       UPDATE_PACKAGE_INFO: 'UPDATE_PACKAGE_INFO',
       UPDATE_CHAINSTATUS: 'UPDATE_CHAINSTATUS',
       UPDATE_STATUS: 'UPDATE_STATUS',
+      UPDATE_DISABLED: 'UPDATE_DISABLED',
       ADD_DEVICE: 'ADD_DEVICE',
       CHANGE: 'CHANGE',
       CHANGE_CHAINSTATUS: 'CHANGE_CHAINSTATUS',
@@ -80,6 +82,10 @@ class AppStore extends EventEmitter {
     return this.status || {};
   }
 
+  getDisabled() {
+    return this.disabled || {};
+  }
+
   handleActions(action) {
     switch(action.type) {
       case this.tag.UPDATE_DEVICE_LIST: {
@@ -94,6 +100,9 @@ class AppStore extends EventEmitter {
       }
       case this.tag.UPDATE_DIRECTORY: {
         this.directory = action.directory;
+        action.directory.map(pkg => {
+          this.disabled[pkg.name] = pkg.disableInstall
+        })
         this.emit(this.tag.CHANGE);
         break;
       }
@@ -156,17 +165,20 @@ class AppStore extends EventEmitter {
         break;
       }
       case this.tag.UPDATE_STATUS: {
+        let status = action.payload
         // action = { pkg: 'dappmanager', item: 'crossbar', on: true, msg: 'works' }
-        if (!('pkg' in action && 'item' in action)) throw Error('UPDATE STATUS object is not correctly constructed')
+        if (!('pkg' in status && 'item' in status)) throw Error('UPDATE STATUS object is not correctly constructed: ',status)
         // Initialize objects
-        if (!this.status[action.pkg]) this.status[action.pkg] = {}
-        if (!this.status[action.pkg][action.item]) this.status[action.pkg][action.item] = {}
+        if (!this.status[status.pkg]) this.status[status.pkg] = {}
+        if (!this.status[status.pkg][status.item]) this.status[status.pkg][status.item] = {}
         // store info
-        this.status[action.pkg][action.item] = {
-          on: action.on || false,
-          msg: action.msg || ''
-        }
+        this.status[status.pkg][status.item] = status
         this.emit(this.tag.CHANGE_STATUS);
+        break;
+      }
+      case this.tag.UPDATE_DISABLED: {
+        this.disabled[action.payload.name] = action.payload.disabled
+        this.emit(this.tag.CHANGE);
         break;
       }
     }
