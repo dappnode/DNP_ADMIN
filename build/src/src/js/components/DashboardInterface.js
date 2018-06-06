@@ -37,18 +37,19 @@ export default class DashboardInterface extends React.Component {
 
   render() {
 
-    console.log('###### STATUS',this.state.status)
-
     let type = this.state.chainStatus.type || 'default'
     let status = this.state.chainStatus.status
 
     const dappnodeStatus = Object.getOwnPropertyNames(this.state.status).map((pkg, i) => {
       const tdItems = Object.getOwnPropertyNames(this.state.status[pkg]).map((item, j) => {
-        const type = this.state.status[pkg][item].on ? 'success' : 'danger'
-        const tag = this.state.status[pkg][item].on ? 'ON' : 'OFF'
+        let type
+        let typeNum = this.state.status[pkg][item].on
+        if (typeNum ===  1) type = 'success'
+        if (typeNum ===  0) type = 'warning'
+        if (typeNum === -1) type = 'danger'
         return (
           <td key={j} class={"text-"+type}>
-            {item} <strong>{tag}</strong>: {this.state.status[pkg][item].msg}
+            <strong>{item}:</strong> {this.state.status[pkg][item].msg}
           </td>
         )
       })

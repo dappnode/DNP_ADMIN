@@ -7,16 +7,22 @@ new ClipboardJS('.btn');
 const ADMIN_STATIC_IP_PREFIX = '172.33.10.'
 
 class Row extends React.Component {
-  constructor(props) {
-    super(props);
+
+  removeDevice(id) {
+    this.props.removeDevice(id)
+  }
+
+  toggleAdmin(id, isAdmin) {
+    this.props.toggleAdmin(id, isAdmin)
   }
 
   render() {
     let url = this.props.otp;
-    const disableRemove = this.props.ip.includes(ADMIN_STATIC_IP_PREFIX)
+    const isAdmin = this.props.ip.includes(ADMIN_STATIC_IP_PREFIX)
+    const id = this.props.id
 
     return (
-      <tr id={this.props.id}>
+      <tr id={id}>
         <td>{this.props.name}</td>
         <td>{this.props.ip}</td>
 
@@ -33,16 +39,24 @@ class Row extends React.Component {
 
         <td>
           <button type="button" class="btn btn-outline-danger"
-            disabled={disableRemove}
-            id={this.props.id}
-            onClick={this.props.removeDevice}
+            disabled={isAdmin}
+            id={id}
+            onClick={this.removeDevice.bind(this, id)}
           >remove</button>
+        </td>
+
+        <td>
+          <button type="button" class="btn btn-outline-danger"
+            onClick={(e) => this.props.toggleAdmin(id, isAdmin)}
+          >{isAdmin ? 'Undo admin' : 'Make admin'}</button>
         </td>
 
       </tr>
     );
   }
 }
+
+
 
 export default class DeviceList extends React.Component {
   constructor(props) {
@@ -64,6 +78,7 @@ export default class DeviceList extends React.Component {
           optexpirationtime={device.optexpirationtime}
           key={i}
           removeDevice={this.props.removeDevice}
+          toggleAdmin={this.props.toggleAdmin}
         />
       );
     }

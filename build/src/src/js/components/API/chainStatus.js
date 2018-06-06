@@ -41,33 +41,37 @@ let web3WatchLoop = setInterval(function(){
         && syncingInfo.highestBlock.c[0] - syncingInfo.currentBlock.c[0] > MIN_BLOCK_DIFF_SYNC
       ) {
 
-        log(true, 'warning', trackSyncing(syncingInfo))
+        log(true, 0, trackSyncing(syncingInfo))
 
       } else {
 
         web3.eth.getBlockNumber()
         .then(function(blockNumber){
-          log(false, 'success', 'Syncronized, block: '+blockNumber)
+          log(false, 1, 'Syncronized, block: '+blockNumber)
         })
       }
     })
 
     .catch(function(e){
       clearTimeout(timeout)
-      log(true, 'danger', 'Error: '+e.message)
+      log(true, -1, 'Error: '+e.message)
     })
 
   } catch(e) {
     clearTimeout(timeout)
-    log(true, 'danger', 'Error: '+e.message)
+    log(true, -1, 'Error: '+e.message)
   }
 }, INTERVAL_MS);
 
 
 
 
-function log(isSyncing, type, status) {
-  AppActions.updateStatus('ethchain', 'chain', !isSyncing, status)
+function log(isSyncing, typeNum, status) {
+  let type
+  if (typeNum ===  1) type = 'success'
+  if (typeNum ===  0) type = 'warning'
+  if (typeNum === -1) type = 'danger'
+  AppActions.updateStatus({pkg: 'ethchain', item: 'chain', on: typeNum, msg: status})
   if (status && status.includes('Invalid JSON RPC response')) {
     status = 'Can\'t connect to ETHCHAIN.'
   }

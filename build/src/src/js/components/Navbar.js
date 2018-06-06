@@ -205,7 +205,7 @@ class NavbarSide extends React.Component {
     })
 
     return (
-      <ul class="navbar-nav navbar-sidenav navbar-sidebar-fix" id="exampleAccordion">
+      <ul class="navbar-nav navbar-sidenav navbar-sidebar-fix shadow" id="exampleAccordion">
         <li class="nav-item">
           <NavLink
           class="nav-link"

@@ -156,16 +156,14 @@ class AppStore extends EventEmitter {
         break;
       }
       case this.tag.UPDATE_STATUS: {
+        let status = action.payload
         // action = { pkg: 'dappmanager', item: 'crossbar', on: true, msg: 'works' }
-        if (!('pkg' in action && 'item' in action)) throw Error('UPDATE STATUS object is not correctly constructed')
+        if (!('pkg' in status && 'item' in status)) throw Error('UPDATE STATUS object is not correctly constructed: ',status)
         // Initialize objects
-        if (!this.status[action.pkg]) this.status[action.pkg] = {}
-        if (!this.status[action.pkg][action.item]) this.status[action.pkg][action.item] = {}
+        if (!this.status[status.pkg]) this.status[status.pkg] = {}
+        if (!this.status[status.pkg][status.item]) this.status[status.pkg][status.item] = {}
         // store info
-        this.status[action.pkg][action.item] = {
-          on: action.on || false,
-          msg: action.msg || ''
-        }
+        this.status[status.pkg][status.item] = status
         this.emit(this.tag.CHANGE_STATUS);
         break;
       }

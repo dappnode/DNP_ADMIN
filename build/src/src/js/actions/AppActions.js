@@ -82,12 +82,9 @@ export function updateChainStatus(status) {
   });
 }
 
-export function updateStatus(pkg, item, on, msg = '') {
+export function updateStatus(payload) {
   dispatcher.dispatch({
     type: AppStore.tag.UPDATE_STATUS,
-    pkg,
-    item,
-    on,
-    msg
+    payload
   });
 }

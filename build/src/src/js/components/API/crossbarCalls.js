@@ -127,6 +127,27 @@ export async function removeDevice(deviceName) {
 };
 
 
+export async function toggleAdmin(deviceName, isAdmin) {
+
+  let toastId = toast((isAdmin) ? ('Giving admin credentials to '+deviceName) : ('Removing admin credentials from '+deviceName), {
+    autoClose: false,
+    position: toast.POSITION.BOTTOM_RIGHT
+  });
+
+  let resUnparsed = await session.call('toggleAdmin.vpn.dnp.dappnode.eth', [deviceName])
+  let res = parseResponse(resUnparsed)
+
+  toast.update(toastId, {
+    render: res.message,
+    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+    autoClose: 5000
+  });
+
+  listDevices()
+
+};
+
+
 export async function listDevices() {
 
   let resUnparsed = await session.call('listDevices.vpn.dnp.dappnode.eth', [])
