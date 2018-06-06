@@ -1,13 +1,13 @@
 {
   "name": "admin.dnp.dappnode.eth",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Dappnode package responsible for providing the administrative user interface",
   "avatar": "/ipfs/QmP7rbBLMfKTHpVQwfmgrenYuuUkVw5CXDfzJSoPBiJuNj",
   "type": "dncore",
   "image": {
-    "path": "admin.dnp.dappnode.eth_0.1.0.tar.xz",
-    "hash": "/ipfs/QmQvTEUFwYHYrHPB5jS7nZJt9362AzpqEuNy7iwUZpYpi8",
-    "size": 6222137,
+    "path": "admin.dnp.dappnode.eth_0.1.1.tar.xz",
+    "hash": "/ipfs/QmbfQTAQn48afNSssGjr9FnFaiquSBXNmgr4hyW6SaTNfH",
+    "size": 6237785,
     "restart": "always",
     "subnet": "172.33.0.0/16",
     "ipv4_address": "172.33.1.9"
@@ -24,7 +24,6 @@
   ],
   "homepage": {
     "adminui": "http://my.admin.dnp.dappnode.eth",
-    "userui": "http://my.admin.dnp.dappnode.eth",
     "homepage": "https://github.com/dappnode/DNP_ETHCHAIN#readme"
   },
   "repository": {
