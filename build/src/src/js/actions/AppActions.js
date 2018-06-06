@@ -88,3 +88,10 @@ export function updateStatus(payload) {
     payload
   });
 }
+
+export function updateDisabled(payload) {
+  dispatcher.dispatch({
+    type: AppStore.tag.UPDATE_DISABLED,
+    payload
+  });
+}

@@ -1,10 +1,12 @@
 import React from "react";
 import params from "Params";
 import ClipboardJS from 'clipboard';
+import QRCode from 'qrcode.react';
 
 new ClipboardJS('.btn');
 
 const ADMIN_STATIC_IP_PREFIX = '172.33.10.'
+const QR_MODAL_TAG = 'QR_MODAL_TAG'
 
 class Row extends React.Component {
 
@@ -16,19 +18,29 @@ class Row extends React.Component {
     this.props.toggleAdmin(id, isAdmin)
   }
 
+  updateSelectedDevice(id) {
+    this.props.updateSelectedDevice(id)
+  }
+
   render() {
-    let url = this.props.otp;
-    const isAdmin = this.props.ip.includes(ADMIN_STATIC_IP_PREFIX)
-    const id = this.props.id
+    let device = this.props.device
+    let url = device.otp;
+    let id = device.name
+    const isAdmin = device.ip.includes(ADMIN_STATIC_IP_PREFIX)
 
     return (
       <tr id={id}>
-        <td>{this.props.name}</td>
-        <td>{this.props.ip}</td>
+        <td>{device.name}</td>
+        <td>{device.ip}</td>
 
         <td>
           <div class="input-group mb-3">
-            <a class="input-group-text" href={url}>link</a>
+            <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
+              data-target={"#"+QR_MODAL_TAG}
+              onClick={this.updateSelectedDevice.bind(this, id)}
+              >
+              QR
+            </button>
             <div class="input-group-append">
               <button class="btn btn-outline-secondary" type="button" data-clipboard-text={url}>
               copy
@@ -60,7 +72,14 @@ class Row extends React.Component {
 
 export default class DeviceList extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
+    this.state = {
+      id: ''
+    }
+  }
+
+  updateSelectedDevice(id) {
+    this.setState({ id });
   }
 
   render() {
@@ -70,18 +89,20 @@ export default class DeviceList extends React.Component {
       let device = deviceList[i]
       rows.push(
         <Row
-          id={device.name}
-          name={device.name}
-          ip={device.ip}
-          creationtime={device.creationtime}
-          otp={device.otp}
-          optexpirationtime={device.optexpirationtime}
+          device={device}
           key={i}
           removeDevice={this.props.removeDevice}
           toggleAdmin={this.props.toggleAdmin}
+          updateSelectedDevice={this.updateSelectedDevice.bind(this)}
         />
       );
     }
+
+    // Selected device
+    let selectedDevice = deviceList.filter(d => d.name == this.state.id)[0]
+    let url = selectedDevice ? selectedDevice.otp : '-'
+    let name = selectedDevice ? selectedDevice.name : '-'
+    let qrSize = (window.innerWidth > 600) ? 466 : Math.floor(0.85*window.innerWidth)
 
     return (
       <div>
@@ -90,12 +111,31 @@ export default class DeviceList extends React.Component {
             <tr>
               <th>Name</th>
               <th>IP</th>
-              <th>OTP</th>
+              <th>OTP link</th>
               <th>Remove</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>
         </table>
+
+        <div class="modal fade" id={QR_MODAL_TAG} tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">OTP QR code link for {name}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body text-center">
+                <QRCode
+                  value={url}
+                  size={qrSize}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

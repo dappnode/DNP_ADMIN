@@ -46,12 +46,6 @@ class SubmitInstall extends React.Component {
                 defaultValue={envValue}
               >
               </input>
-              <div class="invalid-feedback">
-                Please provide a valid variable
-              </div>
-              <div class="valid-feedback">
-                Looks good!
-              </div>
             </div>
           </div>
         </div>
@@ -62,10 +56,11 @@ class SubmitInstall extends React.Component {
     return (
       <form class="needs-validation">
         {rows}
-        <button class="btn btn-primary" type="submit" data-dismiss="modal"
+        <button class="btn btn-primary dappnode-background-color" type="submit" data-dismiss="modal"
           onClick={this.submit.bind(this)}
+          disabled={this.props.disabled}
           >
-          Install package
+          {this.props.disabled ? 'INSTALLED' : 'INSTALL'}
         </button>
       </form>
     )
@@ -194,6 +189,7 @@ export default class InstallerModal extends React.Component {
 
               <SubmitInstall
                 manifest={manifest}
+                disabled={this.props.disabled}
                 installPackage={this.props.installPackage}
               />
 

@@ -173,6 +173,19 @@ export async function addPackage(link) {
     position: toast.POSITION.BOTTOM_RIGHT
   });
 
+  // Prevent reinstallation
+  if (AppStore.getDisabled()[link]) {
+    toast.update(toastId, {
+      render: 'Package '+link+' is already being installed',
+      type: toast.TYPE.ERROR,
+      autoClose: 5000
+    });
+    return
+  }
+
+  // Disable package installation
+  AppActions.updateDisabled({name: link, disabled: true})
+
   let resUnparsed = await session.call('installPackage.dappmanager.dnp.dappnode.eth', [link])
   let res = parseResponse(resUnparsed)
 
@@ -181,6 +194,9 @@ export async function addPackage(link) {
     type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
     autoClose: 5000
   });
+
+  // Enable package installation
+  AppActions.updateDisabled({name: link, disabled: false})
 
   AppActions.updateProgressLog({clear: true})
   updateData()

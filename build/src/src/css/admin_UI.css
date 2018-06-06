@@ -3,15 +3,31 @@
   box-shadow: 2px 3px 20px 0 rgba(0, 0, 0, 0.12);
 }
 
+.package-link {
+  text-transform: capitalize;
+}
+
+.card-type {
+  text-transform: capitalize;
+}
+.card-tag {
+  text-transform: uppercase;
+}
+.card-tag.active {
+  color: #2FBCB2;
+  font-weight: bold;
+}
+.card-tag.unactive {
+  color: grey;
+}
+
 .card-clickable {
-  box-shadow: 2px 3px 20px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 1px 1px 15px 0 rgba(0, 0, 0, 0.07);
   -webkit-transition: box-shadow 0.25s; /* Safari */
   transition: box-shadow 0.25s;
-  -webkit-transition: background-color 0.25s; /* Safari */
-  transition: background-color 0.25s;
 }
 .card-clickable:hover {
-  background-color: #F9F9F9
+  box-shadow: 2px 4px 20px 0 rgba(0, 0, 0, 0.2);
 }
 .card-clickable:active {
   box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0.03);
@@ -47,9 +63,9 @@
   display: flex;
   align-items: center;
   text-align: center;
-  color: #fff;
+  color: #515151;
   /* font-size: 22px; */
-  background: #515151;
+  background: #fff;
   transform: translateY(100%);
   content: attr(data-text);
 }
@@ -86,6 +102,11 @@
   color: white;
   border: #218a82;
   background-color: #218a82;
+}
+.dappnode-background-color:disabled {
+  color: white;
+  border: #9cc7c4;
+  background-color: #9cc7c4;
 }
 
 .Toastify__toast--success { background: #5cb85c; }

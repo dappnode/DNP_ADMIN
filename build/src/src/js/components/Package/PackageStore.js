@@ -17,16 +17,21 @@ class Card extends React.Component {
 
   render() {
 
-    let name = this.props._package.name
-    let status = this.props._package.status
+    let name = this.props.pkg.name
+    let status = this.props.pkg.status
     let id = name;
-    let description = this.props._package.manifest.description || 'Awesome dnp'
-    let type = this.props._package.manifest.type || 'unknown'
+    let description = this.props.pkg.manifest.description || 'Awesome dnp'
+    let type = this.props.pkg.manifest.type || 'library'
 
     let namePretty = capitalize( name.split('.dnp.dappnode.eth')[0] )
-    let img = this.props._package.avatar || defaultImg
-    let allowInstall = Boolean(this.props._package.disableInstall)
-    let tag = this.props._package.tag
+    let img = this.props.pkg.avatar || defaultImg
+    let allowInstall = Boolean(this.props.pkg.disableInstall)
+    // Transform tag
+    let tagStyle = ''
+    let tag = this.props.pkg.tag
+    if (tag.toLowerCase() == 'install') tagStyle = 'active'
+    if (tag.toLowerCase() == 'update') tagStyle = 'active'
+    if (tag.toLowerCase() == 'installed') tagStyle = 'unactive'
 
     // ##### Text under the card's title showing the status
     // <p class="card-text">Status: {status}</p>
@@ -46,8 +51,8 @@ class Card extends React.Component {
           <div class="card-body text-nowrap">
             <h5 class="card-title">{namePretty}</h5>
             <div class="d-flex justify-content-between">
-              <span>{type}</span>
-              <span>{tag}</span>
+              <span class="card-type">{type}</span>
+              <span class={"card-tag "+tagStyle}>{tag}</span>
             </div>
           </div>
         </div>
@@ -56,7 +61,7 @@ class Card extends React.Component {
   }
 }
 
-export default class PackageDirectory extends React.Component {
+export default class PackageStore extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -65,11 +70,11 @@ export default class PackageDirectory extends React.Component {
     let cards = [];
     const directory = this.props.directory || []
     for (let i = 0; i < directory.length; i++) {
-      let _package = directory[i];
+      let pkg = directory[i];
       cards.push(
         <Card
-          _package={_package}
           key={i}
+          pkg={pkg}
           preInstallPackage={this.props.preInstallPackage}
           modalTarget={this.props.modalTarget}
         />
