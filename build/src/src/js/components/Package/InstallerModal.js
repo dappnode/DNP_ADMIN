@@ -62,18 +62,6 @@ class SubmitInstall extends React.Component {
     return (
       <form class="needs-validation">
         {rows}
-        <div class="form-group">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-            </input>
-            <label class="form-check-label" for="invalidCheck">
-              Agree to terms and conditions
-            </label>
-            <div class="invalid-feedback">
-              You must agree before submitting.
-            </div>
-          </div>
-        </div>
         <button class="btn btn-primary" type="submit" data-dismiss="modal"
           onClick={this.submit.bind(this)}
           >

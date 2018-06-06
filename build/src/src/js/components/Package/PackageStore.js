@@ -20,6 +20,8 @@ class Card extends React.Component {
     let name = this.props._package.name
     let status = this.props._package.status
     let id = name;
+    let description = this.props._package.manifest.description || 'Awesome dnp'
+    let type = this.props._package.manifest.type || 'unknown'
 
     let namePretty = capitalize( name.split('.dnp.dappnode.eth')[0] )
     let img = this.props._package.avatar || defaultImg
@@ -31,21 +33,21 @@ class Card extends React.Component {
 
     return (
       <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item mb-4 box-shadow card-max-width">
-        <div class="card h-100">
-          <div class="p-1">
-            <img class="card-img-top" src={img} alt="Card image cap" />
+        <div class="card h-100 shadow card-clickable"
+          data-toggle="modal"
+          data-target={this.props.modalTarget}
+          onClick={this.props.preInstallPackage}
+          id={id}
+          disabled={allowInstall}
+        >
+          <div class="p-1 hover-animation" data-text={description}>
+            <img class="card-img-top " src={img} alt="Card image cap"/>
           </div>
-          <div class="card-body text-center text-nowrap">
+          <div class="card-body text-nowrap">
             <h5 class="card-title">{namePretty}</h5>
-            <div class="center-block">
-              <button class="btn btn-outline-secondary" type="button"
-                data-toggle="modal"
-                data-target={this.props.modalTarget}
-                onClick={this.props.preInstallPackage}
-                id={id}
-                disabled={allowInstall}
-                >{tag}
-              </button>
+            <div class="d-flex justify-content-between">
+              <span>{type}</span>
+              <span>{tag}</span>
             </div>
           </div>
         </div>
