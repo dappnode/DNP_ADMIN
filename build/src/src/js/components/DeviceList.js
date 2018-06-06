@@ -34,18 +34,16 @@ class Row extends React.Component {
         <td>{device.ip}</td>
 
         <td>
-          <div class="input-group mb-3">
+          <div class="btn-group" role="group">
             <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
               data-target={"#"+QR_MODAL_TAG}
               onClick={this.updateSelectedDevice.bind(this, id)}
               >
               QR
             </button>
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button" data-clipboard-text={url}>
-              copy
-              </button>
-            </div>
+            <button class="btn btn-outline-secondary" type="button" data-clipboard-text={url}>
+            Copy
+            </button>
           </div>
         </td>
 
@@ -54,13 +52,17 @@ class Row extends React.Component {
             disabled={isAdmin}
             id={id}
             onClick={this.removeDevice.bind(this, id)}
-          >remove</button>
+          >Remove</button>
         </td>
 
         <td>
-          <button type="button" class="btn btn-outline-danger"
-            onClick={(e) => this.props.toggleAdmin(id, isAdmin)}
-          >{isAdmin ? 'Undo admin' : 'Make admin'}</button>
+          <label class="container align-middle">
+            <input type="checkbox"
+              defaultChecked={isAdmin}
+              onClick={this.props.toggleAdmin.bind(this, id, isAdmin)}
+            ></input>
+            <span class="checkmark"></span>
+          </label>
         </td>
 
       </tr>
@@ -105,14 +107,15 @@ export default class DeviceList extends React.Component {
     let qrSize = (window.innerWidth > 600) ? 466 : Math.floor(0.85*window.innerWidth)
 
     return (
-      <div>
+      <div class="table-responsive">
         <table class='table'>
           <thead>
             <tr>
               <th>Name</th>
               <th>IP</th>
-              <th>OTP link</th>
+              <th class="otp-link-th">OTP link</th>
               <th>Remove</th>
+              <th>Admin</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>

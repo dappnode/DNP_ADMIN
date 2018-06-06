@@ -93,7 +93,7 @@ export default class PackageList extends React.Component {
     })
 
     return (
-      <div>
+      <div class="table-responsive">
         <table class='table'>
           <thead>
             <tr>

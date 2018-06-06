@@ -76,11 +76,13 @@ export default class DashboardInterface extends React.Component {
         <div class="card mb-4">
           <div class="card-header">DAppNode packages status</div>
           <div class="card-body">
-            <table class="table">
-              <tbody>
-                {dappnodeStatus}
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                  {dappnodeStatus}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 

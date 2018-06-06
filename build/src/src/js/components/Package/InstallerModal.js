@@ -104,12 +104,13 @@ class PackageInfoTable extends React.Component {
     })
 
     return (
-      <table class="table">
-        <tbody>
-          {rows}
-        </tbody>
-      </table>
-
+      <div class="table-responsive">
+        <table class="table">
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+      </div>
     )
   }
 }
