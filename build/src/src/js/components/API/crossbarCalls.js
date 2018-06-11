@@ -368,6 +368,7 @@ export async function listPackages() {
 
 };
 
+
 export async function listDirectory() {
   // [ { name: 'rinkeby.dnp.dappnode.eth',
   //   status: 'Preparing',
@@ -383,6 +384,7 @@ export async function listDirectory() {
   let res = parseResponse(resUnparsed)
 
   if (res.success && res.result) {
+
     // QUICK - First add current data to the store
     for (const pkg of res.result) {
       AppActions.updatePackageData({
@@ -394,14 +396,12 @@ export async function listDirectory() {
     for (const pkg of res.result) {
       await getPackageData(pkg.name)
     }
-  }
 
-  else {
+  } else {
     toast.error("Error fetching directory: "+res.message, {
       position: toast.POSITION.BOTTOM_RIGHT
     })
   }
-
 };
 
 
@@ -419,13 +419,11 @@ async function getPackageData(id) {
   else {
     AppActions.updatePackageData({
       name: id,
-      data: {error: res.message}
+      data: { error: res.message }
     })
 
     toast.error("Package "+id+" is unavailable: "+res.message, {
       position: toast.POSITION.BOTTOM_RIGHT
     })
   }
-
-
 };
