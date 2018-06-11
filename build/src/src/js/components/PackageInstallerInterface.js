@@ -18,6 +18,7 @@ export default class PackageInstallerInterface extends React.Component {
       packageId: '',
       selectedTypes: [],
       directory: AppStore.getDirectory(),
+      packages: AppStore.getPackages(),
       disabled: AppStore.getDisabled(),
       log: AppStore.getLog('installer'),
       progressLog: AppStore.getProgressLog(),
@@ -33,6 +34,7 @@ export default class PackageInstallerInterface extends React.Component {
     this.updatePackageInfo = this.updatePackageInfo.bind(this)
     this.updateChainStatus = this.updateChainStatus.bind(this)
     this.updateDisabled = this.updateDisabled.bind(this)
+    this.updatePackages = this.updatePackages.bind(this)
   }
   componentDidMount() {
     AppStore.on("CHANGE", this.updateLog);
@@ -40,6 +42,7 @@ export default class PackageInstallerInterface extends React.Component {
     AppStore.on("CHANGE", this.updateDirectory);
     AppStore.on("CHANGE", this.updatePackageInfo);
     AppStore.on("CHANGE", this.updateDisabled);
+    AppStore.on("CHANGE", this.updatePackages);
     AppStore.on(AppStore.tag.CHANGE_CHAINSTATUS, this.updateChainStatus);
   }
 
@@ -49,6 +52,7 @@ export default class PackageInstallerInterface extends React.Component {
     AppStore.removeListener("CHANGE", this.updateDirectory);
     AppStore.removeListener("CHANGE", this.updatePackageInfo);
     AppStore.removeListener("CHANGE", this.updateDisabled);
+    AppStore.removeListener("CHANGE", this.updatePackages);
     AppStore.removeListener(AppStore.tag.CHANGE_CHAINSTATUS, this.updateChainStatus);
   }
 
@@ -134,26 +138,34 @@ export default class PackageInstallerInterface extends React.Component {
   updateDisabled() {
     this.setState({ disabled: AppStore.getDisabled() });
   }
+  updatePackages() {
+    this.setState({ packages: AppStore.getPackages() });
+  }
 
 
   render() {
 
-    const filteredDirectory = this.state.directory
+    const filteredDirectory = Object.getOwnPropertyNames(this.state.packages)
     // Filter by name
-    .filter(p => p.name.includes(this.state.packageLink))
+    .filter(pkgName => pkgName.includes(this.state.packageLink))
     // Filter by type
-    .filter(p => {
+    .filter(pkgName => {
       if (this.state.selectedTypes.length == 0) return true
       // Prevent the app from crashing with defective packages
-      if (p && p.manifest && p.manifest.type) {
-        return this.state.selectedTypes.includes(p.manifest.type)
-      } else if (p && p.manifest && !p.manifest.type) {
+      const pkg = this.state.packages[pkgName]
+      if (pkg && pkg.manifest && pkg.manifest.type) {
+        return this.state.selectedTypes.includes(pkg.manifest.type)
+      } else if (pkg && pkg.manifest && !pkg.manifest.type) {
         return this.state.selectedTypes.includes('library')
       } else {
         return false
       }
     })
-
+    // Reconstruct object with filtered keys
+    .reduce((obj, key) => {
+      obj[key] = this.state.packages[key];
+      return obj;
+    }, {});
 
     const modalId = "exampleModal"
     const modalTarget = "#"+modalId
@@ -168,7 +180,7 @@ export default class PackageInstallerInterface extends React.Component {
         </div>
         <div class="input-group mb-3">
           <input type="text" class="form-control"
-            placeholder="enter package's .eth address..." aria-label="Package name" aria-describedby="basic-addon2"
+            placeholder="Enter package's name or IPFS hash..." aria-label="Package name" aria-describedby="basic-addon2"
             value={this.state.packageLink}
             onChange={this.updatePackageLink.bind(this)}
           ></input>
@@ -182,7 +194,7 @@ export default class PackageInstallerInterface extends React.Component {
         </div>
 
         <TypeFilter
-          directory={this.state.directory}
+          directory={this.state.packages}
           selectedTypes={this.state.selectedTypes}
           updateSelectedTypes={this.updateSelectedTypes.bind(this)}
         />
@@ -208,6 +220,7 @@ export default class PackageInstallerInterface extends React.Component {
         <InstallerModal
           targetPackageName={this.state.targetPackageName}
           packageInfo={this.state.packageInfo[this.state.targetPackageName]}
+          packageData={this.state.packages[this.state.targetPackageName]}
           disabled={this.state.disabled[this.state.targetPackageName]}
           installPackage={this.installPackageInTable.bind(this)}
           changeVersion={this.changeVersion.bind(this)}

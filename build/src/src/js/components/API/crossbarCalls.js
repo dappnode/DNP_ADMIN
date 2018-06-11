@@ -199,7 +199,8 @@ export async function addPackage(link) {
   AppActions.updateDisabled({name: link, disabled: false})
 
   AppActions.updateProgressLog({clear: true})
-  updateData()
+
+  listPackages()
 
 };
 
@@ -220,7 +221,7 @@ export async function removePackage(id, deleteVolumes) {
     autoClose: 5000
   });
 
-  updateData()
+  listPackages()
 
 };
 
@@ -241,7 +242,7 @@ export async function togglePackage(id, isCORE) {
     autoClose: 5000
   });
 
-  updateData()
+  listPackages()
 
 };
 
@@ -262,7 +263,7 @@ export async function restartPackage(id, isCORE) {
     autoClose: 5000
   });
 
-  updateData()
+  listPackages()
 
 };
 
@@ -283,7 +284,7 @@ export async function restartPackageVolumes(id, isCORE) {
     autoClose: 5000
   });
 
-  updateData()
+  listPackages()
 
 };
 
@@ -294,10 +295,6 @@ function parseResponse(resUnparsed) {
   return JSON.parse(resUnparsed)
 }
 
-function updateData() {
-  listPackages()
-  listDirectory()
-}
 
 
 export async function updatePackageEnv(id, envs, restart, isCORE) {
@@ -316,9 +313,10 @@ export async function updatePackageEnv(id, envs, restart, isCORE) {
     autoClose: 5000
   });
 
-  updateData()
+  listPackages()
 
 };
+
 
 export async function logPackage(id, isCORE) {
 
@@ -339,35 +337,22 @@ export async function logPackage(id, isCORE) {
   if (res.success && res.result && res.result.logs)
     AppActions.updatePackageLog(id, res.result.logs)
 
-  updateData()
-
 };
 
 
 export async function fetchPackageInfo(id) {
 
-  let toastId = toast('Fetching '+id+' info', {
-    autoClose: false,
-    position: toast.POSITION.BOTTOM_RIGHT
-  });
-
   let resUnparsed = await session.call('fetchPackageInfo.dappmanager.dnp.dappnode.eth', [id])
   let res = parseResponse(resUnparsed)
 
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
-  });
-
-  console.log('FETCHED', res.result)
-
   if (res.success && res.result)
     AppActions.updatePackageInfo(id, res.result)
-
-  updateData()
-
+  else
+    toast.error("Error fetching versions of "+id+": "+res.message, {
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
 };
+
 
 export async function listPackages() {
 
@@ -383,6 +368,7 @@ export async function listPackages() {
 
 };
 
+
 export async function listDirectory() {
   // [ { name: 'rinkeby.dnp.dappnode.eth',
   //   status: 'Preparing',
@@ -391,21 +377,53 @@ export async function listDirectory() {
 
   if (chainStatus.isSyncing) {
     console.warn('Mainnet is still syncing, preventing directory listing')
-
-  } else {
-
-    let resUnparsed = await session.call('listDirectory.dappmanager.dnp.dappnode.eth', [])
-    let res = parseResponse(resUnparsed)
-
-    if (res.success && res.result)
-      AppActions.updateDirectory(res.result)
-    else
-      toast.error("Error fetching directory: "+res.message, {
-        position: toast.POSITION.BOTTOM_RIGHT
-      })
-
+    return
   }
 
+  let resUnparsed = await session.call('listDirectory.dappmanager.dnp.dappnode.eth', [])
+  let res = parseResponse(resUnparsed)
+
+  if (res.success && res.result) {
+
+    // QUICK - First add current data to the store
+    for (const pkg of res.result) {
+      AppActions.updatePackageData({
+        name: pkg.name,
+        data: pkg
+      })
+    }
+    // SLOW - Then call for the additional package data
+    for (const pkg of res.result) {
+      await getPackageData(pkg.name)
+    }
+
+  } else {
+    toast.error("Error fetching directory: "+res.message, {
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
+  }
+};
 
 
+async function getPackageData(id) {
+
+  let resUnparsed = await session.call('getPackageData.dappmanager.dnp.dappnode.eth', [id])
+  let res = parseResponse(resUnparsed)
+
+  if (res.success && res.result)
+    AppActions.updatePackageData({
+      name: id,
+      data: res.result
+    })
+
+  else {
+    AppActions.updatePackageData({
+      name: id,
+      data: { error: res.message }
+    })
+
+    toast.error("Package "+id+" is unavailable: "+res.message, {
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
+  }
 };

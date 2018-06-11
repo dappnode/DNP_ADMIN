@@ -144,21 +144,21 @@ export default class InstallerModal extends React.Component {
     //   >
     //     {options}
     // </select>
-    let packageName, manifest, manifestHash, options
-    if (this.props.packageInfo) {
-      packageName = this.props.packageInfo.name
-      manifest = this.props.packageInfo.versions[this.props.versionIndex].manifest
-      manifestHash = this.props.packageInfo.versions[this.props.versionIndex].manifestHash
 
-      let versions = this.props.packageInfo.versions
-      options = versions.map((version, i) => {
-        return <option key={i}>{version.version}</option>
-      })
-
-    } else {
-      packageName = manifest = manifestHash = options = ''
+    // Mix the latest manifest with the versions that are fetched in the backend
+    const latestVersion = {
+      version: 'latest',
+      manifest: (this.props.packageData && this.props.packageData.manifest) ? this.props.packageData.manifest : {}
     }
+    const versions = (this.props.packageInfo && this.props.packageInfo.versions) ? this.props.packageInfo.versions : []
+    if (!versions.find(v => v.version === 'latest')) versions.unshift(latestVersion)
 
+    // Construct variables
+    const options = versions.map((version, i) => {
+      return <option key={i}>{version.version}</option>
+    })
+    const packageName = this.props.targetPackageName
+    const manifest = versions[this.props.versionIndex].manifest
 
     return (
       <div class="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
