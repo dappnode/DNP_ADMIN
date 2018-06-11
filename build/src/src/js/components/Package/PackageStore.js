@@ -33,7 +33,6 @@ class Card extends React.Component {
   render() {
 
     const pkg = this.props.pkg
-    console.log(pkg)
     // The pkg can be incomplete, prevent crashes
 
     const name = pkg.name || '?'

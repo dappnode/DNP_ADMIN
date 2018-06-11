@@ -180,7 +180,7 @@ export default class PackageInstallerInterface extends React.Component {
         </div>
         <div class="input-group mb-3">
           <input type="text" class="form-control"
-            placeholder="enter package's .eth address..." aria-label="Package name" aria-describedby="basic-addon2"
+            placeholder="Enter package's name or IPFS hash..." aria-label="Package name" aria-describedby="basic-addon2"
             value={this.state.packageLink}
             onChange={this.updatePackageLink.bind(this)}
           ></input>
@@ -220,6 +220,7 @@ export default class PackageInstallerInterface extends React.Component {
         <InstallerModal
           targetPackageName={this.state.targetPackageName}
           packageInfo={this.state.packageInfo[this.state.targetPackageName]}
+          packageData={this.state.packages[this.state.targetPackageName]}
           disabled={this.state.disabled[this.state.targetPackageName]}
           installPackage={this.installPackageInTable.bind(this)}
           changeVersion={this.changeVersion.bind(this)}

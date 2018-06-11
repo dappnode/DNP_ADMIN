@@ -199,7 +199,8 @@ export async function addPackage(link) {
   AppActions.updateDisabled({name: link, disabled: false})
 
   AppActions.updateProgressLog({clear: true})
-  updateData()
+
+  listPackages()
 
 };
 
@@ -220,7 +221,7 @@ export async function removePackage(id, deleteVolumes) {
     autoClose: 5000
   });
 
-  updateData()
+  listPackages()
 
 };
 
@@ -241,7 +242,7 @@ export async function togglePackage(id, isCORE) {
     autoClose: 5000
   });
 
-  updateData()
+  listPackages()
 
 };
 
@@ -262,7 +263,7 @@ export async function restartPackage(id, isCORE) {
     autoClose: 5000
   });
 
-  updateData()
+  listPackages()
 
 };
 
@@ -283,7 +284,7 @@ export async function restartPackageVolumes(id, isCORE) {
     autoClose: 5000
   });
 
-  updateData()
+  listPackages()
 
 };
 
@@ -294,10 +295,6 @@ function parseResponse(resUnparsed) {
   return JSON.parse(resUnparsed)
 }
 
-function updateData() {
-  listPackages()
-  listDirectory()
-}
 
 
 export async function updatePackageEnv(id, envs, restart, isCORE) {
@@ -316,9 +313,10 @@ export async function updatePackageEnv(id, envs, restart, isCORE) {
     autoClose: 5000
   });
 
-  updateData()
+  listPackages()
 
 };
+
 
 export async function logPackage(id, isCORE) {
 
@@ -339,35 +337,22 @@ export async function logPackage(id, isCORE) {
   if (res.success && res.result && res.result.logs)
     AppActions.updatePackageLog(id, res.result.logs)
 
-  updateData()
-
 };
 
 
 export async function fetchPackageInfo(id) {
 
-  let toastId = toast('Fetching '+id+' info', {
-    autoClose: false,
-    position: toast.POSITION.BOTTOM_RIGHT
-  });
-
   let resUnparsed = await session.call('fetchPackageInfo.dappmanager.dnp.dappnode.eth', [id])
   let res = parseResponse(resUnparsed)
 
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
-  });
-
-  console.log('FETCHED', res.result)
-
   if (res.success && res.result)
     AppActions.updatePackageInfo(id, res.result)
-
-  updateData()
-
+  else
+    toast.error("Error fetching versions of "+id+": "+res.message, {
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
 };
+
 
 export async function listPackages() {
 
@@ -416,6 +401,7 @@ export async function listDirectory() {
   }
 
 };
+
 
 async function getPackageData(id) {
 
