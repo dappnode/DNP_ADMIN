@@ -180,7 +180,7 @@ export default class PackageInstallerInterface extends React.Component {
         </div>
         <div class="input-group mb-3">
           <input type="text" class="form-control"
-            placeholder="Enter package's name or IPFS hash..." aria-label="Package name" aria-describedby="basic-addon2"
+            placeholder="Enter package's name or IPFS hash" aria-label="Package name" aria-describedby="basic-addon2"
             value={this.state.packageLink}
             onChange={this.updatePackageLink.bind(this)}
           ></input>
