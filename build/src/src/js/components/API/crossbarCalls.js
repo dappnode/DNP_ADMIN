@@ -383,14 +383,16 @@ export async function listDirectory() {
   let res = parseResponse(resUnparsed)
 
   if (res.success && res.result) {
+    // QUICK - First add current data to the store
     for (const pkg of res.result) {
-      // First add current data to the store
       AppActions.updatePackageData({
         name: pkg.name,
         data: pkg
       })
-      // Then call for the additional package data
-      getPackageData(pkg.name)
+    }
+    // SLOW - Then call for the additional package data
+    for (const pkg of res.result) {
+      await getPackageData(pkg.name)
     }
   }
 
@@ -414,9 +416,16 @@ async function getPackageData(id) {
       data: res.result
     })
 
-  else
+  else {
+    AppActions.updatePackageData({
+      name: id,
+      data: {error: res.message}
+    })
+
     toast.error("Package "+id+" is unavailable: "+res.message, {
       position: toast.POSITION.BOTTOM_RIGHT
     })
+  }
+
 
 };

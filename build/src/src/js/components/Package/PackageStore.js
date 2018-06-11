@@ -3,7 +3,7 @@ import params from "Params";
 import ClipboardJS from 'clipboard';
 import semver from 'semver'
 import waitImg from 'Img/wait-min.png'
-
+import errorImg from 'Img/error-min.png'
 
 function getTag(v_now, v_avail) {
   // If there is no current version, display install
@@ -35,15 +35,15 @@ class Card extends React.Component {
     const pkg = this.props.pkg
     // The pkg can be incomplete, prevent crashes
 
-    const name = pkg.name || '?'
-    const status = pkg.status || '?'
-    const id = name;
-    const description = pkg.manifest ? pkg.manifest.description || 'Awesome dnp' : '?'
-    const type = pkg.manifest ? pkg.manifest.type || 'library' : '?'
+    let name = pkg.name || '?'
+    let status = pkg.status || '?'
+    let id = name;
+    let description = pkg.manifest ? pkg.manifest.description || 'Awesome dnp' : '?'
+    let type = pkg.manifest ? pkg.manifest.type || 'library' : '?'
 
-    const namePretty = capitalize( name.split('.dnp.dappnode.eth')[0] )
-    const imgClass = pkg.avatar ? '' : 'wait'
-    const img = pkg.avatar || waitImg
+    let namePretty = capitalize( name.split('.dnp.dappnode.eth')[0] )
+    let imgClass = pkg.avatar ? '' : 'wait'
+    let img = pkg.avatar || waitImg
 
     const allowInstall = Boolean(pkg.disableInstall) // ######
 
@@ -53,6 +53,16 @@ class Card extends React.Component {
     if (tag.toLowerCase() == 'install') tagStyle = 'active'
     if (tag.toLowerCase() == 'update') tagStyle = 'active'
     if (tag.toLowerCase() == 'installed') tagStyle = 'unactive'
+
+    // If package broke, re-assign variables
+    if (pkg.error) {
+      type = ''
+      description = pkg.error
+      img = errorImg
+      imgClass = ''
+      tag = 'ERROR'
+      tagStyle = 'unactive'
+    }
 
     // ##### Text under the card's title showing the status
     // <p class="card-text">Status: {status}</p>
