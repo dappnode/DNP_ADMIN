@@ -95,3 +95,10 @@ export function updateDisabled(payload) {
     payload
   });
 }
+
+export function updatePackageData(payload) {
+  dispatcher.dispatch({
+    type: AppStore.tag.UPDATE_PACKAGEDATA,
+    payload
+  });
+}

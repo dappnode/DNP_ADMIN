@@ -36,13 +36,14 @@ export default class TypeFilter extends React.Component {
   }
 
   render() {
-    const directory = this.props.directory || []
+    const directory = this.props.directory || {}
     // Adding default types
     let uniqueTypes = defaultTypes
-    directory.map(p => {
-      if (p && p.manifest && p.manifest.type
-        && !uniqueTypes.includes(p.manifest.type)) {
-          uniqueTypes.push(p.manifest.type)
+    Object.getOwnPropertyNames(directory).map(pkgName => {
+      const pkg = directory[pkgName]
+      if (pkg && pkg.manifest && pkg.manifest.type
+        && !uniqueTypes.includes(pkg.manifest.type)) {
+          uniqueTypes.push(pkg.manifest.type)
         }
     })
 

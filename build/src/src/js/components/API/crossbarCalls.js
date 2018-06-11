@@ -391,21 +391,46 @@ export async function listDirectory() {
 
   if (chainStatus.isSyncing) {
     console.warn('Mainnet is still syncing, preventing directory listing')
-
-  } else {
-
-    let resUnparsed = await session.call('listDirectory.dappmanager.dnp.dappnode.eth', [])
-    let res = parseResponse(resUnparsed)
-
-    if (res.success && res.result)
-      AppActions.updateDirectory(res.result)
-    else
-      toast.error("Error fetching directory: "+res.message, {
-        position: toast.POSITION.BOTTOM_RIGHT
-      })
-
+    return
   }
 
+  let resUnparsed = await session.call('listDirectory.dappmanager.dnp.dappnode.eth', [])
+  let res = parseResponse(resUnparsed)
 
+  if (res.success && res.result) {
+    for (const pkg of res.result) {
+      // First add current data to the store
+      AppActions.updatePackageData({
+        name: pkg.name,
+        data: pkg
+      })
+      // Then call for the additional package data
+      getPackageData(pkg.name)
+    }
+  }
+
+  else {
+    toast.error("Error fetching directory: "+res.message, {
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
+  }
+
+};
+
+async function getPackageData(id) {
+
+  let resUnparsed = await session.call('getPackageData.dappmanager.dnp.dappnode.eth', [id])
+  let res = parseResponse(resUnparsed)
+
+  if (res.success && res.result)
+    AppActions.updatePackageData({
+      name: id,
+      data: res.result
+    })
+
+  else
+    toast.error("Package "+id+" is unavailable: "+res.message, {
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
 
 };

@@ -16,6 +16,7 @@ class AppStore extends EventEmitter {
     this.chainStatus = {}
     this.status = {}
     this.disabled = {}
+    this.packages = {}
     // The log object is
     // log[component][topic] = {msg: 'Package installed', type: 'success'}
     // messages for the same component and topic get overwritten
@@ -34,6 +35,7 @@ class AppStore extends EventEmitter {
       UPDATE_CHAINSTATUS: 'UPDATE_CHAINSTATUS',
       UPDATE_STATUS: 'UPDATE_STATUS',
       UPDATE_DISABLED: 'UPDATE_DISABLED',
+      UPDATE_PACKAGEDATA: 'UPDATE_PACKAGEDATA',
       ADD_DEVICE: 'ADD_DEVICE',
       CHANGE: 'CHANGE',
       CHANGE_CHAINSTATUS: 'CHANGE_CHAINSTATUS',
@@ -84,6 +86,10 @@ class AppStore extends EventEmitter {
 
   getDisabled() {
     return this.disabled || {};
+  }
+
+  getPackages() {
+    return this.packages;
   }
 
   handleActions(action) {
@@ -178,6 +184,14 @@ class AppStore extends EventEmitter {
       }
       case this.tag.UPDATE_DISABLED: {
         this.disabled[action.payload.name] = action.payload.disabled
+        this.emit(this.tag.CHANGE);
+        break;
+      }
+      case this.tag.UPDATE_PACKAGEDATA: {
+        // Initialize object
+        const id = action.payload.name
+        // update package data or initialize if non-existent
+        this.packages[id] = Object.assign((this.packages[id] || {}), action.payload.data);
         this.emit(this.tag.CHANGE);
         break;
       }

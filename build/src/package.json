@@ -65,6 +65,7 @@
     "react-router-dom": "^4.2.2",
     "react-toastify": "^4.0.1",
     "regression": "^2.0.1",
+    "semver": "^5.5.0",
     "simple-statistics": "^6.0.1",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "url-loader": "^1.0.1"

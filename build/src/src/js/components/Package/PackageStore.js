@@ -1,6 +1,21 @@
 import React from "react";
 import params from "Params";
 import ClipboardJS from 'clipboard';
+import semver from 'semver'
+import waitImg from 'Img/wait-min.png'
+
+
+function getTag(v_now, v_avail) {
+  // If there is no current version, display install
+  if (!v_now) return 'Install'
+  // Prevent the function from crashing
+  if (!semver.valid(v_now)) return 'Install (unk v_now='+v_now+')'
+  if (!semver.valid(v_avail)) return 'Install (unk v_avail='+v_avail+')'
+  // Compare versions and return appropiate tag
+  if (semver.lt(v_now, v_avail)) return 'Update'
+  else return 'Installed'
+}
+
 
 new ClipboardJS('.btn');
 
@@ -17,18 +32,25 @@ class Card extends React.Component {
 
   render() {
 
-    let name = this.props.pkg.name
-    let status = this.props.pkg.status
-    let id = name;
-    let description = this.props.pkg.manifest.description || 'Awesome dnp'
-    let type = this.props.pkg.manifest.type || 'library'
+    const pkg = this.props.pkg
+    console.log(pkg)
+    // The pkg can be incomplete, prevent crashes
 
-    let namePretty = capitalize( name.split('.dnp.dappnode.eth')[0] )
-    let img = this.props.pkg.avatar || defaultImg
-    let allowInstall = Boolean(this.props.pkg.disableInstall)
-    // Transform tag
+    const name = pkg.name || '?'
+    const status = pkg.status || '?'
+    const id = name;
+    const description = pkg.manifest ? pkg.manifest.description || 'Awesome dnp' : '?'
+    const type = pkg.manifest ? pkg.manifest.type || 'library' : '?'
+
+    const namePretty = capitalize( name.split('.dnp.dappnode.eth')[0] )
+    const imgClass = pkg.avatar ? '' : 'wait'
+    const img = pkg.avatar || waitImg
+
+    const allowInstall = Boolean(pkg.disableInstall) // ######
+
+    let tag = pkg.manifest ? getTag(pkg.currentVersion, pkg.manifest.version) : 'loading'
+
     let tagStyle = ''
-    let tag = this.props.pkg.tag
     if (tag.toLowerCase() == 'install') tagStyle = 'active'
     if (tag.toLowerCase() == 'update') tagStyle = 'active'
     if (tag.toLowerCase() == 'installed') tagStyle = 'unactive'
@@ -46,7 +68,7 @@ class Card extends React.Component {
           disabled={allowInstall}
         >
           <div class="p-1 hover-animation" data-text={description}>
-            <img class="card-img-top " src={img} alt="Card image cap"/>
+            <img class={"card-img-top "+imgClass} src={img} alt="Card image cap"/>
           </div>
           <div class="card-body text-nowrap">
             <h5 class="card-title">{namePretty}</h5>
@@ -67,19 +89,15 @@ export default class PackageStore extends React.Component {
   }
 
   render() {
-    let cards = [];
-    const directory = this.props.directory || []
-    for (let i = 0; i < directory.length; i++) {
-      let pkg = directory[i];
-      cards.push(
-        <Card
-          key={i}
-          pkg={pkg}
-          preInstallPackage={this.props.preInstallPackage}
-          modalTarget={this.props.modalTarget}
-        />
-      );
-    }
+    const directory = this.props.directory || {}
+    const cards = Object.getOwnPropertyNames(directory).map((pkgName, i) =>(
+      <Card
+        key={i}
+        pkg={this.props.directory[pkgName]}
+        preInstallPackage={this.props.preInstallPackage}
+        modalTarget={this.props.modalTarget}
+      />
+    ))
 
     if(!this.props.isSyncing && this.props.directory.length == 0) {
       return (
