@@ -1,14 +1,25 @@
 import autobahn from 'autobahn';
 import * as AppActions from 'Action';
 
+
 const NON_ADMIN_RESPONSE = 'Your user is not an admin'
+const INTERVAL_S = 5 // s
+
 
 // initialize
 AppActions.updateStatus({pkg: 'wamp', item: 'connection', on: 0, msg: 'verifying...'})
 AppActions.updateStatus({pkg: 'dappmanager', item: 'crossbar', on: 0, msg: 'verifying...'})
 AppActions.updateStatus({pkg: 'vpn', item: 'crossbar', on: 0, msg: 'verifying...'})
 
+
+// Initial call
 check()
+
+// Keep checking every
+setTimeout(() => {
+  check()
+}, INTERVAL_S * 1000);
+
 
 async function check() {
 
