@@ -65,7 +65,6 @@ let web3WatchLoop = setInterval(function(){
 
 
 
-
 function log(isSyncing, typeNum, status) {
   let type
   if (typeNum ===  1) type = 'success'
