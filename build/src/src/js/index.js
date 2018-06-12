@@ -1,7 +1,7 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { HashRouter as Router, Route } from 'react-router-dom'
-import App from './components/App'
+import React from 'react';
+import { render } from 'react-dom';
+import { HashRouter as Router, Route } from 'react-router-dom';
+import App from './components/App';
 
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,25 +9,25 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/sb-admin.css';
 import '../css/admin_UI.css';
 
-import './vendor/jquery.min.js'
-import './vendor/bootstrap.bundle.min.js'
-import './vendor/jquery.easing.min.js'
+import './vendor/jquery.min.js';
+import './vendor/bootstrap.bundle.min.js';
+import './vendor/jquery.easing.min.js';
 
 // APIs
-import './watchers'
+import './watchers';
 
 // // OFFLINE component
 // import './lib/offline.min.js'
 // import './lib/offline-theme-default.css'
 
 function Layout(props) {
-  return (
-    <Router>
-      <div>
-        <App />
-      </div>
-    </Router>
-  )
+	return (
+		<Router>
+			<div>
+				<App />
+			</div>
+		</Router>
+	);
 }
 
 render(<Layout />, document.getElementById('root'));
