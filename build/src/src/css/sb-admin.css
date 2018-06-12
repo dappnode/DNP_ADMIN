@@ -1,8 +1,20 @@
 :root {
-  --sidenav-bg-color: #f8f8f8;
+  --sidenav-bg-color: #fff;
   --sidenav-color: #241f20;
   --sidenav-color-hover: #7f7a7b;
+
+  --topnav-bg-color: #fff;
+  --topnav-color: #241f20;
+  --topnav-color-hover: #7f7a7b;
 }
+
+/* ADDITIONS */
+
+.bg-topnav {
+  background-color: var(--topnav-bg-color);
+}
+
+/* ADDITIONS */
 
 html {
   position: relative;
@@ -381,11 +393,11 @@ body.sidenav-toggled .navbar-sidenav-tooltip.show {
 }
 
 #mainNav.navbar-light .navbar-collapse .navbar-sidenav .nav-link-collapse:after {
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 1);
 }
 
 #mainNav.navbar-light .navbar-collapse .navbar-sidenav > .nav-item > .nav-link {
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 1);
 }
 
 #mainNav.navbar-light .navbar-collapse .navbar-sidenav > .nav-item > .nav-link:hover {
@@ -409,7 +421,7 @@ body.sidenav-toggled .navbar-sidenav-tooltip.show {
 
 @media (min-width: 992px) {
   #mainNav.navbar-light .navbar-collapse .navbar-sidenav {
-    background: #f8f9fa;
+    background: var(--sidenav-bg-color);
   }
   #mainNav.navbar-light .navbar-collapse .navbar-sidenav li.active a {
     color: #000 !important;
@@ -420,7 +432,7 @@ body.sidenav-toggled .navbar-sidenav-tooltip.show {
   }
   #mainNav.navbar-light .navbar-collapse .navbar-sidenav > .nav-item .sidenav-second-level,
   #mainNav.navbar-light .navbar-collapse .navbar-sidenav > .nav-item .sidenav-third-level {
-    background: #f8f9fa;
+    background: var(--sidenav-bg-color);
   }
 }
 

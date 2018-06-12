@@ -186,6 +186,12 @@ class NavbarSide extends React.Component {
     super();
   }
 
+  componentDidMount() {
+    $('.navbar-nav>li>a').on('click', function(){
+      $('.navbar-collapse').collapse('hide');
+    });
+  }
+
   render() {
     let navbarItems = navbarItemsInfo.map((item, i) => {
       return (
@@ -205,12 +211,16 @@ class NavbarSide extends React.Component {
     })
 
     return (
-      <ul class="navbar-nav navbar-sidenav navbar-sidebar-fix shadow" id="exampleAccordion">
+      <ul class="navbar-nav navbar-sidenav navbar-sidebar-fix sidenav-shadow navbar-border" id="exampleAccordion">
         <li class="nav-item">
-          <NavLink
-          class="nav-link"
-          to={'/'}
-          >
+          <NavLink class="nav-link sidenav-topbox" to={'/'}>
+            <div class="sidenav-topbox-text">
+              ADMIN UI
+            </div>
+          </NavLink>
+        </li>
+        <li class="nav-item">
+          <NavLink class="nav-link" to={'/'}>
             <div class="logo-image-container nav-link text-center">
               <img src={LogoImg} class="img-fluid" alt="Responsive image"/>
             </div>
@@ -232,7 +242,7 @@ export default class Navbar extends React.Component {
   render() {
 
     return (
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+      <nav class="navbar navbar-expand-lg navbar-light bg-topnav navbar-border fixed-top" id="mainNav">
 
         <NavLink class="navbar-brand" to={'/'}>
           ADMIN UI
