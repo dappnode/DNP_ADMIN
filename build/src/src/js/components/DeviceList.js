@@ -2,6 +2,8 @@ import React from "react";
 import params from "Params";
 import ClipboardJS from 'clipboard';
 import QRCode from 'qrcode.react';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
 new ClipboardJS('.btn');
 
@@ -11,7 +13,20 @@ const QR_MODAL_TAG = 'QR_MODAL_TAG'
 class Row extends React.Component {
 
   removeDevice(id) {
-    this.props.removeDevice(id)
+    confirmAlert({
+      title: 'Removing '+id+' device',
+      message: 'Are you sure?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => this.props.removeDevice(id)
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    })
   }
 
   toggleAdmin(id, isAdmin) {
