@@ -14,8 +14,6 @@ import './vendor/bootstrap.bundle.min.js'
 import './vendor/jquery.easing.min.js'
 
 // APIs
-import './components/API/chainStatus'
-import './components/API/dns'
 import './watchers'
 
 // // OFFLINE component
