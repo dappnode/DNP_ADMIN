@@ -2,6 +2,10 @@
   --sidenav-bg-color: #f8f8f8;
   --sidenav-color: #241f20;
   --sidenav-color-hover: #7f7a7b;
+
+  --topnav-bg-color: #f8f8f8;
+  --topnav-color: #241f20;
+  --topnav-color-hover: #7f7a7b;
 }
 
 html {
@@ -234,6 +238,7 @@ body {
 #mainNav.fixed-top.navbar-dark .sidenav-toggler {
   background-color: #212529;
 }
+var(--sidenav-color-hover);
 
 #mainNav.fixed-top.navbar-dark .sidenav-toggler a i {
   color: var(--sidenav-color-hover);
