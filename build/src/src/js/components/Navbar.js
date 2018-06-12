@@ -186,12 +186,6 @@ class NavbarSide extends React.Component {
     super();
   }
 
-  componentDidMount() {
-    $('.navbar-nav>li>a').on('click', function(){
-      $('.navbar-collapse').collapse('hide');
-    });
-  }
-
   render() {
     let navbarItems = navbarItemsInfo.map((item, i) => {
       return (
