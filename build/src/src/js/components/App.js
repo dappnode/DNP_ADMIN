@@ -49,7 +49,7 @@ export default class App extends React.Component {
       return (
         <div class="wrapper fixed-nav">
           <Navbar />
-          <div class="content-wrapper">
+          <div class="content-wrapper dappnode-background">
             <div class="container-fluid app-content">
               <ErrorBoundary>
                 <Route exact path='/' component={Home}/>
