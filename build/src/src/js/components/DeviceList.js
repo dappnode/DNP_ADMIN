@@ -104,7 +104,6 @@ export default class DeviceList extends React.Component {
     let selectedDevice = deviceList.filter(d => d.name == this.state.id)[0]
     let url = selectedDevice ? selectedDevice.otp : '-'
     let name = selectedDevice ? selectedDevice.name : '-'
-    let qrSize = (window.innerWidth > 600) ? 466 : Math.floor(0.85*window.innerWidth)
 
     return (
       <div class="table-responsive">
