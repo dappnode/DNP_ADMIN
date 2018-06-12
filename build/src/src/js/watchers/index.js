@@ -1,1 +1,2 @@
 import './crossbar'
+import './ipfs'
