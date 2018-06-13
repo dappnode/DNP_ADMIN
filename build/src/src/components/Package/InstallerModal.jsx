@@ -1,4 +1,5 @@
 import React from "react";
+import getTag from "utils/getTag";
 
 let envInputTag = "envInput_";
 
@@ -17,8 +18,12 @@ class SubmitInstall extends React.Component {
   render() {
     let manifest = this.props.manifest;
     if (!manifest) return null;
-    if (typeof manifest !== {}) return null;
+    if (typeof manifest !== typeof {}) return null;
     if (!manifest.image) return null;
+
+    // let tag = pkg.manifest
+    //   ? getTag(pkg.currentVersion, pkg.manifest.version)
+    //   : "loading";
 
     let envs = manifest.image.environment || [];
 
@@ -57,9 +62,9 @@ class SubmitInstall extends React.Component {
           type="submit"
           data-dismiss="modal"
           onClick={this.submit.bind(this)}
-          disabled={this.props.disabled}
+          disabled={this.props.disableInstall}
         >
-          {this.props.disabled ? "INSTALLED" : "INSTALL"}
+          {this.props.disableInstall ? "INSTALLED" : "INSTALL"}
         </button>
       </form>
     );
@@ -97,8 +102,8 @@ class PackageInfoTable extends React.Component {
       { key: "Type", val: manifest.type || "" },
       { key: "Size", val: manifest.image ? manifest.image.size || "" : "" },
       {
-        key: "Image path",
-        val: manifest.image ? manifest.image.path || "" : ""
+        key: "Image hash",
+        val: manifest.image ? manifest.image.hash || "" : ""
       }
     ];
 
@@ -127,22 +132,6 @@ export default class InstallerModal extends React.Component {
   }
 
   render() {
-    // This should get:
-    // - specific package info object
-    // - installer call
-
-    // console.log('this.state.packageInfo', this.state.packageInfo)
-
-    // let name = this.props.package.name
-    // let namePretty = capitalize( name.split('.dnp.dappnode.eth')[0] )
-    // let img = imageArchie[name] || defaultImg
-
-    // <select className="form-control custom-select"
-    //   id={id+'@version'}
-    //   >
-    //     {options}
-    // </select>
-
     // Mix the latest manifest with the versions that are fetched in the backend
     const latestVersion = {
       version: "latest",
@@ -151,10 +140,8 @@ export default class InstallerModal extends React.Component {
           ? this.props.packageData.manifest
           : {}
     };
-    const versions =
-      this.props.packageInfo && this.props.packageInfo.versions
-        ? this.props.packageInfo.versions
-        : [];
+
+    const versions = this.props.versions;
     if (!versions.find(v => v.version === "latest"))
       versions.unshift(latestVersion);
 
@@ -164,6 +151,18 @@ export default class InstallerModal extends React.Component {
     });
     const packageName = this.props.targetPackageName;
     const manifest = versions[this.props.versionIndex].manifest;
+
+    // Check if allow install or not
+    let disableInstall;
+    if (
+      this.props.packageData &&
+      this.props.packageData.manifest &&
+      getTag(
+        this.props.packageData.currentVersion,
+        this.props.packageData.manifest.version
+      ).toLowerCase() === "installed"
+    )
+      disableInstall = true;
 
     return (
       <div
@@ -213,7 +212,7 @@ export default class InstallerModal extends React.Component {
 
               <SubmitInstall
                 manifest={manifest}
-                disabled={this.props.disabled}
+                disableInstall={disableInstall}
                 installPackage={this.props.installPackage}
               />
             </div>

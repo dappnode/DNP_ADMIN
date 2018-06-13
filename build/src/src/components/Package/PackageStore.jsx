@@ -1,19 +1,8 @@
 import React from "react";
 import ClipboardJS from "clipboard";
-import semver from "semver";
 import waitImg from "img/wait-min.png";
 import errorImg from "img/error-min.png";
-
-function getTag(v_now, v_avail) {
-  // If there is no current version, display install
-  if (!v_now) return "Install";
-  // Prevent the function from crashing
-  if (!semver.valid(v_now)) return "Install (unk v_now=" + v_now + ")";
-  if (!semver.valid(v_avail)) return "Install (unk v_avail=" + v_avail + ")";
-  // Compare versions and return appropiate tag
-  if (semver.lt(v_now, v_avail)) return "Update";
-  else return "Installed";
-}
+import getTag from "utils/getTag";
 
 new ClipboardJS(".btn");
 
@@ -33,8 +22,6 @@ class Card extends React.Component {
     let namePretty = capitalize(name.split(".dnp.dappnode.eth")[0]);
     let imgClass = pkg.avatar ? "" : "wait";
     let img = pkg.avatar || waitImg;
-
-    const allowInstall = Boolean(pkg.disableInstall); // ######
 
     let tag = pkg.manifest
       ? getTag(pkg.currentVersion, pkg.manifest.version)
@@ -66,7 +53,6 @@ class Card extends React.Component {
           data-target={this.props.modalTarget}
           onClick={this.props.preInstallPackage}
           id={id}
-          disabled={allowInstall}
         >
           <div className="p-1 hover-animation" data-text={description}>
             <img

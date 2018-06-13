@@ -218,7 +218,6 @@ export default class PackageInstallerInterface extends React.Component {
 
         <PackageStore
           directory={filteredDirectory}
-          disabled={this.state.disabled}
           isSyncing={chainStatus.isSyncing}
           preInstallPackage={this.preInstallPackageInTable.bind(this)}
           modalTarget={modalTarget}
@@ -226,9 +225,12 @@ export default class PackageInstallerInterface extends React.Component {
 
         <InstallerModal
           targetPackageName={this.state.targetPackageName}
-          packageInfo={this.state.packageInfo[this.state.targetPackageName]}
+          versions={
+            this.state.packageInfo[this.state.targetPackageName]
+              ? this.state.packageInfo[this.state.targetPackageName].versions
+              : []
+          }
           packageData={this.state.packages[this.state.targetPackageName]}
-          disabled={this.state.disabled[this.state.targetPackageName]}
           installPackage={this.installPackageInTable.bind(this)}
           changeVersion={this.changeVersion.bind(this)}
           versionIndex={this.state.versionIndex}
