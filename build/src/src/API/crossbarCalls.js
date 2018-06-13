@@ -182,6 +182,7 @@ export async function addPackage(link) {
   AppActions.updateProgressLog({ clear: true });
 
   listPackages();
+  listDirectory();
 }
 
 export async function removePackage(id, deleteVolumes) {
@@ -206,6 +207,7 @@ export async function removePackage(id, deleteVolumes) {
   });
 
   listPackages();
+  listDirectory();
 }
 
 export async function togglePackage(id, isCORE) {
