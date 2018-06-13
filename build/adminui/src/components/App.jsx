@@ -14,12 +14,6 @@ import AppStore from "stores/AppStore";
 
 import { ToastContainer } from "react-toastify";
 
-// Init css
-import "./include/bootstrap";
-import "./sb-admin.css";
-import "./admin_UI.css";
-import "react-toastify/dist/ReactToastify.css";
-
 // APIs
 import "./watchers";
 

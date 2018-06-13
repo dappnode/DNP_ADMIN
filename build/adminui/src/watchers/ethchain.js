@@ -20,16 +20,11 @@ console.log("Attempting to connect to ", ETHCHAIN_URL);
 
 let startTime = Date.now();
 
-let timeout = setTimeout(() => {
-  throw Error("timeout expired");
-}, 3000);
-
 setInterval(function() {
   try {
     api.eth
       .syncing()
       .then(function(syncingInfo) {
-        clearTimeout(timeout);
         if (
           syncingInfo &&
           // Condition 1, big enough difference between current and highest block
@@ -45,11 +40,9 @@ setInterval(function() {
       })
 
       .catch(function(e) {
-        clearTimeout(timeout);
         log(true, -1, "Error: " + e.message);
       });
   } catch (e) {
-    clearTimeout(timeout);
     log(true, -1, "Error: " + e.message);
   }
 }, INTERVAL_MS);
