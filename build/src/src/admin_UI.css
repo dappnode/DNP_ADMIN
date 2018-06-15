@@ -174,7 +174,8 @@
 
 .terminal {
   white-space: pre;
-  font-family: Consolas, monaco, monospace;
+  font-size: 75%;
+  font-family: 'Inconsolata', monospace;
   overflow: scroll;
 }
 
