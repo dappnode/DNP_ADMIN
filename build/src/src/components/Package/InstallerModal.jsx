@@ -132,25 +132,29 @@ export default class InstallerModal extends React.Component {
   }
 
   render() {
-    // Mix the latest manifest with the versions that are fetched in the backend
-    const latestVersion = {
-      version: "latest",
-      manifest:
-        this.props.packageData && this.props.packageData.manifest
-          ? this.props.packageData.manifest
-          : {}
-    };
-
     const versions = this.props.versions;
-    if (!versions.find(v => v.version === "latest"))
-      versions.unshift(latestVersion);
+
+    // Mix the latest manifest with the versions that are fetched in the backend
+    if (
+      // Make sure the latest version is not already in the array
+      !versions.find(v => v.version === "latest") &&
+      // Verify that the manifest exist so the latest version is not empty
+      this.props.packageData &&
+      this.props.packageData.manifest
+    )
+      versions.unshift({
+        version: "latest",
+        manifest: this.props.packageData.manifest
+      });
 
     // Construct variables
     const options = versions.map((version, i) => {
       return <option key={i}>{version.version}</option>;
     });
     const packageName = this.props.targetPackageName;
-    const manifest = versions[this.props.versionIndex].manifest;
+    const manifest = versions[this.props.versionIndex]
+      ? versions[this.props.versionIndex].manifest
+      : {};
 
     // Check if allow install or not
     let disableInstall;
@@ -176,7 +180,11 @@ export default class InstallerModal extends React.Component {
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
+              <h5
+                className="modal-title"
+                id="exampleModalLabel"
+                style={{ wordBreak: "break-all" }}
+              >
                 Installing: {packageName}
               </h5>
               <button
