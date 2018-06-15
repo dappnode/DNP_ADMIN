@@ -1,0 +1,21 @@
+import React from "react";
+import LogoImg from "img/DAppNode-Black.png";
+
+const NonAdmin = () => (
+  <div className="container-fluid app-content">
+    <div className="body">
+      <div className="jumbotron">
+        <div className="logo-image-container nav-link text-center">
+          <img src={LogoImg} className="img-fluid" alt="DAppNode logo" />
+        </div>
+        <h1 className="display-4">Welcome to the DAppNode admin page!</h1>
+        <p className="lead">
+          Turns out that you are not an admin. If you need to do admin stuff
+          please contact the admin of this DAppNode to get access
+        </p>
+      </div>
+    </div>
+  </div>
+);
+
+export default NonAdmin;
