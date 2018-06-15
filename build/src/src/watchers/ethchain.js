@@ -5,8 +5,8 @@ import { linearRegression } from "simple-statistics";
 import Api from "@parity/api";
 
 // @Parity, do the setup
-const parityProvider = new Api.Provider.Http(
-  "http://my.ethchain.dnp.dappnode.eth:8545"
+const parityProvider = new Api.Provider.Ws(
+  "ws://my.ethchain.dnp.dappnode.eth:8546"
 );
 const api = new Api(parityProvider);
 
