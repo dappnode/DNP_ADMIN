@@ -1,3 +1,5 @@
 build/src/dist/
 build/src/node_modules/
 .DS_Store
+build_*
+.gitignore
