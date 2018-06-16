@@ -8,20 +8,18 @@ import Log from "./Log";
 import LogProgress from "./LogProgress";
 import AppStore from "stores/AppStore";
 // Utils
-import isIPFS from "is-ipfs";
+
+function isIpfsHash(hash) {
+  return hash.startsWith("Qm") && !hash.includes(".") && hash.length == 46;
+}
 
 function correctPackageName(req) {
   // First determine if it contains an ipfs hash
-  if (req.startsWith("ipfs/") && isIPFS.multihash(req.split("ipfs/")[1]))
+  if (req.startsWith("ipfs/") && isIpfsHash(req.split("ipfs/")[1]))
     return "/" + req;
-  else if (isIPFS.multihash(req)) return "/ipfs/" + req;
+  else if (isIpfsHash(req)) return "/ipfs/" + req;
   else return req;
 }
-
-// console.log("multihash", isIPFS.multihash(req));
-// console.log("cid", isIPFS.cid(req));
-// console.log("path", isIPFS.path(req));
-// console.log("url", isIPFS.url(req));
 
 export default class PackageInstallerInterface extends React.Component {
   constructor() {
@@ -136,8 +134,10 @@ export default class PackageInstallerInterface extends React.Component {
     // Correct the packageLink in case it is an IPFS hash
     const packageLink = correctPackageName(e.target.value);
     // If the packageLink is a valid IPFS hash preload it's info
-    if (isIPFS.path(packageLink)) {
-      console.log("PREFETCHING INFO FOR", packageLink);
+    if (
+      packageLink.includes("/ipfs/") &&
+      isIpfsHash(packageLink.split("/ipfs/")[1])
+    ) {
       crossbarCalls.fetchPackageInfo(packageLink);
     }
     this.setState({ packageLink });
