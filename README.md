@@ -12,6 +12,10 @@
 
 DAppNode tool responsible for providing the admin UI of DAppNode.
 
+It is an AragonApp whose repo is deployed at this address: [0xee66c4765696c922078e8670aa9e6d4f6ffcc455
+](https://etherscan.io/address/0xee66c4765696c922078e8670aa9e6d4f6ffcc455
+) and whose ENS address is: [admin.dnp.dappnode.eth](https://etherscan.io/enslookup?q=admin.dnp.dappnode.eth)
+
 ## Usage
 
 Once connected to DAppNode, go to [my.admin.dnp.dappnode.eth](http://my.admin.dnp.dappnode.eth) to manage packages or devices.
