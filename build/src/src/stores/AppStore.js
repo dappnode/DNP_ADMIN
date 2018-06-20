@@ -17,6 +17,7 @@ class AppStore extends EventEmitter {
     this.status = {};
     this.disabled = {};
     this.packages = {};
+    this.params = {};
     // The log object is
     // log[component][topic] = {msg: 'Package installed', type: 'success'}
     // messages for the same component and topic get overwritten
@@ -36,12 +37,17 @@ class AppStore extends EventEmitter {
       UPDATE_STATUS: "UPDATE_STATUS",
       UPDATE_DISABLED: "UPDATE_DISABLED",
       UPDATE_PACKAGEDATA: "UPDATE_PACKAGEDATA",
+      UPDATE_PARAMS: "UPDATE_PARAMS",
       ADD_DEVICE: "ADD_DEVICE",
       CHANGE: "CHANGE",
       CHANGE_CHAINSTATUS: "CHANGE_CHAINSTATUS",
       CHANGE_STATUS: "CHANGE_STATUS",
       CHANGE_PROGRESSLOG: "CHANGE_PROGRESSLOG"
     };
+  }
+
+  getParams() {
+    return this.params;
   }
 
   getDeviceList() {
@@ -94,6 +100,11 @@ class AppStore extends EventEmitter {
 
   handleActions(action) {
     switch (action.type) {
+      case this.tag.UPDATE_PARAMS: {
+        this.params = action.params;
+        this.emit(this.tag.CHANGE);
+        break;
+      }
       case this.tag.UPDATE_DEVICE_LIST: {
         this.deviceList = action.deviceList;
         this.emit(this.tag.CHANGE);
