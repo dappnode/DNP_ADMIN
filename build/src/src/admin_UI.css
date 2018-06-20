@@ -172,13 +172,6 @@
 .Toastify__toast--warning { background: #f0ad4e; }
 .Toastify__toast--error { background: #d9534f; }
 
-.terminal {
-  white-space: pre;
-  font-size: 75%;
-  font-family: 'Inconsolata', monospace;
-  overflow: scroll;
-}
-
 .tableAction-button {
   min-width: 75px;
 }
