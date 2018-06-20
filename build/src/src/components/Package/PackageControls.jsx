@@ -100,7 +100,10 @@ export default class PackageControls extends React.Component {
         </div>
         <div className="card mb-4">
           <div className="card-body">
-            <table className="table table-hover" style={{ marginBottom: "0" }}>
+            <table
+              className="table table-hover table-responsive"
+              style={{ marginBottom: "0" }}
+            >
               <tbody>{rows}</tbody>
             </table>
           </div>
