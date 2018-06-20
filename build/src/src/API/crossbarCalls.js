@@ -302,26 +302,19 @@ export async function updatePackageEnv(id, envs, restart, isCORE) {
   listPackages();
 }
 
-export async function logPackage(id, isCORE) {
-  let toastId = toast("Logging " + id + (isCORE ? " (CORE)" : ""), {
-    autoClose: false,
-    position: toast.POSITION.BOTTOM_RIGHT
-  });
-
+export async function logPackage(id, isCORE, options = {}) {
   let resUnparsed = await session.call(
     "logPackage.dappmanager.dnp.dappnode.eth",
-    [id, isCORE]
+    [id, isCORE, JSON.stringify(options)]
   );
   let res = parseResponse(resUnparsed);
 
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
-  });
-
-  if (res.success && res.result && res.result.logs)
+  if (res.success && res.result && res.result.hasOwnProperty("logs"))
     AppActions.updatePackageLog(id, res.result.logs);
+  else
+    toast.error("Error logging " + id + ": " + res.message, {
+      position: toast.POSITION.BOTTOM_RIGHT
+    });
 }
 
 export async function fetchPackageInfo(id) {
