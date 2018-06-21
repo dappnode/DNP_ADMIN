@@ -2,7 +2,7 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { HashRouter as Router } from "react-router-dom";
 import ErrorBoundary from "react-error-boundary";
-import DevicesInterface from "./components/DevicesInterface";
+
 import PackageInstallerInterface from "./components/PackageInstallerInterface";
 import PackageManagerInterface from "./components/PackageManagerInterface";
 import PackageInterface from "./components/PackageInterface";
@@ -12,6 +12,11 @@ import Home from "./components/Home";
 import NonAdmin from "./components/NonAdmin";
 import AppStore from "stores/AppStore";
 
+// Testing redux
+import devices from "./devices";
+
+// Redux
+
 import { ToastContainer } from "react-toastify";
 
 // Init css
@@ -20,6 +25,9 @@ import "./sb-admin.css";
 import "./admin_UI.css";
 // APIs
 import "./watchers";
+
+// Init components
+const DevicesInterface = devices.components.DevicesInterface;
 
 export default class App extends React.Component {
   constructor() {

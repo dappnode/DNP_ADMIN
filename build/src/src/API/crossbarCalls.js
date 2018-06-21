@@ -33,7 +33,6 @@ async function start() {
     );
 
     setTimeout(function() {
-      listDevices();
       listPackages();
       listDirectory();
     }, 300);
@@ -64,84 +63,62 @@ async function start() {
 // {"result":"ERR","resultStr":"QmWhzrpqcrR5N4xB6nR5iX9q3TyN5LUMxBLHdMedquR8nr it is not accesible"}"
 /* DEVICE CALLS */
 
-export async function addDevice(name) {
-  // Ensure name contains only alphanumeric characters
-  const correctedName = name.replace(/\W/g, "");
+// ######
+function parseResponse(resUnparsed) {
+  return JSON.parse(resUnparsed);
+}
 
-  let toastId = toast("Adding device: " + correctedName, {
+function PendingToast(text) {
+  this.id = toast(text, {
     autoClose: false,
     position: toast.POSITION.BOTTOM_RIGHT
   });
-
-  let resUnparsed = await session.call("addDevice.vpn.dnp.dappnode.eth", [
-    correctedName
-  ]);
-  let res = parseResponse(resUnparsed);
-
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
-  });
-
-  listDevices();
-}
-
-export async function removeDevice(deviceName) {
-  let toastId = toast("Removing device: " + deviceName, {
-    autoClose: false,
-    position: toast.POSITION.BOTTOM_RIGHT
-  });
-
-  let resUnparsed = await session.call("removeDevice.vpn.dnp.dappnode.eth", [
-    deviceName
-  ]);
-  let res = parseResponse(resUnparsed);
-
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
-  });
-
-  listDevices();
-}
-
-export async function toggleAdmin(deviceName, isAdmin) {
-  let toastId = toast(
-    isAdmin
-      ? "Giving admin credentials to " + deviceName
-      : "Removing admin credentials from " + deviceName,
-    {
-      autoClose: false,
-      position: toast.POSITION.BOTTOM_RIGHT
-    }
-  );
-
-  let resUnparsed = await session.call("toggleAdmin.vpn.dnp.dappnode.eth", [
-    deviceName
-  ]);
-  let res = parseResponse(resUnparsed);
-
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
-  });
-
-  listDevices();
-}
-
-export async function listDevices() {
-  let resUnparsed = await session.call("listDevices.vpn.dnp.dappnode.eth", []);
-  let res = parseResponse(resUnparsed);
-
-  if (res.success && res.result) AppActions.updateDeviceList(res.result);
-  else
-    toast.error("Error listing devices: " + res.message, {
-      position: toast.POSITION.BOTTOM_RIGHT
+  this.resolve = res => {
+    toast.update(this.id, {
+      render: res.message,
+      type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
+      autoClose: 5000
     });
+  };
 }
+
+function call(event, initText = "") {
+  return async function() {
+    // Initialize a toast if requested
+    const pendingToast = initText !== "" ? new PendingToast(initText) : null;
+
+    // Construct an array with the argument of the function
+    const args =
+      arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments);
+    // Call the session method
+    const resUnparsed = await session.call(event, args);
+    // Parse response
+    const res = parseResponse(resUnparsed);
+
+    // Update the toast or create a new one in case of error
+    if (initText !== "") pendingToast.resolve(res);
+    else if (!res.success)
+      toast.error("Error listing devices: " + res.message, {
+        position: toast.POSITION.BOTTOM_RIGHT
+      });
+
+    // Return the result
+    return res.result;
+  };
+}
+export const addDevice = call(
+  "addDevice.vpn.dnp.dappnode.eth",
+  "Adding device..."
+);
+export const removeDevice = call(
+  "removeDevice.vpn.dnp.dappnode.eth",
+  "Removing device..."
+);
+export const toggleAdmin = call(
+  "toggleAdmin.vpn.dnp.dappnode.eth",
+  "Toggling admin credentials..."
+);
+export const listDevices = call("listDevices.vpn.dnp.dappnode.eth");
 
 /* PACKAGE */
 
@@ -274,11 +251,6 @@ export async function restartPackageVolumes(id, isCORE) {
   });
 
   listPackages();
-}
-
-// ######
-function parseResponse(resUnparsed) {
-  return JSON.parse(resUnparsed);
 }
 
 export async function updatePackageEnv(id, envs, restart, isCORE) {
