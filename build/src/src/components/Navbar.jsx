@@ -124,22 +124,31 @@ class NavbarTop extends React.Component {
   constructor() {
     super();
     this.state = {
-      chainStatus: AppStore.getChainStatus()
+      chainStatus: AppStore.getChainStatus(),
+      params: AppStore.getParams()
     };
     this.updateChainStatus = this.updateChainStatus.bind(this);
+    this.updateParams = this.updateParams.bind(this);
   }
   componentDidMount() {
     AppStore.on(AppStore.tag.CHANGE_CHAINSTATUS, this.updateChainStatus);
+    AppStore.on(AppStore.tag.CHANGE, this.updateParams);
   }
   componentWillUnmount() {
     AppStore.removeListener(
       AppStore.tag.CHANGE_CHAINSTATUS,
       this.updateChainStatus
     );
+    AppStore.removeListener(AppStore.tag.CHANGE, this.updateParams);
   }
   updateChainStatus() {
     this.setState({
       chainStatus: AppStore.getChainStatus()
+    });
+  }
+  updateParams() {
+    this.setState({
+      params: AppStore.getParams()
     });
   }
 
@@ -159,9 +168,20 @@ class NavbarTop extends React.Component {
     //   messages={alerts}
     //   icon={Bell}
     // />
+    let DAppNodeTag = [];
+    if (this.state.params.NAME) DAppNodeTag.push(this.state.params.NAME);
+    if (this.state.params.IP) DAppNodeTag.push(this.state.params.IP);
 
     return (
       <ul className="navbar-nav ml-auto">
+        <li className="nav-item nav-item-infoText">
+          <span
+            className="nav-link"
+            style={{ textTransform: "none", cursor: "auto" }}
+          >
+            {DAppNodeTag.join("/")}
+          </span>
+        </li>
         <NavbarTopDropdownMessages
           name={"ChainStatus"}
           messages={chainInfo}

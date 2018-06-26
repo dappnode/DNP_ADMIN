@@ -33,6 +33,7 @@ async function start() {
     );
 
     setTimeout(function() {
+      getVpnParams();
       listDevices();
       listPackages();
       listDirectory();
@@ -61,8 +62,28 @@ async function start() {
 ///////////////////////////////
 // Connection helper functions
 
+// ######
+function parseResponse(resUnparsed) {
+  return JSON.parse(resUnparsed);
+}
+
 // {"result":"ERR","resultStr":"QmWhzrpqcrR5N4xB6nR5iX9q3TyN5LUMxBLHdMedquR8nr it is not accesible"}"
 /* DEVICE CALLS */
+
+export async function getVpnParams() {
+  let resUnparsed = await session.call("getParams.vpn.dappnode.eth", []);
+  let res = parseResponse(resUnparsed);
+
+  if (res)
+    AppActions.updateVpnParams({
+      IP: res.VPN.IP,
+      NAME: res.VPN.NAME
+    });
+  else
+    toast.error("Error fetching VPN parameters", {
+      position: toast.POSITION.BOTTOM_RIGHT
+    });
+}
 
 export async function addDevice(name) {
   // Ensure name contains only alphanumeric characters
@@ -274,11 +295,6 @@ export async function restartPackageVolumes(id, isCORE) {
   });
 
   listPackages();
-}
-
-// ######
-function parseResponse(resUnparsed) {
-  return JSON.parse(resUnparsed);
 }
 
 export async function updatePackageEnv(id, envs, restart, isCORE) {
