@@ -1,42 +1,30 @@
 import React from "react";
-import * as VPNcall from "API/crossbarCalls";
 import DeviceList from "./DeviceList";
-import LogMessage from "./LogMessage";
-import AppStore from "stores/AppStore";
 
-export default class DevicesInterface extends React.Component {
+export default class DevicesView extends React.Component {
   constructor() {
     super();
     this.state = {
       // Initial states of variables must be defined in the constructor
       deviceName: "",
-      deviceId: "",
-      deviceList: AppStore.getDeviceList()
+      deviceId: ""
     };
   }
+
   componentDidMount() {
-    AppStore.on("CHANGE", this.updateDeviceList.bind(this));
+    this.props.fetchDevices();
   }
-  componentWillUnmount() {
-    AppStore.removeListener("CHANGE", this.updateDeviceList.bind(this));
-  }
+
   handleAddDevice() {
-    VPNcall.addDevice(this.state.deviceName);
-    // session.'vpn.dappnode.addDevice'
-  }
-  handleRemoveDevice() {
-    VPNcall.removeDevice(this.state.deviceId);
-  }
-  handleReloadDeviceList() {
-    VPNcall.listDevices();
+    this.props.addDevice(this.state.deviceName);
   }
 
   removeDevice(id) {
-    VPNcall.removeDevice(id);
+    this.props.removeDevice(id);
   }
 
   toggleAdmin(id, isAdmin) {
-    VPNcall.toggleAdmin(id, isAdmin);
+    this.props.toggleAdmin(id, isAdmin);
   }
 
   updateDeviceName(e) {
@@ -51,16 +39,11 @@ export default class DevicesInterface extends React.Component {
     });
   }
 
-  updateDeviceList() {
-    this.setState({
-      deviceList: AppStore.getDeviceList()
-    });
-  }
-
   render() {
     return (
       <div>
         <h1>Device manager</h1>
+
         <div className="input-group mb-3">
           <input
             type="text"
@@ -83,20 +66,11 @@ export default class DevicesInterface extends React.Component {
         </div>
 
         <DeviceList
-          deviceList={this.state.deviceList}
+          deviceList={this.props.deviceList}
           removeDevice={this.removeDevice.bind(this)}
           toggleAdmin={this.toggleAdmin.bind(this)}
         />
-        <br />
-        <br />
-
-        <LogMessage />
       </div>
     );
   }
 }
-
-// PARKING
-// the reload buttons
-// <button
-// onClick={this.handleReloadDeviceList.bind(this)}>Reload device list</button>

@@ -2,14 +2,13 @@ import * as actions from "./actions";
 import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
-
-import DevicesInterface from "./containers/Devices";
+import Installer from "./containers/Installer";
 
 const components = {
-  DevicesInterface
+  Installer
 };
 
-const component = DevicesInterface;
+const component = Installer;
 
 export default {
   actions,

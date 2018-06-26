@@ -3,7 +3,7 @@ import React from "react";
 export default class LogProgress extends React.Component {
   render() {
     // this.progressLog = {msg: {}, order: []
-    const progressLog = this.props.progressLog;
+    const progressLog = this.props.progressLog || {};
     const msgs = progressLog.msg || {};
     const pakagesOrder = progressLog.order || [];
     const items = pakagesOrder.map((name, i) => {

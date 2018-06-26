@@ -3,7 +3,6 @@ import { Route } from "react-router-dom";
 import { HashRouter as Router } from "react-router-dom";
 import ErrorBoundary from "react-error-boundary";
 
-import PackageInstallerInterface from "./components/PackageInstallerInterface";
 import PackageManagerInterface from "./components/PackageManagerInterface";
 import PackageInterface from "./components/PackageInterface";
 import DashboardInterface from "./components/DashboardInterface";
@@ -14,6 +13,7 @@ import AppStore from "stores/AppStore";
 
 // Testing redux
 import devices from "./devices";
+import installer from "./installer";
 
 // Redux
 
@@ -25,9 +25,6 @@ import "./sb-admin.css";
 import "./admin_UI.css";
 // APIs
 import "./watchers";
-
-// Init components
-const DevicesInterface = devices.components.DevicesInterface;
 
 export default class App extends React.Component {
   constructor() {
@@ -67,10 +64,13 @@ export default class App extends React.Component {
                 <ErrorBoundary>
                   <Route exact path="/" component={Home} />
                   <Route path="/dashboard" component={DashboardInterface} />
-                  <Route path="/devices" component={DevicesInterface} />
                   <Route
-                    path="/installer"
-                    component={PackageInstallerInterface}
+                    path={"/" + devices.constants.NAME}
+                    component={devices.components.DevicesInterface}
+                  />
+                  <Route
+                    path={"/" + installer.constants.NAME}
+                    component={installer.component}
                   />
                   <Route path="/packages" component={PackageManagerInterface} />
                   <Route

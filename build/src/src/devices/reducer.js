@@ -1,3 +1,4 @@
+// DEVICES
 import * as t from "./actionTypes";
 
 const initialState = [];

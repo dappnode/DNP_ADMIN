@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import * as action from "../actions";
-import DevicesInterfaceView from "../components/DevicesInterface";
+import DevicesView from "../components/DevicesView";
 import { createStructuredSelector } from "reselect";
 import { getAll } from "../selectors";
 
@@ -41,4 +41,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DevicesInterfaceView);
+)(DevicesView);

@@ -1,5 +1,6 @@
+// DEVICES
 import * as t from "./actionTypes";
-import * as VPNcall from "API/crossbarCalls";
+import * as call from "API/crossbarCalls";
 
 // export const add = text => ({
 //   type: t.ADD,
@@ -11,7 +12,7 @@ import * as VPNcall from "API/crossbarCalls";
 // todos.actions.add('Do that thing');
 
 const updateAfter = AsyncAction => dispatch => {
-  AsyncAction.then(VPNcall.listDevices).then(
+  AsyncAction.then(call.listDevices).then(
     devices =>
       devices
         ? dispatch({
@@ -22,9 +23,9 @@ const updateAfter = AsyncAction => dispatch => {
   );
 };
 
-export const add = id => updateAfter(VPNcall.addDevice(id));
-export const remove = id => updateAfter(VPNcall.removeDevice(id));
-export const toggleAdmin = id => updateAfter(VPNcall.toggleAdmin(id));
+export const add = id => updateAfter(call.addDevice(id));
+export const remove = id => updateAfter(call.removeDevice(id));
+export const toggleAdmin = id => updateAfter(call.toggleAdmin(id));
 export const list = () => updateAfter(nothing());
 
 const nothing = async () => {};
