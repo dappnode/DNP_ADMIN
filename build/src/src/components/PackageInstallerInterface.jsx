@@ -10,7 +10,7 @@ import AppStore from "stores/AppStore";
 // Utils
 
 function isIpfsHash(hash) {
-  return hash.startsWith("Qm") && !hash.includes(".") && hash.length == 46;
+  return hash.startsWith("Qm") && !hash.includes(".") && hash.length === 46;
 }
 
 function correctPackageName(req) {

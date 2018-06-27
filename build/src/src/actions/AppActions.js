@@ -1,6 +1,13 @@
 import dispatcher from "../dispatcher";
 import AppStore from "stores/AppStore";
 
+export function updateVpnParams(params) {
+  dispatcher.dispatch({
+    type: AppStore.tag.UPDATE_PARAMS,
+    params: params
+  });
+}
+
 export function updateDeviceList(deviceList) {
   dispatcher.dispatch({
     type: AppStore.tag.UPDATE_DEVICE_LIST,
