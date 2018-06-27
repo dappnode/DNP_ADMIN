@@ -23,9 +23,9 @@ const updateAfter = AsyncAction => dispatch => {
   );
 };
 
-export const add = id => updateAfter(call.addDevice(id));
-export const remove = id => updateAfter(call.removeDevice(id));
-export const toggleAdmin = id => updateAfter(call.toggleAdmin(id));
+export const add = id => updateAfter(call.addDevice({ id }));
+export const remove = id => updateAfter(call.removeDevice({ id }));
+export const toggleAdmin = id => updateAfter(call.toggleAdmin({ id }));
 export const list = () => updateAfter(nothing());
 
 const nothing = async () => {};

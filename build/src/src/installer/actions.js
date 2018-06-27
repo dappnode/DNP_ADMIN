@@ -62,7 +62,7 @@ export const fetchDirectory = () => dispatch => {
 
       // Throttle requests to avoid saturating the IPFS module
       setTimeout(() => {
-        call.getPackageData(pkg.name).then(packageData => {
+        call.getPackageData({ id: pkg.name }).then(packageData => {
           dispatch(updatePackage(packageData, pkg.name));
         });
       }, 100 * i);
@@ -71,7 +71,7 @@ export const fetchDirectory = () => dispatch => {
 };
 
 export const fetchPackageInfo = id => dispatch => {
-  call.fetchPackageInfo(id).then(pkg => {
+  call.fetchPackageInfo({ id }).then(pkg => {
     if (pkg) dispatch(updatePackage(pkg, pkg.name));
   });
 };
@@ -82,10 +82,17 @@ export const install = envs => (dispatch, getState) => {
   const selectedVersion = selector.getSelectedVersion(getState());
 
   if (Object.getOwnPropertyNames(envs).length > 0) {
-    call.updatePackageEnv(selectedPackageName, envs, false);
+    call.updatePackageEnv({
+      id: selectedPackageName,
+      envs,
+      restart: false,
+      isCORE: false
+    });
   }
 
-  call.addPackage(selectedPackageName + "@" + selectedVersion);
+  call.addPackage({
+    id: selectedPackageName + "@" + selectedVersion
+  });
 };
 
 const updateAfter = AsyncAction => dispatch => {

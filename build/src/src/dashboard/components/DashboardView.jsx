@@ -10,16 +10,26 @@ export default class DashboardInterface extends React.Component {
     super();
     this.state = {
       chainStatus: AppStore.getChainStatus(),
-      status: AppStore.getStatus()
+      status: AppStore.getStatus(),
+      interval: null
     };
     this.updateChainStatus = this.updateChainStatus.bind(this);
     this.updateStatus = this.updateStatus.bind(this);
   }
+  componentWillMount() {
+    this.props.init();
+    this.props.check();
+  }
   componentDidMount() {
+    const interval = setInterval(() => {
+      this.props.check();
+    }, 2000);
+    this.setState({ interval });
     AppStore.on(AppStore.tag.CHANGE_CHAINSTATUS, this.updateChainStatus);
     AppStore.on(AppStore.tag.CHANGE_STATUS, this.updateStatus);
   }
   componentWillUnmount() {
+    clearInterval(this.state.interval);
     AppStore.removeListener(
       AppStore.tag.CHANGE_CHAINSTATUS,
       this.updateChainStatus
@@ -41,31 +51,22 @@ export default class DashboardInterface extends React.Component {
     let type = this.state.chainStatus.type || "default";
     let status = this.state.chainStatus.status;
 
-    const dappnodeStatus = Object.getOwnPropertyNames(this.state.status).map(
-      (pkg, i) => {
-        const tdItems = Object.getOwnPropertyNames(this.state.status[pkg]).map(
-          (item, j) => {
-            let type;
-            let typeNum = this.state.status[pkg][item].on;
-            if (typeNum === 1) type = "success";
-            if (typeNum === 0) type = "warning";
-            if (typeNum === -1) type = "danger";
-            return (
-              <td key={j} className={"text-" + type}>
-                <strong>{item}:</strong> {this.state.status[pkg][item].msg}
-              </td>
-            );
-          }
-        );
-
-        return (
-          <tr key={i}>
-            <th scope="row">{pkg}</th>
-            {tdItems}
-          </tr>
-        );
-      }
-    );
+    const dappnodeStatus = this.props.items.map((e, i) => {
+      let type;
+      if (e.status === 1) type = "success";
+      if (e.status === 0) type = "warning";
+      if (e.status === -1) type = "danger";
+      // Only display inner borders, by removing all external borders
+      let style = { borderLeftWidth: "0", borderRightWidth: "0" };
+      if (i === 0) style.borderTopWidth = "0";
+      if (i === this.props.items.length - 1) style.borderBottomWidth = "0";
+      return (
+        <li key={i} className={"list-group-item text-" + type} style={style}>
+          <strong>{e.id + ": "}</strong>
+          {e.msg}
+        </li>
+      );
+    });
 
     return (
       <div>
@@ -80,11 +81,9 @@ export default class DashboardInterface extends React.Component {
 
         <div className="card mb-4">
           <div className="card-header">DAppNode packages status</div>
-          <div className="card-body">
+          <div className="card-body" style={{ padding: "0px" }}>
             <div className="table-responsive">
-              <table className="table">
-                <tbody>{dappnodeStatus}</tbody>
-              </table>
+              <ul className="list-group">{dappnodeStatus}</ul>
             </div>
           </div>
         </div>

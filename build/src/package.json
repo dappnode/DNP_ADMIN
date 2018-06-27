@@ -31,7 +31,8 @@
     "reselect": "^3.0.1",
     "semver": "^5.5.0",
     "simple-statistics": "^6.0.1",
-    "tether": "^1.4.4"
+    "tether": "^1.4.4",
+    "uuid": "^3.2.1"
   },
   "scripts": {
     "lint": "npm run lint:javascript",

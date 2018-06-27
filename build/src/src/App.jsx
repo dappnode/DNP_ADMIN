@@ -5,13 +5,13 @@ import ErrorBoundary from "react-error-boundary";
 
 import PackageManagerInterface from "./components/PackageManagerInterface";
 import PackageInterface from "./components/PackageInterface";
-import DashboardInterface from "./components/DashboardInterface";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import NonAdmin from "./components/NonAdmin";
 import AppStore from "stores/AppStore";
 
 // Testing redux
+import dashboard from "./dashboard";
 import devices from "./devices";
 import installer from "./installer";
 
@@ -24,7 +24,6 @@ import "./include/bootstrap";
 import "./sb-admin.css";
 import "./admin_UI.css";
 // APIs
-import "./watchers";
 
 export default class App extends React.Component {
   constructor() {
@@ -63,7 +62,10 @@ export default class App extends React.Component {
               <div className="container-fluid app-content">
                 <ErrorBoundary>
                   <Route exact path="/" component={Home} />
-                  <Route path="/dashboard" component={DashboardInterface} />
+                  <Route
+                    path={"/" + dashboard.constants.NAME}
+                    component={dashboard.component}
+                  />
                   <Route
                     path={"/" + devices.constants.NAME}
                     component={devices.components.DevicesInterface}

@@ -146,27 +146,6 @@ class AppStore extends EventEmitter {
         this.emit(this.tag.CHANGE);
         break;
       }
-      case this.tag.UPDATE_PROGRESSLOG: {
-        // action.log = data (object), the object may contain
-        // pkg: PACKAGE_NAME
-        // clear: true
-        // msg: 'download'
-        // order: [packageName1, ...]
-        const log = action.log;
-        if (log.clear) {
-          this.progressLog = { msg: {}, order: [] };
-        }
-        if (log.order) {
-          log.order.forEach((name, i) => {
-            this.progressLog.order.push(name);
-          });
-        }
-        if (log.pkg) {
-          this.progressLog.msg[log.pkg] = log.msg;
-        }
-        this.emit(this.tag.CHANGE);
-        break;
-      }
       case this.tag.UPDATE_CHAINSTATUS: {
         this.chainStatus = action.status;
         this.emit(this.tag.CHANGE_CHAINSTATUS);
