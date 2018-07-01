@@ -22,7 +22,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = dispatch => {
   return {
     check: () => {
-      dispatch(action.check());
+      // dispatch(action.check());
     },
     init: () => {
       dispatch(action.init());

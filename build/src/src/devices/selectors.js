@@ -19,29 +19,4 @@ import { NAME } from "./constants";
 
 // From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
 
-// Utils
-const filterCompleted = todos => todos.filter(t => t.completed);
-const filterActive = todos => todos.filter(t => !t.completed);
-
-export const getAll = state => state[NAME];
-
-export const getCompleted = fp.compose(
-  filterCompleted,
-  getAll
-);
-
-export const getActive = fp.compose(
-  filterActive,
-  getAll
-);
-
-export const getCounts = createSelector(
-  getAll,
-  getCompleted,
-  getActive,
-  (allTodos, completedTodos, activeTodos) => ({
-    all: allTodos.length,
-    completed: completedTodos.length,
-    active: activeTodos.length
-  })
-);
+export const getDevices = state => state[NAME];

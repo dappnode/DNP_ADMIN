@@ -4,20 +4,6 @@ import InstallerView from "../components/InstallerView";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 
-// Utils
-
-function isIpfsHash(hash) {
-  return hash.startsWith("Qm") && !hash.includes(".") && hash.length === 46;
-}
-
-function correctPackageName(req) {
-  // First determine if it contains an ipfs hash
-  if (req.startsWith("ipfs/") && isIpfsHash(req.split("ipfs/")[1]))
-    return "/" + req;
-  else if (isIpfsHash(req)) return "/ipfs/" + req;
-  else return req;
-}
-
 // const getVisibleTodos = (todos, filter) => {
 //   switch (filter) {
 //     case 'SHOW_ALL':
@@ -36,7 +22,7 @@ const mapStateToProps = createStructuredSelector({
   directory: selector.getDirectory,
   selectedTypes: selector.getSelectedTypes,
   inputValue: selector.getInput,
-  isInitialazing: selector.isInitialazing
+  fetching: selector.fetching
 });
 
 const mapDispatchToProps = dispatch => {
@@ -46,8 +32,6 @@ const mapDispatchToProps = dispatch => {
     },
 
     openModalFor: id => {
-      // Fetch package info
-      dispatch(action.fetchPackageInfo(id));
       // Update modal data
       dispatch(action.selectPackage(id));
       // Reset modal data
@@ -55,14 +39,8 @@ const mapDispatchToProps = dispatch => {
     },
 
     updateInput: e => {
-      // Correct the packageLink in case it is an IPFS hash
-      const id = correctPackageName(e.target.value);
-      // If the packageLink is a valid IPFS hash preload it's info
-      if (id.includes("/ipfs/") && isIpfsHash(id.split("/ipfs/")[1])) {
-        dispatch(action.fetchPackageInfo(id));
-      }
-      // Update input field
-      dispatch(action.updateInput(id));
+      // Correct the ipfs format and fecth if correct
+      dispatch(action.updateAndCheckInput(e.target.value));
     },
 
     updateSelectedTypes: types => {

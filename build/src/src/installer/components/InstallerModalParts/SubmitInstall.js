@@ -63,6 +63,7 @@ export default class SubmitInstall extends React.Component {
           data-dismiss="modal"
           onClick={this.submit.bind(this)}
           disabled={this.props.disableInstall}
+          style={{ textTransform: "uppercase" }}
         >
           {this.props.installTag}
         </button>

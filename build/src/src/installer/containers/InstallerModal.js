@@ -32,6 +32,8 @@ const latestTag = "latest";
 // like getDirectory will get a filtered version of that packages
 
 const mapStateToProps = createStructuredSelector({
+  pkg: selector.selectedPackage,
+
   directory: selector.getDirectory,
 
   manifest: selector.manifestModal,

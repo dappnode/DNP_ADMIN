@@ -1,27 +1,25 @@
 import React from "react";
+import PropTypes from "prop-types";
+import eventBus from "eventBus";
+// Components
 import InstallerModal from "../containers/InstallerModal";
 import TypeFilter from "./TypeFilter";
 import PackageStore from "./PackageStore";
-import ChainStatusLog from "./ChainStatusLog";
-import LogProgress from "./LogProgress";
-import AppStore from "stores/AppStore";
-import PropTypes from "prop-types";
+// Modules
+import status from "status";
+import chains from "chains";
+// Logic
+import { isOpen } from "API/crossbarCalls";
+
+let token;
 
 class InstallerView extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      chainStatus: AppStore.getChainStatus()
-    };
-    // this.updateChainStatus = this.updateChainStatus.bind(this);
-  }
-
   static propTypes = {
     // State -> props
     directory: PropTypes.array.isRequired,
     selectedTypes: PropTypes.array.isRequired,
     inputValue: PropTypes.string.isRequired,
-    isInitialazing: PropTypes.bool.isRequired,
+    fetching: PropTypes.bool.isRequired,
     // Dispatch -> props
     fetchDirectory: PropTypes.func.isRequired,
     openModalFor: PropTypes.func.isRequired,
@@ -30,26 +28,22 @@ class InstallerView extends React.Component {
   };
 
   componentWillMount() {
-    this.props.fetchDirectory();
+    token = eventBus.subscribe("connection_open", this.props.fetchDirectory);
+    if (isOpen()) this.props.fetchDirectory();
   }
-
-  handleAddPackage() {
-    this.preInstallPackage(this.state.packageLink);
-    // session.'vpn.dappnode.addPackage'
-  }
-
-  preInstallPackage(targetPackageName) {
-    this.props.openModalFor(targetPackageName);
+  componentWillUnmount() {
+    eventBus.unsubscribe(token);
   }
 
   render() {
     const modalId = "exampleModal";
     const modalTarget = "#" + modalId;
 
-    const chainStatus = this.state.chainStatus || {};
-
     return (
       <div>
+        <status.components.DependenciesAlert
+          deps={["wamp", "dappmanager", "ipfs", "mainnet"]}
+        />
         <div className="page-header" id="top">
           <h1>Package installer</h1>
         </div>
@@ -67,7 +61,7 @@ class InstallerView extends React.Component {
             <button
               className="btn btn-outline-secondary"
               type="button"
-              onClick={this.handleAddPackage.bind(this)}
+              onClick={this.props.openModalFor}
               data-toggle="modal"
               data-target={modalTarget}
             >
@@ -82,15 +76,12 @@ class InstallerView extends React.Component {
           updateSelectedTypes={this.props.updateSelectedTypes}
         />
 
-        <ChainStatusLog />
-
-        <LogProgress progressLog={this.state.progressLog} />
+        <chains.components.ChainStatusLog />
 
         <PackageStore
           directory={this.props.directory}
-          isSyncing={chainStatus.isSyncing}
-          isInitialazing={this.props.isInitialazing}
-          preInstallPackage={this.preInstallPackage.bind(this)}
+          fetching={this.props.fetching}
+          preInstallPackage={this.props.openModalFor}
           modalTarget={modalTarget}
         />
 

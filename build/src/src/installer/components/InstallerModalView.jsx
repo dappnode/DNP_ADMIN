@@ -1,7 +1,6 @@
 import React from "react";
-import getTag from "utils/getTag";
 import PropTypes from "prop-types";
-
+// Components
 import PackageInfoTable from "./InstallerModalParts/PackageInfoTable";
 import SubmitInstall from "./InstallerModalParts/SubmitInstall";
 

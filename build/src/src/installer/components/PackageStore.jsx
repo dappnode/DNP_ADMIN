@@ -3,7 +3,7 @@ import ClipboardJS from "clipboard";
 import PropTypes from "prop-types";
 import waitImg from "img/wait-min.png";
 import errorImg from "img/error-min.png";
-import getTag from "utils/getTag";
+import enhancePkg from "utils/enhancePkg";
 
 new ClipboardJS(".btn");
 
@@ -13,38 +13,16 @@ class Card extends React.Component {
   }
 
   render() {
-    const pkg = this.props.pkg;
+    const pkg = enhancePkg(this.props.pkg);
     // The pkg can be incomplete, prevent crashes
 
-    let name = pkg.name || "?";
-    // let status = pkg.status || '?' // Not needed at the moment
-    let id = name;
-    let description = pkg.manifest
-      ? pkg.manifest.description || "Awesome dnp"
-      : "?";
-    let type = pkg.manifest ? pkg.manifest.type || "library" : "?";
-
-    let namePretty = capitalize(name.split(".dnp.dappnode.eth")[0]);
     let imgClass = pkg.avatar ? "" : "wait";
     let img = pkg.avatar || waitImg;
 
-    let tag = pkg.manifest
-      ? getTag(pkg.currentVersion, pkg.manifest.version)
-      : "loading";
-
-    let tagStyle = "";
-    if (tag.toLowerCase() === "install") tagStyle = "active";
-    if (tag.toLowerCase() === "update") tagStyle = "active";
-    if (tag.toLowerCase() === "installed") tagStyle = "unactive";
-
     // If package broke, re-assign variables
     if (pkg.error) {
-      type = "";
-      description = pkg.error;
       img = errorImg;
       imgClass = "";
-      tag = "ERROR";
-      tagStyle = "unactive";
     }
 
     // ##### Text under the card's title showing the status
@@ -57,9 +35,9 @@ class Card extends React.Component {
           data-toggle="modal"
           data-target={this.props.modalTarget}
           onClick={this.onCardClick.bind(this)}
-          id={id}
+          id={pkg.id}
         >
-          <div className="p-1 hover-animation" data-text={description}>
+          <div className="p-1 hover-animation" data-text={pkg.description}>
             <img
               className={"card-img-top " + imgClass}
               src={img}
@@ -67,10 +45,10 @@ class Card extends React.Component {
             />
           </div>
           <div className="card-body text-nowrap">
-            <h5 className="card-title">{namePretty}</h5>
+            <h5 className="card-title">{pkg.namePretty}</h5>
             <div className="d-flex justify-content-between">
-              <span className="card-type">{type}</span>
-              <span className={"card-tag " + tagStyle}>{tag}</span>
+              <span className="card-type">{pkg.type}</span>
+              <span className={"card-tag " + pkg.tagStyle}>{pkg.tag}</span>
             </div>
           </div>
         </div>
@@ -83,7 +61,7 @@ export default class PackageStore extends React.Component {
   static propTypes = {
     directory: PropTypes.array.isRequired,
     preInstallPackage: PropTypes.func.isRequired,
-    isInitialazing: PropTypes.bool.isRequired
+    fetching: PropTypes.bool.isRequired
   };
 
   render() {
@@ -96,7 +74,7 @@ export default class PackageStore extends React.Component {
       />
     ));
 
-    if (this.props.isInitialazing && this.props.directory.length === 0) {
+    if (this.props.fetching && this.props.directory.length === 0) {
       return (
         <div>
           <div className="d-flex justify-content-center mt-3">
@@ -117,8 +95,4 @@ export default class PackageStore extends React.Component {
       return <div className="row">{cards}</div>;
     }
   }
-}
-
-function capitalize(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
 }

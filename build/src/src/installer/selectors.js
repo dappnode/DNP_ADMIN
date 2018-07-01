@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
 import fp from "lodash/fp";
 import { NAME } from "./constants";
+import getTags from "utils/getTags";
 
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
@@ -30,16 +31,12 @@ const selectedPackageId = state => local(state).selectedPackageId;
 const selectedVersion = state => local(state).selectedVersion;
 const selectedTypes = state => local(state).selectedTypes;
 const inputValue = state => local(state).input;
-const initializing = state => local(state).initializing;
+export const fetching = state => local(state).fetching;
 
 const filterCompleted = todos => todos.filter(t => t.completed);
 const filterActive = todos => todos.filter(t => !t.completed);
 
 export const getAll = state => state[NAME];
-
-// Loading status
-
-export const isInitialazing = initializing;
 
 // Input field
 
@@ -73,6 +70,7 @@ export const selectedPackage = state =>
   packages(state)[selectedPackageId(state)] || {};
 
 export const selectedPackageName = state => selectedPackage(state).name || "";
+export const selectedPackageIsCORE = state => selectedPackage(state).name || "";
 export const selectedPackageManifest = state =>
   selectedPackage(state).manifest || {};
 export const selectedPackageVersions = state =>
@@ -81,9 +79,8 @@ export const selectedPackageVersionsNames = state =>
   selectedPackageVersions(state).map(v => v.version);
 
 export const selectedPackageInstallTag = state => {
-  const currentVersion = selectedPackage(state).currentVersion;
-  const latestVersion = selectedPackageManifest(state).version;
-  return "FIX";
+  let { tag } = getTags(selectedPackage(state));
+  return tag;
 };
 
 export const getSelectedVersion = selectedVersion;

@@ -7,8 +7,12 @@ import * as call from "API/crossbarCalls";
 //   type: t.ADD,
 //   payload: { text }
 // });
+export const updateFetching = fetching => ({
+  type: t.UPDATE_FETCHING,
+  payload: fetching
+});
 
-export const selectPackage = id => ({
+export const updateSelectedPackage = id => ({
   type: t.UPDATE_SELECTED_PACKAGE,
   payload: id
 });
@@ -32,6 +36,23 @@ export const updateSelectedTypes = types => ({
   payload: types
 });
 
+export const updateAndCheckInput = _id => dispatch => {
+  const id = correctPackageName(_id);
+  // If the packageLink is a valid IPFS hash preload it's info
+  if (id.includes("/ipfs/") && isIpfsHash(id.split("/ipfs/")[1])) {
+    dispatch(fetchPackageInfo(id));
+  }
+  // Update input field
+  dispatch(updateInput(id));
+};
+
+export const selectPackage = id => (dispatch, getState) => {
+  if (!id) id = selector.getInput(getState());
+  console.log("Opened modal: ", id);
+  dispatch(fetchPackageInfo(id));
+  dispatch(updateSelectedPackage(id));
+};
+
 // No need to use "addTodo" name, in another module do:
 // import todos from 'todos';
 // todos.actions.add('Do that thing');
@@ -47,7 +68,9 @@ const updateDirectory = directory => ({
 });
 
 export const fetchDirectory = () => dispatch => {
+  dispatch(updateFetching(true));
   call.fetchDirectory().then(directory => {
+    dispatch(updateFetching(false));
     // Abort on error
     if (!directory) return;
 
@@ -84,9 +107,8 @@ export const install = envs => (dispatch, getState) => {
   if (Object.getOwnPropertyNames(envs).length > 0) {
     call.updatePackageEnv({
       id: selectedPackageName,
-      envs,
-      restart: false,
-      isCORE: false
+      envs: envs,
+      restart: false
     });
   }
 
@@ -115,3 +137,17 @@ export const list = () => updateAfter(nothing());
 const nothing = async () => {};
 
 // const wait = () => new Promise(resolve => setTimeout(resolve, 1000));
+
+// Utils
+
+function isIpfsHash(hash) {
+  return hash.startsWith("Qm") && !hash.includes(".") && hash.length === 46;
+}
+
+function correctPackageName(req) {
+  // First determine if it contains an ipfs hash
+  if (req.startsWith("ipfs/") && isIpfsHash(req.split("ipfs/")[1]))
+    return "/" + req;
+  else if (isIpfsHash(req)) return "/ipfs/" + req;
+  else return req;
+}

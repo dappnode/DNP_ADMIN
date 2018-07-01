@@ -1,8 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import ErrorBoundary from "react-error-boundary";
-import AppStore from "stores/AppStore";
-
+import { createStructuredSelector } from "reselect";
+import { connect } from "react-redux";
+// modules
+import chains from "chains";
+// Images
 import LogoImg from "img/DAppNode-Black.png";
 // Icons
 import Devices from "./Icons/Devices";
@@ -120,37 +123,20 @@ class NavbarTopDropdownMessages extends React.Component {
   }
 }
 
-class NavbarTop extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      chainStatus: AppStore.getChainStatus()
-    };
-    this.updateChainStatus = this.updateChainStatus.bind(this);
-  }
-  componentDidMount() {
-    AppStore.on(AppStore.tag.CHANGE_CHAINSTATUS, this.updateChainStatus);
-  }
-  componentWillUnmount() {
-    AppStore.removeListener(
-      AppStore.tag.CHANGE_CHAINSTATUS,
-      this.updateChainStatus
-    );
-  }
-  updateChainStatus() {
-    this.setState({
-      chainStatus: AppStore.getChainStatus()
-    });
-  }
+function parseType(status) {
+  if (status == 1) return "success";
+  if (status == 0) return "warning";
+  if (status == -1) return "danger";
+  else return "default";
+}
 
+class NavbarTopView extends React.Component {
   render() {
-    let chainInfo = [
-      {
-        title: "Mainnet",
-        body: this.state.chainStatus.status,
-        type: this.state.chainStatus.type
-      }
-    ];
+    let chainInfo = Object.keys(this.props.chains).map(id => ({
+      title: id,
+      body: this.props.chains[id].msg,
+      type: parseType(this.props.chains[id].status)
+    }));
 
     // ###### This code is to incorporate the bell again
 
@@ -181,6 +167,17 @@ class NavbarTop extends React.Component {
     );
   }
 }
+
+const mapStateToProps = createStructuredSelector({
+  chains: chains.selectors.getAll
+});
+
+const mapDispatchToProps = {};
+
+const NavbarTop = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NavbarTopView);
 
 class NavbarSide extends React.Component {
   render() {

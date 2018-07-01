@@ -1,5 +1,10 @@
 import React from "react";
 import DeviceList from "./DeviceList";
+import status from "status";
+import eventBus from "eventBus";
+import { isOpen } from "API/crossbarCalls";
+
+let token;
 
 export default class DevicesView extends React.Component {
   constructor() {
@@ -11,8 +16,12 @@ export default class DevicesView extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.props.fetchDevices();
+  componentWillMount() {
+    token = eventBus.subscribe("connection_open", this.props.fetchDevices);
+    if (isOpen()) this.props.fetchDevices();
+  }
+  componentWillUnmount() {
+    eventBus.unsubscribe(token);
   }
 
   handleAddDevice() {
@@ -42,6 +51,7 @@ export default class DevicesView extends React.Component {
   render() {
     return (
       <div>
+        <status.components.DependenciesAlert deps={["wamp", "vpn"]} />
         <h1>Device manager</h1>
 
         <div className="input-group mb-3">

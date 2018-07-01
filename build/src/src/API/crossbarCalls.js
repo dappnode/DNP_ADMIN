@@ -1,22 +1,27 @@
 import autobahn from "autobahn";
-import * as AppActions from "actions/AppActions";
 import uuidv4 from "uuid/v4";
-
 import { toast } from "react-toastify";
+import eventBus from "eventBus";
 
-const progressLog = {};
+const progressLogs = {};
 
 function shortName(ens) {
+  if (!ens) return ens;
   if (!ens.includes(".")) return ens;
   return ens.split(".")[0];
 }
 
-function handleProgressLog(log) {
+function handleProgressLog(id, log) {
   // action.log = data (object), the object may contain
   // pkg: PACKAGE_NAME
   // clear: true
   // msg: 'download'
   // order: [packageName1, ...]
+  if (!(id in progressLogs)) progressLogs[id] = {};
+  let progressLog = progressLogs[id] || {};
+  if (!("msg" in progressLog)) progressLog.msg = {};
+  if (!("order" in progressLog)) progressLog.order = ["all"];
+
   if (log.clear) {
     progressLog.msg = {};
     progressLog.order = [];
@@ -31,7 +36,8 @@ function handleProgressLog(log) {
   }
 }
 
-function formatProgressLog() {
+function formatProgressLog(id) {
+  const progressLog = progressLogs[id] || {};
   const msgs = progressLog.msg || {};
   const pakagesOrder = progressLog.order || [];
   return pakagesOrder
@@ -48,66 +54,75 @@ let url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
 let realm = "dappnode_admin";
 
 // Initalize app
-let session; // make this variable global
-start();
+let session, sessionExternal; // make this variable global
+start().then(_session => {
+  session = _session;
+});
 
-async function start() {
-  const autobahnUrl = url;
-  const autobahnRealm = realm;
-  const connection = new autobahn.Connection({
-    url: autobahnUrl,
-    realm: autobahnRealm
-  });
+export const getSessionSync = () => sessionExternal;
+export const isOpen = () => Boolean(session && session.isOpen);
 
-  connection.onopen = function(_session) {
-    session = _session;
-    console.log(
-      "CONNECTED to DAppnode's WAMP " +
-        "\n   url " +
-        autobahnUrl +
-        "\n   realm: " +
-        autobahnRealm
-    );
-
-    session.subscribe("log.dappmanager.dnp.dappnode.eth", function(res) {
-      let log = res[0];
-      handleProgressLog(log);
-      const task = tasks[log.logId];
-      toast.update(task.toastId, {
-        render: task.initText + " \n" + formatProgressLog(),
-        className: "show-newlines"
-      });
+function start() {
+  return new Promise((resolve, reject) => {
+    const autobahnUrl = url;
+    const autobahnRealm = realm;
+    const connection = new autobahn.Connection({
+      url: autobahnUrl,
+      realm: autobahnRealm
     });
 
-    window.call = function(call, args) {
-      return session.call(call, args).then(res => {
-        return res;
-      });
-    };
-  };
+    connection.onopen = function(_session) {
+      eventBus.publish("connection_open", _session);
+      console.log(
+        "CONNECTED to DAppnode's WAMP " +
+          "\n   url " +
+          autobahnUrl +
+          "\n   realm: " +
+          autobahnRealm
+      );
+      sessionExternal = session = _session;
 
-  connection.onclose = function(reason, details) {
-    console.log("CONNECTION ERROR: ", "reason", reason, "details", details);
-    // connection closed, lost or unable to connect
-  };
-  console.log("OPENING CONNECTION");
-  connection.open();
+      session.subscribe("log.dappmanager.dnp.dappnode.eth", function(res) {
+        let log = res[0];
+        handleProgressLog(log.logId, log);
+        const task = tasks[log.logId];
+        toast.update(task.toastId, {
+          render: task.initText + " \n" + formatProgressLog(log.logId),
+          className: "show-newlines"
+        });
+      });
+
+      window.call = function(call, args) {
+        return session.call(call, args).then(res => {
+          return res;
+        });
+      };
+      resolve(session);
+    };
+
+    connection.onclose = function(reason, details) {
+      eventBus.publish(
+        "connection_close",
+        (sessionExternal = {
+          reason,
+          message: details ? details.message || "" : ""
+        })
+      );
+      reject();
+      // connection closed, lost or unable to connect
+    };
+    console.log("OPENING CONNECTION");
+    try {
+      connection.open();
+    } catch (e) {
+      console.log(e);
+    }
+  });
 }
 
 ///////////////////////////////
 // Connection helper functions
-const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-const maxAttempts = 4;
 
-async function getSession() {
-  for (let i = 0; i < maxAttempts; i++) {
-    if (session) return session;
-    await wait(250);
-  }
-  console.error("Session was not defined after #" + maxAttempts + " attempts");
-}
-
-// {"result":"ERR","resultStr":"QmWhzrpqcrR5N4xB6nR5iX9q3TyN5LUMxBLHdMedquR8nr it is not accesible"}"
 /* DEVICE CALLS */
 
 // ######
@@ -158,21 +173,18 @@ async function call({ event, args = [], kwargs = {}, initText = "" }) {
   // Store the information globally
   tasks[taskId] = { id: taskId, toastId: pendingToast.id, initText };
 
-  // Get the session object
-  const _session = await getSession();
-
   // If session is not available, fail gently
-  if (!_session) {
+  if (!(session && session.isOpen)) {
     if (pendingToast)
       pendingToast.resolve({
         success: false,
-        message: "Can't connect to WAMP"
+        message: "Can't connect to DAppNode's WAMP"
       });
     return;
   }
 
   // Call the session method
-  const resUnparsed = await _session.call(event, args, kwargs);
+  const resUnparsed = await session.call(event, args, kwargs);
 
   // Parse response
   const res = parseResponse(resUnparsed);
@@ -184,27 +196,35 @@ async function call({ event, args = [], kwargs = {}, initText = "" }) {
   return res.result;
 }
 
+function assertKwargs(kwargs, keys) {
+  keys.forEach(key => {
+    if (!(key in kwargs))
+      throw Error("Key " + key + " missing on " + JSON.stringify(kwargs));
+  });
+  return kwargs;
+}
+
 /* Devices */
 
-export const addDevice = (args = {}) =>
+export const addDevice = (kwargs = {}) =>
   call({
     event: "addDevice.vpn.dnp.dappnode.eth",
-    args: [args.id],
-    initText: "Adding " + args.id + "..."
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Adding " + kwargs.id + "..."
   });
 
-export const removeDevice = (args = {}) =>
+export const removeDevice = (kwargs = {}) =>
   call({
     event: "removeDevice.vpn.dnp.dappnode.eth",
-    args: [args.id],
-    initText: "Removing " + args.id + "..."
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Removing " + kwargs.id + "..."
   });
 
-export const toggleAdmin = (args = {}) =>
+export const toggleAdmin = (kwargs = {}) =>
   call({
     event: "toggleAdmin.vpn.dnp.dappnode.eth",
-    args: [args.id],
-    initText: "Toggling " + args.id + "admin credentials..."
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Toggling " + kwargs.id + "admin credentials..."
   });
 
 export const listDevices = () =>
@@ -229,11 +249,11 @@ export const listDevices = () =>
 // Disable package installation
 // AppActions.updateDisabled({ name: link, disabled: true });
 
-export const addPackage = (args = {}) =>
+export const addPackage = (kwargs = {}) =>
   call({
     event: "installPackage.dappmanager.dnp.dappnode.eth",
-    args: [args.id],
-    initText: "Adding " + shortName(args.id) + "..."
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Adding " + shortName(kwargs.id) + "..."
   });
 
 // AppActions.updateDisabled({ name: link, disabled: false });
@@ -243,73 +263,73 @@ export const addPackage = (args = {}) =>
 // "Removing package " + id + (deleteVolumes ? " and volumes" : ""),
 // AFTER => listPackages(); listDirectory();
 
-export const removePackage = (args = {}) =>
+export const removePackage = (kwargs = {}) =>
   call({
     event: "removePackage.dappmanager.dnp.dappnode.eth",
-    args: [args.id],
+    kwargs: assertKwargs(kwargs, ["id", "deleteVolumes"]),
     initText:
       "Removing package " +
-      shortName(args.id) +
-      (args.deleteVolumes ? " and volumes" : "")
+      shortName(kwargs.id) +
+      (kwargs.deleteVolumes ? " and volumes" : "")
   });
 
 // "Toggling package " + id
 // (id, isCORE)
 
-export const togglePackage = (args = {}) =>
+export const togglePackage = (kwargs = {}) =>
   call({
     event: "togglePackage.dappmanager.dnp.dappnode.eth",
-    args: [args.id, args.isCORE],
-    initText: "Toggling " + shortName(args.id)
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Toggling " + shortName(kwargs.id)
   });
 
 // "Restarting " + id + " " + (isCORE ? "(CORE)" : ""
 // (id, isCORE)
 
-export const restartPackage = (args = {}) =>
+export const restartPackage = (kwargs = {}) =>
   call({
     event: "restartPackage.dappmanager.dnp.dappnode.eth",
-    args: [args.id, args.isCORE],
-    initText: "Restarting " + shortName(args.id)
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Restarting " + shortName(kwargs.id)
   });
 
 // "Restarting " + id + " " + (isCORE ? "(CORE)" : "") + " volumes"
 // (id, isCORE)
 // AFTER => listPackages();
 
-export const restartPackageVolumes = (args = {}) =>
+export const restartVolumes = (kwargs = {}) =>
   call({
     event: "restartPackageVolumes.dappmanager.dnp.dappnode.eth",
-    args: [args.id, args.isCORE],
-    initText: "Restarting " + shortName(args.id) + " volumes"
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Restarting " + shortName(kwargs.id) + " volumes"
   });
 
 // "Updating " + id + " envs: " + JSON.stringify(envs)
 // (id, envs, restart, isCORE)
 
-export const updatePackageEnv = (args = {}) =>
+export const updatePackageEnv = (kwargs = {}) =>
   call({
     event: "updatePackageEnv.dappmanager.dnp.dappnode.eth",
-    args: [args.id, args.envs, args.restart, args.isCORE],
-    initText: "Updating " + args.id + " envs: " + JSON.stringify(args.envs)
+    kwargs: assertKwargs(kwargs, ["id", "envs", "restart"]),
+    initText: "Updating " + kwargs.id + " envs: " + JSON.stringify(kwargs.envs)
   });
 
 // ""
 // (id, isCORE, options = {})
 
-export const logPackage = (args = {}) =>
+export const logPackage = (kwargs = {}) =>
   call({
     event: "logPackage.dappmanager.dnp.dappnode.eth",
-    args: [args.id, args.isCORE, args.options]
+    kwargs: assertKwargs(kwargs, ["id", "options"])
   });
 
 // ""
 // (id)
 
-export const fetchPackageInfo = (args = {}) =>
+export const fetchPackageInfo = (kwargs = {}) =>
   call({
     event: "fetchPackageInfo.dappmanager.dnp.dappnode.eth",
-    args: [args.id]
+    kwargs: assertKwargs(kwargs, ["id"])
   });
 
 // ""
@@ -352,10 +372,10 @@ export const fetchDirectory = () =>
 // ""
 // (id)
 
-export const getPackageData = (args = {}) =>
+export const getPackageData = (kwargs = {}) =>
   call({
     event: "getPackageData.dappmanager.dnp.dappnode.eth",
-    args: [args.id]
+    kwargs: assertKwargs(kwargs, ["id"])
   });
 
 // IMPLEMENT - AFTER

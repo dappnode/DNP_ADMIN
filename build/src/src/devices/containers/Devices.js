@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import * as action from "../actions";
 import DevicesView from "../components/DevicesView";
 import { createStructuredSelector } from "reselect";
-import { getAll } from "../selectors";
+import * as selector from "../selectors";
 
 // const getVisibleTodos = (todos, filter) => {
 //   switch (filter) {
@@ -16,7 +16,7 @@ import { getAll } from "../selectors";
 // }
 
 const mapStateToProps = createStructuredSelector({
-  deviceList: getAll
+  deviceList: selector.getDevices
 });
 
 const mapDispatchToProps = dispatch => {

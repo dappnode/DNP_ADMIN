@@ -3,6 +3,7 @@ import * as t from "./actionTypes";
 
 const initialState = {
   initializing: true,
+  fetching: false,
   directory: [],
   packages: {},
   selectedPackageId: "",
@@ -13,6 +14,11 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
+    case t.UPDATE_FETCHING:
+      return {
+        ...state,
+        fetching: action.payload
+      };
     case t.UPDATE_DIRECTORY:
       return {
         ...state,
