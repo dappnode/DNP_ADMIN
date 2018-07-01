@@ -1,5 +1,3 @@
-import { createSelector } from "reselect";
-import fp from "lodash/fp";
 import { NAME } from "./constants";
 
 // Selectors provide a way to query data from the module state.

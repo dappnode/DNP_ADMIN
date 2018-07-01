@@ -1,5 +1,4 @@
 import { getSessionSync } from "./crossbarCalls";
-import eventBus from "eventBus";
 
 // Example usage:
 // setInterval(() => {

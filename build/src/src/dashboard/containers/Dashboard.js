@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import * as action from "../actions";
 import DashboardView from "../components/DashboardView";
-import { getItems } from "../selectors";
 import { createStructuredSelector } from "reselect";
 // modules
 import status from "status";

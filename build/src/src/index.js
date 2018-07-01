@@ -1,7 +1,8 @@
 import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { HashRouter as Router } from "react-router-dom";
+// Not needed, history.js specifies the use of Hash.
+// import { HashRouter as Router } from "react-router-dom";
 import { ConnectedRouter } from "connected-react-router";
 
 import history from "./history";

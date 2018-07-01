@@ -1,5 +1,4 @@
 // PACKAGES
-import { createSelector } from "reselect";
 import { NAME } from "./constants";
 
 // Selectors provide a way to query data from the module state.

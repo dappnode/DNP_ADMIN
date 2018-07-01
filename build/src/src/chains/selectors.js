@@ -1,6 +1,5 @@
 // WATCHERS
 import { createSelector } from "reselect";
-import fp from "lodash/fp";
 import { NAME } from "./constants";
 
 // Selectors provide a way to query data from the module state.
@@ -19,10 +18,6 @@ import { NAME } from "./constants";
 // way to build composable selectors that are automatically memoized.
 
 // From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
-
-// Utils
-const filterCompleted = todos => todos.filter(t => t.completed);
-const filterActive = todos => todos.filter(t => !t.completed);
 
 export const chains = state => state[NAME];
 export const getAll = chains || {};

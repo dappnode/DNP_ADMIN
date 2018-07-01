@@ -1,5 +1,4 @@
 // WATCHERS
-import autobahn from "autobahn";
 import * as t from "./actionTypes";
 import IPFS from "ipfs-mini";
 import checkConnection from "API/checkConnection";

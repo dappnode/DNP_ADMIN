@@ -24,7 +24,6 @@ class PackageInterface extends React.Component {
     }
 
     let id = pkg.name;
-    let isCORE = pkg.isCORE;
 
     // let packageProperties = Object.getOwnPropertyNames(_package)
     // remove(packageProperties, ['id', 'isDNP', 'running', 'shortName'])

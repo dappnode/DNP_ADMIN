@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import * as action from "../actions";
-import * as selector from "../selectors";
 import { createStructuredSelector } from "reselect";
 import modules from "../modules";
 
