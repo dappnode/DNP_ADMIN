@@ -15,6 +15,8 @@ import NewFolder from "./Icons/NewFolder";
 import Circle from "./Icons/Circle";
 // import Bell from './Icons/Bell'
 import Link from "./Icons/Link";
+// Utils
+import parseType from "utils/parseType";
 
 // FontAwesome.FaTachometerAlt
 // FontAwesome.FaMobileAlt
@@ -121,13 +123,6 @@ class NavbarTopDropdownMessages extends React.Component {
       </li>
     );
   }
-}
-
-function parseType(status) {
-  if (status == 1) return "success";
-  if (status == 0) return "warning";
-  if (status == -1) return "danger";
-  else return "default";
 }
 
 class NavbarTopView extends React.Component {

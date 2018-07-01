@@ -25,7 +25,7 @@ const filterCompleted = todos => todos.filter(t => t.completed);
 const filterActive = todos => todos.filter(t => !t.completed);
 
 export const chains = state => state[NAME];
-export const getAll = chains || [];
+export const getAll = chains || {};
 export const getMainnet = state => chains(state).Mainnet;
 
 export const getCounts = createSelector();

@@ -1,6 +1,7 @@
 // WATCHERS
 import * as actions from "./actions";
 import * as constants from "./constants";
+import * as selectors from "./selectors";
 import reducer from "./reducer";
 
 import Status from "./components/Status";
@@ -13,5 +14,6 @@ export default {
   },
   actions,
   constants,
-  reducer
+  reducer,
+  selectors
 };

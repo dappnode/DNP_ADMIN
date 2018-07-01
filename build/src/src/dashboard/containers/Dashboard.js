@@ -3,6 +3,9 @@ import * as action from "../actions";
 import DashboardView from "../components/DashboardView";
 import { getItems } from "../selectors";
 import { createStructuredSelector } from "reselect";
+// modules
+import status from "status";
+import chains from "chains";
 
 // const getVisibleTodos = (todos, filter) => {
 //   switch (filter) {
@@ -16,7 +19,8 @@ import { createStructuredSelector } from "reselect";
 // }
 
 const mapStateToProps = createStructuredSelector({
-  items: getItems
+  status: status.selectors.getAll,
+  chains: chains.selectors.getAll
 });
 
 const mapDispatchToProps = dispatch => {
