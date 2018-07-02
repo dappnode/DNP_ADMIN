@@ -2,6 +2,7 @@
 import * as t from "./actionTypes";
 import * as selector from "./selectors";
 import * as APIcall from "API/crossbarCalls";
+import packages from "packages";
 
 // export const add = text => ({
 //   type: t.ADD,
@@ -132,9 +133,11 @@ export const install = envs => (dispatch, getState) => {
   }).then(() => {
     // Remove package from blacklist
     dispatch(packageFinishedInstalling(selectedPackageName));
+    // Fetch directory
+    dispatch(fetchDirectory());
+    // Fetch package list
+    dispatch(packages.actions.listPackages());
   });
-
-  dispatch(fetchDirectory());
 };
 
 const updateAfter = AsyncAction => dispatch => {

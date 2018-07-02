@@ -28,9 +28,11 @@ class Ethchain {
   };
 
   stop = () => {
+    console.log("STOPPING", this);
     clearTimeout(this.syncingToken);
     let handleUnsubscribe = (error, success) => {
-      if (error) console.error("Error unsubscribing " + this.url, error);
+      // This wil likely fail because the connection is already closed
+      // if (error) console.error("Error unsubscribing " + this.url, error);
     };
     if (
       this.newBlockHeadersSubscription &&

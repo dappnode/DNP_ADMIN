@@ -18,6 +18,11 @@ export const updateStatus = (id, status) => ({
   id
 });
 
+export const removeChain = id => ({
+  type: t.REMOVE_CHAIN,
+  id
+});
+
 const NOWAMP = "can't connect to WAMP";
 const NON_ADMIN_RESPONSE = "Your user is not an admin";
 

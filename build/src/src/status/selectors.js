@@ -1,4 +1,4 @@
-// WATCHERS
+// STATUS
 import { createSelector } from "reselect";
 import fp from "lodash/fp";
 import { NAME } from "./constants";
