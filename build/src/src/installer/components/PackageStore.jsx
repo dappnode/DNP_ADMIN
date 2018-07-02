@@ -14,6 +14,7 @@ class Card extends React.Component {
 
   render() {
     const pkg = enhancePkg(this.props.pkg);
+
     // The pkg can be incomplete, prevent crashes
 
     let imgClass = pkg.avatar ? "" : "wait";

@@ -2,18 +2,26 @@
 import * as t from "./actionTypes";
 
 const initialState = {
-  initializing: true,
   fetching: false,
   directory: [],
   packages: {},
   selectedPackageId: "",
   selectedVersion: "",
   selectedTypes: [],
-  input: ""
+  input: "",
+  isInstalling: {}
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
+    case t.ISINSTALLING:
+      return {
+        ...state,
+        isInstalling: {
+          ...state.isInstalling,
+          [action.id]: action.payload
+        }
+      };
     case t.UPDATE_FETCHING:
       return {
         ...state,
@@ -54,11 +62,6 @@ export default function(state = initialState, action) {
       return {
         ...state,
         input: action.payload
-      };
-    case t.INITIALIZED:
-      return {
-        ...state,
-        initializing: false
       };
     default:
       return state;

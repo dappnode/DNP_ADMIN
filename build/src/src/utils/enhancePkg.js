@@ -2,36 +2,37 @@ import getTags from "utils/getTags";
 
 export default function enhancePkg(pkg) {
   if (!pkg) return pkg;
-  if (!pkg.manifest)
-    return Object.assign(
-      {
-        tag: "",
-        tagStyle: "unactive"
-      },
-      pkg
-    );
-  let { tag, tagStyle } = getTags(pkg);
 
-  let description = pkg.manifest
-    ? pkg.manifest.description || "Awesome dnp"
-    : "?";
-
-  let type = pkg.manifest ? pkg.manifest.type || "library" : "?";
-
-  let name = pkg.name || "?";
-  let id = name;
-  let namePretty = capitalize(name.split(".dnp.dappnode.eth")[0]);
-
-  // If package broke, re-assign variables
-  if (pkg.error) {
-    type = "";
-    description = pkg.error;
-    tag = "ERROR";
-    tagStyle = "unactive";
-  }
+  let manifest = pkg.manifest;
+  let id = pkg.name || "?";
 
   return Object.assign(
-    { tag, tagStyle, description, type, namePretty, id },
+    // In case of error, replace values (first priority)
+    pkg.error
+      ? {
+          type: "",
+          description: pkg.error,
+          tag: "ERROR",
+          tagStyle: "unactive"
+        }
+      : {},
+    // If manifest exists, curate values
+    manifest
+      ? {
+          description: manifest.description || "Awesome dnp",
+          type: manifest.type || "library",
+          ...getTags(pkg) // return { tag, tagStyle }
+        }
+      : {
+          description: "?",
+          type: "?",
+          tag: ""
+        },
+    // Values used by any package state
+    {
+      namePretty: capitalize(id.split(".dnp.dappnode.eth")[0]),
+      id
+    },
     pkg
   );
 }

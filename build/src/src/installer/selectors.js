@@ -31,6 +31,7 @@ const selectedPackageId = state => local(state).selectedPackageId;
 const selectedVersion = state => local(state).selectedVersion;
 const selectedTypes = state => local(state).selectedTypes;
 const inputValue = state => local(state).input;
+export const isInstalling = state => local(state).isInstalling;
 export const fetching = state => local(state).fetching;
 
 const filterCompleted = todos => todos.filter(t => t.completed);

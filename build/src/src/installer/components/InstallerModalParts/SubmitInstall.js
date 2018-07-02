@@ -54,6 +54,10 @@ export default class SubmitInstall extends React.Component {
       );
     });
 
+    // Disable button:
+    let disable = false;
+    if (this.props.installTag.toLowerCase() === "installed") disable = true;
+
     return (
       <form className="needs-validation">
         {rows}
@@ -62,7 +66,7 @@ export default class SubmitInstall extends React.Component {
           type="submit"
           data-dismiss="modal"
           onClick={this.submit.bind(this)}
-          disabled={this.props.disableInstall}
+          disabled={disable}
           style={{ textTransform: "uppercase" }}
         >
           {this.props.installTag}

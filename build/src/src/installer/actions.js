@@ -17,10 +17,6 @@ export const updateSelectedPackage = id => ({
   payload: id
 });
 
-export const initialized = () => ({
-  type: t.INITIALIZED
-});
-
 export const updateInput = id => ({
   type: t.UPDATE_INPUT,
   payload: id
@@ -34,6 +30,18 @@ export const updateSelectedVersion = index => ({
 export const updateSelectedTypes = types => ({
   type: t.UPDATE_SELECTED_TYPES,
   payload: types
+});
+
+export const packageStartedInstalling = id => ({
+  type: t.ISINSTALLING,
+  payload: true,
+  id
+});
+
+export const packageFinishedInstalling = id => ({
+  type: t.ISINSTALLING,
+  payload: false,
+  id
 });
 
 export const updateAndCheckInput = _id => dispatch => {
@@ -77,9 +85,6 @@ export const fetchDirectory = () => dispatch => {
     // Update directory
     dispatch(updateDirectory(directory));
 
-    // Finish initialization
-    dispatch(initialized());
-
     directory.forEach((pkg, i) => {
       dispatch(updatePackage(pkg, pkg.name));
 
@@ -103,6 +108,16 @@ export const install = envs => (dispatch, getState) => {
   // Load necessary info
   const selectedPackageName = selector.selectedPackageName(getState());
   const selectedVersion = selector.getSelectedVersion(getState());
+  const isInstalling = selector.isInstalling(getState());
+
+  // Prevent double installations, 1. check if the package is in the blacklist
+
+  if (isInstalling[selectedPackageName]) {
+    return console.error(selectedPackageName + " IS ALREADY INSTALLING");
+  }
+
+  // blacklist the current package
+  dispatch(packageStartedInstalling(selectedPackageName));
 
   if (Object.getOwnPropertyNames(envs).length > 0) {
     APIcall.updatePackageEnv({
@@ -114,7 +129,12 @@ export const install = envs => (dispatch, getState) => {
 
   APIcall.addPackage({
     id: selectedPackageName + "@" + selectedVersion
+  }).then(() => {
+    // Remove package from blacklist
+    dispatch(packageFinishedInstalling(selectedPackageName));
   });
+
+  dispatch(fetchDirectory());
 };
 
 const updateAfter = AsyncAction => dispatch => {
