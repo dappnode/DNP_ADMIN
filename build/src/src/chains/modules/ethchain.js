@@ -3,7 +3,7 @@ import Web3 from "web3";
 
 let web3Public = new Web3();
 
-const MIN_BLOCK_DIFF_SYNC = 10;
+const MIN_BLOCK_DIFF_SYNC = 5;
 const INTERVAL_MS = 2 * 1000; // ms
 const TRACKER_MAX_LENGTH = 60;
 
@@ -28,27 +28,26 @@ class Ethchain {
   };
 
   stop = () => {
-    let _this = this;
     clearTimeout(this.syncingToken);
+    let handleUnsubscribe = (error, success) => {
+      if (error) console.error("Error unsubscribing " + this.url, error);
+    };
     if (
       this.newBlockHeadersSubscription &&
       this.newBlockHeadersSubscription.unsubscribe
     )
-      this.newBlockHeadersSubscription.unsubscribe(function(error, success) {
-        if (error)
-          console.error(
-            "Error unsubscribing " + _this.url + " from newBlockHeaders: ",
-            error
-          );
-      });
+      this.newBlockHeadersSubscription.unsubscribe(
+        handleUnsubscribe.bind(this)
+      );
   };
 
   newProvider = url => {
+    if (!(this instanceof Ethchain)) console.error("WRONG THIS!");
     const provider = new Web3.providers.WebsocketProvider(url);
-    provider.on("error", this.handleDisconnects);
-    provider.on("end", this.handleDisconnects);
-    provider.on("timeout", this.handleDisconnects);
-    provider.on("connect", this.startSubscriptions);
+    provider.on("error", this.handleDisconnects.bind(this));
+    provider.on("end", this.handleDisconnects.bind(this));
+    provider.on("timeout", this.handleDisconnects.bind(this));
+    provider.on("connect", this.startSubscriptions.bind(this));
     return provider;
   };
 
@@ -72,49 +71,58 @@ class Ethchain {
     }, this.waitTime);
   };
 
-  startSubscriptions = e => {
+  startSubscriptions(e) {
+    // Properly binded, this = Ethchain
+    if (!(this instanceof Ethchain)) console.error("WRONG THIS!");
     this.retryAttempt = 0;
     this.syncingTimeoutMs = INTERVAL_MS;
     // Request block number immediately
-    this.web3.eth.getBlockNumber().then(this.setBlock);
+    // Commented out to avoid success -> warning on start-up
+    // const handleBlock = block => {
+    //   console.log(block, this.url);
+    //   this.setBlock(block);
+    // };
+    // this.web3.eth.getBlockNumber().then(handleBlock.bind(this));
     // Subscribe to new block numbers
     this.subscribeToBlockNumber();
     // Subscribe to isSyncing, slow down calls if synced
     this.subscribeToSyncing();
-  };
+  }
 
   // Subscribe methods
   subscribeToBlockNumber = () => {
-    let _this = this;
+    let handleBlockHeader = (error, blockHeader) => {
+      if (error) console.log(error);
+      else this.setBlock(blockHeader.number);
+    };
     this.newBlockHeadersSubscription = this.web3.eth.subscribe(
       "newBlockHeaders",
-      function(error, blockHeader) {
-        if (error) console.log(error);
-        else _this.setBlock(blockHeader.number);
-      }
+      handleBlockHeader
     );
   };
 
   subscribeToSyncing = () => {
-    let _this = this;
-    this.web3.eth.isSyncing(function(error, syncing) {
+    let handleIsSyncing = (error, syncing) => {
       if (error) return console.log(error);
       // Increase next syncing check if already synced
-      if (!syncing) _this.syncingTimeoutMs = _this.syncingTimeoutMs * 1.5;
+      if (!syncing) this.syncingTimeoutMs = this.syncingTimeoutMs * 1.5;
       // Speed up blocknumber fetching
-      if (!syncing) _this.web3.eth.getBlockNumber().then(_this.setBlock);
+      let handleBlockNumber = block => {
+        this.setBlock(block);
+      };
+      if (!this.blockNumber)
+        this.web3.eth.getBlockNumber().then(handleBlockNumber.bind(this));
       // Format in place
       formatSyncing(syncing);
       // track syncing to know if it's syncing from snapshot or not
-      _this.trackSyncing(syncing);
+      this.trackSyncing(syncing);
       // store syncing
-      _this.setSyncing(syncing);
+      this.setSyncing(syncing);
       // Schedule the next check
-      _this.syncingToken = setTimeout(
-        _this.subscribeToSyncing,
-        _this.syncingTimeoutMs
-      );
-    });
+      let subscribeToSyncing = this.subscribeToSyncing.bind(this);
+      this.syncingToken = setTimeout(subscribeToSyncing, this.syncingTimeoutMs);
+    };
+    this.web3.eth.isSyncing(handleIsSyncing);
   };
 
   trackSyncing = syncing => {
@@ -133,10 +141,12 @@ class Ethchain {
       this.track.chunks.shift();
   };
 
-  setBlock = block => {
-    if (this.blockNumber !== block) this.onUpdate();
+  setBlock(block) {
+    // Properly binded, this = Ethchain
+    // if (!(this instanceof Ethchain)) console.error("WRONG THIS!");
     if (block) this.blockNumber = block;
-  };
+    this.onUpdate();
+  }
 
   setSyncing = syncing => {
     if (syncing || this.syncingObject) this.onUpdate();
@@ -154,10 +164,12 @@ class Ethchain {
   };
 
   syncingLogic = () => {
+    // Properly binded, this = Ethchain
     // If no syncing, display synced
     if (!this.syncingObject) return syncedResponse(this.blockNumber);
     // Otherwise check the difference
     const { cB, hB } = parseSyncing(this.syncingObject);
+    // console.log(hB, cB, hB - cB < MIN_BLOCK_DIFF_SYNC);
     if (hB - cB < MIN_BLOCK_DIFF_SYNC) return syncedResponse(this.blockNumber);
     // Now display that is syncing
     return isSyncingResponse(this.syncingObject, this.track);

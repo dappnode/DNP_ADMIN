@@ -63,13 +63,14 @@ const wampWorked = (worked, reason) => dispatch => {
 export const check = () => (dispatch, getState) => {
   // Check Mainnet, import status from the chains module
   const MainnetStatus = chains.selectors.getMainnet(getState());
-  dispatch(
-    updateStatus({
-      id: tags.mainnet,
-      status: MainnetStatus.status,
-      msg: MainnetStatus.msg
-    })
-  );
+  if (MainnetStatus)
+    dispatch(
+      updateStatus({
+        id: tags.mainnet,
+        status: MainnetStatus.status,
+        msg: MainnetStatus.msg
+      })
+    );
 
   // Check WAMP
   checkConnection()
