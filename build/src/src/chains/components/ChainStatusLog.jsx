@@ -1,35 +1,9 @@
 import React from "react";
-import AppStore from "stores/AppStore";
 
 export default class ChainStatusLog extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      chainStatus: AppStore.getChainStatus()
-    };
-    this.updateChainStatus = this.updateChainStatus.bind(this);
-  }
-
-  componentDidMount() {
-    AppStore.on(AppStore.tag.CHANGE_CHAINSTATUS, this.updateChainStatus);
-  }
-
-  componentWillUnmount() {
-    AppStore.removeListener(
-      AppStore.tag.CHANGE_CHAINSTATUS,
-      this.updateChainStatus
-    );
-  }
-
-  updateChainStatus() {
-    this.setState({
-      chainStatus: AppStore.getChainStatus()
-    });
-  }
-
   render() {
     // ChainStatus
-    const chainStatus = this.state.chainStatus || {};
+    const chainStatus = this.props.chainStatus || {};
 
     if (chainStatus.type === "warning") {
       return (

@@ -3,10 +3,10 @@ import { NavLink } from "react-router-dom";
 // Modules
 import chains from "chains";
 // Icons
-import Devices from "./Icons/Devices";
-import Dashboard from "./Icons/Dashboard";
-import Folder from "./Icons/Folder";
-import NewFolder from "./Icons/NewFolder";
+import Devices from "Icons/Devices";
+import Dashboard from "Icons/Dashboard";
+import Folder from "Icons/Folder";
+import NewFolder from "Icons/NewFolder";
 
 const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
 

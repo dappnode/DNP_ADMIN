@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import navbar from "./navbar";
 import devices from "./devices";
 import installer from "./installer";
 import dashboard from "./dashboard";
@@ -12,5 +13,6 @@ export default combineReducers({
   [dashboard.constants.NAME]: dashboard.reducer,
   [packages.constants.NAME]: packages.reducer,
   [status.constants.NAME]: status.reducer,
-  [chains.constants.NAME]: chains.reducer
+  [chains.constants.NAME]: chains.reducer,
+  [navbar.constants.NAME]: navbar.reducer
 });

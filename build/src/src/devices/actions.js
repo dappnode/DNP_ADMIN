@@ -1,6 +1,6 @@
 // DEVICES
 import * as t from "./actionTypes";
-import * as call from "API/crossbarCalls";
+import * as APIcall from "API/crossbarCalls";
 
 // export const add = text => ({
 //   type: t.ADD,
@@ -12,7 +12,7 @@ import * as call from "API/crossbarCalls";
 // todos.actions.add('Do that thing');
 
 const updateAfter = AsyncAction => dispatch => {
-  AsyncAction.then(call.listDevices).then(
+  AsyncAction.then(APIcall.listDevices).then(
     devices =>
       devices
         ? dispatch({
@@ -23,9 +23,9 @@ const updateAfter = AsyncAction => dispatch => {
   );
 };
 
-export const add = id => updateAfter(call.addDevice({ id }));
-export const remove = id => updateAfter(call.removeDevice({ id }));
-export const toggleAdmin = id => updateAfter(call.toggleAdmin({ id }));
+export const add = id => updateAfter(APIcall.addDevice({ id }));
+export const remove = id => updateAfter(APIcall.removeDevice({ id }));
+export const toggleAdmin = id => updateAfter(APIcall.toggleAdmin({ id }));
 export const list = () => updateAfter(nothing());
 
 const nothing = async () => {};

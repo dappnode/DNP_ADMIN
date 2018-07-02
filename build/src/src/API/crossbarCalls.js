@@ -127,7 +127,12 @@ function start() {
 
 // ######
 function parseResponse(resUnparsed) {
-  return JSON.parse(resUnparsed);
+  const resObject = JSON.parse(resUnparsed);
+  if ("success" in resObject && "message" in resObject) return resObject;
+  return {
+    success: false,
+    message: "reponse object in not correctly formated: " + resUnparsed
+  };
 }
 
 function PendingToast(initText) {
@@ -175,11 +180,10 @@ async function call({ event, args = [], kwargs = {}, initText = "" }) {
 
   // If session is not available, fail gently
   if (!(session && session.isOpen)) {
-    if (pendingToast)
-      pendingToast.resolve({
-        success: false,
-        message: "Can't connect to DAppNode's WAMP"
-      });
+    pendingToast.resolve({
+      success: false,
+      message: "Can't connect to DAppNode's WAMP"
+    });
     return;
   }
 
@@ -230,6 +234,11 @@ export const toggleAdmin = (kwargs = {}) =>
 export const listDevices = () =>
   call({
     event: "listDevices.vpn.dnp.dappnode.eth"
+  });
+
+export const getVpnParams = () =>
+  call({
+    event: "getParams.vpn.dappnode.eth"
   });
 
 /* PACKAGE */
