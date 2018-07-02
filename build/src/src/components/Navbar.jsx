@@ -1,8 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import ErrorBoundary from "react-error-boundary";
-import AppStore from "stores/AppStore";
-
+import { createStructuredSelector } from "reselect";
+import { connect } from "react-redux";
+// modules
+import chains from "chains";
+// Images
 import LogoImg from "img/DAppNode-Black.png";
 // Icons
 import Devices from "./Icons/Devices";
@@ -12,6 +15,8 @@ import NewFolder from "./Icons/NewFolder";
 import Circle from "./Icons/Circle";
 // import Bell from './Icons/Bell'
 import Link from "./Icons/Link";
+// Utils
+import parseType from "utils/parseType";
 
 // FontAwesome.FaTachometerAlt
 // FontAwesome.FaMobileAlt
@@ -153,13 +158,11 @@ class NavbarTop extends React.Component {
   }
 
   render() {
-    let chainInfo = [
-      {
-        title: "Mainnet",
-        body: this.state.chainStatus.status,
-        type: this.state.chainStatus.type
-      }
-    ];
+    let chainInfo = Object.keys(this.props.chains).map(id => ({
+      title: id,
+      body: this.props.chains[id].msg,
+      type: parseType(this.props.chains[id].status)
+    }));
 
     // ###### This code is to incorporate the bell again
 
@@ -201,6 +204,17 @@ class NavbarTop extends React.Component {
     );
   }
 }
+
+const mapStateToProps = createStructuredSelector({
+  chains: chains.selectors.getAll
+});
+
+const mapDispatchToProps = {};
+
+const NavbarTop = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NavbarTopView);
 
 class NavbarSide extends React.Component {
   render() {

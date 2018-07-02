@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-// Components
-import ChainStatusLog from "./ChainStatusLog";
+// Modules
+import chains from "chains";
 // Icons
 import Devices from "./Icons/Devices";
 import Dashboard from "./Icons/Dashboard";
@@ -72,7 +72,7 @@ export default class Home extends React.Component {
           </p>
         </div>
 
-        <ChainStatusLog />
+        <chains.components.ChainStatusLog />
 
         <div className="row mt-4">{items}</div>
       </div>

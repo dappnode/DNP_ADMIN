@@ -1,8 +1,51 @@
 import autobahn from "autobahn";
-import * as AppActions from "actions/AppActions";
-import AppStore from "stores/AppStore";
-
+import uuidv4 from "uuid/v4";
 import { toast } from "react-toastify";
+import eventBus from "eventBus";
+
+const progressLogs = {};
+
+function shortName(ens) {
+  if (!ens) return ens;
+  if (!ens.includes(".")) return ens;
+  return ens.split(".")[0];
+}
+
+function handleProgressLog(id, log) {
+  // action.log = data (object), the object may contain
+  // pkg: PACKAGE_NAME
+  // clear: true
+  // msg: 'download'
+  // order: [packageName1, ...]
+  if (!(id in progressLogs)) progressLogs[id] = {};
+  let progressLog = progressLogs[id] || {};
+  if (!("msg" in progressLog)) progressLog.msg = {};
+  if (!("order" in progressLog)) progressLog.order = ["all"];
+
+  if (log.clear) {
+    progressLog.msg = {};
+    progressLog.order = [];
+  }
+  if (log.order) {
+    log.order.forEach((name, i) => {
+      progressLog.order.push(name);
+    });
+  }
+  if (log.pkg) {
+    progressLog.msg[log.pkg] = log.msg;
+  }
+}
+
+function formatProgressLog(id) {
+  const progressLog = progressLogs[id] || {};
+  const msgs = progressLog.msg || {};
+  const pakagesOrder = progressLog.order || [];
+  return pakagesOrder
+    .map((name, i) => shortName(name) + ": " + (msgs[name] || "loading..."))
+    .join(", \n");
+}
+
+const tasks = {};
 
 // let url = 'ws://localhost:8080/ws';
 // let url = 'ws://206.189.162.209:8080/ws';
@@ -11,412 +54,338 @@ let url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
 let realm = "dappnode_admin";
 
 // Initalize app
-let session; // make this variable global
-start();
+let session, sessionExternal; // make this variable global
+start().then(_session => {
+  session = _session;
+});
 
-async function start() {
-  const autobahnUrl = url;
-  const autobahnRealm = realm;
-  const connection = new autobahn.Connection({
-    url: autobahnUrl,
-    realm: autobahnRealm
-  });
+export const getSessionSync = () => sessionExternal;
+export const isOpen = () => Boolean(session && session.isOpen);
 
-  connection.onopen = function(_session) {
-    session = _session;
-    console.log(
-      "CONNECTED to DAppnode's WAMP " +
-        "\n   url " +
-        autobahnUrl +
-        "\n   realm: " +
-        autobahnRealm
-    );
-
-    setTimeout(function() {
-      getVpnParams();
-      listDevices();
-      listPackages();
-      listDirectory();
-    }, 300);
-
-    session.subscribe("log.dappmanager.dnp.dappnode.eth", function(res) {
-      let log = res[0];
-      AppActions.updateProgressLog(log);
+function start() {
+  return new Promise((resolve, reject) => {
+    const autobahnUrl = url;
+    const autobahnRealm = realm;
+    const connection = new autobahn.Connection({
+      url: autobahnUrl,
+      realm: autobahnRealm
     });
 
-    window.call = function(call, args) {
-      return session.call(call, args).then(res => {
-        return res;
-      });
-    };
-  };
+    connection.onopen = function(_session) {
+      eventBus.publish("connection_open", _session);
+      console.log(
+        "CONNECTED to DAppnode's WAMP " +
+          "\n   url " +
+          autobahnUrl +
+          "\n   realm: " +
+          autobahnRealm
+      );
+      sessionExternal = session = _session;
 
-  connection.onclose = function(reason, details) {
-    console.log("CONNECTION ERROR: ", "reason", reason, "details", details);
-    // connection closed, lost or unable to connect
-  };
-  console.log("OPENING CONNECTION");
-  connection.open();
+      session.subscribe("log.dappmanager.dnp.dappnode.eth", function(res) {
+        let log = res[0];
+        handleProgressLog(log.logId, log);
+        const task = tasks[log.logId];
+        toast.update(task.toastId, {
+          render: task.initText + " \n" + formatProgressLog(log.logId),
+          className: "show-newlines"
+        });
+      });
+
+      window.call = function(call, args) {
+        return session.call(call, args).then(res => {
+          return res;
+        });
+      };
+      resolve(session);
+    };
+
+    connection.onclose = function(reason, details) {
+      eventBus.publish(
+        "connection_close",
+        (sessionExternal = {
+          reason,
+          message: details ? details.message || "" : ""
+        })
+      );
+      reject();
+      // connection closed, lost or unable to connect
+    };
+    console.log("OPENING CONNECTION");
+    try {
+      connection.open();
+    } catch (e) {
+      console.log(e);
+    }
+  });
 }
 
 ///////////////////////////////
 // Connection helper functions
+
+/* DEVICE CALLS */
 
 // ######
 function parseResponse(resUnparsed) {
   return JSON.parse(resUnparsed);
 }
 
-// {"result":"ERR","resultStr":"QmWhzrpqcrR5N4xB6nR5iX9q3TyN5LUMxBLHdMedquR8nr it is not accesible"}"
-/* DEVICE CALLS */
-
-export async function getVpnParams() {
-  let resUnparsed = await session.call("getParams.vpn.dappnode.eth", []);
-  let res = parseResponse(resUnparsed);
-
-  if (res)
-    AppActions.updateVpnParams({
-      IP: res.VPN.IP,
-      NAME: res.VPN.NAME
-    });
-  else
-    toast.error("Error fetching VPN parameters", {
-      position: toast.POSITION.BOTTOM_RIGHT
-    });
-}
-
-export async function addDevice(name) {
-  // Ensure name contains only alphanumeric characters
-  const correctedName = name.replace(/\W/g, "");
-
-  let toastId = toast("Adding device: " + correctedName, {
-    autoClose: false,
-    position: toast.POSITION.BOTTOM_RIGHT
+function PendingToast(initText) {
+  const defaultOptions = res => ({
+    position: toast.POSITION.BOTTOM_RIGHT,
+    autoClose: 5000,
+    type: res ? (res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR) : null
   });
 
-  let resUnparsed = await session.call("addDevice.vpn.dnp.dappnode.eth", [
-    correctedName
-  ]);
-  let res = parseResponse(resUnparsed);
+  this.id =
+    initText || initText !== ""
+      ? toast(initText, {
+          ...defaultOptions(null),
+          autoClose: false
+        })
+      : undefined;
 
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
-  });
-
-  listDevices();
+  this.resolve = res => {
+    if (this.id && toast.isActive(this.id))
+      // Existing toast, update
+      toast.update(this.id, {
+        ...defaultOptions(res),
+        render: res.message
+      });
+    else if (!this.id && res.success)
+      // On not initialized toast's success don't show
+      return;
+    // Rest of cases, show new toast
+    else
+      toast.error(res.message, {
+        ...defaultOptions(res)
+      });
+  };
 }
 
-export async function removeDevice(deviceName) {
-  let toastId = toast("Removing device: " + deviceName, {
-    autoClose: false,
-    position: toast.POSITION.BOTTOM_RIGHT
-  });
+async function call({ event, args = [], kwargs = {}, initText = "" }) {
+  // Generate a taskid
+  const taskId = uuidv4();
+  kwargs.logId = taskId;
 
-  let resUnparsed = await session.call("removeDevice.vpn.dnp.dappnode.eth", [
-    deviceName
-  ]);
-  let res = parseResponse(resUnparsed);
+  // Initialize a toast if requested
+  const pendingToast = new PendingToast(initText);
+  // Store the information globally
+  tasks[taskId] = { id: taskId, toastId: pendingToast.id, initText };
 
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
-  });
+  // If session is not available, fail gently
+  if (!(session && session.isOpen)) {
+    if (pendingToast)
+      pendingToast.resolve({
+        success: false,
+        message: "Can't connect to DAppNode's WAMP"
+      });
+    return;
+  }
 
-  listDevices();
+  // Call the session method
+  const resUnparsed = await session.call(event, args, kwargs);
+
+  // Parse response
+  const res = parseResponse(resUnparsed);
+
+  // Update the toast or create a new one in case of error
+  pendingToast.resolve(res);
+
+  // Return the result
+  return res.result;
 }
 
-export async function toggleAdmin(deviceName, isAdmin) {
-  let toastId = toast(
-    isAdmin
-      ? "Giving admin credentials to " + deviceName
-      : "Removing admin credentials from " + deviceName,
-    {
-      autoClose: false,
-      position: toast.POSITION.BOTTOM_RIGHT
-    }
-  );
+function assertKwargs(kwargs, keys) {
+  keys.forEach(key => {
+    if (!(key in kwargs))
+      throw Error("Key " + key + " missing on " + JSON.stringify(kwargs));
+  });
+  return kwargs;
+}
 
-  let resUnparsed = await session.call("toggleAdmin.vpn.dnp.dappnode.eth", [
-    deviceName
-  ]);
-  let res = parseResponse(resUnparsed);
+/* Devices */
 
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
+export const addDevice = (kwargs = {}) =>
+  call({
+    event: "addDevice.vpn.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Adding " + kwargs.id + "..."
   });
 
-  listDevices();
-}
+export const removeDevice = (kwargs = {}) =>
+  call({
+    event: "removeDevice.vpn.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Removing " + kwargs.id + "..."
+  });
 
-export async function listDevices() {
-  let resUnparsed = await session.call("listDevices.vpn.dnp.dappnode.eth", []);
-  let res = parseResponse(resUnparsed);
+export const toggleAdmin = (kwargs = {}) =>
+  call({
+    event: "toggleAdmin.vpn.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Toggling " + kwargs.id + "admin credentials..."
+  });
 
-  if (res.success && res.result) AppActions.updateDeviceList(res.result);
-  else
-    toast.error("Error listing devices: " + res.message, {
-      position: toast.POSITION.BOTTOM_RIGHT
-    });
-}
+export const listDevices = () =>
+  call({
+    event: "listDevices.vpn.dnp.dappnode.eth"
+  });
 
 /* PACKAGE */
 
-export async function addPackage(link) {
-  let toastId = toast("Adding package " + link, {
-    autoClose: false,
-    position: toast.POSITION.BOTTOM_RIGHT
+// TO IMPLEMENT: Prevent reinstallation, by checking in an array that the package is installing
+
+//
+// if (AppStore.getDisabled()[link]) {
+//   toast.update(toastId, {
+//     render: "Package " + link + " is already being installed",
+//     type: toast.TYPE.ERROR,
+//     autoClose: 5000
+//   });
+//   return;
+// }
+
+// Disable package installation
+// AppActions.updateDisabled({ name: link, disabled: true });
+
+export const addPackage = (kwargs = {}) =>
+  call({
+    event: "installPackage.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Adding " + shortName(kwargs.id) + "..."
   });
 
-  // Prevent reinstallation
-  if (AppStore.getDisabled()[link]) {
-    toast.update(toastId, {
-      render: "Package " + link + " is already being installed",
-      type: toast.TYPE.ERROR,
-      autoClose: 5000
-    });
-    return;
-  }
+// AppActions.updateDisabled({ name: link, disabled: false });
 
-  // Disable package installation
-  AppActions.updateDisabled({ name: link, disabled: true });
+// AppActions.updateProgressLog({ clear: true });
 
-  let resUnparsed = await session.call(
-    "installPackage.dappmanager.dnp.dappnode.eth",
-    [link]
-  );
-  let res = parseResponse(resUnparsed);
+// "Removing package " + id + (deleteVolumes ? " and volumes" : ""),
+// AFTER => listPackages(); listDirectory();
 
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
+export const removePackage = (kwargs = {}) =>
+  call({
+    event: "removePackage.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id", "deleteVolumes"]),
+    initText:
+      "Removing package " +
+      shortName(kwargs.id) +
+      (kwargs.deleteVolumes ? " and volumes" : "")
   });
 
-  // Enable package installation
-  AppActions.updateDisabled({ name: link, disabled: false });
+// "Toggling package " + id
+// (id, isCORE)
 
-  AppActions.updateProgressLog({ clear: true });
-
-  listPackages();
-  listDirectory();
-}
-
-export async function removePackage(id, deleteVolumes) {
-  let toastId = toast(
-    "Removing package " + id + (deleteVolumes ? " and volumes" : ""),
-    {
-      autoClose: false,
-      position: toast.POSITION.BOTTOM_RIGHT
-    }
-  );
-
-  let resUnparsed = await session.call(
-    "removePackage.dappmanager.dnp.dappnode.eth",
-    [id, deleteVolumes]
-  );
-  let res = parseResponse(resUnparsed);
-
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
+export const togglePackage = (kwargs = {}) =>
+  call({
+    event: "togglePackage.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Toggling " + shortName(kwargs.id)
   });
 
-  listPackages();
-  listDirectory();
-}
+// "Restarting " + id + " " + (isCORE ? "(CORE)" : ""
+// (id, isCORE)
 
-export async function togglePackage(id, isCORE) {
-  let toastId = toast("Toggling package " + id, {
-    autoClose: false,
-    position: toast.POSITION.BOTTOM_RIGHT
+export const restartPackage = (kwargs = {}) =>
+  call({
+    event: "restartPackage.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Restarting " + shortName(kwargs.id)
   });
 
-  let resUnparsed = await session.call(
-    "togglePackage.dappmanager.dnp.dappnode.eth",
-    [id]
-  );
-  let res = parseResponse(resUnparsed);
+// "Restarting " + id + " " + (isCORE ? "(CORE)" : "") + " volumes"
+// (id, isCORE)
+// AFTER => listPackages();
 
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
+export const restartVolumes = (kwargs = {}) =>
+  call({
+    event: "restartPackageVolumes.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id"]),
+    initText: "Restarting " + shortName(kwargs.id) + " volumes"
   });
 
-  listPackages();
-}
+// "Updating " + id + " envs: " + JSON.stringify(envs)
+// (id, envs, restart, isCORE)
 
-export async function restartPackage(id, isCORE) {
-  let toastId = toast("Restarting " + id + " " + (isCORE ? "(CORE)" : ""), {
-    autoClose: false,
-    position: toast.POSITION.BOTTOM_RIGHT
+export const updatePackageEnv = (kwargs = {}) =>
+  call({
+    event: "updatePackageEnv.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id", "envs", "restart"]),
+    initText: "Updating " + kwargs.id + " envs: " + JSON.stringify(kwargs.envs)
   });
 
-  let resUnparsed = await session.call(
-    "restartPackage.dappmanager.dnp.dappnode.eth",
-    [id, isCORE]
-  );
-  let res = parseResponse(resUnparsed);
+// ""
+// (id, isCORE, options = {})
 
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
+export const logPackage = (kwargs = {}) =>
+  call({
+    event: "logPackage.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id", "options"])
   });
 
-  listPackages();
-}
+// ""
+// (id)
 
-export async function restartPackageVolumes(id, isCORE) {
-  let toastId = toast(
-    "Restarting " + id + " " + (isCORE ? "(CORE)" : "") + " volumes",
-    {
-      autoClose: false,
-      position: toast.POSITION.BOTTOM_RIGHT
-    }
-  );
-
-  let resUnparsed = await session.call(
-    "restartPackageVolumes.dappmanager.dnp.dappnode.eth",
-    [id, isCORE]
-  );
-  let res = parseResponse(resUnparsed);
-
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
+export const fetchPackageInfo = (kwargs = {}) =>
+  call({
+    event: "fetchPackageInfo.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id"])
   });
 
-  listPackages();
-}
+// ""
+// ()
 
-export async function updatePackageEnv(id, envs, restart, isCORE) {
-  let toastId = toast("Updating " + id + " envs: " + JSON.stringify(envs), {
-    autoClose: false,
-    position: toast.POSITION.BOTTOM_RIGHT
+export const listPackages = () =>
+  call({
+    event: "listPackages.dappmanager.dnp.dappnode.eth"
   });
 
-  let resUnparsed = await session.call(
-    "updatePackageEnv.dappmanager.dnp.dappnode.eth",
-    [id, JSON.stringify(envs), restart, isCORE]
-  );
-  let res = parseResponse(resUnparsed);
+// ""
+// ()
 
-  toast.update(toastId, {
-    render: res.message,
-    type: res.success ? toast.TYPE.SUCCESS : toast.TYPE.ERROR,
-    autoClose: 5000
+export const fetchDirectory = () =>
+  call({
+    event: "listDirectory.dappmanager.dnp.dappnode.eth"
   });
 
-  listPackages();
-}
+// IMPLEMENT - BEFORE CALL
+// const chainStatus = AppStore.getChainStatus() || {};
 
-export async function logPackage(id, isCORE, options = {}) {
-  let resUnparsed = await session.call(
-    "logPackage.dappmanager.dnp.dappnode.eth",
-    [id, isCORE, JSON.stringify(options)]
-  );
-  let res = parseResponse(resUnparsed);
+//   if (chainStatus.isSyncing) {
+//     console.warn("Mainnet is still syncing, preventing directory listing");
+//     return;
+//   }
 
-  if (res.success && res.result && res.result.hasOwnProperty("logs"))
-    AppActions.updatePackageLog(id, res.result.logs);
-  else
-    toast.error("Error logging " + id + ": " + res.message, {
-      position: toast.POSITION.BOTTOM_RIGHT
-    });
-}
+// IMPLEMENT - AFTER CALL
+//     // QUICK - First add current data to the store
+//   for (const pkg of res.result) {
+//     AppActions.updatePackageData({
+//       name: pkg.name,
+//       data: pkg
+//     });
+//   }
+//     // SLOW - Then call for the additional package data
+//   for (const pkg of res.result) {
+//     await getPackageData(pkg.name);
+//   }
 
-export async function fetchPackageInfo(id) {
-  let resUnparsed = await session.call(
-    "fetchPackageInfo.dappmanager.dnp.dappnode.eth",
-    [id]
-  );
-  let res = parseResponse(resUnparsed);
+// ""
+// (id)
 
-  if (res.success && res.result) AppActions.updatePackageInfo(id, res.result);
-  else
-    toast.error("Error fetching versions of " + id + ": " + res.message, {
-      position: toast.POSITION.BOTTOM_RIGHT
-    });
-}
+export const getPackageData = (kwargs = {}) =>
+  call({
+    event: "getPackageData.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id"])
+  });
 
-export async function listPackages() {
-  let resUnparsed = await session.call(
-    "listPackages.dappmanager.dnp.dappnode.eth",
-    []
-  );
-  let res = parseResponse(resUnparsed);
-
-  if (res.success && res.result) AppActions.updatePackageList(res.result);
-  else
-    toast.error("Error listing packages: " + res.message, {
-      position: toast.POSITION.BOTTOM_RIGHT
-    });
-}
-
-export async function listDirectory() {
-  // [ { name: 'rinkeby.dnp.dappnode.eth',
-  //   status: 'Preparing',
-  //   versions: [ '0.0.1', '0.0.2' ] },
-  const chainStatus = AppStore.getChainStatus() || {};
-
-  if (chainStatus.isSyncing) {
-    console.warn("Mainnet is still syncing, preventing directory listing");
-    return;
-  }
-
-  let resUnparsed = await session.call(
-    "listDirectory.dappmanager.dnp.dappnode.eth",
-    []
-  );
-  let res = parseResponse(resUnparsed);
-
-  if (res.success && res.result) {
-    // QUICK - First add current data to the store
-    for (const pkg of res.result) {
-      AppActions.updatePackageData({
-        name: pkg.name,
-        data: pkg
-      });
-    }
-    // SLOW - Then call for the additional package data
-    for (const pkg of res.result) {
-      await getPackageData(pkg.name);
-    }
-  } else {
-    toast.error("Error fetching directory: " + res.message, {
-      position: toast.POSITION.BOTTOM_RIGHT
-    });
-  }
-}
-
-async function getPackageData(id) {
-  let resUnparsed = await session.call(
-    "getPackageData.dappmanager.dnp.dappnode.eth",
-    [id]
-  );
-  let res = parseResponse(resUnparsed);
-
-  if (res.success && res.result)
-    AppActions.updatePackageData({
-      name: id,
-      data: res.result
-    });
-  else {
-    AppActions.updatePackageData({
-      name: id,
-      data: { error: res.message }
-    });
-
-    toast.error("Package " + id + " is unavailable: " + res.message, {
-      position: toast.POSITION.BOTTOM_RIGHT
-    });
-  }
-}
+// IMPLEMENT - AFTER
+//   if (res.success && res.result)
+//     AppActions.updatePackageData({
+//       name: id,
+//       data: res.result
+//     });
+//   else {
+//     AppActions.updatePackageData({
+//       name: id,
+//       data: { error: res.message }
+//     });

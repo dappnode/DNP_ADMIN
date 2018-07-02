@@ -1,4 +1,3 @@
-
 :root {
   --border-color: #e5e5e5;
 }
@@ -7,6 +6,9 @@
   word-break: break-all;
 }
 
+.show-newlines {
+  white-space: normal;
+}
 
 .dappnode-background {
   background-color: #f7f9f9a8;
@@ -57,7 +59,7 @@
 .btn-outline-dark {
   background-color: white;
   border: 1px solid var(--border-color);
-  box-shadow: 0px 0px 20px 0 rgba(0,0,0,0.12)
+  box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.12);
 }
 
 .package-link {
@@ -71,7 +73,7 @@
   text-transform: uppercase;
 }
 .card-tag.active {
-  color: #2FBCB2;
+  color: #2fbcb2;
   font-weight: bold;
 }
 .card-tag.unactive {
@@ -90,7 +92,7 @@
   box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0.03);
 }
 
-.hover-animation{
+.hover-animation {
   width: 100%;
   /* height: 250px; */
   display: inline-block;
@@ -106,10 +108,10 @@
   bottom: 0;
   right: 0;
   left: 0;
-  content: '';
+  content: "";
   position: absolute;
   background: inherit;
-  transition: .3s;
+  transition: 0.3s;
 }
 .hover-animation:after {
   padding: 10px;
@@ -154,8 +156,8 @@
 
 .dappnode-background-color {
   color: white;
-  border: #2FBCB2;
-  background-color: #2FBCB2;
+  border: #2fbcb2;
+  background-color: #2fbcb2;
 }
 .dappnode-background-color:hover {
   color: white;
@@ -168,9 +170,15 @@
   background-color: #9cc7c4;
 }
 
-.Toastify__toast--success { background: #5cb85c; }
-.Toastify__toast--warning { background: #f0ad4e; }
-.Toastify__toast--error { background: #d9534f; }
+.Toastify__toast--success {
+  background: #5cb85c;
+}
+.Toastify__toast--warning {
+  background: #f0ad4e;
+}
+.Toastify__toast--error {
+  background: #d9534f;
+}
 
 .tableAction-button {
   min-width: 75px;
@@ -249,7 +257,7 @@
 .loader {
   border: 16px solid #f3f3f3;
   border-radius: 50%;
-  border-top: 16px solid #2FBCB2;
+  border-top: 16px solid #2fbcb2;
   width: 120px;
   height: 120px;
   -webkit-animation: spin 2s linear infinite; /* Safari */
@@ -258,15 +266,22 @@
 
 /* Safari */
 @-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
-
 
 /* DEFAULT CHECKMARK */
 /* DEFAULT CHECKMARK */
@@ -315,7 +330,7 @@
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
-  background-color: #2FBCB2;
+  background-color: #2fbcb2;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -343,14 +358,26 @@
   transform: rotate(45deg);
 }
 
-
 /* ROTATING IMAGE */
 
 .wait {
-    -webkit-animation:spin 4s linear infinite;
-    -moz-animation:spin 4s linear infinite;
-    animation:spin 4s linear infinite;
+  -webkit-animation: spin 4s linear infinite;
+  -moz-animation: spin 4s linear infinite;
+  animation: spin 4s linear infinite;
 }
-@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
-@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
-@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
