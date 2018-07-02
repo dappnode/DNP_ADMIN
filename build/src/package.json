@@ -49,6 +49,6 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.0",
     "prettier": "^1.13.5",
-    "redux-devtools": "^3.4.1"
+    "react-hot-loader": "^4.3.3"
   }
 }
