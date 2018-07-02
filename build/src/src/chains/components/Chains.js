@@ -26,7 +26,7 @@ let ethchains = [
   {
     id: "Kovan",
     name: "kovan.dnp.dappnode.eth",
-    url: "ws://my.ethchain.dnp.dappnode.eth:8546"
+    url: "ws://my.kovan.dnp.dappnode.eth:8546"
   },
   {
     id: "Ropsten",
