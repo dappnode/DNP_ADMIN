@@ -47,7 +47,7 @@ export default class App extends React.Component {
               />
               <Route
                 path={"/" + devices.constants.NAME}
-                component={devices.components.DevicesInterface}
+                component={devices.component}
               />
               <Route
                 path={"/" + installer.constants.NAME}

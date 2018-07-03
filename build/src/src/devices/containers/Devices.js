@@ -21,9 +21,6 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchDevices: () => {
-      dispatch(action.list());
-    },
     addDevice: id => {
       // Ensure id contains only alphanumeric characters
       const correctedId = id.replace(/\W/g, "");

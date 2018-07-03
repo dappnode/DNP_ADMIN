@@ -3,18 +3,15 @@ import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
 
-import DevicesInterface from "./containers/Devices";
-
-const components = {
-  DevicesInterface
-};
-
-const component = DevicesInterface;
+import DevicesRoot from "./components/DevicesRoot";
+import Devices from "./containers/Devices";
 
 export default {
   actions,
-  component,
-  components,
+  component: DevicesRoot,
+  components: {
+    DevicesRoot
+  },
   constants,
   reducer,
   selectors

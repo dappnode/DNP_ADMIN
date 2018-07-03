@@ -1,8 +1,10 @@
 import React from "react";
 import ClipboardJS from "clipboard";
+import { NavLink } from "react-router-dom";
 import QRCode from "qrcode.react";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import "./adminBadge.css";
 
 new ClipboardJS(".btn");
 
@@ -41,71 +43,91 @@ class Row extends React.Component {
     let id = device.name;
     const isAdmin = device.ip.includes(ADMIN_STATIC_IP_PREFIX);
 
+    const margin = "5px";
+    const padding = "0.7rem";
+    const width = "100px";
+
+    const ip = device.ip || "";
+    const badge = ip.startsWith("172.33.10.") ? (
+      <span className="adminBadge">ADMIN</span>
+    ) : null;
+
     return (
-      <tr id={id}>
-        <td>{device.name}</td>
-        <td>{device.ip}</td>
-
-        <td>
-          <div className="btn-group" role="group">
-            <button
-              type="button"
-              className="btn btn-outline-secondary"
-              data-toggle="modal"
-              data-target={"#" + QR_MODAL_TAG}
-              onClick={this.updateSelectedDevice.bind(this, id)}
-            >
-              QR
-            </button>
-            <button
-              className="btn btn-outline-secondary"
-              type="button"
-              data-clipboard-text={url}
-            >
-              Copy
-            </button>
+      <div class="card mb-3" id={id}>
+        <div class="card-body" style={{ padding }}>
+          <div>
+            <div class="float-left" style={{ margin, width: "170px" }}>
+              <h5 class="card-title">{device.name}</h5>
+              <p class="card-text">
+                {device.ip}
+                {badge}
+              </p>
+            </div>
+            <div>
+              <div
+                className="btn-group float-right"
+                role="group"
+                style={{ margin }}
+              >
+                <button
+                  className="btn btn-outline-danger"
+                  type="button"
+                  style={{ width }}
+                  disabled={isAdmin}
+                  id={id}
+                  onClick={this.removeDevice.bind(this, id)}
+                >
+                  Remove
+                </button>
+                <button
+                  className="btn btn-outline-danger"
+                  type="button"
+                  style={{ width }}
+                  defaultChecked={isAdmin}
+                  onClick={this.props.toggleAdmin.bind(this, id, isAdmin)}
+                >
+                  Do admin
+                </button>
+              </div>
+              <div
+                className="btn-group float-right"
+                role="group"
+                style={{ margin }}
+              >
+                <NavLink to={"/devices/" + id}>
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    style={{
+                      width,
+                      borderBottomRightRadius: "0px",
+                      borderTopRightRadius: "0px",
+                      borderRightColor: "white",
+                      position: "relative",
+                      left: "1px"
+                    }}
+                  >
+                    Show QR
+                  </button>
+                </NavLink>
+                <button
+                  className="btn btn-outline-secondary"
+                  type="button"
+                  style={{ width }}
+                  data-clipboard-text={url}
+                >
+                  Copy link
+                </button>
+              </div>
+            </div>
           </div>
-        </td>
-
-        <td>
-          <button
-            type="button"
-            className="btn btn-outline-danger"
-            disabled={isAdmin}
-            id={id}
-            onClick={this.removeDevice.bind(this, id)}
-          >
-            Remove
-          </button>
-        </td>
-
-        <td>
-          <label className="container align-middle">
-            <input
-              type="checkbox"
-              defaultChecked={isAdmin}
-              onClick={this.props.toggleAdmin.bind(this, id, isAdmin)}
-            />
-            <span className="checkmark" />
-          </label>
-        </td>
-      </tr>
+        </div>
+      </div>
     );
   }
 }
 
 export default class DeviceList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      id: ""
-    };
-  }
-
-  updateSelectedDevice(id) {
-    this.setState({ id });
-  }
-
   render() {
     let rows = [];
     let deviceList = this.props.deviceList || [];
@@ -117,65 +139,10 @@ export default class DeviceList extends React.Component {
           key={i}
           removeDevice={this.props.removeDevice}
           toggleAdmin={this.props.toggleAdmin}
-          updateSelectedDevice={this.updateSelectedDevice.bind(this)}
         />
       );
     }
 
-    // Selected device
-    let selectedDevice = deviceList.filter(d => d.name === this.state.id)[0];
-    let url = selectedDevice ? selectedDevice.otp : "-";
-    let name = selectedDevice ? selectedDevice.name : "-";
-
-    return (
-      <div className="table-responsive">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>IP</th>
-              <th className="otp-link-th">OTP link</th>
-              <th>Remove</th>
-              <th>Admin</th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </table>
-
-        <div
-          className="modal fade"
-          id={QR_MODAL_TAG}
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  OTP QR code link for {name}
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body text-center">
-                <QRCode
-                  value={url}
-                  renderAs="svg"
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <div>{rows}</div>;
   }
 }
