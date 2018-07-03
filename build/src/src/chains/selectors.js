@@ -19,9 +19,11 @@ import { NAME } from "./constants";
 
 // From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
 
-export const chains = state => state[NAME];
-export const getAll = chains || {};
-export const getMainnet = state => chains(state).Mainnet;
+export const local = state => state[NAME];
+export const status = state => local(state).status || {};
+export const chains = state => local(state).chains || [];
+export const getAll = status;
+export const getMainnet = state => status(state).Mainnet;
 
 export const getCounts = createSelector();
 // getAll,

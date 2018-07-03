@@ -2,7 +2,9 @@
 import * as t from "./actionTypes";
 import * as selector from "./selectors";
 import * as APIcall from "API/crossbarCalls";
+// modules
 import packages from "packages";
+import chains from "chains";
 
 // export const add = text => ({
 //   type: t.ADD,
@@ -57,7 +59,6 @@ export const updateAndCheckInput = _id => dispatch => {
 
 export const selectPackage = id => (dispatch, getState) => {
   if (!id) id = selector.getInput(getState());
-  console.log("Opened modal: ", id);
   dispatch(fetchPackageInfo(id));
   dispatch(updateSelectedPackage(id));
 };
@@ -137,6 +138,8 @@ export const install = envs => (dispatch, getState) => {
     dispatch(fetchDirectory());
     // Fetch package list
     dispatch(packages.actions.listPackages());
+    // Trigger installChain
+    chains.actions.installedChain(selectedPackageName)(dispatch, getState);
   });
 };
 

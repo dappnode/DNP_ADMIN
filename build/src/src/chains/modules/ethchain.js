@@ -17,6 +17,10 @@ class Ethchain {
     this.startTime = Date.now(); // Prevents too big time values
     // Callback
     this.callback = callback;
+    callback({
+      status: 0,
+      msg: "Connecting to " + url
+    });
     // Subscription tokens
     this.newBlockHeadersSubscription = undefined;
     // Init
@@ -28,7 +32,6 @@ class Ethchain {
   };
 
   stop = () => {
-    console.log("STOPPING", this);
     clearTimeout(this.syncingToken);
     let handleUnsubscribe = (error, success) => {
       // This wil likely fail because the connection is already closed

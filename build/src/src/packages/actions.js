@@ -2,6 +2,8 @@
 import * as t from "./actionTypes";
 import * as selector from "./selectors";
 import * as APIcalls from "API/crossbarCalls";
+// modules
+import chains from "chains";
 
 // export const add = text => ({
 //   type: t.ADD,
@@ -76,6 +78,8 @@ const wrapper = ({ APIcall, args, after = "" }) => (dispatch, getState) => {
   const kwargs = args ? args(getState()) : {};
   APIcall(kwargs).then(() => {
     if (after.includes("listPackages")) listPackages()(dispatch);
+    if (after.includes("uninstallChain"))
+      chains.actions.uninstalledChain(kwargs.id)(dispatch, getState);
   });
 };
 
@@ -97,7 +101,7 @@ export const updateEnvs = ({ envs, restart }) =>
       envs: envs,
       restart
     }),
-    after: "listPackages"
+    after: ["listPackages"]
   });
 
 export const togglePackage = () =>
@@ -106,7 +110,7 @@ export const togglePackage = () =>
     args: state => ({
       id: selector.getPackageId(state)
     }),
-    after: "listPackages"
+    after: ["listPackages"]
   });
 
 export const restartPackage = () =>
@@ -115,7 +119,7 @@ export const restartPackage = () =>
     args: state => ({
       id: selector.getPackageId(state)
     }),
-    after: "listPackages"
+    after: ["listPackages"]
   });
 
 export const restartVolumes = () =>
@@ -124,7 +128,7 @@ export const restartVolumes = () =>
     args: state => ({
       id: selector.getPackageId(state)
     }),
-    after: "listPackages"
+    after: ["listPackages"]
   });
 
 export const removePackage = ({ deleteVolumes }) =>
@@ -134,5 +138,5 @@ export const removePackage = ({ deleteVolumes }) =>
       id: selector.getPackageId(state),
       deleteVolumes
     }),
-    after: "listPackages"
+    after: ["listPackages", "uninstallChain"]
   });
