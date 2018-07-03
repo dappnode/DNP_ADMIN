@@ -84,7 +84,6 @@ export const init = () => (dispatch, getState) => {
       const chains = selector.chains(getState());
       if (chains.find(_chain => _chain.name === pkg.name)) return;
       // Package form the list is whitelisted and not added to chains array
-      console.log(chain, pkg);
       dispatch(addChain(chain, dispatch));
     });
   });

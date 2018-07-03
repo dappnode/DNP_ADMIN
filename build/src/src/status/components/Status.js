@@ -17,9 +17,11 @@ class Status extends React.Component {
 
     connectionOpenToken = eventBus.subscribe("connection_open", session => {
       this.props.check(session);
+      this.props.checkOnce();
     });
-
-    // eventBus.subscribe("connection_close", err => {
+    // This code can lead to errors, and not showing the user that the connection is broken
+    // If activated, on errors the user may not be alerted that the connection is restablished
+    // connectionCloseToken = eventBus.subscribe("connection_close", () => {
     //   clearInterval(intervalToken);
     // });
   }
@@ -41,6 +43,9 @@ const mapDispatchToProps = dispatch => {
   return {
     check: () => {
       dispatch(action.check());
+    },
+    checkOnce: () => {
+      dispatch(action.checkOnce());
     },
     init: () => {
       dispatch(action.init());

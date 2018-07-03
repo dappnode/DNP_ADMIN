@@ -42,7 +42,7 @@ class InstallerView extends React.Component {
     return (
       <div>
         <status.components.DependenciesAlert
-          deps={["wamp", "dappmanager", "ipfs", "mainnet"]}
+          deps={["wamp", "dappmanager", "ipfs", "mainnet", "upnp"]}
         />
         <div className="page-header" id="top">
           <h1>Package installer</h1>

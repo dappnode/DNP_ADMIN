@@ -70,7 +70,13 @@ class Ethchain {
     // Schedule next attempt
     setTimeout(() => {
       this.onError(
-        "Connection " + e.type + ". Reconnection #" + this.retryAttempt
+        "Connection " +
+          e.type +
+          ". Reconnection #" +
+          this.retryAttempt +
+          ", next in " +
+          Math.round(this.waitTime / 1000) +
+          "s"
       );
       this.web3.setProvider(this.newProvider(this.url));
     }, this.waitTime);

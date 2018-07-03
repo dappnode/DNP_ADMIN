@@ -1,5 +1,6 @@
 // WATCHERS
 import * as t from "./actionTypes";
+import * as APIcall from "API/crossbarCalls";
 import IPFS from "ipfs-mini";
 import checkConnection from "API/checkConnection";
 import chains from "chains";
@@ -30,12 +31,84 @@ const tags = {
   vpn: "vpn",
   isAdmin: "isAdmin",
   ipfs: "ipfs",
-  mainnet: "mainnet"
+  mainnet: "mainnet",
+  upnp: "upnp",
+  externalIP: "externalIP"
 };
 
 export const init = () => dispatch => {
+  // Initialize status
   Object.keys(tags).forEach(tag => {
     dispatch(updateStatus({ id: tags[tag], status: 0, msg: "verifying..." }));
+  });
+};
+
+export const checkOnce = () => dispatch => {
+  // Call status checks that are only checked once
+  getStatusUPnP()(dispatch);
+  getStatusExternalIp()(dispatch);
+};
+
+export const getStatusUPnP = () => dispatch => {
+  // Load necessary info
+
+  APIcall.getStatusUPnP().then(res => {
+    // Determine if user will have to open ports
+    let status = res.openPorts && !res.UPnP ? 0 : 1;
+    let msg;
+    if (res.openPorts && !res.UPnP) {
+      msg =
+        "UPnP device not found, please try to activate it in your router or manually open the required ports when installing packages";
+    } else if (!res.openPorts) {
+      msg = "UPnP not necessary";
+    } else {
+      msg = "ok";
+    }
+
+    dispatch(
+      updateStatus({
+        id: tags.upnp,
+        status,
+        msg
+      })
+    );
+  });
+};
+
+export const getStatusExternalIp = () => dispatch => {
+  // Load necessary info
+
+  APIcall.getStatusExternalIp().then(res => {
+    // Determine if user will have to open ports
+    let status = 0;
+    let msg;
+    if (res) {
+      if (res.externalIpResolves) {
+        msg = "Resolves";
+        status = 1;
+      } else {
+        msg =
+          "External IP does not resolve (" +
+          (res.attempts || 10) +
+          " attempts). " +
+          "Please use the internal IP: " +
+          (res.INT_IP || "ERROR") +
+          " when you are in the same network as your DAppNode" +
+          " and the external IP " +
+          (res.EXT_IP || "ERROR") +
+          " otherwise";
+      }
+    } else {
+      msg = "Error verifying external ip status";
+    }
+
+    dispatch(
+      updateStatus({
+        id: tags.externalIP,
+        status,
+        msg
+      })
+    );
   });
 };
 

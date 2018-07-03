@@ -241,6 +241,16 @@ export const getVpnParams = () =>
     event: "getParams.vpn.dappnode.eth"
   });
 
+export const getStatusUPnP = () =>
+  call({
+    event: "statusUPnP.vpn.dnp.dappnode.eth"
+  });
+
+export const getStatusExternalIp = () =>
+  call({
+    event: "statusExternalIp.vpn.dnp.dappnode.eth"
+  });
+
 /* PACKAGE */
 
 // TO IMPLEMENT: Prevent reinstallation, by checking in an array that the package is installing
