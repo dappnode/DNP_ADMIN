@@ -1,5 +1,7 @@
 import { getSessionSync } from "./crossbarCalls";
 
+const NON_ADMIN_RESPONSE = "You are not an admin";
+
 // Example usage:
 // setInterval(() => {
 //   checkConnection().then(console.log);
@@ -10,14 +12,10 @@ const checkConnection = () =>
     let session = getSessionSync();
     if (!session) return reject("Warning, verifying...");
     if (!session.isOpen) {
-      let reason = session.errorReason
-        ? ", reason: " + session.errorReason
-        : "";
-      let message = session.errorDetails
-        ? ", details: " + String(session.errorDetails)
-        : "";
+      let reason = session.reason ? ", reason: " + session.reason : "";
+      let message = session.message ? ", details: " + session.message : "";
       if (message.includes("could not authenticate session"))
-        message = "You are not an admin";
+        message = ", details: " + NON_ADMIN_RESPONSE;
       return reject("Connection closed" + reason + message);
     }
     try {

@@ -3,6 +3,7 @@ import * as t from "./actionTypes";
 import IPFS from "ipfs-mini";
 import checkConnection from "API/checkConnection";
 import chains from "chains";
+import { NON_ADMIN_RESPONSE } from "./constants";
 
 const ipfs = new IPFS({
   host: "my.ipfs.dnp.dappnode.eth",
@@ -16,7 +17,6 @@ const updateStatus = status => ({
 });
 
 const NOWAMP = "can't connect to WAMP";
-const NON_ADMIN_RESPONSE = "Your user is not an admin";
 
 // No need to use "addTodo" name, in another module do:
 // import todos from 'todos';

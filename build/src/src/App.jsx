@@ -4,6 +4,7 @@ import ErrorBoundary from "react-error-boundary";
 
 import Home from "./components/Home";
 import NonAdmin from "./components/NonAdmin";
+import NonAdminRedirector from "./components/NonAdminRedirector";
 
 // Testing redux
 import dashboard from "./dashboard";
@@ -32,40 +33,39 @@ export default class App extends React.Component {
 
   render() {
     const nonAdmin = false;
-    if (nonAdmin) {
-      return <NonAdmin />;
-    } else {
-      return (
-        <div className="wrapper fixed-nav">
-          <navbar.component />
-          <div className="content-wrapper dappnode-background">
-            <div className="container-fluid app-content">
-              <ErrorBoundary>
-                <Route exact path="/" component={Home} />
-                <Route
-                  path={"/" + dashboard.constants.NAME}
-                  component={dashboard.component}
-                />
-                <Route
-                  path={"/" + devices.constants.NAME}
-                  component={devices.components.DevicesInterface}
-                />
-                <Route
-                  path={"/" + installer.constants.NAME}
-                  component={installer.component}
-                />
-                <Route
-                  path={"/" + packages.constants.NAME}
-                  component={packages.component}
-                />
-              </ErrorBoundary>
-            </div>
+
+    return (
+      <div className="wrapper fixed-nav">
+        <navbar.component />
+        <div className="content-wrapper dappnode-background">
+          <div className="container-fluid app-content">
+            <ErrorBoundary>
+              <Route exact path="/" component={Home} />
+              <Route
+                path={"/" + dashboard.constants.NAME}
+                component={dashboard.component}
+              />
+              <Route
+                path={"/" + devices.constants.NAME}
+                component={devices.components.DevicesInterface}
+              />
+              <Route
+                path={"/" + installer.constants.NAME}
+                component={installer.component}
+              />
+              <Route
+                path={"/" + packages.constants.NAME}
+                component={packages.component}
+              />
+              <Route path={"/nonadmin"} component={NonAdmin} />
+            </ErrorBoundary>
           </div>
-          <ToastContainer />
-          <status.component />
-          <chains.component />
         </div>
-      );
-    }
+        <ToastContainer />
+        <status.component />
+        <chains.component />
+        <NonAdminRedirector />
+      </div>
+    );
   }
 }
