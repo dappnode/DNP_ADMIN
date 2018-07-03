@@ -4,6 +4,8 @@ import { push } from "connected-react-router";
 import { createStructuredSelector } from "reselect";
 // Modules
 
+const route = "/nonadmin";
+
 class NonAdminRedirectorView extends React.Component {
   componentWillReceiveProps() {
     const isAdmin = this.props.isAdmin;
@@ -24,7 +26,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = dispatch => {
   return {
     redirect: () => {
-      dispatch(push("/nonadmin"));
+      dispatch(push(route));
     }
   };
 };

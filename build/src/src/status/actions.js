@@ -16,7 +16,7 @@ const updateStatus = status => ({
   payload: status
 });
 
-const NOWAMP = "can't connect to WAMP";
+const NOWAMP = "Can't connect to WAMP";
 
 // No need to use "addTodo" name, in another module do:
 // import todos from 'todos';
@@ -101,15 +101,18 @@ export const check = () => (dispatch, getState) => {
       res => false,
       err => (err ? (err.message ? err.message : err) : "Unknown error")
     )
-    .then(err =>
+    .then(err => {
+      let msg = err ? JSON.stringify(err) : "ok";
+      if (msg.includes("[ipfs-mini] status 0:"))
+        msg = "Can't connect to IPFS module";
       dispatch(
         updateStatus({
           id: tags.ipfs,
           status: err ? -1 : 1,
-          msg: err ? JSON.stringify(err) : "ok"
+          msg
         })
-      )
-    );
+      );
+    });
 };
 
 // UTILS
