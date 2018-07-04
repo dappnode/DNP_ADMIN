@@ -1,5 +1,4 @@
 import React from "react";
-import LogoImg from "img/DAppNode-Black.png";
 
 const NonAdmin = () => (
   <div className="container-fluid app-content">

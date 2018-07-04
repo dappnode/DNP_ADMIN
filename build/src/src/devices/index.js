@@ -4,7 +4,6 @@ import reducer from "./reducer";
 import * as selectors from "./selectors";
 
 import DevicesRoot from "./components/DevicesRoot";
-import Devices from "./containers/Devices";
 
 export default {
   actions,

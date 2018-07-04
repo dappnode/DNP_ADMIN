@@ -1,7 +1,6 @@
 import React from "react";
 import ClipboardJS from "clipboard";
 import { NavLink } from "react-router-dom";
-import QRCode from "qrcode.react";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import "./adminBadge.css";
@@ -9,7 +8,6 @@ import "./adminBadge.css";
 new ClipboardJS(".btn");
 
 const ADMIN_STATIC_IP_PREFIX = "172.33.10.";
-const QR_MODAL_TAG = "QR_MODAL_TAG";
 
 class Row extends React.Component {
   removeDevice(id) {
@@ -39,26 +37,26 @@ class Row extends React.Component {
 
   render() {
     let device = this.props.device;
-    let url = device.otp;
-    let id = device.name;
+    let url = device.otp || "";
+    let id = device.name || "";
+    const ip = device.ip || "";
     const isAdmin = device.ip.includes(ADMIN_STATIC_IP_PREFIX);
 
     const margin = "5px";
     const padding = "0.7rem";
-    const width = "100px";
+    const width = "108px";
 
-    const ip = device.ip || "";
-    const badge = ip.startsWith("172.33.10.") ? (
+    const badge = ip.startsWith(ADMIN_STATIC_IP_PREFIX) ? (
       <span className="adminBadge">ADMIN</span>
     ) : null;
 
     return (
-      <div class="card mb-3" id={id}>
-        <div class="card-body" style={{ padding }}>
+      <div className="card mb-3" id={id}>
+        <div className="card-body" style={{ padding }}>
           <div>
-            <div class="float-left" style={{ margin, width: "170px" }}>
-              <h5 class="card-title">{device.name}</h5>
-              <p class="card-text">
+            <div className="float-left" style={{ margin, width: "170px" }}>
+              <h5 className="card-title">{device.name}</h5>
+              <p className="card-text">
                 {device.ip}
                 {badge}
               </p>
@@ -82,11 +80,11 @@ class Row extends React.Component {
                 <button
                   className="btn btn-outline-danger"
                   type="button"
-                  style={{ width }}
+                  style={{ width, paddingLeft: "0px", paddingRight: "0px" }}
                   defaultChecked={isAdmin}
                   onClick={this.props.toggleAdmin.bind(this, id, isAdmin)}
                 >
-                  Do admin
+                  {isAdmin ? "Undo admin" : "Do admin"}
                 </button>
               </div>
               <div

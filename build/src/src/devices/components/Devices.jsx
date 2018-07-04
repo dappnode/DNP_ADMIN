@@ -1,14 +1,10 @@
 import React from "react";
 import DeviceList from "./DeviceList";
 import status from "status";
-import eventBus from "eventBus";
-import { isOpen } from "API/crossbarCalls";
 import { connect } from "react-redux";
 import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
-
-let token;
 
 class DevicesView extends React.Component {
   constructor() {
@@ -18,14 +14,6 @@ class DevicesView extends React.Component {
       deviceName: "",
       deviceId: ""
     };
-  }
-
-  componentWillMount() {
-    token = eventBus.subscribe("connection_open", this.props.fetchDevices);
-    if (isOpen()) this.props.fetchDevices();
-  }
-  componentWillUnmount() {
-    eventBus.unsubscribe(token);
   }
 
   handleAddDevice() {

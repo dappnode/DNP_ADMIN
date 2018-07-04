@@ -1,6 +1,4 @@
 import React from "react";
-import DeviceList from "./DeviceList";
-import status from "status";
 import eventBus from "eventBus";
 import { isOpen } from "API/crossbarCalls";
 import { connect } from "react-redux";
@@ -11,54 +9,10 @@ import { NavLink } from "react-router-dom";
 import QRCode from "qrcode.react";
 import "./adminBadge.css";
 
-let token;
-
-class DevicesView extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      // Initial states of variables must be defined in the constructor
-      deviceName: "",
-      deviceId: ""
-    };
-  }
-
-  componentWillMount() {
-    token = eventBus.subscribe("connection_open", this.props.fetchDevices);
-    if (isOpen()) this.props.fetchDevices();
-  }
-  componentWillUnmount() {
-    eventBus.unsubscribe(token);
-  }
-
-  handleAddDevice() {
-    this.props.addDevice(this.state.deviceName);
-  }
-
-  removeDevice(id) {
-    this.props.removeDevice(id);
-  }
-
-  toggleAdmin(id, isAdmin) {
-    this.props.toggleAdmin(id, isAdmin);
-  }
-
-  updateDeviceName(e) {
-    this.setState({
-      deviceName: e.target.value
-    });
-  }
-
-  updateDeviceId(e) {
-    this.setState({
-      deviceId: e.target.value
-    });
-  }
-
+class DevicesSettings extends React.Component {
   render() {
     const id = this.props.match.params.id;
     const device = this.props.deviceList.find(device => device.name === id);
-    let url = device.otp || "";
 
     const margin = "5px";
     const padding = "0.7rem";
@@ -67,20 +21,22 @@ class DevicesView extends React.Component {
     //   renderAs="svg"
     //   style={{ width: "100%", height: "100%" }}
     // />
-    const ip = device.ip || "";
+    const name = device ? device.name : "Device not found";
+    const url = device ? device.otp || "" : null;
+    const ip = device ? device.ip || "" : "Go back to the device list";
     const badge = ip.startsWith("172.33.10.") ? (
       <span className="adminBadge">ADMIN</span>
     ) : null;
 
     return (
       <div>
-        <div class="card mb-3" id={id}>
-          <div class="card-body" style={{ padding }}>
+        <div className="card mb-3" id={id}>
+          <div className="card-body" style={{ padding }}>
             <div>
-              <div class="float-left" style={{ margin, width: "200px" }}>
-                <h5 class="card-title">{device.name}</h5>
-                <p class="card-text">
-                  {device.ip}
+              <div className="float-left" style={{ margin, width: "200px" }}>
+                <h5 className="card-title">{name}</h5>
+                <p className="card-text">
+                  {ip}
                   {badge}
                 </p>
               </div>
@@ -100,11 +56,13 @@ class DevicesView extends React.Component {
             </div>
 
             <div style={{ maxWidth: "400px", margin }}>
-              <QRCode
-                value={url}
-                renderAs="svg"
-                style={{ width: "100%", height: "100%" }}
-              />
+              {device ? (
+                <QRCode
+                  value={url}
+                  renderAs="svg"
+                  style={{ width: "100%", height: "100%" }}
+                />
+              ) : null}
             </div>
           </div>
         </div>
@@ -118,22 +76,10 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => {
-  return {
-    addDevice: id => {
-      // Ensure id contains only alphanumeric characters
-      const correctedId = id.replace(/\W/g, "");
-      dispatch(action.add(correctedId));
-    },
-    removeDevice: id => {
-      dispatch(action.remove(id));
-    },
-    toggleAdmin: id => {
-      dispatch(action.toggleAdmin(id));
-    }
-  };
+  return {};
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DevicesView);
+)(DevicesSettings);

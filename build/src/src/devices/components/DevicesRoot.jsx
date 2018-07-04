@@ -8,8 +8,6 @@ import eventBus from "eventBus";
 // Components
 import DeviceSettings from "./DeviceSettings";
 import Devices from "./Devices";
-// Modules
-import status from "status";
 // Logic
 import { isOpen } from "API/crossbarCalls";
 

@@ -1,21 +1,10 @@
 // WATCHERS
-import autobahn from "autobahn";
 import * as t from "./actionTypes";
 import * as selector from "./selectors";
-import IPFS from "ipfs-mini";
 import * as APIcalls from "API/crossbarCalls";
 import modules from "./modules";
 
 const Ethchain = modules.Ethchain;
-
-const ipfs = new IPFS({
-  host: "my.ipfs.dnp.dappnode.eth",
-  port: 5001,
-  protocol: "http"
-});
-
-const url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
-const realm = "dappnode_admin";
 
 let ethchains = [
   {

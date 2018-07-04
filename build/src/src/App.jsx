@@ -32,8 +32,6 @@ export default class App extends React.Component {
   // Even make the non-admin a route and fore a redirect
 
   render() {
-    const nonAdmin = false;
-
     return (
       <div className="wrapper fixed-nav">
         <navbar.component />
