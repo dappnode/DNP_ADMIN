@@ -10,6 +10,8 @@ import status from "status";
 import chains from "chains";
 // Logic
 import { isOpen } from "API/crossbarCalls";
+// Styles
+import "./installer.css";
 
 let token;
 

@@ -7,6 +7,8 @@ import Devices from "Icons/Devices";
 import Dashboard from "Icons/Dashboard";
 import Folder from "Icons/Folder";
 import NewFolder from "Icons/NewFolder";
+// styles
+import "./home.css";
 
 const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
 

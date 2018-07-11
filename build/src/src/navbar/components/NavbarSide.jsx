@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import $ from "jquery";
 // Images
 import LogoImg from "img/DAppNode-Black.png";
 // Icons
@@ -32,6 +33,11 @@ let navbarItemsInfo = [
 ];
 
 export default class NavbarSide extends React.Component {
+  componentDidMount() {
+    $(".navbar-nav>li>a").on("click", function() {
+      $(".navbar-collapse").collapse("hide");
+    });
+  }
   render() {
     let navbarItems = navbarItemsInfo.map((item, i) => {
       return (
@@ -63,12 +69,12 @@ export default class NavbarSide extends React.Component {
         className="navbar-nav navbar-sidenav navbar-sidebar-fix sidenav-shadow navbar-border"
         id="exampleAccordion"
       >
-        <li className="nav-item">
+        <li className="nav-item" id="NavbarHeader">
           <NavLink className="nav-link sidenav-topbox" to={"/"}>
             <div className="sidenav-topbox-text">ADMIN UI</div>
           </NavLink>
         </li>
-        <li className="nav-item">
+        <li className="nav-item" id="NavbarLogo">
           <NavLink className="nav-link" to={"/"}>
             <div className="logo-image-container nav-link text-center">
               <img src={LogoImg} className="img-fluid" alt="DAppNode logo" />

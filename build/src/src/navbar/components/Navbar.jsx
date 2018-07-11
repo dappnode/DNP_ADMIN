@@ -4,6 +4,9 @@ import ErrorBoundary from "react-error-boundary";
 // Components
 import NavbarSide from "./NavbarSide";
 import NavbarTop from "./NavbarTop";
+// css
+import "./sb-admin-navbar.css"; // default
+import "./styles.css"; // custom additions
 
 export default class Navbar extends React.Component {
   render() {

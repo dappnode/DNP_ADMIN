@@ -4,6 +4,8 @@ import * as selector from "../selectors";
 import { connect } from "react-redux";
 // Components
 import PackageRow from "./PackageRow";
+// Styles
+import "./packages.css";
 
 class PackagesList extends React.Component {
   render() {

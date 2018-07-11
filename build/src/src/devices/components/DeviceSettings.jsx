@@ -1,8 +1,5 @@
 import React from "react";
-import eventBus from "eventBus";
-import { isOpen } from "API/crossbarCalls";
 import { connect } from "react-redux";
-import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import { NavLink } from "react-router-dom";
