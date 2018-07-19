@@ -35,7 +35,7 @@
     "simple-statistics": "^6.0.1",
     "tether": "^1.4.4",
     "uuid": "^3.2.1",
-    "web3": "^1.0.0-beta.33"
+    "web3": "1.0.0-beta.33"
   },
   "scripts": {
     "lint": "npm run lint:javascript",
