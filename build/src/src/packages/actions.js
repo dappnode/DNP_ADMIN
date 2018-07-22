@@ -59,12 +59,6 @@ const updatePackages = packages => ({
   payload: packages
 });
 
-export const fetchPackageInfo = id => dispatch => {
-  APIcalls.fetchPackageInfo({ id }).then(pkg => {
-    if (pkg) dispatch(updatePackage(pkg, pkg.name));
-  });
-};
-
 export const listPackages = () => dispatch => {
   APIcalls.listPackages().then(
     packages => (packages ? dispatch(updatePackages(packages)) : null)

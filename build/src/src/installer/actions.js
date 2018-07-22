@@ -51,7 +51,7 @@ export const updateAndCheckInput = _id => dispatch => {
   const id = correctPackageName(_id);
   // If the packageLink is a valid IPFS hash preload it's info
   if (id.includes("/ipfs/") && isIpfsHash(id.split("/ipfs/")[1])) {
-    dispatch(fetchPackageInfo(id));
+    dispatch(fetchPackageVersions(id));
   }
   // Update input field
   dispatch(updateInput(id));
@@ -59,7 +59,7 @@ export const updateAndCheckInput = _id => dispatch => {
 
 export const selectPackage = id => (dispatch, getState) => {
   if (!id) id = selector.getInput(getState());
-  dispatch(fetchPackageInfo(id));
+  dispatch(fetchPackageVersions(id));
   dispatch(updateSelectedPackage(id));
 };
 
@@ -80,6 +80,13 @@ const updateDirectory = directory => ({
 export const fetchDirectory = () => dispatch => {
   dispatch(updateFetching(true));
   APIcall.fetchDirectory().then(directory => {
+    // fetchDirectory CALL DOCUMENTATION:
+    // > kwargs: {}
+    // > result: [{
+    //     name,
+    //     status
+    //   },
+    //   ...]
     dispatch(updateFetching(false));
     // Abort on error
     if (!directory) return;
@@ -88,20 +95,23 @@ export const fetchDirectory = () => dispatch => {
     dispatch(updateDirectory(directory));
 
     directory.forEach((pkg, i) => {
+      // Send basic package info immediately for progressive loading appearance
       dispatch(updatePackage(pkg, pkg.name));
-
-      // Throttle requests to avoid saturating the IPFS module
-      setTimeout(() => {
-        APIcall.getPackageData({ id: pkg.name }).then(packageData => {
-          dispatch(updatePackage(packageData, pkg.name));
-        });
-      }, 100 * i);
+      APIcall.getPackageData({ id: pkg.name }).then(packageData => {
+        // getPackageData CALL DOCUMENTATION:
+        // > kwargs: { id }
+        // > result: {
+        //     manifest,
+        //     avatar
+        //   }
+        dispatch(updatePackage(packageData, pkg.name));
+      });
     });
   });
 };
 
-export const fetchPackageInfo = id => dispatch => {
-  APIcall.fetchPackageInfo({ id }).then(pkg => {
+export const fetchPackageVersions = id => dispatch => {
+  APIcall.fetchPackageVersions({ id }).then(pkg => {
     if (pkg) dispatch(updatePackage(pkg, pkg.name));
   });
 };

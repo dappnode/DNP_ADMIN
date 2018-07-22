@@ -253,20 +253,9 @@ export const getStatusExternalIp = () =>
 
 /* PACKAGE */
 
-// TO IMPLEMENT: Prevent reinstallation, by checking in an array that the package is installing
-
-//
-// if (AppStore.getDisabled()[link]) {
-//   toast.update(toastId, {
-//     render: "Package " + link + " is already being installed",
-//     type: toast.TYPE.ERROR,
-//     autoClose: 5000
-//   });
-//   return;
-// }
-
-// Disable package installation
-// AppActions.updateDisabled({ name: link, disabled: true });
+// addPackage CALL DOCUMENTATION:
+// > kwargs: { id }
+// > result: {}
 
 export const addPackage = (kwargs = {}) =>
   call({
@@ -275,12 +264,9 @@ export const addPackage = (kwargs = {}) =>
     initText: "Adding " + shortName(kwargs.id) + "..."
   });
 
-// AppActions.updateDisabled({ name: link, disabled: false });
-
-// AppActions.updateProgressLog({ clear: true });
-
-// "Removing package " + id + (deleteVolumes ? " and volumes" : ""),
-// AFTER => listPackages(); listDirectory();
+// removePackage CALL DOCUMENTATION:
+// > kwargs: { id, deleteVolumes }
+// > result: {}
 
 export const removePackage = (kwargs = {}) =>
   call({
@@ -292,8 +278,9 @@ export const removePackage = (kwargs = {}) =>
       (kwargs.deleteVolumes ? " and volumes" : "")
   });
 
-// "Toggling package " + id
-// (id, isCORE)
+// togglePackage CALL DOCUMENTATION:
+// > kwargs: { id, timeout }
+// > result: {}
 
 export const togglePackage = (kwargs = {}) =>
   call({
@@ -302,8 +289,9 @@ export const togglePackage = (kwargs = {}) =>
     initText: "Toggling " + shortName(kwargs.id)
   });
 
-// "Restarting " + id + " " + (isCORE ? "(CORE)" : ""
-// (id, isCORE)
+// restartPackage CALL DOCUMENTATION:
+// > kwargs: { id }
+// > result: {}
 
 export const restartPackage = (kwargs = {}) =>
   call({
@@ -312,9 +300,9 @@ export const restartPackage = (kwargs = {}) =>
     initText: "Restarting " + shortName(kwargs.id)
   });
 
-// "Restarting " + id + " " + (isCORE ? "(CORE)" : "") + " volumes"
-// (id, isCORE)
-// AFTER => listPackages();
+// restartVolumes CALL DOCUMENTATION:
+// > kwargs: { id, deleteVolumes }
+// > result: {}
 
 export const restartVolumes = (kwargs = {}) =>
   call({
@@ -323,8 +311,9 @@ export const restartVolumes = (kwargs = {}) =>
     initText: "Restarting " + shortName(kwargs.id) + " volumes"
   });
 
-// "Updating " + id + " envs: " + JSON.stringify(envs)
-// (id, envs, restart, isCORE)
+// updatePackageEnv CALL DOCUMENTATION:
+// > kwargs: { id, envs, restart, isCORE }
+// > result: {}
 
 export const updatePackageEnv = (kwargs = {}) =>
   call({
@@ -333,8 +322,9 @@ export const updatePackageEnv = (kwargs = {}) =>
     initText: "Updating " + kwargs.id + " envs: " + JSON.stringify(kwargs.envs)
   });
 
-// ""
-// (id, isCORE, options = {})
+// logPackage CALL DOCUMENTATION:
+// > kwargs: { id, options }
+// > result: { id, logs = <string> }
 
 export const logPackage = (kwargs = {}) =>
   call({
@@ -342,29 +332,54 @@ export const logPackage = (kwargs = {}) =>
     kwargs: assertKwargs(kwargs, ["id", "options"])
   });
 
-// ""
-// (id)
+// fetchPackageVersions CALL DOCUMENTATION:
+// > kwargs: { id }
+// > result: [{
+//     version: '0.0.4', (string)
+//     manifest: <Manifest> (object)
+//   },
+//   ...]
 
-export const fetchPackageInfo = (kwargs = {}) =>
+export const fetchPackageVersions = (kwargs = {}) =>
   call({
-    event: "fetchPackageInfo.dappmanager.dnp.dappnode.eth",
+    event: "fetchPackageVersions.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id"])
   });
 
-// ""
-// ()
+// listPackages CALL DOCUMENTATION:
+// > kwargs: {}
+// > result: [{
+//     id: '927623894...', (string)
+//     isDNP: true, (boolean)
+//     created: <Date string>,
+//     image: <Image Name>, (string)
+//     name: otpweb.dnp.dappnode.eth, (string)
+//     shortName: otpweb, (string)
+//     version: '0.0.4', (string)
+//     ports: <list of ports>, (string)
+//     state: 'exited', (string)
+//     running: true, (boolean)
+//     ...
+//     envs: <Env variables> (object)
+//   },
+//   ...]
 
 export const listPackages = () =>
   call({
     event: "listPackages.dappmanager.dnp.dappnode.eth"
   });
 
-// ""
-// ()
+// fetchDirectory CALL DOCUMENTATION:
+// > kwargs: {}
+// > result: [{
+//     name,
+//     status
+//   },
+//   ...]
 
 export const fetchDirectory = () =>
   call({
-    event: "listDirectory.dappmanager.dnp.dappnode.eth"
+    event: "fetchDirectory.dappmanager.dnp.dappnode.eth"
   });
 
 // IMPLEMENT - BEFORE CALL
@@ -375,36 +390,15 @@ export const fetchDirectory = () =>
 //     return;
 //   }
 
-// IMPLEMENT - AFTER CALL
-//     // QUICK - First add current data to the store
-//   for (const pkg of res.result) {
-//     AppActions.updatePackageData({
-//       name: pkg.name,
-//       data: pkg
-//     });
+// getPackageData CALL DOCUMENTATION:
+// > kwargs: { id }
+// > result: {
+//     manifest,
+//     avatar
 //   }
-//     // SLOW - Then call for the additional package data
-//   for (const pkg of res.result) {
-//     await getPackageData(pkg.name);
-//   }
-
-// ""
-// (id)
 
 export const getPackageData = (kwargs = {}) =>
   call({
     event: "getPackageData.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id"])
   });
-
-// IMPLEMENT - AFTER
-//   if (res.success && res.result)
-//     AppActions.updatePackageData({
-//       name: id,
-//       data: res.result
-//     });
-//   else {
-//     AppActions.updatePackageData({
-//       name: id,
-//       data: { error: res.message }
-//     });
