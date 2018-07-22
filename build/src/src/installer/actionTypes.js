@@ -12,5 +12,6 @@ export const UPDATE_SELECTED_PACKAGE = type("UPDATE_SELECTED_PACKAGE");
 export const UPDATE_SELECTED_TYPES = type("UPDATE_SELECTED_TYPES");
 export const UPDATE_INPUT = type("UPDATE_INPUT");
 export const ISINSTALLING = type("ISINSTALLING");
+export const FETCH_DIRECTORY = type("FETCH_DIRECTORY");
 
 // prefixing each type with the module name helps preventing name collisions

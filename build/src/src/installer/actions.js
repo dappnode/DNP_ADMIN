@@ -68,47 +68,18 @@ export const selectPackage = id => (dispatch, getState) => {
 // todos.actions.add('Do that thing');
 const updatePackage = (data, id) => ({
   type: t.UPDATE_PACKAGE,
-  payload: data,
-  id: id
+  data,
+  id
 });
 
 const updateDirectory = directory => ({
   type: t.UPDATE_DIRECTORY,
-  payload: directory
+  directory
 });
 
-export const fetchDirectory = () => dispatch => {
-  dispatch(updateFetching(true));
-  APIcall.fetchDirectory().then(directory => {
-    // fetchDirectory CALL DOCUMENTATION:
-    // > kwargs: {}
-    // > result: [{
-    //     name,
-    //     status
-    //   },
-    //   ...]
-    dispatch(updateFetching(false));
-    // Abort on error
-    if (!directory) return;
-
-    // Update directory
-    dispatch(updateDirectory(directory));
-
-    directory.forEach((pkg, i) => {
-      // Send basic package info immediately for progressive loading appearance
-      dispatch(updatePackage(pkg, pkg.name));
-      APIcall.getPackageData({ id: pkg.name }).then(packageData => {
-        // getPackageData CALL DOCUMENTATION:
-        // > kwargs: { id }
-        // > result: {
-        //     manifest,
-        //     avatar
-        //   }
-        dispatch(updatePackage(packageData, pkg.name));
-      });
-    });
-  });
-};
+export const fetchDirectory = () => ({
+  type: t.FETCH_DIRECTORY
+});
 
 export const fetchPackageVersions = id => dispatch => {
   APIcall.fetchPackageVersions({ id }).then(pkg => {
@@ -152,27 +123,6 @@ export const install = envs => (dispatch, getState) => {
     chains.actions.installedChain(selectedPackageName)(dispatch, getState);
   });
 };
-
-const updateAfter = AsyncAction => dispatch => {
-  AsyncAction.then(APIcall.listDevices).then(
-    devices =>
-      devices
-        ? dispatch({
-            type: t.UPDATE,
-            payload: devices
-          })
-        : null
-  );
-};
-
-export const add = id => updateAfter(APIcall.addDevice(id));
-export const remove = id => updateAfter(APIcall.removeDevice(id));
-export const toggleAdmin = id => updateAfter(APIcall.toggleAdmin(id));
-export const list = () => updateAfter(nothing());
-
-const nothing = async () => {};
-
-// const wait = () => new Promise(resolve => setTimeout(resolve, 1000));
 
 // Utils
 

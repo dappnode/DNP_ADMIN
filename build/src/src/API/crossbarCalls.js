@@ -231,7 +231,7 @@ export const toggleAdmin = (kwargs = {}) =>
     initText: "Toggling " + kwargs.id + "admin credentials..."
   });
 
-export const listDevices = () =>
+export const fetchDevices = () =>
   call({
     event: "listDevices.vpn.dnp.dappnode.eth"
   });
@@ -397,8 +397,8 @@ export const fetchDirectory = () =>
 //     avatar
 //   }
 
-export const getPackageData = (kwargs = {}) =>
+export const fetchPackageData = (kwargs = {}) =>
   call({
-    event: "getPackageData.dappmanager.dnp.dappnode.eth",
+    event: "fetchPackageData.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id"])
   });

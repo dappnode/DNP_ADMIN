@@ -2,6 +2,7 @@ import * as actions from "./actions";
 import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
+import saga from "./sagas";
 import Installer from "./containers/Installer";
 
 const components = {
@@ -16,5 +17,6 @@ export default {
   components,
   constants,
   reducer,
-  selectors
+  selectors,
+  saga
 };
