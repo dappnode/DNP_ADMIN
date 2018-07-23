@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import * as action from "../actions";
 import { getItems } from "../selectors";
 import { createStructuredSelector } from "reselect";
 
@@ -38,14 +37,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => {
-  return {
-    check: () => {
-      dispatch(action.check());
-    },
-    init: () => {
-      dispatch(action.init());
-    }
-  };
+  return {};
 };
 
 export default connect(

@@ -65,8 +65,9 @@ const mapDispatchToProps = dispatch => {
       dispatch(action.updateSelectedVersion(e.target.value));
     },
 
-    install: envs => {
-      dispatch(action.install(envs));
+    install: env => {
+      dispatch(action.install());
+      dispatch(action.updateEnv(env));
     }
   };
 };

@@ -1,8 +1,60 @@
-import { call, put, takeEvery, all } from "redux-saga/effects";
+import { call, put, takeEvery, all, select } from "redux-saga/effects";
 import * as APIcall from "API/crossbarCalls";
 import * as t from "./actionTypes";
+import * as selector from "./selectors";
+import * as actions from "./actions";
 
 /***************************** Subroutines ************************************/
+
+export function* install() {
+  try {
+    // Load necessary info
+    const id = yield select(selector.selectedPackageName);
+    const version = yield select(selector.getSelectedVersion);
+    const isInstalling = yield select(selector.isInstalling);
+
+    // Prevent double installations, 1. check if the package is in the blacklist
+    if (isInstalling[id]) {
+      return console.error(id + " IS ALREADY INSTALLING");
+    }
+
+    // blacklist the current package
+    yield put({ type: t.ISINSTALLING, payload: true, id });
+
+    yield call(APIcall.addPackage, {
+      id: id + "@" + version
+    });
+    yield put({ type: t.UPDATE_FETCHING, fetching: false });
+
+    // Remove package from blacklist
+    yield put({ type: t.ISINSTALLING, payload: false, id });
+
+    // Fetch directory
+    yield call(fetchDirectory);
+  } catch (error) {
+    console.error("Error installing package: ", error);
+  }
+}
+
+// After successful installation notify the chain
+// chains.actions.installedChain(selectedPackageName)(dispatch, getState);
+
+export function* updateEnvs(action) {
+  try {
+    const envs = action.env;
+    const restart = action.restart;
+    const id = yield select(selector.selectedPackageName);
+    if (Object.getOwnPropertyNames(envs).length > 0) {
+      yield call(APIcall.updatePackageEnv, {
+        id,
+        envs,
+        restart
+      });
+    }
+  } catch (error) {
+    console.error("Error installing package: ", error);
+  }
+}
 
 // For installer: throttle(ms, pattern, saga, ...args)
 
@@ -49,15 +101,6 @@ export function* fetchPackageData(pkg) {
   }
 }
 
-function* callApi(action) {
-  try {
-    yield call(APIcall[action.call], { id: action.id });
-  } catch (error) {
-    console.error("Error on " + action.call + ": ", error);
-  }
-  yield call(fetchDirectory);
-}
-
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
@@ -66,12 +109,16 @@ function* watchFetchDirectory() {
   yield takeEvery(t.FETCH_DIRECTORY, fetchDirectory);
 }
 
-function* watchCall() {
-  yield takeEvery("TODO", callApi);
+function* watchInstall() {
+  yield takeEvery(t.INSTALL, install);
+}
+
+function* watchUpdateEnvs() {
+  yield takeEvery(t.UPDATE_ENV, updateEnvs);
 }
 
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
-  yield all([watchFetchDirectory(), watchCall()]);
+  yield all([watchFetchDirectory(), watchInstall(), watchUpdateEnvs()]);
 }

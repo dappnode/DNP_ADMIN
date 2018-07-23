@@ -39,18 +39,18 @@ class PackageInterface extends React.Component {
         <Logs
           id={id}
           logs={this.props.logs}
-          logPackage={this.props.logPackage}
+          logPackage={options => this.props.logPackage(id, options)}
         />
 
         <Envs id={id} envs={pkg.envs} updateEnvs={this.props.updateEnvs} />
 
         <Controls
           state={pkg.state}
-          togglePackage={this.props.togglePackage}
-          restartPackage={this.props.restartPackage}
-          restartPackageVolumes={this.props.restartPackageVolumes}
-          removePackage={this.props.removePackage}
-          removePackageAndData={this.props.removePackageAndData}
+          togglePackage={() => this.props.togglePackage(id)}
+          restartPackage={() => this.props.restartPackage(id)}
+          restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
+          removePackage={() => this.props.removePackage(id)}
+          removePackageAndData={() => this.props.removePackageAndData(id)}
         />
       </div>
     );
@@ -71,27 +71,27 @@ const mapDispatchToProps = dispatch => {
     setId: id => {
       dispatch(action.setId(id));
     },
-    updateEnvs(envs) {
-      dispatch(action.updateEnvs({ envs, restart: true }));
+    updateEnvs: envs => {
+      dispatch(action.updatePackageEnv({ envs, restart: true }));
     },
-    logPackage: options => {
-      dispatch(action.logPackage({ options }));
+    logPackage: (id, options) => {
+      dispatch(action.logPackage({ id, options }));
     },
-    togglePackage: () => {
-      dispatch(action.togglePackage());
+    togglePackage: id => {
+      dispatch(action.togglePackage({ id }));
     },
-    restartPackage: () => {
-      dispatch(action.restartPackage());
+    restartPackage: id => {
+      dispatch(action.restartPackage({ id }));
     },
-    restartVolumes: () => {
-      dispatch(action.restartVolumes());
+    restartVolumes: id => {
+      dispatch(action.restartVolumes({ id }));
     },
-    removePackage: () => {
-      dispatch(action.removePackage({ deleteVolumes: false }));
+    removePackage: id => {
+      dispatch(action.removePackage({ id, deleteVolumes: false }));
       dispatch(push("/" + NAME));
     },
-    removePackageAndData: () => {
-      dispatch(action.removePackage({ deleteVolumes: true }));
+    removePackageAndData: id => {
+      dispatch(action.removePackage({ id, deleteVolumes: true }));
       dispatch(push("/" + NAME));
     }
   };

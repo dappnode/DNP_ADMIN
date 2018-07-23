@@ -1,14 +1,8 @@
 // INSTALLER
 import * as t from "./actionTypes";
-import * as selector from "./selectors";
 import * as APIcalls from "API/crossbarCalls";
-// modules
-import chains from "chains";
 
-// export const add = text => ({
-//   type: t.ADD,
-//   payload: { text }
-// });
+// #### TODO: Clean unused actions
 
 export const setId = id => ({
   type: t.SET_ID,
@@ -39,14 +33,16 @@ export const updateSelectedTypes = types => ({
   payload: types
 });
 
-// No need to use "addTodo" name, in another module do:
-// import todos from 'todos';
-// todos.actions.add('Do that thing');
-const updatePackage = (data, id) => ({
-  type: t.UPDATE_PACKAGE,
-  payload: data,
-  id: id
+export const updatePackages = packages => ({
+  type: t.UPDATE_PACKAGES,
+  payload: packages
 });
+
+export const listPackages = () => ({
+  type: t.LIST_PACKAGES
+});
+
+// #### TODO: refactor to sagas
 
 const updateLog = (data, id) => ({
   type: t.UPDATE_LOG,
@@ -54,83 +50,40 @@ const updateLog = (data, id) => ({
   id: id
 });
 
-const updatePackages = packages => ({
-  type: t.UPDATE_PACKAGES,
-  payload: packages
-});
-
-export const listPackages = () => dispatch => {
-  APIcalls.listPackages().then(
-    packages => (packages ? dispatch(updatePackages(packages)) : null)
-  );
-};
-
-// With thunk middleware
-// dispatch(dispatch(dispatch(action))) = dispatch(action)
-
-const wrapper = ({ APIcall, args, after = "" }) => (dispatch, getState) => {
-  const kwargs = args ? args(getState()) : {};
-  APIcall(kwargs).then(() => {
-    if (after.includes("listPackages")) listPackages()(dispatch);
-    if (after.includes("uninstallChain"))
-      chains.actions.uninstalledChain(kwargs.id)(dispatch, getState);
-  });
-};
-
-export const logPackage = ({ options }) => (dispatch, getState) => {
-  const kwargs = {
-    id: selector.getPackageId(getState()),
-    options: options
-  };
+export const logPackage = kwargs => dispatch => {
   APIcalls.logPackage(kwargs).then(res => {
     if (res) dispatch(updateLog(res.logs, res.id));
   });
 };
 
-export const updateEnvs = ({ envs, restart }) =>
-  wrapper({
-    APIcall: APIcalls.updatePackageEnv,
-    args: state => ({
-      id: selector.getPackageId(state),
-      envs: envs,
-      restart
-    }),
-    after: ["listPackages"]
-  });
+export const updatePackageEnv = kwargs => ({
+  type: t.CALL,
+  call: "updatePackageEnv",
+  kwargs
+});
 
-export const togglePackage = () =>
-  wrapper({
-    APIcall: APIcalls.togglePackage,
-    args: state => ({
-      id: selector.getPackageId(state)
-    }),
-    after: ["listPackages"]
-  });
+export const togglePackage = kwargs => ({
+  type: t.CALL,
+  call: "togglePackage",
+  kwargs
+});
 
-export const restartPackage = () =>
-  wrapper({
-    APIcall: APIcalls.restartPackage,
-    args: state => ({
-      id: selector.getPackageId(state)
-    }),
-    after: ["listPackages"]
-  });
+export const restartPackage = kwargs => ({
+  type: t.CALL,
+  call: "restartPackage",
+  kwargs
+});
 
-export const restartVolumes = () =>
-  wrapper({
-    APIcall: APIcalls.restartVolumes,
-    args: state => ({
-      id: selector.getPackageId(state)
-    }),
-    after: ["listPackages"]
-  });
+export const restartVolumes = kwargs => ({
+  type: t.CALL,
+  call: "restartVolumes",
+  kwargs
+});
 
-export const removePackage = ({ deleteVolumes }) =>
-  wrapper({
-    APIcall: APIcalls.removePackage,
-    args: state => ({
-      id: selector.getPackageId(state),
-      deleteVolumes
-    }),
-    after: ["listPackages", "uninstallChain"]
-  });
+export const removePackage = kwargs => ({
+  type: t.CALL,
+  call: "removePackage",
+  kwargs
+});
+
+// #### After removing a package, uninstallChain

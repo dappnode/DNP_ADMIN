@@ -3,8 +3,6 @@ import * as t from "./actionTypes";
 import * as selector from "./selectors";
 import * as APIcall from "API/crossbarCalls";
 // modules
-import packages from "packages";
-import chains from "chains";
 
 // export const add = text => ({
 //   type: t.ADD,
@@ -12,7 +10,7 @@ import chains from "chains";
 // });
 export const updateFetching = fetching => ({
   type: t.UPDATE_FETCHING,
-  payload: fetching
+  fetching
 });
 
 export const updateSelectedPackage = id => ({
@@ -50,7 +48,7 @@ export const packageFinishedInstalling = id => ({
 export const updateAndCheckInput = _id => dispatch => {
   const id = correctPackageName(_id);
   // If the packageLink is a valid IPFS hash preload it's info
-  if (id.includes("/ipfs/") && isIpfsHash(id.split("/ipfs/")[1])) {
+  if (isIpfsHash(id)) {
     dispatch(fetchPackageVersions(id));
   }
   // Update input field
@@ -66,15 +64,10 @@ export const selectPackage = id => (dispatch, getState) => {
 // No need to use "addTodo" name, in another module do:
 // import todos from 'todos';
 // todos.actions.add('Do that thing');
-const updatePackage = (data, id) => ({
+export const updatePackage = (data, id) => ({
   type: t.UPDATE_PACKAGE,
   data,
   id
-});
-
-const updateDirectory = directory => ({
-  type: t.UPDATE_DIRECTORY,
-  directory
 });
 
 export const fetchDirectory = () => ({
@@ -87,53 +80,35 @@ export const fetchPackageVersions = id => dispatch => {
   });
 };
 
-export const install = envs => (dispatch, getState) => {
-  // Load necessary info
-  const selectedPackageName = selector.selectedPackageName(getState());
-  const selectedVersion = selector.getSelectedVersion(getState());
-  const isInstalling = selector.isInstalling(getState());
+export const install = () => ({
+  type: t.INSTALL
+});
 
-  // Prevent double installations, 1. check if the package is in the blacklist
+// Need to notify the chain that a package has been added
 
-  if (isInstalling[selectedPackageName]) {
-    return console.error(selectedPackageName + " IS ALREADY INSTALLING");
-  }
-
-  // blacklist the current package
-  dispatch(packageStartedInstalling(selectedPackageName));
-
-  if (Object.getOwnPropertyNames(envs).length > 0) {
-    APIcall.updatePackageEnv({
-      id: selectedPackageName,
-      envs: envs,
-      restart: false
-    });
-  }
-
-  APIcall.addPackage({
-    id: selectedPackageName + "@" + selectedVersion
-  }).then(() => {
-    // Remove package from blacklist
-    dispatch(packageFinishedInstalling(selectedPackageName));
-    // Fetch directory
-    dispatch(fetchDirectory());
-    // Fetch package list
-    dispatch(packages.actions.listPackages());
-    // Trigger installChain
-    chains.actions.installedChain(selectedPackageName)(dispatch, getState);
-  });
-};
+export const updateEnv = env => ({
+  type: t.UPDATE_ENV,
+  env
+});
 
 // Utils
 
 function isIpfsHash(hash) {
-  return hash.startsWith("Qm") && !hash.includes(".") && hash.length === 46;
+  return hash.includes("/ipfs/") && isIpfsMultiHash(hash.split("/ipfs/")[1]);
+}
+
+function isIpfsMultiHash(multiHash) {
+  return (
+    multiHash.startsWith("Qm") &&
+    !multiHash.includes(".") &&
+    multiHash.length === 46
+  );
 }
 
 function correctPackageName(req) {
   // First determine if it contains an ipfs hash
-  if (req.startsWith("ipfs/") && isIpfsHash(req.split("ipfs/")[1]))
+  if (req.startsWith("ipfs/") && isIpfsMultiHash(req.split("ipfs/")[1]))
     return "/" + req;
-  else if (isIpfsHash(req)) return "/ipfs/" + req;
+  else if (isIpfsMultiHash(req)) return "/ipfs/" + req;
   else return req;
 }

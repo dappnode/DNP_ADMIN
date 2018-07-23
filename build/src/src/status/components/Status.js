@@ -9,16 +9,12 @@ let intervalToken, connectionOpenToken, connectionCloseToken;
 
 class Status extends React.Component {
   componentWillMount() {
-    this.props.init();
-
-    intervalToken = setInterval(() => {
-      this.props.check();
-    }, 5 * 1000);
+    this.props.startIpfsMonitor();
 
     connectionOpenToken = eventBus.subscribe("connection_open", session => {
-      this.props.check(session);
-      this.props.checkOnce();
+      this.props.startWampMonitor();
     });
+
     // This code can lead to errors, and not showing the user that the connection is broken
     // If activated, on errors the user may not be alerted that the connection is restablished
     // connectionCloseToken = eventBus.subscribe("connection_close", () => {
@@ -41,14 +37,11 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => {
   return {
-    check: () => {
-      dispatch(action.check());
+    startIpfsMonitor: () => {
+      dispatch(action.startIpfsMonitor());
     },
-    checkOnce: () => {
-      dispatch(action.checkOnce());
-    },
-    init: () => {
-      dispatch(action.init());
+    startWampMonitor: () => {
+      dispatch(action.startWampMonitor());
     }
   };
 };

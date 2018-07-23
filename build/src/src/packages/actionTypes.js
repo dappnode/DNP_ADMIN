@@ -3,8 +3,10 @@ import { NAME } from "./constants";
 const type = tag => NAME + "/" + tag;
 
 export const ADD = type("ADD");
+export const CALL = type("CALL");
 export const UPDATE = type("UPDATE");
 export const UPDATE_PACKAGE = type("UPDATE_PACKAGE");
+export const LIST_PACKAGES = type("LIST_PACKAGES");
 export const UPDATE_LOG = type("UPDATE_LOG");
 export const UPDATE_PACKAGES = type("UPDATE_PACKAGES");
 export const UPDATE_SELECTED_VERSION = type("UPDATE_SELECTED_VERSION");

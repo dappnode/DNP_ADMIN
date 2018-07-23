@@ -11,9 +11,9 @@ import chains from "./chains";
 export default function* rootSaga() {
   yield all([
     devices.saga(),
-    installer.saga()
-    // packages.saga(),
-    // status.saga(),
+    installer.saga(),
+    packages.saga(),
+    status.saga()
     // chains.saga()
   ]);
 }
