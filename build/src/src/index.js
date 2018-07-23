@@ -15,6 +15,10 @@ import "./include/bootstrap";
 import "./sb-admin.css";
 import "./admin_UI.css";
 
+// Start the autobahn instance
+import { initApi } from "API/crossbarCalls";
+initApi();
+
 // Create an enhanced history that syncs navigation events with the store
 
 render(

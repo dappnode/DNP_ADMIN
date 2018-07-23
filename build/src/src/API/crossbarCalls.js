@@ -55,9 +55,11 @@ let realm = "dappnode_admin";
 
 // Initalize app
 let session, sessionExternal; // make this variable global
-start().then(_session => {
-  session = _session;
-});
+export function initApi() {
+  start().then(_session => {
+    session = _session;
+  });
+}
 
 export const getSessionSync = () => sessionExternal;
 export const isOpen = () => Boolean(session && session.isOpen);
