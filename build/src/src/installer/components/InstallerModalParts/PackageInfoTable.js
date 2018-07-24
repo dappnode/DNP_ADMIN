@@ -30,10 +30,9 @@ export default class PackageInfoTable extends React.Component {
       { key: "Description", val: manifest.description || "" },
       { key: "Mantainer", val: manifest.author || "" },
       { key: "Type", val: manifest.type || "" },
-      { key: "Size", val: manifest.image ? manifest.image.size || "" : "" },
       {
-        key: "Image hash",
-        val: manifest.image ? manifest.image.hash || "" : ""
+        key: "Size",
+        val: manifest.image ? humanFileSize(manifest.image.size) || "" : ""
       }
     ];
 
