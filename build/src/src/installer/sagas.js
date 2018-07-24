@@ -2,7 +2,6 @@ import { call, put, takeEvery, all, select } from "redux-saga/effects";
 import * as APIcall from "API/crossbarCalls";
 import * as t from "./actionTypes";
 import * as selector from "./selectors";
-import * as actions from "./actions";
 
 /***************************** Subroutines ************************************/
 

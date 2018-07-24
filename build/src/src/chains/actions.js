@@ -3,26 +3,9 @@ import * as t from "./actionTypes";
 import * as selector from "./selectors";
 import * as APIcalls from "API/crossbarCalls";
 import modules from "./modules";
+import { ethchains } from "./constants";
 
 const Ethchain = modules.Ethchain;
-
-let ethchains = [
-  {
-    id: "Kovan",
-    name: "kovan.dnp.dappnode.eth",
-    url: "ws://my.kovan.dnp.dappnode.eth:8546"
-  },
-  {
-    id: "Ropsten",
-    name: "ropsten.dnp.dappnode.eth",
-    url: "ws://my.ropsten.dnp.dappnode.eth:8546"
-  },
-  {
-    id: "Rinkeby",
-    name: "rinkeby.dnp.dappnode.eth",
-    url: "ws://my.rinkeby.dnp.dappnode.eth:8546"
-  }
-];
 
 export const updateStatus = (id, status) => ({
   type: t.UPDATE_STATUS,

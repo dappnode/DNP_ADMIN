@@ -5,6 +5,7 @@ import * as constants from "./constants";
 import reducer from "./reducer";
 import "./modules";
 import * as selectors from "./selectors";
+import saga from "./sagas";
 
 import Chains from "./components/Chains";
 import ChainStatusLog from "./components/ChainStatusLog";
@@ -18,5 +19,6 @@ export default {
   actionTypes,
   constants,
   reducer,
-  selectors
+  selectors,
+  saga
 };

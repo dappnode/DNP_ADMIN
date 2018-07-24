@@ -1,6 +1,5 @@
 // DEVICES
 import * as t from "./actionTypes";
-import * as APIcall from "API/crossbarCalls";
 
 export const addDevice = id => ({
   type: t.CALL,
