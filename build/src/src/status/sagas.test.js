@@ -3,7 +3,7 @@ import { fetchDirectory, fetchPackageData } from "./sagas";
 import { put, call } from "redux-saga/effects";
 import * as t from "./actionTypes";
 
-describe("fetchDirectory Saga test on normal behaviour", () => {
+describe.skip("fetchDirectory Saga test on normal behaviour", () => {
   const gen = fetchDirectory();
   const directory = [{ name: "package A" }, { name: "package B" }];
   it("Should call the API endpoint fetchDirectory", () => {
@@ -30,7 +30,7 @@ describe("fetchDirectory Saga test on normal behaviour", () => {
   });
 });
 
-describe("fetchDirectory Saga test when an error happens", () => {
+describe.skip("fetchDirectory Saga test when an error happens", () => {
   const gen = fetchDirectory();
   const directory = undefined; // Error
   it("Should call the API endpoint fetchDirectory", () => {

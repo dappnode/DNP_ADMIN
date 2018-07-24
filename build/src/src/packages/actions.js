@@ -2,51 +2,30 @@
 import * as t from "./actionTypes";
 import * as APIcalls from "API/crossbarCalls";
 
-// #### TODO: Clean unused actions
+// Used in package interface
 
 export const setId = id => ({
   type: t.SET_ID,
   payload: id
 });
 
-export const selectPackage = id => ({
-  type: t.UPDATE_SELECTED_PACKAGE,
-  payload: id
-});
-
-export const initialized = () => ({
-  type: t.INITIALIZED
-});
-
-export const updateInput = id => ({
-  type: t.UPDATE_INPUT,
-  payload: id
-});
-
-export const updateSelectedVersion = index => ({
-  type: t.UPDATE_SELECTED_VERSION,
-  payload: index
-});
-
-export const updateSelectedTypes = types => ({
-  type: t.UPDATE_SELECTED_TYPES,
-  payload: types
-});
+// Used in package root
 
 export const updatePackages = packages => ({
   type: t.UPDATE_PACKAGES,
-  payload: packages
+  packages
 });
 
 export const listPackages = () => ({
   type: t.LIST_PACKAGES
 });
 
+// Used in package interface / logs
 // #### TODO: refactor to sagas
 
-const updateLog = (data, id) => ({
+const updateLog = (logs, id) => ({
   type: t.UPDATE_LOG,
-  payload: data === "" ? "Received empty logs" : data,
+  payload: logs === "" ? "Received empty logs" : logs,
   id: id
 });
 
@@ -56,11 +35,15 @@ export const logPackage = kwargs => dispatch => {
   });
 };
 
+// Used in package interface / envs
+
 export const updatePackageEnv = kwargs => ({
   type: t.CALL,
   call: "updatePackageEnv",
   kwargs
 });
+
+// Used in package interface / controls
 
 export const togglePackage = kwargs => ({
   type: t.CALL,

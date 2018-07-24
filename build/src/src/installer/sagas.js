@@ -101,12 +101,37 @@ export function* fetchPackageData(pkg) {
   }
 }
 
+export function* fetchPackageVersions(action) {
+  try {
+    const versions = yield call(APIcall.fetchPackageVersions, action.kwargs);
+    // fetchPackageVersions CALL DOCUMENTATION:
+    // > kwargs: { id }
+    // > result: [{
+    //     version: '0.0.4', (string)
+    //     manifest: <Manifest> (object)
+    //   },
+    //   ...]
+
+    // Abort on error
+    if (!versions) return;
+
+    // Update directory
+    yield put({ type: t.UPDATE_PACKAGE, data: { versions }, id: action.id });
+  } catch (error) {
+    console.error("Error fetching directory: ", error);
+  }
+}
+
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
 
 function* watchFetchDirectory() {
   yield takeEvery(t.FETCH_DIRECTORY, fetchDirectory);
+}
+
+function* watchFetchPackageVersions() {
+  yield takeEvery(t.FETCH_PACKAGE_VERSIONS, fetchPackageVersions);
 }
 
 function* watchInstall() {
@@ -120,5 +145,10 @@ function* watchUpdateEnvs() {
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
-  yield all([watchFetchDirectory(), watchInstall(), watchUpdateEnvs()]);
+  yield all([
+    watchFetchDirectory(),
+    watchInstall(),
+    watchUpdateEnvs(),
+    watchFetchPackageVersions()
+  ]);
 }

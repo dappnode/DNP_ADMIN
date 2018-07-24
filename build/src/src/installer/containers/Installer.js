@@ -3,6 +3,7 @@ import * as action from "../actions";
 import InstallerView from "../components/InstallerView";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
+import * as utils from "./utils";
 
 // const getVisibleTodos = (todos, filter) => {
 //   switch (filter) {
@@ -40,7 +41,13 @@ const mapDispatchToProps = dispatch => {
 
     updateInput: e => {
       // Correct the ipfs format and fecth if correct
-      dispatch(action.updateAndCheckInput(e.target.value));
+      const id = utils.correctPackageName(e.target.value);
+      // If the packageLink is a valid IPFS hash preload it's info
+      if (utils.isIpfsHash(id)) {
+        dispatch(action.fetchPackageVersions(id));
+      }
+      // Update input field
+      dispatch(action.updateInput(id));
     },
 
     updateSelectedTypes: types => {

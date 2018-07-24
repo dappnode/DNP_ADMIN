@@ -1,7 +1,6 @@
 // INSTALLER
 import * as t from "./actionTypes";
 import * as selector from "./selectors";
-import * as APIcall from "API/crossbarCalls";
 // modules
 
 // export const add = text => ({
@@ -45,16 +44,6 @@ export const packageFinishedInstalling = id => ({
   id
 });
 
-export const updateAndCheckInput = _id => dispatch => {
-  const id = correctPackageName(_id);
-  // If the packageLink is a valid IPFS hash preload it's info
-  if (isIpfsHash(id)) {
-    dispatch(fetchPackageVersions(id));
-  }
-  // Update input field
-  dispatch(updateInput(id));
-};
-
 export const selectPackage = id => (dispatch, getState) => {
   if (!id) id = selector.getInput(getState());
   dispatch(fetchPackageVersions(id));
@@ -74,11 +63,10 @@ export const fetchDirectory = () => ({
   type: t.FETCH_DIRECTORY
 });
 
-export const fetchPackageVersions = id => dispatch => {
-  APIcall.fetchPackageVersions({ id }).then(pkg => {
-    if (pkg) dispatch(updatePackage(pkg, pkg.name));
-  });
-};
+export const fetchPackageVersions = id => ({
+  type: t.FETCH_PACKAGE_VERSIONS,
+  id
+});
 
 export const install = () => ({
   type: t.INSTALL
@@ -90,25 +78,3 @@ export const updateEnv = env => ({
   type: t.UPDATE_ENV,
   env
 });
-
-// Utils
-
-function isIpfsHash(hash) {
-  return hash.includes("/ipfs/") && isIpfsMultiHash(hash.split("/ipfs/")[1]);
-}
-
-function isIpfsMultiHash(multiHash) {
-  return (
-    multiHash.startsWith("Qm") &&
-    !multiHash.includes(".") &&
-    multiHash.length === 46
-  );
-}
-
-function correctPackageName(req) {
-  // First determine if it contains an ipfs hash
-  if (req.startsWith("ipfs/") && isIpfsMultiHash(req.split("ipfs/")[1]))
-    return "/" + req;
-  else if (isIpfsMultiHash(req)) return "/ipfs/" + req;
-  else return req;
-}

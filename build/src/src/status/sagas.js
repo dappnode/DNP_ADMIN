@@ -18,6 +18,7 @@ import checkConnection from "API/checkConnection";
 import { NON_ADMIN_RESPONSE } from "./constants";
 import checkWampPackage from "./utils/checkWampPackage";
 import checkIpfsConnection from "./utils/checkIpfsConnection";
+import chains from "chains";
 
 const NOWAMP = "Can't connect to WAMP";
 
@@ -107,20 +108,25 @@ function* getStatusUPnP() {
   try {
     yield call(checkConnection);
     const res = yield call(APIcall.getStatusUPnP);
-    const status = res.openPorts && !res.UPnP ? 0 : 1;
-    let msg;
-    if (res.openPorts && !res.UPnP) {
-      msg =
-        "UPnP device not found, please try to activate it in your router or manually open the required ports when installing packages";
-    } else if (!res.openPorts) {
-      msg = "UPnP not necessary";
-    } else {
-      msg = "ok";
-    }
+    const { status, msg } = statusUPnPLogic(res);
     yield put(updateStatus({ id: tags.upnp, status, msg }));
   } catch (e) {
     // It will throw when connection is not open, ignore
   }
+}
+
+function statusUPnPLogic(res) {
+  let status = res.openPorts && !res.UPnP ? 0 : 1;
+  let msg;
+  if (res.openPorts && !res.UPnP) {
+    msg =
+      "UPnP device not found, please try to activate it in your router or manually open the required ports when installing packages";
+  } else if (!res.openPorts) {
+    msg = "UPnP not necessary";
+  } else {
+    msg = "ok";
+  }
+  return { status, msg };
 }
 
 function* getStatusExternalIp() {
@@ -128,32 +134,35 @@ function* getStatusExternalIp() {
     console.log("VERIFYING");
     yield call(checkConnection);
     const res = yield call(APIcall.getStatusExternalIp);
-    // Determine if user will have to open ports
-    let status = 0;
-    let msg;
-    if (res) {
-      if (res.externalIpResolves) {
-        msg = "Resolves";
-        status = 1;
-      } else {
-        msg =
-          "External IP does not resolve (" +
-          (res.attempts || 10) +
-          " attempts). " +
-          "Please use the internal IP: " +
-          (res.INT_IP || "ERROR") +
-          " when you are in the same network as your DAppNode" +
-          " and the external IP " +
-          (res.EXT_IP || "ERROR") +
-          " otherwise";
-      }
-    } else {
-      msg = "Error verifying external ip status";
-    }
+    const { status, msg } = statusExternalIpLogic(res);
     yield put(updateStatus({ id: tags.externalIP, status, msg }));
   } catch (e) {
     // It will throw when connection is not open, ignore
   }
+}
+
+function statusExternalIpLogic(res) {
+  // Determine if user will have to open ports
+  let status = 0;
+  let msg = "Error verifying external ip status";
+  if (res) {
+    if (res.externalIpResolves) {
+      msg = "Resolves";
+      status = 1;
+    } else {
+      msg =
+        "External IP does not resolve (" +
+        (res.attempts || 10) +
+        " attempts). " +
+        "Please use the internal IP: " +
+        (res.INT_IP || "ERROR") +
+        " when you are in the same network as your DAppNode" +
+        " and the external IP: " +
+        (res.EXT_IP || "ERROR") +
+        " otherwise";
+    }
+  }
+  return { status, msg };
 }
 
 function* initializeLoadingMessages() {
@@ -164,6 +173,12 @@ function* initializeLoadingMessages() {
   );
 }
 
+function* mainnetUpdate(action) {
+  if (action.id !== "Mainnet") return;
+  const { msg, status } = action.payload;
+  yield put(updateStatus({ id: tags.mainnet, status, msg }));
+}
+
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
@@ -171,6 +186,10 @@ function* initializeLoadingMessages() {
 // The channels below can be stopped by changing the code a little bit
 // You would fire a STOP action to stop the channel loop and a START to restart.
 // Example: https://github.com/jaysoo/example-redux-saga/blob/master/src/timer/saga.js
+
+function* watchMainnetUpdate() {
+  yield takeEvery(chains.actionTypes.UPDATE_STATUS, mainnetUpdate);
+}
 
 function* runWampMonitor() {
   // Dispatching an action of type start will activate the channel
@@ -214,6 +233,7 @@ export default function* root() {
   yield all([
     call(initializeLoadingMessages),
     runIpfsMonitor(),
-    runWampMonitor()
+    runWampMonitor(),
+    watchMainnetUpdate()
   ]);
 }
