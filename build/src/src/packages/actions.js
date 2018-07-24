@@ -25,7 +25,7 @@ export const listPackages = () => ({
 
 const updateLog = (logs, id) => ({
   type: t.UPDATE_LOG,
-  payload: logs === "" ? "Received empty logs" : logs,
+  logs: logs === "" ? "Received empty logs" : logs,
   id: id
 });
 

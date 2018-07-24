@@ -3,7 +3,7 @@ import * as action from "../actions";
 import InstallerView from "../components/InstallerView";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
-import * as utils from "./utils";
+import * as utils from "../utils";
 
 // const getVisibleTodos = (todos, filter) => {
 //   switch (filter) {
