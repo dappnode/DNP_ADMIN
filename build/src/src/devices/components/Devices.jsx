@@ -88,10 +88,10 @@ const mapDispatchToProps = dispatch => {
     addDevice: id => {
       // Ensure id contains only alphanumeric characters
       const correctedId = id.replace(/\W/g, "");
-      dispatch(action.add(correctedId));
+      dispatch(action.addDevice(correctedId));
     },
     removeDevice: id => {
-      dispatch(action.remove(id));
+      dispatch(action.removeDevice(id));
     },
     toggleAdmin: id => {
       dispatch(action.toggleAdmin(id));

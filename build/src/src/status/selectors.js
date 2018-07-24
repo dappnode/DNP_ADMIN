@@ -25,6 +25,7 @@ const filterCompleted = todos => todos.filter(t => t.completed);
 const filterActive = todos => todos.filter(t => !t.completed);
 
 export const getAll = state => state[NAME];
+export const getWamp = state => state[NAME].wamp;
 
 export const getItems = state =>
   Object.keys(getAll(state)).map(e => getAll(state)[e]);

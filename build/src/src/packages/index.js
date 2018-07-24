@@ -3,6 +3,7 @@ import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
 import Packages from "./components/PackagesRoot";
+import saga from "./sagas";
 
 const components = {
   Packages
@@ -16,5 +17,6 @@ export default {
   components,
   constants,
   reducer,
-  selectors
+  selectors,
+  saga
 };

@@ -1,142 +1,72 @@
 // INSTALLER
 import * as t from "./actionTypes";
-import * as selector from "./selectors";
 import * as APIcalls from "API/crossbarCalls";
-// modules
-import chains from "chains";
 
-// export const add = text => ({
-//   type: t.ADD,
-//   payload: { text }
-// });
+// Used in package interface
 
 export const setId = id => ({
   type: t.SET_ID,
   payload: id
 });
 
-export const selectPackage = id => ({
-  type: t.UPDATE_SELECTED_PACKAGE,
-  payload: id
-});
+// Used in package root
 
-export const initialized = () => ({
-  type: t.INITIALIZED
-});
-
-export const updateInput = id => ({
-  type: t.UPDATE_INPUT,
-  payload: id
-});
-
-export const updateSelectedVersion = index => ({
-  type: t.UPDATE_SELECTED_VERSION,
-  payload: index
-});
-
-export const updateSelectedTypes = types => ({
-  type: t.UPDATE_SELECTED_TYPES,
-  payload: types
-});
-
-// No need to use "addTodo" name, in another module do:
-// import todos from 'todos';
-// todos.actions.add('Do that thing');
-const updatePackage = (data, id) => ({
-  type: t.UPDATE_PACKAGE,
-  payload: data,
-  id: id
-});
-
-const updateLog = (data, id) => ({
-  type: t.UPDATE_LOG,
-  payload: data === "" ? "Received empty logs" : data,
-  id: id
-});
-
-const updatePackages = packages => ({
+export const updatePackages = packages => ({
   type: t.UPDATE_PACKAGES,
-  payload: packages
+  packages
 });
 
-export const fetchPackageInfo = id => dispatch => {
-  APIcalls.fetchPackageInfo({ id }).then(pkg => {
-    if (pkg) dispatch(updatePackage(pkg, pkg.name));
-  });
-};
+export const listPackages = () => ({
+  type: t.LIST_PACKAGES
+});
 
-export const listPackages = () => dispatch => {
-  APIcalls.listPackages().then(
-    packages => (packages ? dispatch(updatePackages(packages)) : null)
-  );
-};
+// Used in package interface / logs
+// #### TODO: refactor to sagas
 
-// With thunk middleware
-// dispatch(dispatch(dispatch(action))) = dispatch(action)
+const updateLog = (logs, id) => ({
+  type: t.UPDATE_LOG,
+  logs: logs === "" ? "Received empty logs" : logs,
+  id: id
+});
 
-const wrapper = ({ APIcall, args, after = "" }) => (dispatch, getState) => {
-  const kwargs = args ? args(getState()) : {};
-  APIcall(kwargs).then(() => {
-    if (after.includes("listPackages")) listPackages()(dispatch);
-    if (after.includes("uninstallChain"))
-      chains.actions.uninstalledChain(kwargs.id)(dispatch, getState);
-  });
-};
-
-export const logPackage = ({ options }) => (dispatch, getState) => {
-  const kwargs = {
-    id: selector.getPackageId(getState()),
-    options: options
-  };
+export const logPackage = kwargs => dispatch => {
   APIcalls.logPackage(kwargs).then(res => {
     if (res) dispatch(updateLog(res.logs, res.id));
   });
 };
 
-export const updateEnvs = ({ envs, restart }) =>
-  wrapper({
-    APIcall: APIcalls.updatePackageEnv,
-    args: state => ({
-      id: selector.getPackageId(state),
-      envs: envs,
-      restart
-    }),
-    after: ["listPackages"]
-  });
+// Used in package interface / envs
 
-export const togglePackage = () =>
-  wrapper({
-    APIcall: APIcalls.togglePackage,
-    args: state => ({
-      id: selector.getPackageId(state)
-    }),
-    after: ["listPackages"]
-  });
+export const updatePackageEnv = kwargs => ({
+  type: t.CALL,
+  call: "updatePackageEnv",
+  kwargs
+});
 
-export const restartPackage = () =>
-  wrapper({
-    APIcall: APIcalls.restartPackage,
-    args: state => ({
-      id: selector.getPackageId(state)
-    }),
-    after: ["listPackages"]
-  });
+// Used in package interface / controls
 
-export const restartVolumes = () =>
-  wrapper({
-    APIcall: APIcalls.restartVolumes,
-    args: state => ({
-      id: selector.getPackageId(state)
-    }),
-    after: ["listPackages"]
-  });
+export const togglePackage = kwargs => ({
+  type: t.CALL,
+  call: "togglePackage",
+  kwargs
+});
 
-export const removePackage = ({ deleteVolumes }) =>
-  wrapper({
-    APIcall: APIcalls.removePackage,
-    args: state => ({
-      id: selector.getPackageId(state),
-      deleteVolumes
-    }),
-    after: ["listPackages", "uninstallChain"]
-  });
+export const restartPackage = kwargs => ({
+  type: t.CALL,
+  call: "restartPackage",
+  kwargs
+});
+
+export const restartVolumes = kwargs => ({
+  type: t.CALL,
+  call: "restartVolumes",
+  kwargs
+});
+
+export const removePackage = kwargs => ({
+  type: t.CALL,
+  call: "removePackage",
+  kwargs
+});
+
+// #### After removing a package, uninstallChain

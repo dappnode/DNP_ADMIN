@@ -25,12 +25,12 @@ export default function(state = initialState, action) {
     case t.UPDATE_FETCHING:
       return {
         ...state,
-        fetching: action.payload
+        fetching: action.fetching
       };
     case t.UPDATE_DIRECTORY:
       return {
         ...state,
-        directory: action.payload
+        directory: action.directory
       };
     case t.UPDATE_PACKAGE:
       return {
@@ -39,7 +39,7 @@ export default function(state = initialState, action) {
           ...state.packages,
           [action.id]: Object.assign(
             state.packages[action.id] || {},
-            action.payload
+            action.data
           )
         }
       };

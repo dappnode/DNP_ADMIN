@@ -11,7 +11,7 @@ describe("Request reducer", () => {
     expect(
       reducer(undefined, {
         type: t.UPDATE,
-        payload: devices
+        devices
       })
     ).toEqual(devices);
   });

@@ -6,7 +6,7 @@ const initialState = [];
 export default function(state = initialState, action) {
   switch (action.type) {
     case t.UPDATE:
-      return action.payload;
+      return action.devices;
     default:
       return state;
   }

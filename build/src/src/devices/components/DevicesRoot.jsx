@@ -40,7 +40,7 @@ const mapStateToProps = createStructuredSelector({});
 const mapDispatchToProps = dispatch => {
   return {
     fetchDevices: () => {
-      dispatch(action.list());
+      dispatch(action.fetchDevices());
     }
   };
 };

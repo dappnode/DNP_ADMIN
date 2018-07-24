@@ -71,11 +71,15 @@ export const selectedPackage = state =>
   packages(state)[selectedPackageId(state)] || {};
 
 export const selectedPackageName = state => selectedPackage(state).name || "";
+
 export const selectedPackageIsCORE = state => selectedPackage(state).name || "";
+
 export const selectedPackageManifest = state =>
   selectedPackage(state).manifest || {};
+
 export const selectedPackageVersions = state =>
   selectedPackage(state).versions || [];
+
 export const selectedPackageVersionsNames = state =>
   selectedPackageVersions(state).map(v => v.version);
 

@@ -2,6 +2,7 @@ import * as actions from "./actions";
 import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
+import saga from "./sagas";
 
 import DevicesRoot from "./components/DevicesRoot";
 
@@ -13,5 +14,6 @@ export default {
   },
   constants,
   reducer,
-  selectors
+  selectors,
+  saga
 };

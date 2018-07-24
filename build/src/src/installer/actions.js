@@ -1,10 +1,7 @@
 // INSTALLER
 import * as t from "./actionTypes";
 import * as selector from "./selectors";
-import * as APIcall from "API/crossbarCalls";
 // modules
-import packages from "packages";
-import chains from "chains";
 
 // export const add = text => ({
 //   type: t.ADD,
@@ -12,7 +9,7 @@ import chains from "chains";
 // });
 export const updateFetching = fetching => ({
   type: t.UPDATE_FETCHING,
-  payload: fetching
+  fetching
 });
 
 export const updateSelectedPackage = id => ({
@@ -47,133 +44,37 @@ export const packageFinishedInstalling = id => ({
   id
 });
 
-export const updateAndCheckInput = _id => dispatch => {
-  const id = correctPackageName(_id);
-  // If the packageLink is a valid IPFS hash preload it's info
-  if (id.includes("/ipfs/") && isIpfsHash(id.split("/ipfs/")[1])) {
-    dispatch(fetchPackageInfo(id));
-  }
-  // Update input field
-  dispatch(updateInput(id));
-};
-
 export const selectPackage = id => (dispatch, getState) => {
   if (!id) id = selector.getInput(getState());
-  dispatch(fetchPackageInfo(id));
+  dispatch(fetchPackageVersions(id));
   dispatch(updateSelectedPackage(id));
 };
 
 // No need to use "addTodo" name, in another module do:
 // import todos from 'todos';
 // todos.actions.add('Do that thing');
-const updatePackage = (data, id) => ({
+export const updatePackage = (data, id) => ({
   type: t.UPDATE_PACKAGE,
-  payload: data,
-  id: id
+  data,
+  id
 });
 
-const updateDirectory = directory => ({
-  type: t.UPDATE_DIRECTORY,
-  payload: directory
+export const fetchDirectory = () => ({
+  type: t.FETCH_DIRECTORY
 });
 
-export const fetchDirectory = () => dispatch => {
-  dispatch(updateFetching(true));
-  APIcall.fetchDirectory().then(directory => {
-    dispatch(updateFetching(false));
-    // Abort on error
-    if (!directory) return;
+export const fetchPackageVersions = id => ({
+  type: t.FETCH_PACKAGE_VERSIONS,
+  id
+});
 
-    // Update directory
-    dispatch(updateDirectory(directory));
+export const install = () => ({
+  type: t.INSTALL
+});
 
-    directory.forEach((pkg, i) => {
-      dispatch(updatePackage(pkg, pkg.name));
+// Need to notify the chain that a package has been added
 
-      // Throttle requests to avoid saturating the IPFS module
-      setTimeout(() => {
-        APIcall.getPackageData({ id: pkg.name }).then(packageData => {
-          dispatch(updatePackage(packageData, pkg.name));
-        });
-      }, 100 * i);
-    });
-  });
-};
-
-export const fetchPackageInfo = id => dispatch => {
-  APIcall.fetchPackageInfo({ id }).then(pkg => {
-    if (pkg) dispatch(updatePackage(pkg, pkg.name));
-  });
-};
-
-export const install = envs => (dispatch, getState) => {
-  // Load necessary info
-  const selectedPackageName = selector.selectedPackageName(getState());
-  const selectedVersion = selector.getSelectedVersion(getState());
-  const isInstalling = selector.isInstalling(getState());
-
-  // Prevent double installations, 1. check if the package is in the blacklist
-
-  if (isInstalling[selectedPackageName]) {
-    return console.error(selectedPackageName + " IS ALREADY INSTALLING");
-  }
-
-  // blacklist the current package
-  dispatch(packageStartedInstalling(selectedPackageName));
-
-  if (Object.getOwnPropertyNames(envs).length > 0) {
-    APIcall.updatePackageEnv({
-      id: selectedPackageName,
-      envs: envs,
-      restart: false
-    });
-  }
-
-  APIcall.addPackage({
-    id: selectedPackageName + "@" + selectedVersion
-  }).then(() => {
-    // Remove package from blacklist
-    dispatch(packageFinishedInstalling(selectedPackageName));
-    // Fetch directory
-    dispatch(fetchDirectory());
-    // Fetch package list
-    dispatch(packages.actions.listPackages());
-    // Trigger installChain
-    chains.actions.installedChain(selectedPackageName)(dispatch, getState);
-  });
-};
-
-const updateAfter = AsyncAction => dispatch => {
-  AsyncAction.then(APIcall.listDevices).then(
-    devices =>
-      devices
-        ? dispatch({
-            type: t.UPDATE,
-            payload: devices
-          })
-        : null
-  );
-};
-
-export const add = id => updateAfter(APIcall.addDevice(id));
-export const remove = id => updateAfter(APIcall.removeDevice(id));
-export const toggleAdmin = id => updateAfter(APIcall.toggleAdmin(id));
-export const list = () => updateAfter(nothing());
-
-const nothing = async () => {};
-
-// const wait = () => new Promise(resolve => setTimeout(resolve, 1000));
-
-// Utils
-
-function isIpfsHash(hash) {
-  return hash.startsWith("Qm") && !hash.includes(".") && hash.length === 46;
-}
-
-function correctPackageName(req) {
-  // First determine if it contains an ipfs hash
-  if (req.startsWith("ipfs/") && isIpfsHash(req.split("ipfs/")[1]))
-    return "/" + req;
-  else if (isIpfsHash(req)) return "/ipfs/" + req;
-  else return req;
-}
+export const updateEnv = env => ({
+  type: t.UPDATE_ENV,
+  env
+});
