@@ -3,7 +3,7 @@ import Web3 from "web3";
 
 let web3Public = new Web3();
 
-const MIN_BLOCK_DIFF_SYNC = 5;
+const MIN_BLOCK_DIFF_SYNC = 10;
 const INTERVAL_MS = 2 * 1000; // ms
 const TRACKER_MAX_LENGTH = 60;
 
@@ -208,7 +208,11 @@ function parseSyncing(syncing) {
 function computeRemainingTime(cX, hX, xPerSecond) {
   const time = Math.floor((hX - cX) / xPerSecond / 60);
   const percent = Math.floor((100 * cX) / hX);
-  return cX + " / " + hX + " (" + percent + "%) " + time + " min remaining";
+  if (time > 0 && time < 1440) {
+    return cX + " / " + hX + " (" + percent + "%) " + time + " min remaining";
+  } else {
+    return cX + " / " + hX + " (" + percent + "%) computing remaining time...";
+  }
 }
 
 function errorResponse(err) {

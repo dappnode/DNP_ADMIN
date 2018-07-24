@@ -50,7 +50,7 @@
 .nav-link-icon {
   margin-right: 6px;
   position: relative;
-  top: 5px;
+  /* top: 5px; */
   opacity: 0.6;
 }
 
