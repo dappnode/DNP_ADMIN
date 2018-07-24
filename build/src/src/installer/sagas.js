@@ -2,15 +2,14 @@ import { call, put, takeEvery, all, select } from "redux-saga/effects";
 import * as APIcall from "API/crossbarCalls";
 import * as t from "./actionTypes";
 import * as selector from "./selectors";
-import * as actions from "./actions";
 
 /***************************** Subroutines ************************************/
 
-export function* install() {
+export function* install(action) {
   try {
     // Load necessary info
-    const id = yield select(selector.selectedPackageName);
-    const version = yield select(selector.getSelectedVersion);
+    const id = yield select(selector.selectedPackageId);
+    const version = "latest"; // TODO ####
     const isInstalling = yield select(selector.isInstalling);
 
     // Prevent double installations, 1. check if the package is in the blacklist
@@ -116,7 +115,11 @@ export function* fetchPackageVersions(action) {
     if (!versions) return;
 
     // Update directory
-    yield put({ type: t.UPDATE_PACKAGE, data: { versions }, id: action.id });
+    yield put({
+      type: t.UPDATE_PACKAGE,
+      data: { versions },
+      id: action.kwargs.id
+    });
   } catch (error) {
     console.error("Error fetching directory: ", error);
   }

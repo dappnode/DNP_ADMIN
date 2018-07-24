@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import fp from "lodash/fp";
 import { NAME } from "./constants";
 import getTags from "utils/getTags";
+import { isIpfsHash } from "./utils";
 
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
@@ -27,8 +28,7 @@ import getTags from "utils/getTags";
 const local = state => state[NAME];
 const packages = state => local(state).packages;
 const directory = state => local(state).directory;
-const selectedPackageId = state => local(state).selectedPackageId;
-const selectedVersion = state => local(state).selectedVersion;
+export const selectedPackageId = state => local(state).selectedPackageId;
 const selectedTypes = state => local(state).selectedTypes;
 const inputValue = state => local(state).input;
 export const isInstalling = state => local(state).isInstalling;
@@ -84,19 +84,15 @@ export const selectedPackageVersionsNames = state =>
   selectedPackageVersions(state).map(v => v.version);
 
 export const selectedPackageInstallTag = state => {
+  if (isIpfsHash(selectedPackageId(state))) return "Install";
   let { tag } = getTags(selectedPackage(state));
   return tag;
 };
 
-export const getSelectedVersion = selectedVersion;
-
 export const manifestModal = state => {
-  const selectedPackageVersion = selectedPackageVersions(state).find(
-    // Make sure the manifest is there and valid
-    v => v.version === selectedVersion(state) && v.manifest
-  );
-  if (selectedPackageVersion) return selectedPackageVersion.manifest;
-  return selectedPackageManifest(state);
+  if (selectedPackageVersions(state).length > 0) {
+    return selectedPackageVersions(state)[0].manifest;
+  } else return {};
 };
 
 // Selected types, for the filter

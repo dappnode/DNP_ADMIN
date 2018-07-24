@@ -1,7 +1,6 @@
 import {
   actionChannel,
   take,
-  race,
   call,
   put,
   all,
@@ -131,7 +130,6 @@ function statusUPnPLogic(res) {
 
 function* getStatusExternalIp() {
   try {
-    console.log("VERIFYING");
     yield call(checkConnection);
     const res = yield call(APIcall.getStatusExternalIp);
     const { status, msg } = statusExternalIpLogic(res);

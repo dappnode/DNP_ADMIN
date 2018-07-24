@@ -13,7 +13,7 @@ export default function* rootSaga() {
     devices.saga(),
     installer.saga(),
     packages.saga(),
-    status.saga()
-    // chains.saga()
+    status.saga(),
+    chains.saga()
   ]);
 }
