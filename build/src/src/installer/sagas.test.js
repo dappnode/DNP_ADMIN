@@ -88,7 +88,7 @@ describe("fetchPackageVersions Saga test on normal behaviour", () => {
 
   it("Should dispatch an action to update the versions", () => {
     expect(gen.next(versions).value).toEqual(
-      put({ type: t.UPDATE_PACKAGE, data: { versions }, id: action.id })
+      put({ type: t.UPDATE_PACKAGE, data: { versions }, id: action.kwargs.id })
     );
   });
 
