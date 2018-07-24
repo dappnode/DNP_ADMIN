@@ -6,30 +6,14 @@ import SubmitInstall from "./InstallerModalParts/SubmitInstall";
 
 export default class InstallerModal extends React.Component {
   static propTypes = {
-    versions: PropTypes.array.isRequired,
-    selectedVersion: PropTypes.string.isRequired,
-    packageName: PropTypes.string.isRequired,
     installTag: PropTypes.string.isRequired,
     manifest: PropTypes.object.isRequired,
     disableInstall: PropTypes.bool.isRequired,
-    install: PropTypes.func.isRequired,
-    updateSelectedVersion: PropTypes.func.isRequired
+    install: PropTypes.func.isRequired
   };
 
   render() {
-    // console.log(this.props);
-    const options = this.props.versions.map((v, i) => (
-      <option key={i} id={i}>
-        {v}
-      </option>
-    ));
-
-    const packageName = this.props.packageName;
-
     const manifest = this.props.manifest;
-    // const manifest = versions[this.props.versionIndex]
-    //   ? versions[this.props.versionIndex].manifest
-    //   : {};
 
     return (
       <div
@@ -48,7 +32,7 @@ export default class InstallerModal extends React.Component {
                 id="exampleModalLabel"
                 style={{ wordBreak: "break-all" }}
               >
-                Installing: {packageName}
+                Installing DAppNode package
               </h5>
               <button
                 type="button"
@@ -60,25 +44,6 @@ export default class InstallerModal extends React.Component {
               </button>
             </div>
             <div className="modal-body">
-              <div className="input-group mb-3">
-                <div className="input-group-prepend">
-                  <label
-                    className="input-group-text"
-                    htmlFor="inputGroupSelect01"
-                  >
-                    Package version
-                  </label>
-                </div>
-                <select
-                  className="custom-select"
-                  id="inputGroupSelect01"
-                  onChange={this.props.updateSelectedVersion}
-                  value={this.props.selectedVersion}
-                >
-                  {options}
-                </select>
-              </div>
-
               <PackageInfoTable manifest={manifest} />
 
               <SubmitInstall

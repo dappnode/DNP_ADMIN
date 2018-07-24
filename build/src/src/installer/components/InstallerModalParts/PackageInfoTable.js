@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import humanFileSize from "utils/humanFileSize";
 
 export default class PackageInfoTable extends React.Component {
   render() {
@@ -27,7 +28,9 @@ export default class PackageInfoTable extends React.Component {
     }
 
     let tableItems = [
+      { key: "Name", val: manifest.name || "" },
       { key: "Description", val: manifest.description || "" },
+      { key: "Version", val: manifest.version || "" },
       { key: "Mantainer", val: manifest.author || "" },
       { key: "Type", val: manifest.type || "" },
       {
@@ -37,10 +40,13 @@ export default class PackageInfoTable extends React.Component {
     ];
 
     let rows = tableItems.map((row, i) => {
+      let style = i === 0 ? { borderTopWidth: "0" } : {};
       return (
         <tr key={i}>
-          <th scope="row">{row.key}</th>
-          <td>{row.val}</td>
+          <th scope="row" style={style}>
+            {row.key}
+          </th>
+          <td style={style}>{row.val}</td>
         </tr>
       );
     });

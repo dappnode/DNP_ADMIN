@@ -63,7 +63,7 @@ class InstallerView extends React.Component {
             <button
               className="btn btn-outline-secondary"
               type="button"
-              onClick={this.props.openModalFor}
+              onClick={() => this.props.openModalFor(this.props.inputValue)}
               data-toggle="modal"
               data-target={modalTarget}
             >

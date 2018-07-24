@@ -19,3 +19,10 @@ export function correctPackageName(req) {
   else if (isIpfsMultiHash(req)) return "/ipfs/" + req;
   else return req;
 }
+
+export function isEmpty(obj) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) return false;
+  }
+  return true;
+}

@@ -65,7 +65,7 @@ export const fetchDirectory = () => ({
 
 export const fetchPackageVersions = id => ({
   type: t.FETCH_PACKAGE_VERSIONS,
-  id
+  kwargs: { id }
 });
 
 export const install = () => ({
