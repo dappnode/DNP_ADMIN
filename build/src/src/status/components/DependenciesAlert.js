@@ -8,7 +8,7 @@ class DependenciesAlert extends React.Component {
     let items = this.props.items || [{}];
     const alerts = this.props.deps
       .map(depName => items.find(e => e && e.id && e.id === depName))
-      .filter(dep => dep && dep.status !== 1)
+      .filter(dep => dep && dep.status === -1)
       .map((dep, i) => {
         let type, msg;
         if (dep.status === -1) {
