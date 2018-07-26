@@ -1,13 +1,13 @@
 {
 	"name": "admin.dnp.dappnode.eth",
-	"version": "0.1.3",
+	"version": "0.1.5",
 	"description": "Dappnode package responsible for providing the administrative user interface",
 	"avatar": "/ipfs/QmP7rbBLMfKTHpVQwfmgrenYuuUkVw5CXDfzJSoPBiJuNj",
 	"type": "dncore",
 	"image": {
-	  "path": "admin.dnp.dappnode.eth_0.1.3.tar.xz",
-	  "hash": "/ipfs/QmQxsJD4KHszL9jshuDebjZmCkWjTA3gLD8N828eBbv4bv",
-	  "size": 5893599,
+	  "path": "admin.dnp.dappnode.eth_0.1.5.tar.xz",
+	  "hash": "/ipfs/QmUBz7XXSY3EnTssbQLBmBitLNmjpNKzVXFPVvdtZZLwFY",
+	  "size": 6205873,
 	  "restart": "always",
 	  "subnet": "172.33.0.0/16",
 	  "ipv4_address": "172.33.1.9"
@@ -35,6 +35,6 @@
 	},
 	"license": "GPL-3.0",
 	"dependencies": {
-	  "dappmanager.dnp.dappnode.eth": "0.1.7"
+	  "dappmanager.dnp.dappnode.eth": "0.1.8"
 	}
   }
