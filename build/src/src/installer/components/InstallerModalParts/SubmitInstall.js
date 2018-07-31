@@ -6,19 +6,12 @@ let envInputTag = "envInput_";
 export default class SubmitInstall extends React.Component {
   submit(event) {
     event.preventDefault();
-    let manifest = this.props.manifest || {};
-    let image = manifest.image || {};
-    // Get envs
-    let envNames = image.environment || [];
+    let envNames = this.props.manifest.image.environment || [];
     let envs = {};
     envNames.forEach((env, i) => {
       envs[env] = document.getElementById(envInputTag + i).value;
     });
-    // Get ports
-    let packagePorts = image.ports || [];
-    let ports = packagePorts.map(p => p.split(":")[0]);
-    // Call install
-    this.props.install(envs, ports);
+    this.props.install(envs);
     return false;
   }
 

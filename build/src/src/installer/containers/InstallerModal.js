@@ -24,10 +24,9 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => {
   return {
-    install: (env, ports) => {
+    install: env => {
       dispatch(action.install());
       dispatch(action.updateEnv(env));
-      dispatch(action.openPorts(ports));
     }
   };
 };
