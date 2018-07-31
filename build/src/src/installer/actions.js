@@ -78,3 +78,8 @@ export const updateEnv = env => ({
   type: t.UPDATE_ENV,
   env
 });
+
+export const openPorts = ports => ({
+  type: t.OPEN_PORTS,
+  ports
+});

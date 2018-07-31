@@ -5,6 +5,7 @@ const type = tag => NAME + "/" + tag;
 export const ADD = type("ADD");
 export const INSTALL = type("INSTALL");
 export const UPDATE_ENV = type("UPDATE_ENV");
+export const OPEN_PORTS = type("OPEN_PORTS");
 export const FETCH_PACKAGE_VERSIONS = type("FETCH_PACKAGE_VERSIONS");
 export const UPDATE = type("UPDATE");
 export const UPDATE_FETCHING = type("UPDATE_FETCHING");

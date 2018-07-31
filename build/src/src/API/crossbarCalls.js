@@ -334,6 +334,17 @@ export const logPackage = (kwargs = {}) =>
     kwargs: assertKwargs(kwargs, ["id", "options"])
   });
 
+// openPorts CALL DOCUMENTATION:
+// > kwargs: { ports, logId }
+// > result: {}
+
+export const openPorts = (kwargs = {}) =>
+  call({
+    event: "openPorts.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["ports"]),
+    initText: "Opening ports " + kwargs.ports.join(", ") + "..."
+  });
+
 // fetchPackageVersions CALL DOCUMENTATION:
 // > kwargs: { id }
 // > result: [{
