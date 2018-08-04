@@ -69,4 +69,10 @@ export const removePackage = kwargs => ({
   kwargs
 });
 
+export const closePorts = kwargs => ({
+  type: t.CALL,
+  call: "managePorts",
+  kwargs
+});
+
 // #### After removing a package, uninstallChain

@@ -55,6 +55,20 @@ export function* updateEnvs(action) {
   }
 }
 
+export function* openPorts(action) {
+  try {
+    const ports = action.ports;
+    if (ports.length > 0) {
+      yield call(APIcall.managePorts, {
+        action: "open",
+        ports
+      });
+    }
+  } catch (error) {
+    console.error("Error opening ports: ", error);
+  }
+}
+
 // For installer: throttle(ms, pattern, saga, ...args)
 
 export function* fetchDirectory() {
@@ -145,6 +159,10 @@ function* watchUpdateEnvs() {
   yield takeEvery(t.UPDATE_ENV, updateEnvs);
 }
 
+function* watchOpenPorts() {
+  yield takeEvery(t.OPEN_PORTS, openPorts);
+}
+
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
@@ -152,6 +170,7 @@ export default function* root() {
     watchFetchDirectory(),
     watchInstall(),
     watchUpdateEnvs(),
+    watchOpenPorts(),
     watchFetchPackageVersions()
   ]);
 }

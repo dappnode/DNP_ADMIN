@@ -25,6 +25,16 @@ class PackageInterface extends React.Component {
 
     let id = pkg.name;
 
+    function selectPorts(pkg) {
+      const manifest = pkg.manifest || {};
+      let image = manifest.image || {};
+      let packagePorts = image.ports || [];
+      let ports = packagePorts.map(p => p.split(":")[0]);
+      return ports;
+    }
+
+    const ports = selectPorts(pkg);
+
     // let packageProperties = Object.getOwnPropertyNames(_package)
     // remove(packageProperties, ['id', 'isDNP', 'running', 'shortName'])
 
@@ -49,8 +59,10 @@ class PackageInterface extends React.Component {
           togglePackage={() => this.props.togglePackage(id)}
           restartPackage={() => this.props.restartPackage(id)}
           restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
-          removePackage={() => this.props.removePackage(id)}
-          removePackageAndData={() => this.props.removePackageAndData(id)}
+          removePackage={() => this.props.removePackage(id, ports)}
+          removePackageAndData={() =>
+            this.props.removePackageAndData(id, ports)
+          }
         />
       </div>
     );
@@ -66,7 +78,7 @@ const mapStateToProps = createStructuredSelector({
   logs: selector.getLogs
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     setId: id => {
       dispatch(action.setId(id));
@@ -86,12 +98,14 @@ const mapDispatchToProps = dispatch => {
     restartVolumes: id => {
       dispatch(action.restartVolumes({ id }));
     },
-    removePackage: id => {
+    removePackage: (id, ports) => {
       dispatch(action.removePackage({ id, deleteVolumes: false }));
+      if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
       dispatch(push("/" + NAME));
     },
-    removePackageAndData: id => {
+    removePackageAndData: (id, ports) => {
       dispatch(action.removePackage({ id, deleteVolumes: true }));
+      if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
       dispatch(push("/" + NAME));
     }
   };

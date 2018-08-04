@@ -103,7 +103,7 @@ class Ethchain {
   // Subscribe methods
   subscribeToBlockNumber = () => {
     let handleBlockHeader = (error, blockHeader) => {
-      if (error) console.log(error);
+      if (error) console.error(error);
       else this.setBlock(blockHeader.number);
     };
     this.newBlockHeadersSubscription = this.web3.eth.subscribe(

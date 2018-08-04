@@ -117,7 +117,7 @@ function start() {
     try {
       connection.open();
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   });
 }
@@ -163,10 +163,12 @@ function PendingToast(initText) {
       // On not initialized toast's success don't show
       return;
     // Rest of cases, show new toast
-    else
+    else {
+      console.error(res);
       toast.error(res.message, {
         ...defaultOptions(res)
       });
+    }
   };
 }
 
@@ -332,6 +334,17 @@ export const logPackage = (kwargs = {}) =>
   call({
     event: "logPackage.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id", "options"])
+  });
+
+// managePorts CALL DOCUMENTATION:
+// > kwargs: { ports, logId }
+// > result: {}
+
+export const managePorts = (kwargs = {}) =>
+  call({
+    event: "managePorts.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["ports", "action"]),
+    initText: kwargs.action + " ports " + kwargs.ports.join(", ") + "..."
   });
 
 // fetchPackageVersions CALL DOCUMENTATION:
