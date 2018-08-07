@@ -3,34 +3,8 @@ import { NavLink } from "react-router-dom";
 import $ from "jquery";
 // Images
 import LogoImg from "img/DAppNode-Black.png";
-// Icons
-import Devices from "Icons/Devices";
-import Dashboard from "Icons/Dashboard";
-import Folder from "Icons/Folder";
-import NewFolder from "Icons/NewFolder";
-
-let navbarItemsInfo = [
-  {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: Dashboard
-  },
-  {
-    name: "Devices",
-    href: "/devices",
-    icon: Devices
-  },
-  {
-    name: "Installer",
-    href: "/installer",
-    icon: NewFolder
-  },
-  {
-    name: "Packages",
-    href: "/packages",
-    icon: Folder
-  }
-];
+// items
+import { navbarItems } from "../constants";
 
 export default class NavbarSide extends React.Component {
   componentDidMount() {
@@ -39,7 +13,7 @@ export default class NavbarSide extends React.Component {
     });
   }
   render() {
-    let navbarItems = navbarItemsInfo.map((item, i) => {
+    let navbarItemsView = navbarItems.map((item, i) => {
       return (
         <li
           key={i}
@@ -81,7 +55,7 @@ export default class NavbarSide extends React.Component {
             </div>
           </NavLink>
         </li>
-        {navbarItems}
+        {navbarItemsView}
       </ul>
     );
   }

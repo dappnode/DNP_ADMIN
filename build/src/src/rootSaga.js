@@ -3,6 +3,7 @@ import { all } from "redux-saga/effects";
 import devices from "./devices";
 import installer from "./installer";
 import packages from "./packages";
+import system from "./system";
 import status from "./status";
 import chains from "./chains";
 
@@ -13,6 +14,7 @@ export default function* rootSaga() {
     devices.saga(),
     installer.saga(),
     packages.saga(),
+    system.saga(),
     status.saga(),
     chains.saga()
   ]);

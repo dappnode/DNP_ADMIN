@@ -20,7 +20,7 @@ import * as utils from "../utils";
 // like getDirectory will get a filtered version of that packages
 
 const mapStateToProps = createStructuredSelector({
-  directory: selector.getDirectory,
+  directory: selector.getDirectoryNonCores,
   selectedTypes: selector.getSelectedTypes,
   inputValue: selector.getInput,
   fetching: selector.fetching

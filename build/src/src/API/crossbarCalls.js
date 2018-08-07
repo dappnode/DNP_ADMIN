@@ -73,7 +73,10 @@ function start() {
       realm: autobahnRealm
     });
 
-    connection.onopen = function(_session) {
+    connection.onopen = function(_session, details) {
+      console.log("connection", connection);
+      console.log("session", _session);
+      console.log("details", details);
       eventBus.publish("connection_open", _session);
       console.log(
         "CONNECTED to DAppnode's WAMP " +
@@ -346,6 +349,16 @@ export const managePorts = (kwargs = {}) =>
     kwargs: assertKwargs(kwargs, ["ports", "action"]),
     initText: kwargs.action + " ports " + kwargs.ports.join(", ") + "..."
   });
+
+// getUserActionLogs CALL DOCUMENTATION:
+// > kwargs: {}
+// > result: logs = <string>
+
+export const getUserActionLogs = () =>
+  call({
+    event: "getUserActionLogs.dappmanager.dnp.dappnode.eth"
+  });
+// result.trim().split('\n').map(e => JSON.parse(e))
 
 // fetchPackageVersions CALL DOCUMENTATION:
 // > kwargs: { id }

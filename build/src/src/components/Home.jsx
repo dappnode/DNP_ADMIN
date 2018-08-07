@@ -2,42 +2,18 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 // Modules
 import chains from "chains";
-// Icons
-import Devices from "Icons/Devices";
-import Dashboard from "Icons/Dashboard";
-import Folder from "Icons/Folder";
-import NewFolder from "Icons/NewFolder";
+// Items
+import navbar from "navbar";
 // styles
 import "./home.css";
 
-const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
+const navbarItems = navbar.constants.navbarItems;
 
-let navbarItemsInfo = [
-  {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: Dashboard
-  },
-  {
-    name: "Devices",
-    href: "/devices",
-    icon: Devices
-  },
-  {
-    name: "Installer",
-    href: "/installer",
-    icon: NewFolder
-  },
-  {
-    name: "Packages",
-    href: "/packages",
-    icon: Folder
-  }
-];
+const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
 
 export default class Home extends React.Component {
   render() {
-    const items = navbarItemsInfo.map((item, i) => {
+    const items = navbarItems.map((item, i) => {
       return (
         <div key={i} className="col">
           <NavLink className="nav-link" to={item.href}>
