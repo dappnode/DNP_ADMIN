@@ -7,6 +7,12 @@ import enhancePkg from "utils/enhancePkg";
 
 new ClipboardJS(".btn");
 
+function getKeywords(pkg) {
+  const manifest = pkg.manifest || {};
+  const keywords = manifest.keywords || [];
+  return keywords.length ? keywords.join(", ") : "DAppNode package";
+}
+
 class Card extends React.Component {
   onCardClick(e) {
     this.props.preInstallPackage(e.currentTarget.id);
@@ -26,11 +32,20 @@ class Card extends React.Component {
       imgClass = "";
     }
 
+    const keywords = getKeywords(pkg);
+
+    // Disable button:
+    let disable = false;
+    if (pkg.tag.toLowerCase() === "installed") {
+      pkg.tag = "Updated";
+      disable = true;
+    }
+
     // ##### Text under the card's title showing the status
     // <p className="card-text">Status: {status}</p>
 
     return (
-      <div className="col-xl-3 col-lg-3 col-md-4 col-sm-6 portfolio-item mb-4 box-shadow card-max-width">
+      <div className="col-xl-4 col-md-6 col-sm-12 col-xs-12 portfolio-item mb-4 box-shadow">
         <div
           className="card h-100 shadow card-clickable"
           data-toggle="modal"
@@ -38,18 +53,36 @@ class Card extends React.Component {
           onClick={this.onCardClick.bind(this)}
           id={pkg.id}
         >
-          <div className="p-1 hover-animation" data-text={pkg.description}>
-            <img
-              className={"card-img-top " + imgClass}
-              src={img}
-              alt="Card cap"
-            />
-          </div>
-          <div className="card-body text-nowrap">
-            <h5 className="card-title">{pkg.namePretty}</h5>
-            <div className="d-flex justify-content-between">
-              <span className="card-type">{pkg.type}</span>
-              <span className={"card-tag " + pkg.tagStyle}>{pkg.tag}</span>
+          <div className="card-body text-nowrap" style={{ padding: "15px" }}>
+            <div className="row">
+              <div className="col-4" style={{ paddingRight: 0 }}>
+                <img
+                  className={"card-img-top " + imgClass}
+                  src={img}
+                  alt="Card cap"
+                />
+              </div>
+              <div className="col-8">
+                <h5
+                  className="card-title dot-overflow"
+                  style={{ marginBottom: "4px" }}
+                >
+                  {pkg.namePretty}
+                </h5>
+                <div className="capitalize dot-overflow">{pkg.description}</div>
+                <div className="capitalize dot-overflow lightGray">
+                  {keywords}
+                </div>
+                <button
+                  className="btn dappnode-pill"
+                  type="submit"
+                  data-dismiss="modal"
+                  style={{ textTransform: "uppercase", marginTop: "12px" }}
+                  disabled={disable}
+                >
+                  {pkg.tag}
+                </button>
+              </div>
             </div>
           </div>
         </div>
