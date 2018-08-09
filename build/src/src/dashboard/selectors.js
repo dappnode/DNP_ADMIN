@@ -26,6 +26,9 @@ const filterActive = todos => todos.filter(t => !t.completed);
 
 export const getAll = state => state[NAME];
 
+export const getUserActionLogs = state =>
+  (getAll(state).userActionLogs || []).slice().reverse();
+
 export const getItems = state =>
   Object.keys(getAll(state)).map(e => getAll(state)[e]);
 
