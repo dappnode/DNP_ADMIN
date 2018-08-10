@@ -83,15 +83,30 @@ function start() {
           autobahnRealm
       );
       sessionExternal = session = _session;
+      eventBus.publish("ACTION", {
+        type: "CONNECTION_OPEN",
+        session
+      });
+
+      session.subscribe("logUserAction.dappmanager.dnp.dappnode.eth", function(
+        res
+      ) {
+        let userActionLog = res[0];
+        eventBus.publish("ACTION", {
+          type: "NEW_USER_ACTION_LOG",
+          userActionLog
+        });
+      });
 
       session.subscribe("log.dappmanager.dnp.dappnode.eth", function(res) {
         let log = res[0];
         handleProgressLog(log.logId, log);
         const task = tasks[log.logId];
-        toast.update(task.toastId, {
-          render: task.initText + " \n" + formatProgressLog(log.logId),
-          className: "show-newlines"
-        });
+        if (task)
+          toast.update(task.toastId, {
+            render: task.initText + " \n" + formatProgressLog(log.logId),
+            className: "show-newlines"
+          });
       });
 
       window.call = function(call, args) {
@@ -117,7 +132,7 @@ function start() {
     try {
       connection.open();
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   });
 }
@@ -163,10 +178,12 @@ function PendingToast(initText) {
       // On not initialized toast's success don't show
       return;
     // Rest of cases, show new toast
-    else
+    else {
+      console.error(res);
       toast.error(res.message, {
         ...defaultOptions(res)
       });
+    }
   };
 }
 
@@ -332,6 +349,26 @@ export const logPackage = (kwargs = {}) =>
   call({
     event: "logPackage.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id", "options"])
+  });
+
+// managePorts CALL DOCUMENTATION:
+// > kwargs: { ports, logId }
+// > result: {}
+
+export const managePorts = (kwargs = {}) =>
+  call({
+    event: "managePorts.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["ports", "action"]),
+    initText: kwargs.action + " ports " + kwargs.ports.join(", ") + "..."
+  });
+
+// getUserActionLogs CALL DOCUMENTATION:
+// > kwargs: {}
+// > result: logs = <string>
+
+export const getUserActionLogs = () =>
+  call({
+    event: "getUserActionLogs.dappmanager.dnp.dappnode.eth"
   });
 
 // fetchPackageVersions CALL DOCUMENTATION:

@@ -7,7 +7,6 @@ import * as actions from "./actions";
 
 export function* listPackages() {
   try {
-    console.log("Listing pacakges");
     const packages = yield call(APIcall.listPackages);
     // listPackages CALL DOCUMENTATION:
     // > kwargs: {}
@@ -39,7 +38,6 @@ export function* listPackages() {
 
 function* callApi(action) {
   try {
-    console.log("CALL API ", action);
     yield call(APIcall[action.call], action.kwargs);
   } catch (error) {
     console.error("Error on " + action.call + ": ", error);

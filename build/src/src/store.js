@@ -3,6 +3,7 @@ import thunk from "redux-thunk";
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import history from "./history";
 import createSagaMiddleware from "redux-saga";
+import eventBus from "eventBus";
 
 // App modules
 import rootSaga from "./rootSaga";
@@ -37,6 +38,10 @@ const store = createStore(
     devTools
   )
 );
+
+eventBus.subscribe("ACTION", (topic, action) => {
+  store.dispatch(action);
+});
 
 export default store;
 

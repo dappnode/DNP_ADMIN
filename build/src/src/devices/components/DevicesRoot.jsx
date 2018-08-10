@@ -23,7 +23,6 @@ class DevicesRootView extends React.Component {
   }
 
   render() {
-    console.log("rendering devices");
     return (
       <div>
         <Route exact path={"/" + NAME} component={Devices} />

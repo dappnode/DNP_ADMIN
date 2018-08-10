@@ -2,6 +2,19 @@
   padding-right: 50px;
 }
 
+.dot-overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.lightGray {
+  opacity: 0.5;
+}
+
 /* Spining animation */
 .wait {
   -webkit-animation: spin 4s linear infinite;
@@ -23,6 +36,23 @@
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
+}
+
+.dappnode-pill {
+  color: white;
+  background-color: #2fbcb2;
+  font-weight: 500;
+  width: 92px;
+  padding: 3px 8px !important;
+  border-radius: 50px !important;
+}
+.dappnode-pill:hover {
+  color: white;
+  background-color: #218a82;
+}
+.dappnode-pill:disabled {
+  color: white;
+  background-color: #868e8e;
 }
 
 .dappnode-background-color {
