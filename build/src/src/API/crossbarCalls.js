@@ -74,9 +74,6 @@ function start() {
     });
 
     connection.onopen = function(_session, details) {
-      console.log("connection", connection);
-      console.log("session", _session);
-      console.log("details", details);
       eventBus.publish("connection_open", _session);
       console.log(
         "CONNECTED to DAppnode's WAMP " +

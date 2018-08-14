@@ -25,6 +25,8 @@ import { NAME } from "./constants";
 const local = state => state[NAME];
 const packages = state => local(state).packages;
 const logs = state => local(state).logs;
+export const systemUpdateAvailable = state =>
+  local(state).systemUpdateAvailable;
 const pathname = state => state.router.location.pathname || "";
 const id = state => pathname(state).split(NAME + "/")[1] || "";
 

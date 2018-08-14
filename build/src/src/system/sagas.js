@@ -45,6 +45,31 @@ function* callApi(action) {
   yield call(listPackages);
 }
 
+export function* runGetDirectory() {
+  try {
+    const directory = yield call(APIcall.fetchDirectory);
+
+    // fetchDirectory CALL DOCUMENTATION:
+    // > kwargs: {}
+    // > result: [{
+    //     name,
+    //     status
+    //   },
+    //   ...]
+
+    console.log(directory);
+
+    // Abort on error
+    if (!directory) return;
+
+    // Update directory
+    // yield put({ type: t.UPDATE_DIRECTORY, directory });
+    // yield all(directory.map(pkg => call(fetchPackageData, pkg)));
+  } catch (error) {
+    console.error("Error fetching directory: ", error);
+  }
+}
+
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
@@ -60,5 +85,5 @@ function* watchCall() {
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
-  yield all([watchListPackages(), watchCall()]);
+  yield all([watchListPackages(), watchCall(), runGetDirectory()]);
 }
