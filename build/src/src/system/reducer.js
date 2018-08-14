@@ -4,7 +4,8 @@ import * as t from "./actionTypes";
 const initialState = {
   packages: [],
   logs: {},
-  systemUpdateAvailable: false
+  systemUpdateAvailable: false,
+  coreDeps: []
 };
 
 export default function(state = initialState, action) {
@@ -21,6 +22,16 @@ export default function(state = initialState, action) {
           ...state.logs,
           [action.id]: action.logs
         }
+      };
+    case t.SYSTEM_UPDATE_AVAILABLE:
+      return {
+        ...state,
+        systemUpdateAvailable: action.systemUpdateAvailable
+      };
+    case t.CORE_DEPS:
+      return {
+        ...state,
+        coreDeps: action.coreDeps
       };
     default:
       return state;

@@ -4,6 +4,10 @@ import * as APIcalls from "API/crossbarCalls";
 
 // Used in package interface
 
+export const updateCore = () => ({
+  type: t.UPDATE_CORE
+});
+
 export const setId = id => ({
   type: t.SET_ID,
   payload: id

@@ -54,7 +54,9 @@ export default class Activity extends React.Component {
       // }
       const badge =
         log.level === "warn" || log.level === "error" ? (
-          <span class={"badge badge-pill mr-2 badge-" + type}>{log.level}</span>
+          <span className={"badge badge-pill mr-2 badge-" + type}>
+            {log.level}
+          </span>
         ) : null;
       const eventShort = log.event.split(".")[0];
       const corePacakge = log.event.split(".")[1];
