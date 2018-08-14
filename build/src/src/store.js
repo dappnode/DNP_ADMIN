@@ -39,9 +39,8 @@ const store = createStore(
   )
 );
 
-eventBus.subscribe("action", (msg, data) => {
-  console.log("Dispatching internal action: ", data);
-  store.dispatch(data);
+eventBus.subscribe("ACTION", (topic, action) => {
+  store.dispatch(action);
 });
 
 export default store;

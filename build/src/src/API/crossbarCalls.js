@@ -83,15 +83,30 @@ function start() {
           autobahnRealm
       );
       sessionExternal = session = _session;
+      eventBus.publish("ACTION", {
+        type: "CONNECTION_OPEN",
+        session
+      });
+
+      session.subscribe("logUserAction.dappmanager.dnp.dappnode.eth", function(
+        res
+      ) {
+        let userActionLog = res[0];
+        eventBus.publish("ACTION", {
+          type: "NEW_USER_ACTION_LOG",
+          userActionLog
+        });
+      });
 
       session.subscribe("log.dappmanager.dnp.dappnode.eth", function(res) {
         let log = res[0];
         handleProgressLog(log.logId, log);
         const task = tasks[log.logId];
-        toast.update(task.toastId, {
-          render: task.initText + " \n" + formatProgressLog(log.logId),
-          className: "show-newlines"
-        });
+        if (task)
+          toast.update(task.toastId, {
+            render: task.initText + " \n" + formatProgressLog(log.logId),
+            className: "show-newlines"
+          });
       });
 
       window.call = function(call, args) {
@@ -355,7 +370,6 @@ export const getUserActionLogs = () =>
   call({
     event: "getUserActionLogs.dappmanager.dnp.dappnode.eth"
   });
-// result.trim().split('\n').map(e => JSON.parse(e))
 
 // fetchPackageVersions CALL DOCUMENTATION:
 // > kwargs: { id }
