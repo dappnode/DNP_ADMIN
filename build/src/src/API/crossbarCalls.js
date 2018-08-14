@@ -73,7 +73,7 @@ function start() {
       realm: autobahnRealm
     });
 
-    connection.onopen = function(_session) {
+    connection.onopen = function(_session, details) {
       eventBus.publish("connection_open", _session);
       console.log(
         "CONNECTED to DAppnode's WAMP " +

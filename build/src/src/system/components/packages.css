@@ -1,0 +1,15 @@
+.state-light {
+  font-size: 50%;
+  font-weight: 400;
+  position: relative;
+  top: -3px;
+  margin-right: 8px;
+}
+
+.state-label {
+  text-transform: uppercase;
+  font-size: 15px;
+  color: #666;
+  letter-spacing: 0.01em;
+  padding-top: 13px;
+}

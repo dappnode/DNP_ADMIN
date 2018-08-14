@@ -3,7 +3,8 @@ import * as t from "./actionTypes";
 
 const initialState = {
   packages: [],
-  logs: {}
+  logs: {},
+  systemUpdateAvailable: false
 };
 
 export default function(state = initialState, action) {

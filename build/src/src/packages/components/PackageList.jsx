@@ -25,16 +25,7 @@ class PackagesList extends React.Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th colSpan="5">DNP packages</th>
-              </tr>
               {this.props.dnpPackages.map((pkg, i) => (
-                <PackageRow key={i} pkg={pkg} />
-              ))}
-              <tr>
-                <th colSpan="5">CORE packages</th>
-              </tr>
-              {this.props.corePackages.map((pkg, i) => (
                 <PackageRow key={i} pkg={pkg} />
               ))}
             </tbody>
