@@ -27,6 +27,7 @@ const packages = state => local(state).packages;
 const logs = state => local(state).logs;
 export const systemUpdateAvailable = state =>
   local(state).systemUpdateAvailable;
+export const coreDeps = state => local(state).coreDeps;
 const pathname = state => state.router.location.pathname || "";
 const id = state => pathname(state).split(NAME + "/")[1] || "";
 

@@ -2,6 +2,7 @@ import React from "react";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
+import * as action from "../actions";
 // Components
 import PackageRow from "./PackageRow";
 // Styles
@@ -13,6 +14,8 @@ class UpdateSystem extends React.Component {
     const padding = "0.7rem";
     const width = "108px";
 
+    if (!this.props.coreDeps.length) return null;
+
     return (
       <div className="card mb-3">
         <div className="card-body" style={{ padding }}>
@@ -21,9 +24,11 @@ class UpdateSystem extends React.Component {
               <h5 className="card-title">DAppNode System Update</h5>
               <div className="card-text">
                 <ul>
-                  <li>vpn.dnp.dappnode.eth: 0.1.3 -> 0.1.4</li>
-                  <li>admin.dnp.dappnode.eth: 0.1.5 -> 0.1.6</li>
-                  <li>dappmanager.dnp.dappnode.eth: 0.1.8 -> 0.1.9</li>
+                  {this.props.coreDeps.map((dep, i) => (
+                    <li key={i}>
+                      {dep.name}: {dep.from} -> {dep.to}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -37,7 +42,7 @@ class UpdateSystem extends React.Component {
                   className="btn btn-outline-danger"
                   type="button"
                   style={{ width }}
-                  onClick={() => {}}
+                  onClick={this.props.updateCore}
                 >
                   UPDATE
                 </button>
@@ -57,7 +62,10 @@ class PackagesList extends React.Component {
         <h1>System packages</h1>
         <br />
 
-        <UpdateSystem />
+        <UpdateSystem
+          coreDeps={this.props.coreDeps}
+          updateCore={this.props.updateCore}
+        />
 
         <div className="table-responsive">
           <table className="table">
@@ -86,10 +94,17 @@ class PackagesList extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   corePackages: selector.getCorePackages,
-  dnpPackages: selector.getDnpPackages
+  dnpPackages: selector.getDnpPackages,
+  coreDeps: selector.coreDeps
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = dispatch => {
+  return {
+    updateCore: () => {
+      dispatch(action.updateCore());
+    }
+  };
+};
 
 export default connect(
   mapStateToProps,
