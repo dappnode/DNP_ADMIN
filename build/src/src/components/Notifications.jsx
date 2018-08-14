@@ -12,7 +12,7 @@ class NotificationsView extends React.Component {
         role="alert"
       >
         <strong>DAppNode System Update Available.</strong> Go to the{" "}
-        <span style={{ position: "relative", top: "6px" }}>
+        <span>
           <Settings />
         </span>
         <strong>System</strong> tab to review and approve the update
