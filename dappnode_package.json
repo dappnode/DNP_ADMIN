@@ -1,37 +1,37 @@
 {
-	"name": "admin.dnp.dappnode.eth",
-	"version": "0.1.6",
-	"description": "Dappnode package responsible for providing the administrative user interface",
-	"avatar": "/ipfs/QmP7rbBLMfKTHpVQwfmgrenYuuUkVw5CXDfzJSoPBiJuNj",
-	"type": "dncore",
-	"image": {
-	  "path": "admin.dnp.dappnode.eth_0.1.6.tar.xz",
-	  "hash": "/ipfs/QmafZkcKsSrVywro26GKSNgVrUo2EYquRHtE9w1Sq47tbG",
-	  "size": 6345955,
-	  "restart": "always",
-	  "subnet": "172.33.0.0/16",
-	  "ipv4_address": "172.33.1.9"
-	},
-	"author": "DAppLion <dapplion@giveth.io> (https://github.com/dapplion)",
-	"contributors": [
-	  "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
-	],
-	"keywords": [
-	  "DAppNodeCore",
-	  "DAPP",
-	  "ui",
-	  "admin"
-	],
-	"homepage": {
-	  "adminui": "http://my.admin.dnp.dappnode.eth",
-	  "homepage": "https://github.com/dappnode/DNP_ETHCHAIN#readme"
-	},
-	"repository": {
-	  "type": "git",
-	  "url": "https://github.com/dappnode/DNP_ADMIN"
-	},
-	"bugs": {
-	  "url": "https://github.com/dappnode/DNP_ADMIN/issues"
-	},
-	"license": "GPL-3.0"
-  }
+  "name": "admin.dnp.dappnode.eth",
+  "version": "0.1.7",
+  "description": "Dappnode package responsible for providing the administrative user interface",
+  "avatar": "/ipfs/QmP7rbBLMfKTHpVQwfmgrenYuuUkVw5CXDfzJSoPBiJuNj",
+  "type": "dncore",
+  "image": {
+    "path": "admin.dnp.dappnode.eth_0.1.7.tar.xz",
+    "hash": "/ipfs/QmaKQjkDrmtsFebmLc83daULQKvTqEtTbDfUE92TZEDFzq",
+    "size": 6352339,
+    "restart": "always",
+    "subnet": "172.33.0.0/16",
+    "ipv4_address": "172.33.1.9"
+  },
+  "author": "DAppLion <dapplion@giveth.io> (https://github.com/dapplion)",
+  "contributors": [
+    "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
+  ],
+  "keywords": [
+    "DAppNodeCore",
+    "DAPP",
+    "ui",
+    "admin"
+  ],
+  "homepage": {
+    "adminui": "http://my.admin.dnp.dappnode.eth",
+    "homepage": "https://github.com/dappnode/DNP_ETHCHAIN#readme"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dappnode/DNP_ADMIN"
+  },
+  "bugs": {
+    "url": "https://github.com/dappnode/DNP_ADMIN/issues"
+  },
+  "license": "GPL-3.0"
+}

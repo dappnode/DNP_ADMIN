@@ -5,12 +5,14 @@ import ErrorBoundary from "react-error-boundary";
 import Home from "./components/Home";
 import NonAdmin from "./components/NonAdmin";
 import NonAdminRedirector from "./components/NonAdminRedirector";
+import Notifications from "./components/Notifications";
 
 // Testing redux
 import dashboard from "./dashboard";
 import devices from "./devices";
 import installer from "./installer";
 import packages from "./packages";
+import system from "./system";
 import status from "./status";
 import chains from "./chains";
 import navbar from "./navbar";
@@ -38,6 +40,7 @@ export default class App extends React.Component {
         <div className="content-wrapper dappnode-background">
           <div className="container-fluid app-content">
             <ErrorBoundary>
+              <Notifications />
               <Route exact path="/" component={Home} />
               <Route
                 path={"/" + dashboard.constants.NAME}
@@ -54,6 +57,10 @@ export default class App extends React.Component {
               <Route
                 path={"/" + packages.constants.NAME}
                 component={packages.component}
+              />
+              <Route
+                path={"/" + system.constants.NAME}
+                component={system.component}
               />
               <Route path={"/nonadmin"} component={NonAdmin} />
             </ErrorBoundary>

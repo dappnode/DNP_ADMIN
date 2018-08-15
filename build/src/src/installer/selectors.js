@@ -65,6 +65,11 @@ export const getDirectory = state =>
       );
     });
 
+export const getDirectoryNonCores = state =>
+  getDirectory(state).filter(
+    pkg => pkg.manifest && pkg.manifest.type && pkg.manifest.type !== "dncore"
+  );
+
 // Selected package, for installation modal
 
 export const selectedPackage = state =>
