@@ -14,40 +14,60 @@ class UpdateSystem extends React.Component {
     const padding = "0.7rem";
     const width = "108px";
 
-    if (!this.props.coreDeps.length) return null;
+    const coreDeps = this.props.coreDeps;
+
+    if (!coreDeps.length) return null;
+
+    let alertMessages = [];
+    if (coreDeps.find(dep => dep.name.includes("dappmanager.dnp"))) {
+      alertMessages.push(
+        "The bottom right message updating the progress of the installation will never resolve, refresh to see changes."
+      );
+    }
+    if (coreDeps.find(dep => dep.name.includes("vpn.dnp"))) {
+      alertMessages.push(
+        "Your VPN connection will interrupted, please allow 30 seconds and reconnect again."
+      );
+    }
+    if (coreDeps.find(dep => dep.name.includes("admin.dnp"))) {
+      alertMessages.push("After the update refresh to apply the changes.");
+    }
+
+    const alerts = alertMessages.length ? (
+      <p>
+        <strong>Note during the update: </strong>
+        {alertMessages.join(" ")}
+      </p>
+    ) : null;
 
     return (
       <div className="card mb-3">
         <div className="card-body" style={{ padding }}>
-          <div>
-            <div className="float-left" style={{ margin }}>
+          <div className="d-flex justify-content-between">
+            <div style={{ margin }}>
               <h5 className="card-title">DAppNode System Update</h5>
-              <div className="card-text">
-                <ul>
-                  {this.props.coreDeps.map((dep, i) => (
-                    <li key={i}>
-                      {dep.name}: {dep.from} -> {dep.to}
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
-            <div>
-              <div
-                className="btn-group float-right"
-                role="group"
-                style={{ margin }}
+
+            <div className="btn-group" role="group" style={{ margin }}>
+              <button
+                className="btn btn-outline-danger"
+                type="button"
+                style={{ width }}
+                onClick={this.props.updateCore}
               >
-                <button
-                  className="btn btn-outline-danger"
-                  type="button"
-                  style={{ width }}
-                  onClick={this.props.updateCore}
-                >
-                  UPDATE
-                </button>
-              </div>
+                UPDATE
+              </button>
             </div>
+          </div>
+          <div className="card-text">
+            <ul>
+              {coreDeps.map((dep, i) => (
+                <li key={i}>
+                  {dep.name}: {dep.from} -> {dep.to}
+                </li>
+              ))}
+            </ul>
+            {alerts}
           </div>
         </div>
       </div>

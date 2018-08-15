@@ -60,9 +60,6 @@ export function* checkCoreUpdate() {
       id: "core.dnp.dappnode.eth"
     });
 
-    console.log("System/sagas, packages", packages);
-    console.log("System/sagas, coreData", coreData);
-
     const coreDeps = coreData.manifest.dependencies;
     const coreDepsToInstall = [];
     Object.keys(coreDeps).forEach(coreDep => {
@@ -85,8 +82,6 @@ export function* checkCoreUpdate() {
         }
       }
     });
-
-    console.log(coreDepsToInstall);
 
     yield put({
       type: t.CORE_DEPS,

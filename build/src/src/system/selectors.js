@@ -34,7 +34,10 @@ const id = state => pathname(state).split(NAME + "/")[1] || "";
 // Package lists
 
 export const getPackages = packages;
-export const getCorePackages = state => packages(state).filter(p => p.isCORE);
+export const getCorePackages = state =>
+  packages(state)
+    .filter(p => p.isCORE)
+    .filter(p => !p.name.includes("core.dnp"));
 export const getDnpPackages = state => packages(state).filter(p => p.isDNP);
 
 // Package logs
