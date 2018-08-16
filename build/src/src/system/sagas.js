@@ -60,6 +60,9 @@ export function* checkCoreUpdate() {
       id: "core.dnp.dappnode.eth"
     });
 
+    // Abort on error
+    if (!packages || !coreData) return;
+
     const coreDeps = coreData.manifest.dependencies;
     const coreDepsToInstall = [];
     Object.keys(coreDeps).forEach(coreDep => {

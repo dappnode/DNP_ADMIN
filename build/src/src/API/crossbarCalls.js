@@ -2,6 +2,8 @@ import autobahn from "autobahn";
 import uuidv4 from "uuid/v4";
 import { toast } from "react-toastify";
 import eventBus from "eventBus";
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 const progressLogs = {};
 
@@ -152,6 +154,17 @@ function parseResponse(resUnparsed) {
   };
 }
 
+const errorElement = msg => (
+  <div>
+    {msg}
+    <NavLink to={"/activity"}>
+      <button className="btn btn-danger ml-2 mr-2" type="button">
+        Show details
+      </button>
+    </NavLink>
+  </div>
+);
+
 function PendingToast(initText) {
   const defaultOptions = res => ({
     position: toast.POSITION.BOTTOM_RIGHT,
@@ -169,21 +182,29 @@ function PendingToast(initText) {
 
   this.resolve = res => {
     if (this.id && toast.isActive(this.id))
-      // Existing toast, update
-      toast.update(this.id, {
-        ...defaultOptions(res),
-        render: res.message
-      });
+      if (!res.success) {
+        this.error(res);
+      } else {
+        // Existing toast, update
+        toast.update(this.id, {
+          ...defaultOptions(res),
+          render: res.message
+        });
+      }
     else if (!this.id && res.success)
       // On not initialized toast's success don't show
       return;
     // Rest of cases, show new toast
     else {
-      console.error(res);
-      toast.error(res.message, {
-        ...defaultOptions(res)
-      });
+      this.error(res);
     }
+  };
+
+  this.error = res => {
+    console.error(res);
+    toast.error(errorElement(res.message), {
+      ...defaultOptions(res)
+    });
   };
 }
 

@@ -6,7 +6,7 @@ import packages from "./packages";
 import system from "./system";
 import status from "./status";
 import chains from "./chains";
-import dashboard from "./dashboard";
+import activity from "./activity";
 
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
@@ -18,6 +18,6 @@ export default function* rootSaga() {
     system.saga(),
     status.saga(),
     chains.saga(),
-    dashboard.saga()
+    activity.saga()
   ]);
 }

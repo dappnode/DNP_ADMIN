@@ -1,4 +1,4 @@
-import { call, put, takeEvery, all, select } from "redux-saga/effects";
+import { put, takeEvery, all, select } from "redux-saga/effects";
 import * as t from "./actionTypes";
 import { ethchains } from "./constants";
 import * as selector from "./selectors";

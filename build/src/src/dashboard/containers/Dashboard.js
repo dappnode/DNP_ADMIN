@@ -2,7 +2,6 @@ import { connect } from "react-redux";
 import * as action from "../actions";
 import DashboardView from "../components/DashboardView";
 import { createStructuredSelector } from "reselect";
-import * as selectors from "../selectors";
 // modules
 import status from "status";
 import chains from "chains";
@@ -20,8 +19,7 @@ import chains from "chains";
 
 const mapStateToProps = createStructuredSelector({
   status: status.selectors.getAll,
-  chains: chains.selectors.getAll,
-  userActionLogs: selectors.getUserActionLogs
+  chains: chains.selectors.getAll
 });
 
 const mapDispatchToProps = dispatch => {
