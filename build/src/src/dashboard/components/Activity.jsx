@@ -52,21 +52,26 @@ export default class Activity extends React.Component {
       //     return <div>{e}</div>;
       //   });
       // }
-      const badge =
+      const errorBadge =
         log.level === "warn" || log.level === "error" ? (
           <span className={"badge badge-pill mr-2 badge-" + type}>
             {log.level}
           </span>
         ) : null;
+
+      const countBadge = log.count ? (
+        <span className="badge badge-pill mr-2 badge-light">{log.count}</span>
+      ) : null;
       const eventShort = log.event.split(".")[0];
       const corePacakge = log.event.split(".")[1];
       return (
         <li key={i} className={"list-group-item"} style={style}>
           <div className="d-flex justify-content-between">
             <div className="log-header">
-              {badge}
+              {errorBadge}
+              {countBadge}
               <span className={"text-" + type}>
-                <span style={{ opacity: 0.7 }}>Admin called</span>{" "}
+                <span style={{ opacity: 0.7 }}>Call to</span>{" "}
                 <strong>{eventShort}</strong>
               </span>
             </div>

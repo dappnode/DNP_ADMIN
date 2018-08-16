@@ -24,6 +24,25 @@ export function* getUserActionLogs() {
       .split("\n")
       .map(e => JSON.parse(e));
 
+    // Collapse equal errors
+    for (let i = 0; i < userActionLogs.length; i++) {
+      const log = userActionLogs[i];
+      const logNext = userActionLogs[i + 1];
+      if (log && logNext) {
+        if (
+          log.level === logNext.level &&
+          log.event === logNext.event &&
+          log.message === logNext.message &&
+          log.stack === logNext.stack
+        ) {
+          console.log("DUPLICATED EVENT");
+          log.count ? log.count++ : (log.count = 2);
+          userActionLogs.splice(i + 1, 1);
+          i--;
+        }
+      }
+    }
+
     // Update userActionLogs
     yield put({ type: t.UPDATE_USERACTIONLOGS, userActionLogs });
   } catch (error) {
