@@ -9,6 +9,7 @@ import Notifications from "./components/Notifications";
 
 // Testing redux
 import dashboard from "./dashboard";
+import activity from "./activity";
 import devices from "./devices";
 import installer from "./installer";
 import packages from "./packages";
@@ -61,6 +62,10 @@ export default class App extends React.Component {
               <Route
                 path={"/" + system.constants.NAME}
                 component={system.component}
+              />
+              <Route
+                path={"/" + activity.constants.NAME}
+                component={activity.component}
               />
               <Route path={"/nonadmin"} component={NonAdmin} />
             </ErrorBoundary>

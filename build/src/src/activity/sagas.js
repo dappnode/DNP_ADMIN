@@ -1,8 +1,7 @@
 // DASHBOARD
-import { call, put, takeEvery, all, select } from "redux-saga/effects";
+import { call, put, takeEvery, all } from "redux-saga/effects";
 import * as APIcall from "API/crossbarCalls";
 import * as t from "./actionTypes";
-import * as selector from "./selectors";
 
 /***************************** Subroutines ************************************/
 
@@ -35,9 +34,9 @@ export function* getUserActionLogs() {
           log.message === logNext.message &&
           log.stack === logNext.stack
         ) {
-          console.log("DUPLICATED EVENT");
           log.count ? log.count++ : (log.count = 2);
           userActionLogs.splice(i + 1, 1);
+          // Go one step back to keep aggregating on the same index
           i--;
         }
       }

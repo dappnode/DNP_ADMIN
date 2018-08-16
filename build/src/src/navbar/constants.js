@@ -3,7 +3,6 @@ import Dashboard from "Icons/Dashboard";
 import Folder from "Icons/Folder";
 import NewFolder from "Icons/NewFolder";
 import Settings from "Icons/Settings";
-import SettingsFA from "Icons/SettingsFA";
 
 // NAVBAR
 // This will be used later in the root reducer and selectors

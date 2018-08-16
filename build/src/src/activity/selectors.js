@@ -1,4 +1,6 @@
-// DASHBOARD
+// WATCHERS
+// import { createSelector } from "reselect";
+
 import { NAME } from "./constants";
 
 // Selectors provide a way to query data from the module state.
@@ -18,6 +20,7 @@ import { NAME } from "./constants";
 
 // From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
 
-// Utils
-
 export const getAll = state => state[NAME];
+
+export const getUserActionLogs = state =>
+  (getAll(state).userActionLogs || []).slice().reverse();
