@@ -46,6 +46,24 @@ export default class Activity extends React.Component {
             : ""}
         </div>
       ) : null;
+      let stackElementWrap = stackElement ? (
+        <div className="mt-2 mb-2">
+          <button
+            className="btn btn-outline-secondary"
+            type="button"
+            data-toggle="collapse"
+            data-target={"#collapseStack" + i}
+            aria-expanded="false"
+            aria-controls="collapseExample"
+          >
+            Show stack
+          </button>
+
+          <div className="collapse" id={"collapseStack" + i}>
+            {stackElement}
+          </div>
+        </div>
+      ) : null;
       // if (log.stack) {
       //   stack = log.stack.split("\n");
       //   stackItems = stack.map(e => {
@@ -82,12 +100,8 @@ export default class Activity extends React.Component {
               {date}
             </div>
           </div>
-          <span style={{ opacity: 0.4 }}>
-            <span style={{ textTransform: "capitalize" }}>{corePacakge}</span>{" "}
-            replied:
-          </span>{" "}
-          {log.message}
-          {stackElement}
+          <span style={{ opacity: 0.4 }}>Reply:</span> {log.message}
+          {stackElementWrap}
         </li>
       );
     });
