@@ -1,6 +1,6 @@
 import React from "react";
 import parseType from "utils/parseType";
-import Activity from "./Activity";
+import { NavLink } from "react-router-dom";
 
 import "./dashboard.css";
 
@@ -40,39 +40,11 @@ export default class DashboardInterface extends React.Component {
         );
       });
 
-    function parseLevel(level) {
-      if (level === "error") return "danger";
-      if (level === "warn") return "warning";
-      if (level === "info") return "success";
-    }
-
-    function formatDate(rawDate) {
-      let date = new Date(rawDate);
-      let now = new Date();
-      if (sameDay(date, now)) {
-        const minAgo = Math.floor((now - date) / 1000 / 60);
-        if (minAgo < 30) {
-          return "Today, " + minAgo + " min ago";
-        }
-        return "Today, " + date.toLocaleTimeString();
-      }
-      return date.toLocaleString();
-    }
-
-    function sameDay(d1, d2) {
-      return (
-        d1.getFullYear() === d2.getFullYear() &&
-        d1.getMonth() === d2.getMonth() &&
-        d1.getDate() === d2.getDate()
-      );
-    }
-
     // userActionLogs
 
     return (
       <div>
         <h1>Status</h1>
-
         <div className="row">
           <div className="col">
             <div className="card mb-4">
@@ -96,9 +68,12 @@ export default class DashboardInterface extends React.Component {
             </div>
           </div>
         </div>
-
         <h1>Activity</h1>
-        <Activity userActionLogs={this.props.userActionLogs} />
+        <NavLink to={"/activity"}>
+          <button className="btn btn-outline-secondary ml-2 mr-2" type="button">
+            Go to activity
+          </button>
+        </NavLink>
       </div>
     );
   }

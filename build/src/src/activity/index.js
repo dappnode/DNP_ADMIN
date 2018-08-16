@@ -2,12 +2,14 @@
 import * as actions from "./actions";
 import * as constants from "./constants";
 import reducer from "./reducer";
+import saga from "./sagas";
 
-import Dashboard from "./containers/Dashboard";
+import Activity from "./components/Activity";
 
 export default {
-  component: Dashboard,
+  component: Activity,
   actions,
   constants,
-  reducer
+  reducer,
+  saga
 };

@@ -1,8 +1,7 @@
 // DASHBOARD
-import { call, put, takeEvery, all, select } from "redux-saga/effects";
+import { call, put, takeEvery, all } from "redux-saga/effects";
 import * as APIcall from "API/crossbarCalls";
 import * as t from "./actionTypes";
-import * as selector from "./selectors";
 
 /***************************** Subroutines ************************************/
 
@@ -23,6 +22,25 @@ export function* getUserActionLogs() {
       .trim()
       .split("\n")
       .map(e => JSON.parse(e));
+
+    // Collapse equal errors
+    for (let i = 0; i < userActionLogs.length; i++) {
+      const log = userActionLogs[i];
+      const logNext = userActionLogs[i + 1];
+      if (log && logNext) {
+        if (
+          log.level === logNext.level &&
+          log.event === logNext.event &&
+          log.message === logNext.message &&
+          log.stack === logNext.stack
+        ) {
+          log.count ? log.count++ : (log.count = 2);
+          userActionLogs.splice(i + 1, 1);
+          // Go one step back to keep aggregating on the same index
+          i--;
+        }
+      }
+    }
 
     // Update userActionLogs
     yield put({ type: t.UPDATE_USERACTIONLOGS, userActionLogs });

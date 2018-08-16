@@ -2,11 +2,6 @@ import React from "react";
 
 export default class PackageControls extends React.Component {
   render() {
-    let state = this.props.state;
-    let toggleButtonTag = "";
-    if (state === "running") toggleButtonTag = "Pause";
-    if (state === "exited") toggleButtonTag = "Start";
-
     const actions = [
       {
         name: "Restart",

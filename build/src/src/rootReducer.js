@@ -7,6 +7,7 @@ import packages from "./packages";
 import system from "./system";
 import status from "./status";
 import chains from "./chains";
+import activity from "./activity";
 
 export default combineReducers({
   [devices.constants.NAME]: devices.reducer,
@@ -16,5 +17,6 @@ export default combineReducers({
   [system.constants.NAME]: system.reducer,
   [status.constants.NAME]: status.reducer,
   [chains.constants.NAME]: chains.reducer,
-  [navbar.constants.NAME]: navbar.reducer
+  [navbar.constants.NAME]: navbar.reducer,
+  [activity.constants.NAME]: activity.reducer
 });
