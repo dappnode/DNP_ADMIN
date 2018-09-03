@@ -5,6 +5,7 @@ const initialState = {
   fetching: false,
   directory: [],
   packages: {},
+  packageData: {},
   selectedPackageId: "",
   selectedVersion: "",
   selectedTypes: [],
@@ -41,6 +42,17 @@ export default function(state = initialState, action) {
             state.packages[action.id] || {},
             action.data
           )
+        }
+      };
+    case t.UPDATE_PACKAGE_DATA:
+      return {
+        ...state,
+        packageData: {
+          ...state.packages,
+          [action.id]: {
+            ...(state.packageData[action.id] || {}),
+            ...action.data
+          }
         }
       };
     case t.UPDATE_SELECTED_PACKAGE:

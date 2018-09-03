@@ -36,6 +36,7 @@ function handleProgressLog(id, log) {
   if (log.pkg) {
     progressLog.msg[log.pkg] = log.msg;
   }
+  return progressLog;
 }
 
 function formatProgressLog(id) {
@@ -89,6 +90,10 @@ function start() {
         type: "CONNECTION_OPEN",
         session
       });
+      eventBus.publish("ACTION", {
+        type: "CONNECTION_IS_OPEN",
+        open: true
+      });
 
       session.subscribe("logUserAction.dappmanager.dnp.dappnode.eth", function(
         res
@@ -102,8 +107,17 @@ function start() {
 
       session.subscribe("log.dappmanager.dnp.dappnode.eth", function(res) {
         let log = res[0];
-        handleProgressLog(log.logId, log);
+        const progressLog = handleProgressLog(log.logId, log);
+        eventBus.publish("ACTION", {
+          type: "PROGRESS_LOG",
+          progressLog,
+          logId: log.logId
+        });
         const task = tasks[log.logId];
+
+        // #########
+        // console.log(log);
+
         if (task)
           toast.update(task.toastId, {
             render: task.initText + " \n" + formatProgressLog(log.logId),
@@ -111,8 +125,8 @@ function start() {
           });
       });
 
-      window.call = function(call, args) {
-        return session.call(call, args).then(res => {
+      window.call = function(call, kwargs) {
+        return session.call(call, [], kwargs).then(res => {
           return res;
         });
       };
@@ -211,7 +225,7 @@ function PendingToast(initText) {
 async function call({ event, args = [], kwargs = {}, initText = "" }) {
   // Generate a taskid
   const taskId = uuidv4();
-  kwargs.logId = taskId;
+  if (!kwargs.logId) kwargs.logId = taskId;
 
   // Initialize a toast if requested
   const pendingToast = new PendingToast(initText);
@@ -228,7 +242,26 @@ async function call({ event, args = [], kwargs = {}, initText = "" }) {
   }
 
   // Call the session method
-  const resUnparsed = await session.call(event, args, kwargs);
+  const callPromise = () =>
+    new Promise((resolve, reject) => {
+      session
+        .call(event, args, kwargs, {
+          receive_progress: true
+        })
+        .then(
+          res => {
+            resolve(res);
+          },
+          err => {
+            reject(err);
+          },
+          progress => {
+            console.log("Progress", event, progress);
+          }
+        );
+    });
+  console.log("Calling ", event);
+  const resUnparsed = await callPromise();
 
   // Parse response
   const res = parseResponse(resUnparsed);

@@ -26,3 +26,24 @@ export function isEmpty(obj) {
   }
   return true;
 }
+
+export function idToUrl(id) {
+  // First determine if it contains an ipfs hash
+  if (
+    (id.startsWith("ipfs/") || id.startsWith("/ipfs/")) &&
+    isIpfsMultiHash(id.split("ipfs/")[1])
+  ) {
+    return "ipfs:" + id.split("ipfs/")[1];
+  } else {
+    return id;
+  }
+}
+
+export function urlToId(url) {
+  // First determine if it contains an ipfs hash
+  if (url.startsWith("ipfs:")) {
+    return "/ipfs/" + url.split("ipfs:")[1];
+  } else {
+    return url;
+  }
+}

@@ -25,8 +25,6 @@ describe("fetchDirectory Saga test on normal behaviour", () => {
   it("Should call fetchPackageData for each package", () => {
     const value = gen.next().value;
     expect(value.ALL).toHaveLength(2);
-    expect(value.ALL[0]).toEqual(call(fetchPackageData, directory[0]));
-    expect(value.ALL[1]).toEqual(call(fetchPackageData, directory[1]));
   });
 
   it("should be done", () => {
@@ -52,11 +50,11 @@ describe("fetchPackageData Saga test on normal behaviour", () => {
   const id = "packageA";
   const pkg = { name: id, version: "0.0.1" };
   const data = { manifest: "manifest" };
-  const gen = fetchPackageData(pkg);
+  const gen = fetchPackageData({ id });
 
   it("Should dispatch an action to update the package right away", () => {
     expect(gen.next().value).toEqual(
-      put({ type: t.UPDATE_PACKAGE, data: pkg, id })
+      put({ type: t.UPDATE_PACKAGE_DATA, data: { fetching: true }, id })
     );
   });
 
@@ -66,7 +64,11 @@ describe("fetchPackageData Saga test on normal behaviour", () => {
 
   it("Should dispatch an action to update the package again", () => {
     expect(gen.next(data).value).toEqual(
-      put({ type: t.UPDATE_PACKAGE, data, id })
+      put({
+        type: t.UPDATE_PACKAGE_DATA,
+        data: { ...(data || { error: true }), fetching: false },
+        id
+      })
     );
   });
 

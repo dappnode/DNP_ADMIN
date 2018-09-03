@@ -4,6 +4,8 @@ import InstallerView from "../components/InstallerView";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import * as utils from "../utils";
+import { NAME } from "../constants";
+import { push } from "connected-react-router";
 
 // const getVisibleTodos = (todos, filter) => {
 //   switch (filter) {
@@ -28,15 +30,9 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchDirectory: () => {
-      dispatch(action.fetchDirectory());
-    },
-
-    openModalFor: id => {
-      // Update modal data
-      dispatch(action.selectPackage(id));
-      // Reset modal data
-      dispatch(action.updateSelectedVersion("latest"));
+    openPackage: id => {
+      const url = utils.idToUrl(id);
+      dispatch(push("/" + NAME + "/" + url));
     },
 
     updateInput: e => {

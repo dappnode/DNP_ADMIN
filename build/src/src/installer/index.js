@@ -3,13 +3,13 @@ import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
 import saga from "./sagas";
-import Installer from "./containers/Installer";
+import InstallerRoot from "./components/InstallerRoot";
 
 const components = {
-  Installer
+  InstallerRoot
 };
 
-const component = Installer;
+const component = InstallerRoot;
 
 export default {
   actions,
