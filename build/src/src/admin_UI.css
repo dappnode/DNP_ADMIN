@@ -1,5 +1,10 @@
 :root {
   --border-color: #e5e5e5;
+  --dappnode-color: #2fbcb2;
+}
+
+body {
+  font-size: 1em;
 }
 
 .alert {

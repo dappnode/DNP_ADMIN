@@ -46,7 +46,7 @@ export default class DashboardInterface extends React.Component {
       <div>
         <h1>Status</h1>
         <div className="row">
-          <div className="col">
+          <div className="col-sm">
             <div className="card mb-4">
               <div className="card-header">DAppNode</div>
               <div className="card-body" style={{ padding: "0px" }}>
@@ -57,7 +57,7 @@ export default class DashboardInterface extends React.Component {
             </div>
           </div>
 
-          <div className="col">
+          <div className="col-sm">
             <div className="card mb-4">
               <div className="card-header">Chains</div>
               <div className="card-body" style={{ padding: "0px" }}>
