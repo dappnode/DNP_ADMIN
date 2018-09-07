@@ -53,8 +53,14 @@ const tasks = {};
 // let url = 'ws://localhost:8080/ws';
 // let url = 'ws://206.189.162.209:8080/ws';
 // Produccion
-let url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
-let realm = "dappnode_admin";
+let url, realm;
+if (process.env.NODE_ENV === "development") {
+  url = "ws://localhost:8080/ws";
+  realm = "realm1";
+} else {
+  url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
+  realm = "dappnode_admin";
+}
 
 // Initalize app
 let session, sessionExternal; // make this variable global
@@ -69,11 +75,9 @@ export const isOpen = () => Boolean(session && session.isOpen);
 
 function start() {
   return new Promise((resolve, reject) => {
-    const autobahnUrl = url;
-    const autobahnRealm = realm;
     const connection = new autobahn.Connection({
-      url: autobahnUrl,
-      realm: autobahnRealm
+      url,
+      realm
     });
 
     connection.onopen = function(_session, details) {
@@ -81,10 +85,13 @@ function start() {
       console.log(
         "CONNECTED to DAppnode's WAMP " +
           "\n   url " +
-          autobahnUrl +
+          url +
           "\n   realm: " +
-          autobahnRealm
+          realm
       );
+      console.log("connection", connection);
+      console.log("_session", _session);
+      window.session = _session;
       sessionExternal = session = _session;
       eventBus.publish("ACTION", {
         type: "CONNECTION_OPEN",
@@ -241,27 +248,7 @@ async function call({ event, args = [], kwargs = {}, initText = "" }) {
     return;
   }
 
-  // Call the session method
-  const callPromise = () =>
-    new Promise((resolve, reject) => {
-      session
-        .call(event, args, kwargs, {
-          receive_progress: true
-        })
-        .then(
-          res => {
-            resolve(res);
-          },
-          err => {
-            reject(err);
-          },
-          progress => {
-            console.log("Progress", event, progress);
-          }
-        );
-    });
-  console.log("Calling ", event);
-  const resUnparsed = await callPromise();
+  const resUnparsed = await session.call(event, args, kwargs);
 
   // Parse response
   const res = parseResponse(resUnparsed);
@@ -494,4 +481,22 @@ export const fetchPackageData = (kwargs = {}) =>
   call({
     event: "fetchPackageData.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id"])
+  });
+
+// resolveRequest CALL DOCUMENTATION:
+// > kwargs: { req }
+// > result: [{
+//     success,
+//     errors,
+//     state,
+//     casesChecked,
+//     totalCases,
+//     hasTimedOut,
+//   },
+//   ...]
+
+export const resolveRequest = (kwargs = {}) =>
+  call({
+    event: "resolveRequest.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["req"])
   });

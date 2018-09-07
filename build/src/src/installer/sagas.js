@@ -113,6 +113,26 @@ export function* fetchPackageData({ id }) {
       data: { ...(data || { error: true }), fetching: false },
       id
     });
+
+    if (data && data.manifest) {
+      yield put({
+        type: t.UPDATE_PACKAGE_DATA,
+        data: { fetchingRequest: true },
+        id
+      });
+      const requestResult = yield call(APIcall.resolveRequest, {
+        req: {
+          name: data.manifest.name,
+          ver: data.manifest.version
+        }
+      });
+      yield put({
+        type: t.UPDATE_PACKAGE_DATA,
+        data: { requestResult, fetchingRequest: false },
+        id
+      });
+      // yield put({ type: t.UPDATE_PACKAGE_DATA, data: { fetching: true }, id });
+    }
   } catch (error) {
     console.error("Error getting package data: ", error);
   }

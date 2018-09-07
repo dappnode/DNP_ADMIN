@@ -3,16 +3,13 @@ import * as selector from "../selectors";
 import { connect } from "react-redux";
 import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
-import PackageInfoTable from "./InstallerModalParts/PackageInfoTable";
-import SubmitInstall from "./InstallerModalParts/SubmitInstall";
-import { push } from "connected-react-router";
-import { NAME } from "../constants";
 import * as utils from "../utils";
 import eventBus from "eventBus";
 import Loading from "components/Loading";
 import Error from "components/Error";
 import defaultAvatar from "img/defaultAvatar.png";
 import humanFileSize from "utils/humanFileSize";
+import InstallCard from "./InstallCard";
 // Components
 // Logic
 import { isOpen } from "API/crossbarCalls";
@@ -52,16 +49,9 @@ class InstallerInterfaceView extends React.Component {
 
     const manifest = pkg.manifest || {};
     const avatar = pkg.avatar || defaultAvatar;
-    const pkgProgressId = this.props.isInstalling[id];
-    const progressLog = pkgProgressId
-      ? this.props.progressLog[pkgProgressId]
-      : null;
-
-    // let packageProperties = Object.getOwnPropertyNames(_package)
-    // remove(packageProperties, ['id', 'isDNP', 'running', 'shortName'])
     const size = manifest.image ? humanFileSize(manifest.image.size) || "" : "";
     return (
-      <div>
+      <React.Fragment>
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
           <h1>Install {manifest.name}</h1>
         </div>
@@ -83,58 +73,22 @@ class InstallerInterfaceView extends React.Component {
             </div>
           </div>
         </div>
-        {/* Package installation progress */}
-        {progressLog ? (
-          <div className="card mb-4">
-            <div className="card-body">
-              <h4 className="card-title">Installing...</h4>
-              <ul>
-                {Object.keys(progressLog.msg || {}).map((item, i) => (
-                  <li key={i}>{item + ": " + progressLog.msg[item]}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ) : (
-          <div className="card mb-4">
-            <div className="card-body">
-              <h4 className="card-title">Depedencies</h4>
-              <ul>
-                {Object.keys(manifest.dependencies || {}).map((dep, i) => (
-                  <li key={i}>{dep + ": " + manifest.dependencies[dep]}</li>
-                ))}
-              </ul>
-              {!Object.keys(manifest.dependencies || {}).length ? (
-                <p className="card-text">No dependencies</p>
-              ) : null}
-
-              <h4 className="card-title">Special Permissions</h4>
-              <p className="card-text">Requires no special permissions</p>
-              <SubmitInstall
-                id={id}
-                manifest={manifest}
-                installTag={"INSTALL"}
-                disableInstall={this.props.disableInstall}
-                install={this.props.install}
-              />
-            </div>
-          </div>
-        )}
         {/* Package installation request and approval */}
-      </div>
+        <div className="card mb-4">
+          <div className="card-body">
+            <InstallCard
+              id={id}
+              manifest={manifest}
+              request={{
+                ...(pkg.requestResult || {}),
+                fetching: pkg.fetchingRequest
+              }}
+            />
+          </div>
+        </div>
+      </React.Fragment>
     );
   }
-}
-
-{
-  /* <Controls
-  state={pkg.state}
-  togglePackage={() => this.props.togglePackage(id)}
-  restartPackage={() => this.props.restartPackage(id)}
-  restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
-  removePackage={() => this.props.removePackage(id, ports)}
-  removePackageAndData={() => this.props.removePackageAndData(id, ports)}
-/>; */
 }
 
 // Container
@@ -142,26 +96,14 @@ class InstallerInterfaceView extends React.Component {
 const mapStateToProps = createStructuredSelector({
   directory: selector.getDirectoryNonCores,
   packageData: selector.packageData,
-  isInstalling: selector.isInstalling,
-  progressLog: selector.progressLog,
   connectionOpen: selector.connectionOpen
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = dispatch => {
   return {
     fetchPackageRequest: id => {
       dispatch(action.fetchPackageData(id));
-    },
-    install: (id, envs, ports) => {
-      dispatch(action.install(id));
-      dispatch(action.updateEnv(envs, id));
-      dispatch(action.openPorts(ports));
     }
-    // removePackageAndData: (id, ports) => {
-    //   dispatch(action.removePackage({ id, deleteVolumes: true }));
-    //   if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
-    //   dispatch(push("/" + NAME));
-    // }
   };
 };
 
