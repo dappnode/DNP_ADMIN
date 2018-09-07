@@ -7,6 +7,8 @@ import { createStructuredSelector } from "reselect";
 import SpecialPermissions from "./SpecialPermissions";
 import Envs from "./Envs";
 import Dependencies from "./Dependencies";
+import { Link } from "react-router-dom";
+import packages from "packages";
 
 /**
  * Parses envs
@@ -43,6 +45,7 @@ class ApproveInstallView extends React.Component {
     id: PropTypes.string.isRequired,
     manifest: PropTypes.object.isRequired,
     request: PropTypes.object.isRequired,
+    packages: PropTypes.array.isRequired,
     install: PropTypes.func.isRequired
   };
 
@@ -71,9 +74,16 @@ class ApproveInstallView extends React.Component {
     const manifest = this.props.manifest;
     const envs = parseEnvs(manifest);
 
-    // Disable button:
-    let disable = false;
-    if (this.props.installTag === "installed") disable = true;
+    // Get install tag: INSTALL / UPDATE / INSTALLED
+    let tag;
+    const currentPkg = this.props.packages.find(
+      pkg => pkg.name === this.props.id
+    );
+    const newVersion = manifest.version;
+    const currentVersion = currentPkg ? currentPkg.version : null;
+    if (!currentVersion) tag = "INSTALL";
+    else if (currentVersion !== newVersion) tag = "UPDATE";
+    else if (currentVersion === newVersion) tag = "UPDATED";
 
     const installAvailable = this.props.request && this.props.request.success;
 
@@ -82,21 +92,32 @@ class ApproveInstallView extends React.Component {
         <SpecialPermissions />
         <Envs envs={envs} handleEnvChange={this.handleEnvChange} />
         <Dependencies request={this.props.request || {}} />
-        <button
-          className="btn dappnode-background-color"
-          type="submit"
-          data-dismiss="modal"
-          onClick={this.approveInstall}
-          disabled={disable || !installAvailable}
-        >
-          {"INSTALL"}
-        </button>
+        {tag === "UPDATED" ? (
+          <Link
+            style={{ color: "inherit", textDecoration: "inherit" }}
+            to={"/" + packages.constants.NAME + "/" + this.props.id}
+          >
+            <button className="btn dappnode-background-color">
+              GO TO PACKAGE
+            </button>
+          </Link>
+        ) : (
+          <button
+            className="btn dappnode-background-color"
+            onClick={this.approveInstall}
+            disabled={!installAvailable}
+          >
+            {tag}
+          </button>
+        )}
       </React.Fragment>
     );
   }
 }
 
-const mapStateToProps = createStructuredSelector({});
+const mapStateToProps = createStructuredSelector({
+  packages: state => state.packages.packages || []
+});
 
 const mapDispatchToProps = dispatch => ({
   install: (id, envs, ports) => {

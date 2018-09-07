@@ -2,7 +2,7 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import * as actions from "../actions";
 import { NAME } from "../constants";
 import eventBus from "eventBus";
 // Components
@@ -10,6 +10,7 @@ import Installer from "../containers/Installer";
 import InstallerSinglePkg from "./InstallerSinglePkg";
 // Modules
 import status from "status";
+import packages from "packages";
 // Logic
 import { isOpen } from "API/crossbarCalls";
 
@@ -46,7 +47,8 @@ const mapStateToProps = createStructuredSelector({});
 const mapDispatchToProps = dispatch => {
   return {
     fetchDirectory: () => {
-      dispatch(action.fetchDirectory());
+      dispatch(actions.fetchDirectory());
+      dispatch(packages.actions.listPackages());
     }
   };
 };
