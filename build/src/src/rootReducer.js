@@ -9,6 +9,39 @@ import status from "./status";
 import chains from "./chains";
 import activity from "./activity";
 
+const connectionReducer = function(
+  state = {
+    open: false,
+    session: null,
+    progressLog: {}
+  },
+  action
+) {
+  switch (action.type) {
+    case "CONNECTION_IS_OPEN":
+      return {
+        ...state,
+        open: action.open
+      };
+    case "CONNECTION_OPEN":
+      return {
+        ...state,
+        session: action.session
+      };
+    case "PROGRESS_LOG":
+      return {
+        ...state,
+        progressLog: {
+          ...state.progressLog,
+          [action.logId]: action.progressLog
+        }
+      };
+
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   [devices.constants.NAME]: devices.reducer,
   [installer.constants.NAME]: installer.reducer,
@@ -18,5 +51,6 @@ export default combineReducers({
   [status.constants.NAME]: status.reducer,
   [chains.constants.NAME]: chains.reducer,
   [navbar.constants.NAME]: navbar.reducer,
-  [activity.constants.NAME]: activity.reducer
+  [activity.constants.NAME]: activity.reducer,
+  connection: connectionReducer
 });

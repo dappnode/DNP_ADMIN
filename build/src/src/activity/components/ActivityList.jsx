@@ -67,7 +67,7 @@ export default class Activity extends React.Component {
             data-target={"#collapseStack" + i}
             aria-expanded="false"
             aria-controls="collapseExample"
-            class="list-group-item-action"
+            className="list-group-item-action"
             style={{ padding: ".75rem 1.25rem" }}
           >
             <div className="d-flex justify-content-between">

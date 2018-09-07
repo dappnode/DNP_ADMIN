@@ -36,6 +36,7 @@ function handleProgressLog(id, log) {
   if (log.pkg) {
     progressLog.msg[log.pkg] = log.msg;
   }
+  return progressLog;
 }
 
 function formatProgressLog(id) {
@@ -52,8 +53,14 @@ const tasks = {};
 // let url = 'ws://localhost:8080/ws';
 // let url = 'ws://206.189.162.209:8080/ws';
 // Produccion
-let url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
-let realm = "dappnode_admin";
+let url, realm;
+if (process.env.NODE_ENV === "development") {
+  url = "ws://localhost:8080/ws";
+  realm = "realm1";
+} else {
+  url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
+  realm = "dappnode_admin";
+}
 
 // Initalize app
 let session, sessionExternal; // make this variable global
@@ -68,11 +75,9 @@ export const isOpen = () => Boolean(session && session.isOpen);
 
 function start() {
   return new Promise((resolve, reject) => {
-    const autobahnUrl = url;
-    const autobahnRealm = realm;
     const connection = new autobahn.Connection({
-      url: autobahnUrl,
-      realm: autobahnRealm
+      url,
+      realm
     });
 
     connection.onopen = function(_session, details) {
@@ -80,14 +85,21 @@ function start() {
       console.log(
         "CONNECTED to DAppnode's WAMP " +
           "\n   url " +
-          autobahnUrl +
+          url +
           "\n   realm: " +
-          autobahnRealm
+          realm
       );
+      console.log("connection", connection);
+      console.log("_session", _session);
+      window.session = _session;
       sessionExternal = session = _session;
       eventBus.publish("ACTION", {
         type: "CONNECTION_OPEN",
         session
+      });
+      eventBus.publish("ACTION", {
+        type: "CONNECTION_IS_OPEN",
+        open: true
       });
 
       session.subscribe("logUserAction.dappmanager.dnp.dappnode.eth", function(
@@ -102,8 +114,17 @@ function start() {
 
       session.subscribe("log.dappmanager.dnp.dappnode.eth", function(res) {
         let log = res[0];
-        handleProgressLog(log.logId, log);
+        const progressLog = handleProgressLog(log.logId, log);
+        eventBus.publish("ACTION", {
+          type: "PROGRESS_LOG",
+          progressLog,
+          logId: log.logId
+        });
         const task = tasks[log.logId];
+
+        // #########
+        // console.log(log);
+
         if (task)
           toast.update(task.toastId, {
             render: task.initText + " \n" + formatProgressLog(log.logId),
@@ -111,8 +132,8 @@ function start() {
           });
       });
 
-      window.call = function(call, args) {
-        return session.call(call, args).then(res => {
+      window.call = function(call, kwargs) {
+        return session.call(call, [], kwargs).then(res => {
           return res;
         });
       };
@@ -211,7 +232,7 @@ function PendingToast(initText) {
 async function call({ event, args = [], kwargs = {}, initText = "" }) {
   // Generate a taskid
   const taskId = uuidv4();
-  kwargs.logId = taskId;
+  if (!kwargs.logId) kwargs.logId = taskId;
 
   // Initialize a toast if requested
   const pendingToast = new PendingToast(initText);
@@ -227,7 +248,6 @@ async function call({ event, args = [], kwargs = {}, initText = "" }) {
     return;
   }
 
-  // Call the session method
   const resUnparsed = await session.call(event, args, kwargs);
 
   // Parse response
@@ -461,4 +481,22 @@ export const fetchPackageData = (kwargs = {}) =>
   call({
     event: "fetchPackageData.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id"])
+  });
+
+// resolveRequest CALL DOCUMENTATION:
+// > kwargs: { req }
+// > result: [{
+//     success,
+//     errors,
+//     state,
+//     casesChecked,
+//     totalCases,
+//     hasTimedOut,
+//   },
+//   ...]
+
+export const resolveRequest = (kwargs = {}) =>
+  call({
+    event: "resolveRequest.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["req"])
   });

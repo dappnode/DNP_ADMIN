@@ -2,32 +2,24 @@ import { call, put, takeEvery, all, select } from "redux-saga/effects";
 import * as APIcall from "API/crossbarCalls";
 import * as t from "./actionTypes";
 import * as selector from "./selectors";
+import uuidv4 from "uuid/v4";
 
 /***************************** Subroutines ************************************/
 
-export function* install(action) {
+export function* install({ id }) {
   try {
     // Load necessary info
-    const id = yield select(selector.selectedPackageId);
-    const version = "latest"; // TODO ####
     const isInstalling = yield select(selector.isInstalling);
-
     // Prevent double installations, 1. check if the package is in the blacklist
     if (isInstalling[id]) {
       return console.error(id + " IS ALREADY INSTALLING");
     }
-
+    const logId = uuidv4();
     // blacklist the current package
-    yield put({ type: t.ISINSTALLING, payload: true, id });
-
-    yield call(APIcall.addPackage, {
-      id: id + "@" + version
-    });
-    yield put({ type: t.UPDATE_FETCHING, fetching: false });
-
+    yield put({ type: t.ISINSTALLING, payload: logId, id });
+    yield call(APIcall.addPackage, { id, logId });
     // Remove package from blacklist
     yield put({ type: t.ISINSTALLING, payload: false, id });
-
     // Fetch directory
     yield call(fetchDirectory);
   } catch (error) {
@@ -38,11 +30,8 @@ export function* install(action) {
 // After successful installation notify the chain
 // chains.actions.installedChain(selectedPackageName)(dispatch, getState);
 
-export function* updateEnvs(action) {
+export function* updateEnvs({ id, envs, restart }) {
   try {
-    const envs = action.env;
-    const restart = action.restart;
-    const id = yield select(selector.selectedPackageName);
     if (Object.getOwnPropertyNames(envs).length > 0) {
       yield call(APIcall.updatePackageEnv, {
         id,
@@ -89,26 +78,61 @@ export function* fetchDirectory() {
 
     // Update directory
     yield put({ type: t.UPDATE_DIRECTORY, directory });
-    yield all(directory.map(pkg => call(fetchPackageData, pkg)));
+    yield all(
+      directory.map(pkg =>
+        call(function*() {
+          // Send basic package info immediately for progressive loading appearance
+          yield put({ type: t.UPDATE_PACKAGE, data: pkg, id: pkg.name });
+          try {
+            const id = pkg.name;
+            const data = yield call(APIcall.fetchPackageData, { id });
+            yield put({ type: t.UPDATE_PACKAGE, data, id });
+          } catch (e) {
+            console.error("Error getting package data: ", e);
+          }
+        })
+      )
+    );
   } catch (error) {
     console.error("Error fetching directory: ", error);
   }
 }
 
-export function* fetchPackageData(pkg) {
+export function* fetchPackageData({ id }) {
   try {
-    // Send basic package info immediately for progressive loading appearance
-    yield put({ type: t.UPDATE_PACKAGE, data: pkg, id: pkg.name });
-    const packageData = yield call(APIcall.fetchPackageData, {
-      id: pkg.name
-    });
+    yield put({ type: t.UPDATE_PACKAGE_DATA, data: { fetching: true }, id });
+    const data = yield call(APIcall.fetchPackageData, { id });
     // fetchPackageData CALL DOCUMENTATION:
     // > kwargs: { id }
     // > result: {
     //     manifest,
     //     avatar
     //   }
-    yield put({ type: t.UPDATE_PACKAGE, data: packageData, id: pkg.name });
+    yield put({
+      type: t.UPDATE_PACKAGE_DATA,
+      data: { ...(data || { error: true }), fetching: false },
+      id
+    });
+
+    if (data && data.manifest) {
+      yield put({
+        type: t.UPDATE_PACKAGE_DATA,
+        data: { fetchingRequest: true },
+        id
+      });
+      const requestResult = yield call(APIcall.resolveRequest, {
+        req: {
+          name: data.manifest.name,
+          ver: data.manifest.version
+        }
+      });
+      yield put({
+        type: t.UPDATE_PACKAGE_DATA,
+        data: { requestResult, fetchingRequest: false },
+        id
+      });
+      // yield put({ type: t.UPDATE_PACKAGE_DATA, data: { fetching: true }, id });
+    }
   } catch (error) {
     console.error("Error getting package data: ", error);
   }
@@ -134,6 +158,7 @@ export function* fetchPackageVersions(action) {
       data: { versions },
       id: action.kwargs.id
     });
+    // Update the latest package version
   } catch (error) {
     console.error("Error fetching directory: ", error);
   }
@@ -149,6 +174,10 @@ function* watchFetchDirectory() {
 
 function* watchFetchPackageVersions() {
   yield takeEvery(t.FETCH_PACKAGE_VERSIONS, fetchPackageVersions);
+}
+
+function* watchFetchPackageData() {
+  yield takeEvery(t.FETCH_PACKAGE_DATA, fetchPackageData);
 }
 
 function* watchInstall() {
@@ -171,6 +200,7 @@ export default function* root() {
     watchInstall(),
     watchUpdateEnvs(),
     watchOpenPorts(),
-    watchFetchPackageVersions()
+    watchFetchPackageVersions(),
+    watchFetchPackageData()
   ]);
 }

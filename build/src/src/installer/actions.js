@@ -68,15 +68,22 @@ export const fetchPackageVersions = id => ({
   kwargs: { id }
 });
 
-export const install = () => ({
-  type: t.INSTALL
+export const fetchPackageData = id => ({
+  type: t.FETCH_PACKAGE_DATA,
+  id
+});
+
+export const install = id => ({
+  type: t.INSTALL,
+  id
 });
 
 // Need to notify the chain that a package has been added
 
-export const updateEnv = env => ({
+export const updateEnv = (envs, id) => ({
   type: t.UPDATE_ENV,
-  env
+  envs,
+  id
 });
 
 export const openPorts = ports => ({

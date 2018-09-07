@@ -1,19 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import eventBus from "eventBus";
 // Components
 import InstallerModal from "../containers/InstallerModal";
 import TypeFilter from "./TypeFilter";
 import PackageStore from "./PackageStore";
 // Modules
-import status from "status";
 import chains from "chains";
-// Logic
-import { isOpen } from "API/crossbarCalls";
 // Styles
 import "./installer.css";
-
-let token;
 
 class InstallerView extends React.Component {
   static propTypes = {
@@ -23,19 +17,10 @@ class InstallerView extends React.Component {
     inputValue: PropTypes.string.isRequired,
     fetching: PropTypes.bool.isRequired,
     // Dispatch -> props
-    fetchDirectory: PropTypes.func.isRequired,
-    openModalFor: PropTypes.func.isRequired,
+    openPackage: PropTypes.func.isRequired,
     updateInput: PropTypes.func.isRequired,
     updateSelectedTypes: PropTypes.func.isRequired
   };
-
-  componentWillMount() {
-    token = eventBus.subscribe("connection_open", this.props.fetchDirectory);
-    if (isOpen()) this.props.fetchDirectory();
-  }
-  componentWillUnmount() {
-    eventBus.unsubscribe(token);
-  }
 
   render() {
     const modalId = "exampleModal";
@@ -43,9 +28,6 @@ class InstallerView extends React.Component {
 
     return (
       <div>
-        <status.components.DependenciesAlert
-          deps={["wamp", "dappmanager", "ipfs", "mainnet", "upnp"]}
-        />
         <div className="page-header" id="top">
           <h1>Package installer</h1>
         </div>
@@ -58,14 +40,16 @@ class InstallerView extends React.Component {
             aria-describedby="basic-addon2"
             value={this.props.inputValue}
             onChange={this.props.updateInput}
+            onKeyDown={e => {
+              const key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+              if (key === 13) this.props.openPackage(this.props.inputValue);
+            }}
           />
           <div className="input-group-append">
             <button
               className="btn btn-outline-secondary"
               type="button"
-              onClick={() => this.props.openModalFor(this.props.inputValue)}
-              data-toggle="modal"
-              data-target={modalTarget}
+              onClick={() => this.props.openPackage(this.props.inputValue)}
             >
               Install
             </button>
@@ -83,7 +67,7 @@ class InstallerView extends React.Component {
         <PackageStore
           directory={this.props.directory}
           fetching={this.props.fetching}
-          preInstallPackage={this.props.openModalFor}
+          openPackage={this.props.openPackage}
           modalTarget={modalTarget}
         />
 

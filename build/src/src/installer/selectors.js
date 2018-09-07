@@ -25,8 +25,12 @@ import { isIpfsHash } from "./utils";
 
 // this.state.packageInfo[this.state.targetPackageName]
 
+export const connectionOpen = state => state.connection.open;
+export const progressLog = state => state.connection.progressLog;
+
 const local = state => state[NAME];
 const packages = state => local(state).packages;
+export const packageData = state => local(state).packageData;
 const directory = state => local(state).directory;
 export const selectedPackageId = state => local(state).selectedPackageId;
 const selectedTypes = state => local(state).selectedTypes;

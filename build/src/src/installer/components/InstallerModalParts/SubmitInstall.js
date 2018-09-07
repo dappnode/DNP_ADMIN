@@ -18,7 +18,7 @@ export default class SubmitInstall extends React.Component {
     let packagePorts = image.ports || [];
     let ports = packagePorts.map(p => p.split(":")[0]);
     // Call install
-    this.props.install(envs, ports);
+    this.props.install(this.props.id, envs, ports);
     return false;
   }
 
@@ -63,13 +63,16 @@ export default class SubmitInstall extends React.Component {
 
     // Disable button:
     let disable = false;
-    if (this.props.installTag.toLowerCase() === "installed") disable = true;
+    if (this.props.installTag === "installed") disable = true;
 
     return (
       <form className="needs-validation">
+        {rows.length ? (
+          <h4 className="card-title">Environment Variables</h4>
+        ) : null}
         {rows}
         <button
-          className="btn btn-primary dappnode-background-color"
+          className="btn dappnode-background-color"
           type="submit"
           data-dismiss="modal"
           onClick={this.submit.bind(this)}
