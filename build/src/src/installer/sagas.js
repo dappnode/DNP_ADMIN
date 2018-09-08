@@ -42,7 +42,7 @@ export function* updateEnvs(action) {
   try {
     const envs = action.env;
     const restart = action.restart;
-    const id = yield select(selector.selectedPackageName);
+    const id = action.id;
     if (Object.getOwnPropertyNames(envs).length > 0) {
       yield call(APIcall.updatePackageEnv, {
         id,

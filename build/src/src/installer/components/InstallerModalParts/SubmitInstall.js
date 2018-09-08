@@ -7,6 +7,7 @@ export default class SubmitInstall extends React.Component {
   submit(event) {
     event.preventDefault();
     let manifest = this.props.manifest || {};
+    let id = manifest.name;
     let image = manifest.image || {};
     // Get envs
     let envNames = image.environment || [];
@@ -18,7 +19,7 @@ export default class SubmitInstall extends React.Component {
     let packagePorts = image.ports || [];
     let ports = packagePorts.map(p => p.split(":")[0]);
     // Call install
-    this.props.install(envs, ports);
+    this.props.install(id, envs, ports);
     return false;
   }
 

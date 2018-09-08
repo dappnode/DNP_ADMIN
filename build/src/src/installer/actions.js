@@ -74,9 +74,10 @@ export const install = () => ({
 
 // Need to notify the chain that a package has been added
 
-export const updateEnv = env => ({
+export const updateEnv = (id, env) => ({
   type: t.UPDATE_ENV,
-  env
+  env,
+  id
 });
 
 export const openPorts = ports => ({
