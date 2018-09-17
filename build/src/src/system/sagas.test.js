@@ -3,7 +3,7 @@ import { listPackages } from "./sagas";
 import { put, call } from "redux-saga/effects";
 import * as actions from "./actions";
 
-describe("listPackages Saga test on normal behaviour", () => {
+describe.skip("listPackages Saga test on normal behaviour", () => {
   const packages = "packages";
   const gen = listPackages();
 

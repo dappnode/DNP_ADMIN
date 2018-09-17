@@ -1,7 +1,7 @@
 import reducer from "installer/reducer";
 import * as t from "installer/actionTypes";
 
-describe("Packages reducer", () => {
+describe.skip("Packages reducer", () => {
   it("has a default state", () => {
     expect(reducer(undefined, { type: undefined }).packages).toEqual({});
   });

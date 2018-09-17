@@ -1,7 +1,7 @@
 import reducer from "packages/reducer";
 import * as t from "packages/actionTypes";
 
-describe("Packages reducer", () => {
+describe.skip("Packages reducer", () => {
   it("has a default state", () => {
     expect(reducer(undefined, { type: undefined }).packages).toEqual([]);
   });
@@ -17,7 +17,7 @@ describe("Packages reducer", () => {
   });
 });
 
-describe("Logs reducer", () => {
+describe.skip("Logs reducer", () => {
   it("has a default state", () => {
     expect(reducer(undefined, { type: undefined }).logs).toEqual({});
   });
