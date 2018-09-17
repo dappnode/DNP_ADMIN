@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import * as selectors from "../selectors";
-import sampleImg from "img/error-min.png";
 import ActivityList from "./ActivityList";
 
 import status from "status";
@@ -25,7 +24,8 @@ class ActivityView extends React.Component {
 
     return (
       <div>
-        <h1>Activity</h1>
+        <div className="section-title">Activity</div>
+
         <p>
           If a developer asks for more information regarding an error; please
           find the error in the list below, tap on it and copy everything in the

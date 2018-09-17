@@ -25,7 +25,7 @@ class PackageInterface extends React.Component {
 
     let id = pkg.name;
 
-    function selectPorts(pkg) {
+    function getPortsFromManifest(pkg) {
       const manifest = pkg.manifest || {};
       let image = manifest.image || {};
       let packagePorts = image.ports || [];
@@ -33,18 +33,26 @@ class PackageInterface extends React.Component {
       return ports;
     }
 
-    const ports = selectPorts(pkg);
+    const ports = getPortsFromManifest(pkg);
+
+    // Merge current envs with default envs
+    const envs = pkg.envs || {};
+    const defaultEnvs = ((pkg.manifest || {}).image || {}).environment || [];
+    defaultEnvs.forEach(env => {
+      if (!envs[env]) envs[env] = "";
+    });
 
     // let packageProperties = Object.getOwnPropertyNames(_package)
     // remove(packageProperties, ['id', 'isDNP', 'running', 'shortName'])
 
     return (
       <div>
-        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
-          <h1>{pkg.shortName} settings</h1>
+        <div className="section-title">
+          <span style={{ opacity: 0.3, fontWeight: 300 }}>Packages </span>
+          {id}
         </div>
 
-        <Details _package={pkg} />
+        <Details pkg={pkg} />
 
         <Logs
           id={id}
@@ -52,13 +60,13 @@ class PackageInterface extends React.Component {
           logPackage={options => this.props.logPackage(id, options)}
         />
 
-        <Envs id={id} envs={pkg.envs} updateEnvs={this.props.updateEnvs} />
+        <Envs id={id} envs={envs} updateEnvs={this.props.updateEnvs} />
 
         <Controls
           state={pkg.state}
           togglePackage={() => this.props.togglePackage(id)}
           restartPackage={() => this.props.restartPackage(id)}
-          restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
+          restartVolumes={() => this.props.restartVolumes(id)}
           removePackage={() => this.props.removePackage(id, ports)}
           removePackageAndData={() =>
             this.props.removePackageAndData(id, ports)
@@ -80,11 +88,8 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    setId: id => {
-      dispatch(action.setId(id));
-    },
-    updateEnvs: envs => {
-      dispatch(action.updatePackageEnv({ envs, restart: true }));
+    updateEnvs: (id, envs) => {
+      dispatch(action.updatePackageEnv({ id, envs, restart: true }));
     },
     logPackage: (id, options) => {
       dispatch(action.logPackage({ id, options }));

@@ -8,18 +8,26 @@ import { ConnectedRouter } from "connected-react-router";
 import history from "./history";
 import store from "./store";
 import App from "./App";
+import { initApi } from "API/socketSetup";
 
 // Init css
 import "react-toastify/dist/ReactToastify.css";
-import "./include/bootstrap";
+// Boostrap loaders
+import * as $ from "jquery";
+import Tether from "tether";
+import Popper from "popper.js";
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./sb-admin.css";
 import "./admin_UI.css";
 
-// Start the autobahn instance
-import { initApi } from "API/crossbarCalls";
-initApi();
+// Initialize boostrap dependencies
+window.jQuery = window.$ = $;
+window.Tether = Tether;
+window.Popper = Popper;
 
-// Create an enhanced history that syncs navigation events with the store
+// Start the autobahn instance
+initApi();
 
 render(
   <Provider store={store}>

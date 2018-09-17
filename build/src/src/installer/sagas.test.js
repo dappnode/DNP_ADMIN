@@ -1,4 +1,4 @@
-import * as APIcall from "API/crossbarCalls";
+import * as APIcall from "API/rpcMethods";
 import {
   fetchDirectory,
   fetchPackageData,
@@ -48,7 +48,6 @@ describe("fetchDirectory Saga test when an error happens", () => {
 
 describe("fetchPackageData Saga test on normal behaviour", () => {
   const id = "packageA";
-  const pkg = { name: id, version: "0.0.1" };
   const data = { manifest: "manifest" };
   const gen = fetchPackageData({ id });
 

@@ -9,7 +9,7 @@ export default class Dependencies extends React.Component {
       body = (
         <React.Fragment>
           <p style={{ opacity: 0.6 }}>
-            <stron>Verifying compatibility...</stron>
+            <strong>Verifying compatibility...</strong>
           </p>
           <div className="progress">
             <div className="indeterminate" />
@@ -22,17 +22,20 @@ export default class Dependencies extends React.Component {
           <p style={{ color: "#2fbcb2" }}>
             <strong>Compatibile ✓</strong>
           </p>
-          <ul>
-            {Object.keys(request.success).map((pkg, i) => (
-              <li key={i}>
-                {pkg +
-                  ": " +
-                  (request.state[pkg] || "not installed") +
-                  " -> " +
-                  request.success[pkg]}
-              </li>
-            ))}
-          </ul>
+          <div className="row">
+            <div className="col-4" />
+            <div className="col-4">Current version</div>
+            <div className="col-4">Requested version</div>
+          </div>
+          {Object.keys(request.success).map((pkg, i) => (
+            <div key={i} className="row">
+              <div className="col-4 text-truncate">{pkg}</div>
+              <div className="col-4 text-truncate">
+                {request.state[pkg] || "not installed"}
+              </div>
+              <div className="col-4 text-truncate">{request.success[pkg]}</div>
+            </div>
+          ))}
         </React.Fragment>
       );
     } else if (request.errors) {
@@ -43,8 +46,10 @@ export default class Dependencies extends React.Component {
 
     return (
       <React.Fragment>
-        <h4 className="card-title">Dependencies</h4>
-        {body}
+        <div className="section-subtitle">Dependencies</div>
+        <div className="card mb-4">
+          <div className="card-body">{body}</div>
+        </div>
       </React.Fragment>
     );
   }

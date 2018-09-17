@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import ErrorBoundary from "react-error-boundary";
+import ErrorBoundary from "components/ErrorBoundary";
 // Components
 import NavbarSide from "./NavbarSide";
 import NavbarTop from "./NavbarTop";

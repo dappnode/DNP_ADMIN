@@ -3,10 +3,11 @@ import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
 import * as action from "../actions";
+import { NAME } from "../constants";
 // Components
-import PackageRow from "./PackageRow";
+import packages from "packages";
 // Styles
-import "./packages.css";
+import "packages/components/packages.css";
 
 class UpdateSystem extends React.Component {
   render() {
@@ -41,13 +42,27 @@ class UpdateSystem extends React.Component {
     ) : null;
 
     return (
-      <div className="card mb-3">
-        <div className="card-body" style={{ padding }}>
-          <div className="d-flex justify-content-between">
-            <div style={{ margin }}>
-              <h5 className="card-title">DAppNode System Update</h5>
+      <React.Fragment>
+        <div className="section-subtitle">DAppNode System Update</div>
+        <div className="card mb-3">
+          <div className="card-body" style={{ padding }}>
+            <div className="card-text" style={{ margin }}>
+              <div className="row">
+                <div className="col-4" />
+                <div className="col-4">Current version</div>
+                <div className="col-4">Requested version</div>
+              </div>
+              {coreDeps.map((dep, i) => (
+                <div key={i} className="row">
+                  <div className="col-4 text-truncate">{dep.name}</div>
+                  <div className="col-4 text-truncate">
+                    {dep.from || "not installed"}
+                  </div>
+                  <div className="col-4 text-truncate">{dep.to}</div>
+                </div>
+              ))}
+              <div className="mt-3">{alerts}</div>
             </div>
-
             <div className="btn-group" role="group" style={{ margin }}>
               <button
                 className="btn btn-outline-danger"
@@ -59,18 +74,9 @@ class UpdateSystem extends React.Component {
               </button>
             </div>
           </div>
-          <div className="card-text">
-            <ul>
-              {coreDeps.map((dep, i) => (
-                <li key={i}>
-                  {dep.name}: {dep.from} -> {dep.to}
-                </li>
-              ))}
-            </ul>
-            {alerts}
-          </div>
         </div>
-      </div>
+        <div className="section-subtitle">Packages</div>
+      </React.Fragment>
     );
   }
 }
@@ -78,34 +84,20 @@ class UpdateSystem extends React.Component {
 class PackagesList extends React.Component {
   render() {
     return (
-      <div className="body">
-        <h1>System packages</h1>
-        <br />
+      <React.Fragment>
+        <div className="section-title" style={{ textTransform: "capitalize" }}>
+          {NAME}
+        </div>
 
         <UpdateSystem
           coreDeps={this.props.coreDeps}
           updateCore={this.props.updateCore}
         />
 
-        <div className="table-responsive">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Version</th>
-                <th>State</th>
-                <th />
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {this.props.corePackages.map((pkg, i) => (
-                <PackageRow key={i} pkg={pkg} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+        {(this.props.dnpPackages || []).map((pkg, i) => (
+          <packages.components.PackageRow key={i} pkg={pkg} moduleName={NAME} />
+        ))}
+      </React.Fragment>
     );
   }
 }

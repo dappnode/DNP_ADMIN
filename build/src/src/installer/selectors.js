@@ -25,18 +25,23 @@ import { isIpfsHash } from "./utils";
 
 // this.state.packageInfo[this.state.targetPackageName]
 
-export const connectionOpen = state => state.connection.open;
-export const progressLog = state => state.connection.progressLog;
+// #### EXTERNAL SELECTORS
+export const session = state => state.session;
+export const connectionOpen = state => session(state) && session(state).isOpen;
+export const directory = state => state.directory;
+export const installedPackages = state => state.installedPackages || [];
 
+// #### INTERNAL SELECTORS
 const local = state => state[NAME];
 const packages = state => local(state).packages;
 export const packageData = state => local(state).packageData;
-const directory = state => local(state).directory;
 export const selectedPackageId = state => local(state).selectedPackageId;
 const selectedTypes = state => local(state).selectedTypes;
 const inputValue = state => local(state).input;
 export const isInstalling = state => local(state).isInstalling;
-export const fetching = state => local(state).fetching;
+export const fetching = state => local(state).fetching || false;
+export const shouldOpenPorts = state => local(state).shouldOpenPorts;
+export const progressLogs = state => local(state).progressLogs;
 
 const filterCompleted = todos => todos.filter(t => t.completed);
 const filterActive = todos => todos.filter(t => !t.completed);
@@ -48,14 +53,39 @@ export const getAll = state => state[NAME];
 export const getInput = inputValue;
 
 // Packages and directory
+export const getDirectory = state => {
+  const _directory = directory(state);
+  // Compute the installation tag
+  for (const pkgName of Object.keys(_directory)) {
+    const latestVersion = ((_directory[pkgName] || {}).manifest || {}).version;
+    const _currentPkg = installedPackages(state).find(
+      pkg => pkg.name === pkgName
+    );
+    const currentVersion = (_currentPkg || {}).version;
+    _directory[pkgName].tag =
+      currentVersion && latestVersion
+        ? currentVersion === latestVersion
+          ? "UPDATED"
+          : "UPDATE"
+        : "INSTALL";
+  }
+  return _directory;
+};
 
-export const getDirectory = state =>
-  directory(state)
-    .map(pkg => {
-      return packages(state)[pkg.name] || pkg;
-    })
+export const getFilteredDirectory = state => {
+  const allPackages = Object.values(getDirectory(state)).reverse();
+  const selectedPackages = allPackages
     // Filter by name
-    .filter(pkg => pkg.name.includes(inputValue(state)))
+    .filter(pkg => {
+      try {
+        // Avoid expensive searches if input is empty
+        if (!inputValue(state) || inputValue(state) === "") return true;
+        return JSON.stringify(pkg.manifest).includes(inputValue(state));
+      } catch (e) {
+        console.error("Error searching manifest", e);
+        return true;
+      }
+    })
     // Filter by type
     .filter(pkg => {
       const types = selectedTypes(state);
@@ -68,9 +98,15 @@ export const getDirectory = state =>
         types.includes(pkg.manifest.type)
       );
     });
+  if (selectedPackages.length) {
+    return selectedPackages;
+  } else {
+    return allPackages;
+  }
+};
 
-export const getDirectoryNonCores = state =>
-  getDirectory(state).filter(
+export const getFilteredDirectoryNonCores = state =>
+  getFilteredDirectory(state).filter(
     pkg => pkg.manifest && pkg.manifest.type && pkg.manifest.type !== "dncore"
   );
 

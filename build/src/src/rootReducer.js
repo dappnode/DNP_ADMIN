@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import merge from "deepmerge";
 import navbar from "./navbar";
 import devices from "./devices";
 import installer from "./installer";
@@ -9,34 +10,28 @@ import status from "./status";
 import chains from "./chains";
 import activity from "./activity";
 
-const connectionReducer = function(
-  state = {
-    open: false,
-    session: null,
-    progressLog: {}
-  },
-  action
-) {
+const directoryReducer = (state = {}, action) => {
   switch (action.type) {
-    case "CONNECTION_IS_OPEN":
-      return {
-        ...state,
-        open: action.open
-      };
-    case "CONNECTION_OPEN":
-      return {
-        ...state,
-        session: action.session
-      };
-    case "PROGRESS_LOG":
-      return {
-        ...state,
-        progressLog: {
-          ...state.progressLog,
-          [action.logId]: action.progressLog
-        }
-      };
+    case "UPDATE_DIRECTORY":
+      return merge(state, action.pkgs || {});
+    default:
+      return state;
+  }
+};
 
+const installedPackagesReducer = (state = [], action) => {
+  switch (action.type) {
+    case "UPDATE_INSTALLED_PACKAGES":
+      return action.packages;
+    default:
+      return state;
+  }
+};
+
+const sessionReducer = (state = null, action) => {
+  switch (action.type) {
+    case "CONNECTION_OPEN":
+      return action.session;
     default:
       return state;
   }
@@ -52,5 +47,7 @@ export default combineReducers({
   [chains.constants.NAME]: chains.reducer,
   [navbar.constants.NAME]: navbar.reducer,
   [activity.constants.NAME]: activity.reducer,
-  connection: connectionReducer
+  session: sessionReducer,
+  directory: directoryReducer,
+  installedPackages: installedPackagesReducer
 });

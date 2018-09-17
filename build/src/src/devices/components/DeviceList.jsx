@@ -127,20 +127,17 @@ class Row extends React.Component {
 
 export default class DeviceList extends React.Component {
   render() {
-    let rows = [];
-    let deviceList = this.props.deviceList || [];
-    for (let i = 0; i < deviceList.length; i++) {
-      let device = deviceList[i];
-      rows.push(
-        <Row
-          device={device}
-          key={i}
-          removeDevice={this.props.removeDevice}
-          toggleAdmin={this.props.toggleAdmin}
-        />
-      );
-    }
-
-    return <div>{rows}</div>;
+    return (
+      <div>
+        {(this.props.deviceList || []).map((device, i) => (
+          <Row
+            key={i}
+            device={device}
+            removeDevice={this.props.removeDevice}
+            toggleAdmin={this.props.toggleAdmin}
+          />
+        ))}
+      </div>
+    );
   }
 }

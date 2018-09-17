@@ -1,23 +1,30 @@
 import { call, put, takeEvery, all } from "redux-saga/effects";
-import * as APIcall from "API/crossbarCalls";
+import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
+import Toast from "components/Toast";
 
 /***************************** Subroutines ************************************/
 
 export function* fetchDevices() {
   try {
-    const devices = yield call(APIcall.fetchDevices);
-    yield put({ type: t.UPDATE, devices });
+    const res = yield call(APIcall.fetchDevices);
+    if (res.success) {
+      yield put({ type: t.UPDATE, devices: res.result });
+    } else {
+      new Toast(res);
+    }
   } catch (error) {
     console.error("Error listing devices: ", error);
   }
 }
 
-function* callApi(action) {
+function* callApi({ method, id, message }) {
   try {
-    yield call(APIcall[action.call], { id: action.id });
+    const pendingToast = new Toast({ message, pending: true });
+    const res = yield call(APIcall[method], { id });
+    pendingToast.resolve(res);
   } catch (error) {
-    console.error("Error on " + action.call + ": ", error);
+    console.error("Error on " + method + ": ", error);
   }
   yield call(fetchDevices);
 }
@@ -27,7 +34,7 @@ function* callApi(action) {
 /******************************************************************************/
 
 function* watchFetchDevices() {
-  yield takeEvery(t.FETCH_DEVICES, fetchDevices);
+  yield takeEvery("CONNECTION_OPEN", fetchDevices);
 }
 
 function* watchCall() {

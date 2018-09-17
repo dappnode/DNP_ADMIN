@@ -22,8 +22,12 @@ import { NAME } from "./constants";
 
 // this.state.packageInfo[this.state.targetPackageName]
 
+// #### EXTERNAL
+const packages = state => state.installedPackages;
+
+// #### INTERNAL
+
 const local = state => state[NAME];
-const packages = state => local(state).packages;
 const logs = state => local(state).logs;
 export const systemUpdateAvailable = state =>
   local(state).systemUpdateAvailable;

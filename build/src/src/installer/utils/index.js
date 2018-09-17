@@ -4,6 +4,12 @@ export function isIpfsHash(hash) {
   return hash.includes("/ipfs/") && isIpfsMultiHash(hash.split("/ipfs/")[1]);
 }
 
+export function isDnpDomain(id) {
+  if (!id || !id.includes(".")) return false;
+  const [, dnpTag, , extension] = id.split(".");
+  return dnpTag && dnpTag === "dnp" && extension && extension === "eth";
+}
+
 export function isIpfsMultiHash(multiHash) {
   return (
     multiHash.startsWith("Qm") &&
@@ -40,6 +46,8 @@ export function idToUrl(id) {
 }
 
 export function urlToId(url) {
+  // Clean url
+  url = url.split("@")[0];
   // First determine if it contains an ipfs hash
   if (url.startsWith("ipfs:")) {
     return "/ipfs/" + url.split("ipfs:")[1];
