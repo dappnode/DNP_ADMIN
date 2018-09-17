@@ -105,7 +105,6 @@ class InstallerInterfaceView extends React.Component {
       return (
         <React.Fragment>
           {header}
-          <Details pkg={pkg} />
           <ApproveInstall
             id={id}
             pkg={pkg}

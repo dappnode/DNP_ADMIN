@@ -43,9 +43,11 @@ export default function(state = initialState, action) {
       // that belonged to that installation, refered by the logId
       const progressLogs = Object.assign({}, state.progressLogs);
       delete progressLogs[action.logId];
-      return merge(state, {
+      // Destructive action, cannot use merge
+      return {
+        ...state,
         progressLogs
-      });
+      };
     default:
       return state;
   }

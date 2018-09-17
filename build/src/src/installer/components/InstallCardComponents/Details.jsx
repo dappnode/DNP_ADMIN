@@ -26,6 +26,8 @@ export default class Details extends React.Component {
                 {pkg.origin ? <p>Origin {pkg.origin}</p> : null}
               </div>
             </div>
+            <div className="border-bottom" />
+            <div className="mt-3">{this.props.subComponent}</div>
           </div>
         </div>
       </React.Fragment>
