@@ -3,12 +3,36 @@ import { NavLink } from "react-router-dom";
 import $ from "jquery";
 // Images
 import LogoWide from "img/logo-wide.png";
-import AragonLogo from "img/aragon.png";
-import EcfLogo from "img/ecf.png";
-import EfgLogo from "img/efg-logo-only.png";
+import EfgLogo from "img/logos/efg-logo-only.png";
+import AragonLogo from "img/logos/aragon.png";
+import GivethLogo from "img/logos/giveth.png";
+import EcfLogo from "img/logos/ecf.png";
 
 // items
 import { navbarItems } from "../constants";
+
+const fundedBy = [
+  {
+    logo: EfgLogo,
+    text: "Ethereum Foundation",
+    link:
+      "https://blog.ethereum.org/2018/08/17/ethereum-foundation-grants-update-wave-3/"
+  },
+  {
+    logo: AragonLogo,
+    text: "Aragon Nest",
+    link: "https://blog.aragon.org/aragon-nest-second-round-of-grants/#dappnode"
+  },
+  {
+    logo: GivethLogo,
+    text: "Giveth",
+    link: "https://beta.giveth.io/campaigns/5b44b198647f33526e67c262"
+  },
+  {
+    logo: EcfLogo,
+    text: "Ethereum Community Fund"
+  }
+];
 
 export default class NavbarSide extends React.Component {
   componentDidMount() {
@@ -20,11 +44,6 @@ export default class NavbarSide extends React.Component {
     });
   }
   render() {
-    const fundedBy = [
-      { logo: EfgLogo, text: "Ethereum Foundation" },
-      { logo: AragonLogo, text: "Aragon Nest" },
-      { logo: EcfLogo, text: "Ethereum Community Fund" }
-    ];
     return (
       <ul
         style={{ borderWidth: "0px 1px 0px 0px" }}
@@ -46,7 +65,7 @@ export default class NavbarSide extends React.Component {
         <li className="nav-item" id="NavbarLogo">
           <NavLink className="nav-link" to={"/"}>
             <div className="nav-link" style={{ padding: "10px 17px 0px" }}>
-              <h7 style={{ opacity: 0.6 }}>ADMIN UI</h7>
+              <h6 style={{ opacity: 0.6 }}>ADMIN UI</h6>
             </div>
           </NavLink>
         </li>
@@ -86,19 +105,21 @@ export default class NavbarSide extends React.Component {
             className="nav-text text-center"
             style={{ padding: "10px 17px 0px" }}
           >
-            <h7 style={{ opacity: 0.3, fontSize: "80%" }}>FUNDED BY</h7>
+            <h6 style={{ opacity: 0.3, fontSize: "80%" }}>SUPPORTED BY</h6>
             <div className="row mt-2 mb-2">
-              {fundedBy.map(item => (
-                <div className="col">
-                  <img
-                    src={item.logo}
-                    className="img-fluid logo-funded-by"
-                    alt="logo"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title={item.text}
-                    data-delay="300"
-                  />
+              {fundedBy.map((item, i) => (
+                <div key={i} className="col" style={{ padding: "0px 9px" }}>
+                  <a href={item.link}>
+                    <img
+                      src={item.logo}
+                      className="img-fluid logo-funded-by"
+                      alt="logo"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title={item.text}
+                      data-delay="300"
+                    />
+                  </a>
                 </div>
               ))}
             </div>

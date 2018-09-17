@@ -1,4 +1,4 @@
-import * as APIcall from "API/crossbarCalls";
+import * as APIcall from "API/rpcMethods";
 import {
   fetchDirectory,
   fetchPackageData,

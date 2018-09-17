@@ -1,7 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import * as action from "../actions";
+import { createStructuredSelector } from "reselect";
+import * as selector from "../selectors";
+import * as utils from "../utils";
+import { NAME } from "../constants";
+import { push } from "connected-react-router";
 // Components
-import InstallerModal from "../containers/InstallerModal";
 import TypeFilter from "./TypeFilter";
 import PackageStore from "./PackageStore";
 // Modules
@@ -23,14 +29,10 @@ class InstallerView extends React.Component {
   };
 
   render() {
-    const modalId = "exampleModal";
-    const modalTarget = "#" + modalId;
-
     return (
       <div>
-        <div className="page-header" id="top">
-          <h1>Package installer</h1>
-        </div>
+        <div className="section-title">Installer</div>
+
         <div className="input-group mb-3">
           <input
             type="text"
@@ -65,16 +67,54 @@ class InstallerView extends React.Component {
         <chains.components.ChainStatusLog />
 
         <PackageStore
-          directory={this.props.directory}
           fetching={this.props.fetching}
+          directory={this.props.directory}
           openPackage={this.props.openPackage}
-          modalTarget={modalTarget}
         />
-
-        <InstallerModal modalId={modalId} />
       </div>
     );
   }
 }
 
-export default InstallerView;
+const mapStateToProps = createStructuredSelector({
+  directory: selector.getFilteredDirectoryNonCores,
+  selectedTypes: selector.getSelectedTypes,
+  inputValue: selector.getInput,
+  fetching: selector.fetching
+});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    openPackage: id => {
+      const url = utils.idToUrl(id);
+      dispatch(push("/" + NAME + "/" + url));
+      // Dispatch a fetch anyway
+      dispatch(action.fetchPackageData(id));
+      // Empty the input bar
+      dispatch(action.updateInput(""));
+    },
+
+    updateInput: e => {
+      // Correct the ipfs format and fecth if correct
+      const id = utils.correctPackageName(e.target.value);
+      // If the packageLink is a valid IPFS hash preload it's info
+      if (utils.isIpfsHash(id)) {
+        dispatch(action.fetchPackageData(id));
+      }
+      if (utils.isDnpDomain(id)) {
+        dispatch(action.fetchPackageData(id));
+      }
+      // Update input field
+      dispatch(action.updateInput(id));
+    },
+
+    updateSelectedTypes: types => {
+      dispatch(action.updateSelectedTypes(types));
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InstallerView);

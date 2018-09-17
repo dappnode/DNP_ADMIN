@@ -3,13 +3,10 @@ import * as selector from "../selectors";
 import { connect } from "react-redux";
 import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
-import { push } from "connected-react-router";
-import { NAME } from "../constants";
 // Components
-import Details from "./PackageViews/Details";
-import Logs from "./PackageViews/Logs";
-import Envs from "./PackageViews/Envs";
 import Controls from "./PackageViews/Controls";
+// Packages
+import packages from "packages";
 
 class PackageInterface extends React.Component {
   render() {
@@ -35,24 +32,36 @@ class PackageInterface extends React.Component {
 
     const ports = selectPorts(pkg);
 
+    // Merge current envs with default envs
+    const envs = pkg.envs || {};
+    const defaultEnvs = ((pkg.manifest || {}).image || {}).environment || [];
+    defaultEnvs.forEach(env => {
+      if (!envs[env]) envs[env] = "";
+    });
+
     // let packageProperties = Object.getOwnPropertyNames(_package)
     // remove(packageProperties, ['id', 'isDNP', 'running', 'shortName'])
 
     return (
       <div>
-        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
-          <h1>{pkg.shortName} settings</h1>
+        <div className="section-title">
+          <span style={{ opacity: 0.3, fontWeight: 300 }}>System </span>
+          {id}
         </div>
 
-        <Details _package={pkg} />
+        <packages.components.Details _package={pkg} />
 
-        <Logs
+        <packages.components.Logs
           id={id}
           logs={this.props.logs}
           logPackage={options => this.props.logPackage(id, options)}
         />
 
-        <Envs id={id} envs={pkg.envs} updateEnvs={this.props.updateEnvs} />
+        <packages.components.Envs
+          id={id}
+          envs={envs}
+          updateEnvs={this.props.updateEnvs}
+        />
 
         <Controls
           state={pkg.state}
@@ -78,35 +87,19 @@ const mapStateToProps = createStructuredSelector({
   logs: selector.getLogs
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = dispatch => {
   return {
-    setId: id => {
-      dispatch(action.setId(id));
-    },
     updateEnvs: envs => {
       dispatch(action.updatePackageEnv({ envs, restart: true }));
     },
     logPackage: (id, options) => {
       dispatch(action.logPackage({ id, options }));
     },
-    togglePackage: id => {
-      dispatch(action.togglePackage({ id }));
-    },
     restartPackage: id => {
       dispatch(action.restartPackage({ id }));
     },
     restartVolumes: id => {
       dispatch(action.restartVolumes({ id }));
-    },
-    removePackage: (id, ports) => {
-      dispatch(action.removePackage({ id, deleteVolumes: false }));
-      if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
-      dispatch(push("/" + NAME));
-    },
-    removePackageAndData: (id, ports) => {
-      dispatch(action.removePackage({ id, deleteVolumes: true }));
-      if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
-      dispatch(push("/" + NAME));
     }
   };
 };

@@ -1,11 +1,11 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import ErrorBoundary from "react-error-boundary";
 
 import Home from "./components/Home";
 import NonAdmin from "./components/NonAdmin";
 import NonAdminRedirector from "./components/NonAdminRedirector";
 import Notifications from "./components/Notifications";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Testing redux
 import dashboard from "./dashboard";
@@ -14,19 +14,10 @@ import devices from "./devices";
 import installer from "./installer";
 import packages from "./packages";
 import system from "./system";
-import status from "./status";
-import chains from "./chains";
 import navbar from "./navbar";
 
 // Redux
-
 import { ToastContainer } from "react-toastify";
-
-// Init css
-import "./include/bootstrap";
-import "./sb-admin.css";
-import "./admin_UI.css";
-// APIs
 
 export default class App extends React.Component {
   // App is the parent container of any other component.
@@ -72,8 +63,6 @@ export default class App extends React.Component {
           </div>
         </div>
         <ToastContainer />
-        <status.component />
-        <chains.component />
         <NonAdminRedirector />
       </div>
     );

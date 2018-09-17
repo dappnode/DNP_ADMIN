@@ -19,11 +19,14 @@ export default class EnvVariables extends React.Component {
   }
 
   updateEnvs(e) {
-    this.props.updateEnvs(this.state.envs);
+    this.props.updateEnvs(this.props.id, {
+      ...this.props.envs,
+      ...this.state.envs
+    });
   }
 
   render() {
-    let envs = this.state.envs;
+    let envs = this.props.envs || {};
     if (Object.getOwnPropertyNames(envs).length === 0) {
       return null;
     }
@@ -50,21 +53,22 @@ export default class EnvVariables extends React.Component {
     });
 
     return (
-      <div className="border-bottom mb-4">
-        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
-          <h4>Environment variables</h4>
+      <React.Fragment>
+        <div className="section-subtitle">Environment variables</div>
+        <div className="card mb-4">
+          <div className="card-body">
+            {envsList}
+            <button
+              type="button"
+              className="btn btn-outline-secondary tableAction-button"
+              id={this.props.id}
+              onClick={this.updateEnvs.bind(this)}
+            >
+              Update environment variables
+            </button>
+          </div>
         </div>
-        {envsList}
-        <button
-          type="button"
-          className="btn btn-outline-secondary tableAction-button"
-          id={this.props.id}
-          onClick={this.updateEnvs.bind(this)}
-        >
-          Update environment variables
-        </button>
-        <div className="mb-4" />
-      </div>
+      </React.Fragment>
     );
   }
 }

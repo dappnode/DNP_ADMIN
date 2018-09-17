@@ -1,41 +1,50 @@
 import React from "react";
 import ClipboardJS from "clipboard";
 import PropTypes from "prop-types";
-import waitImg from "img/wait-min.png";
+import Loading from "components/Loading";
 import errorImg from "img/error-min.png";
+import ipfsBadgeImg from "img/IPFS-badge-small.png";
 import enhancePkg from "utils/enhancePkg";
 import { Link } from "react-router-dom";
 import { NAME } from "../constants";
+import packages from "packages";
+import defaultAvatar from "img/defaultAvatar.png";
+
+const NAME_PACKAGES = packages.constants.NAME;
 
 new ClipboardJS(".btn");
-
-function getKeywords(pkg) {
-  const manifest = pkg.manifest || {};
-  const keywords = manifest.keywords || [];
-  return keywords.length ? keywords.join(", ") : "DAppNode package";
-}
 
 class Card extends React.Component {
   render() {
     const pkg = enhancePkg(this.props.pkg);
 
-    // The pkg can be incomplete, prevent crashes
+    let img = pkg.error ? errorImg : pkg.avatar || defaultAvatar;
 
-    let imgClass = pkg.avatar ? "" : "wait";
-    let img = pkg.avatar || waitImg;
+    const manifest = pkg.manifest || {};
+    const kwArray = manifest.keywords || [];
+    const keywords = kwArray.length ? kwArray.join(", ") : "DAppNode package";
+    const fromIpfs = (pkg || {}).origin;
+    const ipfsBadge = fromIpfs ? (
+      <div>
+        <img
+          src={ipfsBadgeImg}
+          style={{ width: "59px", marginRight: "5px" }}
+          alt="ipfs"
+        />
+        <span style={{ position: "relative", top: "1px" }}>
+          {fromIpfs.replace("/ipfs/", "")}
+        </span>
+      </div>
+    ) : null;
 
-    // If package broke, re-assign variables
-    if (pkg.error) {
-      img = errorImg;
-      imgClass = "";
-    }
-
-    const keywords = getKeywords(pkg);
+    const url =
+      pkg.tag === "UPDATED"
+        ? "/" + NAME_PACKAGES + "/" + manifest.name
+        : "/" + NAME + "/" + (pkg.url || pkg.id);
 
     // Disable button:
     let disable = false;
-    if (pkg.tag.toLowerCase() === "installed") {
-      pkg.tag = "Updated";
+    if (pkg.tag.toLowerCase() === "updated") {
       disable = true;
     }
 
@@ -47,16 +56,12 @@ class Card extends React.Component {
         <div className="card h-100 shadow card-clickable" id={pkg.id}>
           <Link
             style={{ color: "inherit", textDecoration: "inherit" }}
-            to={NAME + "/" + pkg.id}
+            to={url}
           >
             <div className="card-body text-nowrap" style={{ padding: "15px" }}>
               <div className="row">
                 <div className="col-4" style={{ paddingRight: 0 }}>
-                  <img
-                    className={"card-img-top " + imgClass}
-                    src={img}
-                    alt="Card cap"
-                  />
+                  <img className="card-img-top" src={img} alt="Card cap" />
                 </div>
                 <div className="col-8">
                   <h5
@@ -69,12 +74,11 @@ class Card extends React.Component {
                     {pkg.description}
                   </div>
                   <div className="capitalize dot-overflow lightGray">
-                    {keywords}
+                    {fromIpfs ? ipfsBadge : keywords}
                   </div>
                   <button
                     className="btn dappnode-pill"
                     type="submit"
-                    data-dismiss="modal"
                     style={{ textTransform: "uppercase", marginTop: "12px" }}
                     disabled={disable}
                   >
@@ -99,31 +103,11 @@ export default class PackageStore extends React.Component {
 
   render() {
     const cards = this.props.directory.map((pkg, i) => (
-      <Card
-        key={i}
-        pkg={pkg}
-        openPackage={this.props.openPackage}
-        modalTarget={this.props.modalTarget}
-      />
+      <Card key={i} pkg={pkg} openPackage={this.props.openPackage} />
     ));
 
     if (this.props.fetching && this.props.directory.length === 0) {
-      return (
-        <div>
-          <div className="d-flex justify-content-center mt-3">
-            <p>Loading package directory...</p>
-          </div>
-          <div className="d-flex justify-content-center mt-3">
-            <img
-              className="wait"
-              width="300"
-              height="300"
-              src={waitImg}
-              alt="loading..."
-            />
-          </div>
-        </div>
-      );
+      return <Loading msg="Loading package directory..." />;
     } else {
       return <div className="row">{cards}</div>;
     }

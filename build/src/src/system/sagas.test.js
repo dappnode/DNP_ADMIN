@@ -1,4 +1,4 @@
-import * as APIcall from "API/crossbarCalls";
+import * as APIcall from "API/rpcMethods";
 import { listPackages } from "./sagas";
 import { put, call } from "redux-saga/effects";
 import * as actions from "./actions";

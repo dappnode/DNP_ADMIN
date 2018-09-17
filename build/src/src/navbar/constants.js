@@ -1,5 +1,6 @@
-import Devices from "Icons/Devices";
 import Dashboard from "Icons/Dashboard";
+import Activity from "Icons/Activity";
+import Devices from "Icons/Devices";
 import Folder from "Icons/Folder";
 import NewFolder from "Icons/NewFolder";
 import Settings from "Icons/Settings";
@@ -13,6 +14,11 @@ export const navbarItems = [
     name: "Dashboard",
     href: "/dashboard",
     icon: Dashboard
+  },
+  {
+    name: "Activity",
+    href: "/activity",
+    icon: Activity
   },
   {
     name: "Devices",

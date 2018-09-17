@@ -12,9 +12,9 @@ export const updateFetching = fetching => ({
   fetching
 });
 
-export const updateSelectedPackage = id => ({
-  type: t.UPDATE_SELECTED_PACKAGE,
-  payload: id
+export const updateFetchingRequest = (id, fetching) => ({
+  type: "UPDATE_DIRECTORY",
+  pkgs: { [id]: { fetchingRequest: fetching } }
 });
 
 export const updateInput = id => ({
@@ -22,50 +22,13 @@ export const updateInput = id => ({
   payload: id
 });
 
-export const updateSelectedVersion = index => ({
-  type: t.UPDATE_SELECTED_VERSION,
-  payload: index
-});
-
 export const updateSelectedTypes = types => ({
   type: t.UPDATE_SELECTED_TYPES,
   payload: types
 });
 
-export const packageStartedInstalling = id => ({
-  type: t.ISINSTALLING,
-  payload: true,
-  id
-});
-
-export const packageFinishedInstalling = id => ({
-  type: t.ISINSTALLING,
-  payload: false,
-  id
-});
-
-export const selectPackage = id => (dispatch, getState) => {
-  if (!id) id = selector.getInput(getState());
-  dispatch(fetchPackageVersions(id));
-  dispatch(updateSelectedPackage(id));
-};
-
-// No need to use "addTodo" name, in another module do:
-// import todos from 'todos';
-// todos.actions.add('Do that thing');
-export const updatePackage = (data, id) => ({
-  type: t.UPDATE_PACKAGE,
-  data,
-  id
-});
-
 export const fetchDirectory = () => ({
   type: t.FETCH_DIRECTORY
-});
-
-export const fetchPackageVersions = id => ({
-  type: t.FETCH_PACKAGE_VERSIONS,
-  kwargs: { id }
 });
 
 export const fetchPackageData = id => ({
@@ -73,8 +36,14 @@ export const fetchPackageData = id => ({
   id
 });
 
-export const install = id => ({
+export const fetchPackageRequest = id => ({
+  type: t.FETCH_PACKAGE_REQUEST,
+  id
+});
+
+export const install = (id, options) => ({
   type: t.INSTALL,
+  options,
   id
 });
 

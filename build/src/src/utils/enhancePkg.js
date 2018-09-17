@@ -4,7 +4,7 @@ export default function enhancePkg(pkg) {
   if (!pkg) return pkg;
 
   let manifest = pkg.manifest;
-  let id = pkg.name || "?";
+  let id = pkg.id || pkg.name || "?";
 
   return Object.assign(
     // In case of error, replace values (first priority)

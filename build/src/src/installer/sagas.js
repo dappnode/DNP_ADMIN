@@ -1,25 +1,51 @@
-import { call, put, takeEvery, all, select } from "redux-saga/effects";
-import * as APIcall from "API/crossbarCalls";
+import { call, put, takeEvery, all, select, take } from "redux-saga/effects";
+import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
-import * as selector from "./selectors";
+import * as a from "./actions";
+import * as s from "./selectors";
 import uuidv4 from "uuid/v4";
+import Toast from "components/Toast";
+import { shortName } from "utils/format";
+import { idToUrl, isIpfsHash } from "./utils";
 
 /***************************** Subroutines ************************************/
 
-export function* install({ id }) {
+export function* shouldOpenPorts() {
+  const res = yield call(APIcall.getStatusUPnP);
+  if (res.success) {
+    yield put({
+      type: t.SHOULD_OPEN_PORTS,
+      shouldOpenPorts: res.result.openPorts && res.result.UPnP
+    });
+  } else {
+    console.error("Error fetching UPnP status: " + res.message);
+  }
+}
+
+export function* install({ id, options }) {
   try {
     // Load necessary info
-    const isInstalling = yield select(selector.isInstalling);
+    const isInstalling = yield select(s.isInstalling);
     // Prevent double installations, 1. check if the package is in the blacklist
     if (isInstalling[id]) {
       return console.error(id + " IS ALREADY INSTALLING");
     }
     const logId = uuidv4();
+    const pendingToast = new Toast({
+      message: "Adding " + shortName(id) + "...",
+      pending: true
+    });
     // blacklist the current package
-    yield put({ type: t.ISINSTALLING, payload: logId, id });
-    yield call(APIcall.addPackage, { id, logId });
+    yield put({
+      type: "installer/PROGRESS_LOG",
+      logId,
+      msg: "Fetching dependencies...",
+      pkgName: id.split("@")[0]
+    });
+    const res = yield call(APIcall.addPackage, { id, logId, options });
     // Remove package from blacklist
-    yield put({ type: t.ISINSTALLING, payload: false, id });
+    yield put({ type: t.CLEAR_PROGRESS_LOG, logId });
+    pendingToast.resolve(res);
     // Fetch directory
     yield call(fetchDirectory);
   } catch (error) {
@@ -33,25 +59,36 @@ export function* install({ id }) {
 export function* updateEnvs({ id, envs, restart }) {
   try {
     if (Object.getOwnPropertyNames(envs).length > 0) {
-      yield call(APIcall.updatePackageEnv, {
+      const pendingToast = new Toast({
+        message: "Updating " + id + " envs: " + JSON.stringify(envs),
+        pending: true
+      });
+      const res = yield call(APIcall.updatePackageEnv, {
         id,
         envs,
         restart
       });
+      pendingToast.resolve(res);
     }
   } catch (error) {
-    console.error("Error installing package: ", error);
+    console.error("Error updating " + id + "envs: ", error);
   }
 }
 
-export function* openPorts(action) {
+export function* openPorts({ ports }) {
   try {
-    const ports = action.ports;
-    if (ports.length > 0) {
-      yield call(APIcall.managePorts, {
+    const shouldOpenPorts = yield select(s.shouldOpenPorts);
+    if (shouldOpenPorts && ports.length > 0) {
+      // #### Only if necessary!!!
+      const pendingToast = new Toast({
+        message: "Opening ports " + ports.join(", ") + "...",
+        pending: true
+      });
+      const res = yield call(APIcall.managePorts, {
         action: "open",
         ports
       });
+      pendingToast.resolve(res);
     }
   } catch (error) {
     console.error("Error opening ports: ", error);
@@ -63,102 +100,101 @@ export function* openPorts(action) {
 export function* fetchDirectory() {
   try {
     yield put({ type: t.UPDATE_FETCHING, fetching: true });
-    const directory = yield call(APIcall.fetchDirectory);
+    const res = yield call(APIcall.fetchDirectory);
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
-    // fetchDirectory CALL DOCUMENTATION:
-    // > kwargs: {}
-    // > result: [{
-    //     name,
-    //     status
-    //   },
-    //   ...]
-
-    // Abort on error
-    if (!directory) return;
-
-    // Update directory
-    yield put({ type: t.UPDATE_DIRECTORY, directory });
-    yield all(
-      directory.map(pkg =>
-        call(function*() {
-          // Send basic package info immediately for progressive loading appearance
-          yield put({ type: t.UPDATE_PACKAGE, data: pkg, id: pkg.name });
-          try {
-            const id = pkg.name;
-            const data = yield call(APIcall.fetchPackageData, { id });
-            yield put({ type: t.UPDATE_PACKAGE, data, id });
-          } catch (e) {
-            console.error("Error getting package data: ", e);
-          }
-        })
-      )
-    );
+    if (!res.success) {
+      console.log("fetch directory res", res);
+      return new Toast(res);
+    }
+    /**
+     * The data is received through progressive websocket events
+     * in API/socketSubscription.js
+     */
   } catch (error) {
     console.error("Error fetching directory: ", error);
   }
 }
 
-export function* fetchPackageData({ id }) {
+export function* fetchPackageRequest({ id }) {
   try {
-    yield put({ type: t.UPDATE_PACKAGE_DATA, data: { fetching: true }, id });
-    const data = yield call(APIcall.fetchPackageData, { id });
-    // fetchPackageData CALL DOCUMENTATION:
-    // > kwargs: { id }
-    // > result: {
-    //     manifest,
-    //     avatar
-    //   }
-    yield put({
-      type: t.UPDATE_PACKAGE_DATA,
-      data: { ...(data || { error: true }), fetching: false },
-      id
-    });
+    // If connection is not open yet, wait for it to open.
+    const connectionOpen = yield select(s.connectionOpen);
+    if (!connectionOpen) {
+      yield take("CONNECTION_OPEN");
+    }
 
-    if (data && data.manifest) {
+    // If package is already loaded, skip
+    const directory = yield select(s.getDirectory);
+    const pkg = directory[id];
+    let manifest;
+    if (!pkg) {
+      yield put(a.updateFetching(true));
+      manifest = yield call(fetchPackageData, { id });
+      yield put(a.updateFetching(false));
+      // If the package was not resolved, cancel
+      if (!manifest) {
+        return;
+      }
+    } else {
+      manifest = pkg.manifest;
+    }
+
+    // Resolve the request to install
+    const { name, version } = manifest;
+    yield put(a.updateFetchingRequest(id, true));
+    const res = yield call(APIcall.resolveRequest, {
+      req: { name, ver: isIpfsHash(id) ? id : version }
+    });
+    yield put(a.updateFetchingRequest(id, false));
+
+    if (res.success) {
       yield put({
-        type: t.UPDATE_PACKAGE_DATA,
-        data: { fetchingRequest: true },
-        id
+        type: "UPDATE_DIRECTORY",
+        pkgs: { [id]: { requestResult: res.result } }
       });
-      const requestResult = yield call(APIcall.resolveRequest, {
-        req: {
-          name: data.manifest.name,
-          ver: data.manifest.version
-        }
-      });
-      yield put({
-        type: t.UPDATE_PACKAGE_DATA,
-        data: { requestResult, fetchingRequest: false },
-        id
-      });
-      // yield put({ type: t.UPDATE_PACKAGE_DATA, data: { fetching: true }, id });
+    } else {
+      console.error("Error resolving dependencies of " + id, res.message);
+      return;
     }
   } catch (error) {
     console.error("Error getting package data: ", error);
   }
 }
 
-export function* fetchPackageVersions(action) {
+export function* fetchPackageData({ id }) {
   try {
-    const versions = yield call(APIcall.fetchPackageVersions, action.kwargs);
-    // fetchPackageVersions CALL DOCUMENTATION:
-    // > kwargs: { id }
-    // > result: [{
-    //     version: '0.0.4', (string)
-    //     manifest: <Manifest> (object)
-    //   },
-    //   ...]
-
+    // If connection is not open yet, wait for it to open.
+    const connectionOpen = yield select(s.connectionOpen);
+    if (!connectionOpen) {
+      yield take("CONNECTION_OPEN");
+    }
+    const res = yield call(APIcall.fetchPackageData, { id });
     // Abort on error
-    if (!versions) return;
-
+    if (!res.success) {
+      if (res.message.includes("Resolver could not found a match")) {
+        console.log("No match found for " + id);
+      } else {
+        console.error("Error fetching package data: ", res.message);
+      }
+      return;
+    }
+    const { manifest, avatar } = res.result || {};
+    // Add ipfs hash inside the manifest too, so it is searchable
+    if (manifest) manifest.origin = isIpfsHash(id) ? id : null;
     // Update directory
     yield put({
-      type: t.UPDATE_PACKAGE,
-      data: { versions },
-      id: action.kwargs.id
+      type: "UPDATE_DIRECTORY",
+      pkgs: {
+        [id]: {
+          name: manifest.name,
+          manifest,
+          avatar,
+          origin: isIpfsHash(id) ? id : null,
+          url: idToUrl(id)
+        }
+      }
     });
-    // Update the latest package version
+    return manifest;
   } catch (error) {
     console.error("Error fetching directory: ", error);
   }
@@ -168,16 +204,17 @@ export function* fetchPackageVersions(action) {
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
 
-function* watchFetchDirectory() {
-  yield takeEvery(t.FETCH_DIRECTORY, fetchDirectory);
-}
-
-function* watchFetchPackageVersions() {
-  yield takeEvery(t.FETCH_PACKAGE_VERSIONS, fetchPackageVersions);
+function* watchConnectionOpen() {
+  yield takeEvery("CONNECTION_OPEN", fetchDirectory);
+  yield takeEvery("CONNECTION_OPEN", shouldOpenPorts);
 }
 
 function* watchFetchPackageData() {
   yield takeEvery(t.FETCH_PACKAGE_DATA, fetchPackageData);
+}
+
+function* watchFetchPackageRequest() {
+  yield takeEvery(t.FETCH_PACKAGE_REQUEST, fetchPackageRequest);
 }
 
 function* watchInstall() {
@@ -196,11 +233,11 @@ function* watchOpenPorts() {
 // single entry point to start all Sagas at once
 export default function* root() {
   yield all([
-    watchFetchDirectory(),
+    watchConnectionOpen(),
     watchInstall(),
     watchUpdateEnvs(),
     watchOpenPorts(),
-    watchFetchPackageVersions(),
+    watchFetchPackageRequest(),
     watchFetchPackageData()
   ]);
 }

@@ -10,6 +10,6 @@ export default async function checkWampPackage(session, packageName) {
 
 function formatCrossbarError(err) {
   return err.error && err.error.includes("no_such_procedure")
-    ? "Core package not running or not connected"
+    ? "Unreachable"
     : err.error || err.message || JSON.stringify(err);
 }

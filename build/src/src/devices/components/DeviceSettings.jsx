@@ -27,6 +27,10 @@ class DevicesSettings extends React.Component {
 
     return (
       <div>
+        <div className="section-title">
+          <span style={{ opacity: 0.3, fontWeight: 300 }}>Devices </span>
+          {name}
+        </div>
         <div className="card mb-3" id={id}>
           <div className="card-body" style={{ padding }}>
             <div>

@@ -25,7 +25,8 @@ class ActivityView extends React.Component {
 
     return (
       <div>
-        <h1>Activity</h1>
+        <div className="section-title">Activity</div>
+
         <p>
           If a developer asks for more information regarding an error; please
           find the error in the list below, tap on it and copy everything in the

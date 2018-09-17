@@ -1,0 +1,32 @@
+import autobahn from "autobahn";
+import store from "../store";
+import socketSubscriptions from "./socketSubscriptions";
+
+// Initalize app
+// Development
+// const url = 'ws://localhost:8080/ws';
+// const realm = 'realm1';
+// Produccion
+const url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
+const realm = "dappnode_admin";
+
+export function initApi() {
+  const connection = new autobahn.Connection({
+    url,
+    realm
+  });
+
+  connection.onopen = session => {
+    store.dispatch({ type: "CONNECTION_OPEN", session });
+    console.log("CONNECTED to \nurl: " + url + " \nrealm: " + realm);
+    socketSubscriptions(session);
+  };
+
+  // connection closed, lost or unable to connect
+  connection.onclose = (reason, details) => {
+    store.dispatch({ type: "CONNECTION_CLOSE", reason, details });
+    // No need to log errors, autobahn will log them anyway
+  };
+
+  connection.open();
+}

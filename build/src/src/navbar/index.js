@@ -3,6 +3,7 @@ import * as actions from "./actions";
 import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
+import saga from "./sagas";
 
 import Navbar from "./components/Navbar";
 
@@ -18,5 +19,6 @@ export default {
   components,
   constants,
   reducer,
-  selectors
+  selectors,
+  saga
 };

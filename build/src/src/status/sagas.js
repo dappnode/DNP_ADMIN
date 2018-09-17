@@ -4,93 +4,33 @@ import {
   call,
   put,
   all,
-  select,
   takeEvery,
   fork
 } from "redux-saga/effects";
 import { delay } from "redux-saga";
 import * as t from "./actionTypes";
-import * as s from "./selectors";
 import { updateStatus } from "./actions";
-import * as APIcall from "API/crossbarCalls";
-import checkConnection from "API/checkConnection";
+import * as APIcall from "API/rpcMethods";
 import { NON_ADMIN_RESPONSE } from "./constants";
 import checkWampPackage from "./utils/checkWampPackage";
 import checkIpfsConnection from "./utils/checkIpfsConnection";
 import chains from "chains";
+import { push } from "connected-react-router";
 
 const NOWAMP = "Can't connect to WAMP";
 
 const tags = {
   wamp: "wamp",
-  dapp: "dappmanager",
-  vpn: "vpn",
   isAdmin: "isAdmin",
-  ipfs: "ipfs",
-  mainnet: "mainnet",
+  dapp: "dappmngr",
+  vpn: "vpn",
   upnp: "upnp",
-  externalIP: "externalIP"
+  externalIP: "extIP",
+  ipfs: "ipfs",
+  mainnet: "mainnet"
 };
 
 /***************************** Subroutines ************************************/
-
-function* checkWamp() {
-  try {
-    yield call(checkConnection);
-    // Did work: Update status of all WAMP dependent modules
-    yield put(updateStatus({ id: tags.wamp, status: 1, msg: "ok" }));
-  } catch (reason) {
-    if (reason.includes("Warning")) {
-      // Not clear if it's not working
-      yield put(updateStatus({ id: tags.wamp, status: 0, msg: reason }));
-    } else {
-      // Did NOT work: Update status of all WAMP dependent modules
-      yield put(updateStatus({ id: tags.wamp, status: -1, msg: reason }));
-    }
-  }
-}
-
-function* checkWampPackages() {
-  try {
-    const session = yield call(checkConnection);
-    // Now, check if each pacakge is connected to WAMP
-    yield call(checkPackage, session, tags.dapp);
-    yield call(checkPackage, session, tags.vpn);
-  } catch (e) {
-    // If connection error, cannot check packages
-    yield put(updateStatus({ id: tags.dapp, status: -1, msg: NOWAMP }));
-    yield put(updateStatus({ id: tags.vpn, status: -1, msg: NOWAMP }));
-  }
-}
-
-function* checkIsAdmin() {
-  try {
-    const wamp = yield select(s.getWamp);
-    if (!wamp || !wamp.msg) return;
-
-    if (wamp.status === 1) {
-      // If connection is successful, user is admin
-      yield put(updateStatus({ id: tags.isAdmin, status: 1, msg: "yes" }));
-    } else if (wamp.status === -1) {
-      // Check if error is due to user not being admin
-      const userIsAdmin = !wamp.msg.includes(NON_ADMIN_RESPONSE);
-      yield put(
-        updateStatus({
-          id: tags.isAdmin,
-          status: userIsAdmin ? 0 : -1,
-          msg: userIsAdmin ? "unknown" : "no"
-        })
-      );
-    }
-  } catch (e) {
-    // #### TODO
-  }
-}
-
-function* checkPackage(session, id) {
-  const res = yield call(checkWampPackage, session, id);
-  yield put(updateStatus({ id, ...res }));
-}
 
 function* checkIPFS() {
   try {
@@ -105,10 +45,13 @@ function* checkIPFS() {
 
 function* getStatusUPnP() {
   try {
-    yield call(checkConnection);
     const res = yield call(APIcall.getStatusUPnP);
-    const { status, msg } = statusUPnPLogic(res);
-    yield put(updateStatus({ id: tags.upnp, status, msg }));
+    if (res.success) {
+      const { status, msg } = statusUPnPLogic(res.result);
+      yield put(updateStatus({ id: tags.upnp, status, msg }));
+    } else {
+      console.error("Error fetching UPnP status" + res.message);
+    }
   } catch (e) {
     // It will throw when connection is not open, ignore
   }
@@ -130,10 +73,13 @@ function statusUPnPLogic(res) {
 
 function* getStatusExternalIp() {
   try {
-    yield call(checkConnection);
     const res = yield call(APIcall.getStatusExternalIp);
-    const { status, msg } = statusExternalIpLogic(res);
-    yield put(updateStatus({ id: tags.externalIP, status, msg }));
+    if (res.success) {
+      const { status, msg } = statusExternalIpLogic(res.result);
+      yield put(updateStatus({ id: tags.externalIP, status, msg }));
+    } else {
+      console.error("Error fetching external IP status: " + res.message);
+    }
   } catch (e) {
     // It will throw when connection is not open, ignore
   }
@@ -189,26 +135,39 @@ function* watchMainnetUpdate() {
   yield takeEvery(chains.actionTypes.UPDATE_STATUS, mainnetUpdate);
 }
 
-function* runWampMonitor() {
-  // Dispatching an action of type start will activate the channel
-  const channel = yield actionChannel(t.WAMP_START);
-
-  while (yield take(channel)) {
-    // This is check once every channel start
-    // fork creates a non-block instance. Rest of the code starts immediately
-    yield fork(function*() {
-      yield all([call(getStatusUPnP), call(getStatusExternalIp)]);
-    });
-
-    while (true) {
-      // This is check at every tick of the interval
-      yield call(checkWamp);
-      yield call(checkIsAdmin);
-      yield call(checkWampPackages);
-      // The actual interval of the loop
-      yield delay(5 * 1000);
-    }
+function* onConnectionOpen({ session }) {
+  yield put(updateStatus({ id: tags.wamp, status: 1, msg: "ok" }));
+  yield put(updateStatus({ id: tags.isAdmin, status: 1, msg: "yes" }));
+  // Check if the dappmanager is connected to the WAMP
+  yield fork(checkPackage, session, tags.dapp);
+  // Check if the vpn is connected and then get its info
+  const vpnRes = yield call(checkPackage, session, tags.vpn);
+  if (vpnRes.status === 1) {
+    yield all([call(getStatusUPnP), call(getStatusExternalIp)]);
   }
+}
+
+function* checkPackage(session, id) {
+  const res = yield call(checkWampPackage, session, id);
+  yield put(updateStatus({ id, ...res }));
+  return res;
+}
+
+function* onConnectionClose({ reason, details = {} }) {
+  yield put(updateStatus({ id: tags.wamp, status: -1, msg: NOWAMP }));
+  const nonAdmin = (details.message || "").includes(NON_ADMIN_RESPONSE);
+  yield put(
+    updateStatus({
+      id: tags.isAdmin,
+      status: nonAdmin ? -1 : 0,
+      msg: nonAdmin ? "no" : "unknown"
+    })
+  );
+  if (nonAdmin) {
+    yield put(push("/nonadmin"));
+  }
+  yield put(updateStatus({ id: tags.dapp, status: 0, msg: NOWAMP }));
+  yield put(updateStatus({ id: tags.vpn, status: 0, msg: NOWAMP }));
 }
 
 function* runIpfsMonitor() {
@@ -225,13 +184,22 @@ function* runIpfsMonitor() {
   }
 }
 
+function* watchConnectionOpen() {
+  yield takeEvery("CONNECTION_OPEN", onConnectionOpen);
+}
+
+function* watchConnectionClose() {
+  yield takeEvery("CONNECTION_CLOSE", onConnectionClose);
+}
+
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
   yield all([
     call(initializeLoadingMessages),
     runIpfsMonitor(),
-    runWampMonitor(),
+    watchConnectionOpen(),
+    watchConnectionClose(),
     watchMainnetUpdate()
   ]);
 }
