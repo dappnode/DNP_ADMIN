@@ -1,12 +1,6 @@
 // INSTALLER
 import * as t from "./actionTypes";
-import * as selector from "./selectors";
-// modules
 
-// export const add = text => ({
-//   type: t.ADD,
-//   payload: { text }
-// });
 export const updateFetching = fetching => ({
   type: t.UPDATE_FETCHING,
   fetching

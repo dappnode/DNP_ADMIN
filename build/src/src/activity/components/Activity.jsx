@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import * as selectors from "../selectors";
-import sampleImg from "img/error-min.png";
 import ActivityList from "./ActivityList";
 
 import status from "status";

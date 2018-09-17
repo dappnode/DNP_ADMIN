@@ -1,6 +1,4 @@
 import React from "react";
-import parseType from "utils/parseType";
-import { NavLink } from "react-router-dom";
 import { colors } from "utils/format";
 
 import "./dashboard.css";

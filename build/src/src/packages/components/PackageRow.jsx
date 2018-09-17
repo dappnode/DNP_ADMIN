@@ -7,16 +7,6 @@ import { colors } from "utils/format";
 import { connect } from "react-redux";
 import * as action from "../actions";
 
-function getLinksArray(manifest) {
-  let homepage = manifest ? manifest.homepage || {} : {};
-  if (typeof homepage === typeof "String") homepage = { homepage };
-  else if (typeof homepage !== typeof {}) homepage = {};
-  return Object.getOwnPropertyNames(homepage).map(e => ({
-    name: e,
-    link: homepage[e]
-  }));
-}
-
 class PackageRowView extends React.Component {
   static propTypes = {
     moduleName: PropTypes.string.isRequired
@@ -26,13 +16,6 @@ class PackageRowView extends React.Component {
     let pkg = this.props.pkg || {};
     let id = pkg.name;
     let state = pkg.state;
-
-    let manifest = pkg.manifest || {};
-    const links = getLinksArray(manifest).map((e, i) => (
-      <a className="package-link" key={i} href={e.link}>
-        {e.name}{" "}
-      </a>
-    ));
 
     let stateColor;
     if (state === "running") stateColor = colors.success;

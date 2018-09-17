@@ -1,5 +1,4 @@
 import { put, takeEvery, all, call } from "redux-saga/effects";
-import * as t from "./actionTypes";
 import * as APIcall from "API/rpcMethods";
 import * as a from "./actions";
 
