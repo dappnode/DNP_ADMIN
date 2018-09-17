@@ -7,6 +7,7 @@ import { createStructuredSelector } from "reselect";
 import SpecialPermissions from "./SpecialPermissions";
 import Envs from "./Envs";
 import Dependencies from "./Dependencies";
+import Details from "./Details";
 import { Link } from "react-router-dom";
 import packages from "packages";
 // style
@@ -105,51 +106,61 @@ class ApproveInstallView extends React.Component {
 
     const installAvailable = this.props.request && this.props.request.success;
 
+    const installButton = (
+      <React.Fragment>
+        <div className="float-right ml-3">
+          {tag === "UPDATED" ? (
+            <Link
+              style={{ color: "inherit", textDecoration: "inherit" }}
+              to={"/" + packages.constants.NAME + "/" + this.props.id}
+            >
+              <button className="btn dappnode-background-color">
+                GO TO PACKAGE
+              </button>
+            </Link>
+          ) : (
+            <button
+              className="btn dappnode-background-color"
+              onClick={this.approveInstall}
+              disabled={!installAvailable}
+            >
+              {tag}
+            </button>
+          )}
+        </div>
+        <div className="float-right">
+          {this.props.id && this.props.id.startsWith("/ipfs/")
+            ? options.map((option, i) => (
+                <label
+                  key={i}
+                  className="container"
+                  style={{
+                    position: "relative",
+                    bottom: "9px",
+                    marginBottom: "0px"
+                  }}
+                >
+                  {option}
+                  <input
+                    type="checkbox"
+                    name={option}
+                    checked={this.state.options[option]}
+                    onChange={this.handleOptionChange}
+                  />
+                  <span className="checkmark" />
+                </label>
+              ))
+            : null}
+        </div>
+      </React.Fragment>
+    );
+
     return (
       <React.Fragment>
+        <Details pkg={this.props.pkg} subComponent={installButton} />
         <Dependencies request={this.props.request || {}} />
         <Envs envs={envs} handleEnvChange={this.handleEnvChange} />
         <SpecialPermissions />
-
-        <React.Fragment>
-          <div className="section-subtitle">Install</div>
-          <div className="card mb-4">
-            <div className="card-body">
-              {tag === "UPDATED" ? (
-                <Link
-                  style={{ color: "inherit", textDecoration: "inherit" }}
-                  to={"/" + packages.constants.NAME + "/" + this.props.id}
-                >
-                  <button className="btn dappnode-background-color">
-                    GO TO PACKAGE
-                  </button>
-                </Link>
-              ) : (
-                <button
-                  className="btn dappnode-background-color"
-                  onClick={this.approveInstall}
-                  disabled={!installAvailable}
-                >
-                  {tag}
-                </button>
-              )}
-              {this.props.id && this.props.id.startsWith("/ipfs/")
-                ? options.map((option, i) => (
-                    <label key={i} className="container">
-                      {option}
-                      <input
-                        type="checkbox"
-                        name={option}
-                        checked={this.state.options[option]}
-                        onChange={this.handleOptionChange}
-                      />
-                      <span className="checkmark" />
-                    </label>
-                  ))
-                : null}
-            </div>
-          </div>
-        </React.Fragment>
       </React.Fragment>
     );
   }
