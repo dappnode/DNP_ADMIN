@@ -1,9 +1,5 @@
 import * as APIcall from "API/rpcMethods";
-import {
-  fetchDirectory,
-  fetchPackageData,
-  fetchPackageVersions
-} from "./sagas";
+import { fetchDirectory, fetchPackageData } from "./sagas";
 import { put, call } from "redux-saga/effects";
 import * as t from "./actionTypes";
 

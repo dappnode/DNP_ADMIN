@@ -94,7 +94,7 @@ class PackagesList extends React.Component {
           updateCore={this.props.updateCore}
         />
 
-        {(this.props.dnpPackages || []).map((pkg, i) => (
+        {(this.props.corePackages || []).map((pkg, i) => (
           <packages.components.PackageRow key={i} pkg={pkg} moduleName={NAME} />
         ))}
       </React.Fragment>
