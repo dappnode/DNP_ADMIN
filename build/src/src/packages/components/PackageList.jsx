@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { NAME } from "../constants";
 // Components
 import PackageRow from "./PackageRow";
+import Loading from "components/Loading";
 // Styles
 import "./packages.css";
 
@@ -16,9 +17,13 @@ class PackagesList extends React.Component {
           {NAME}
         </div>
 
-        {(this.props.dnpPackages || []).map((pkg, i) => (
-          <PackageRow key={i} pkg={pkg} moduleName={NAME} />
-        ))}
+        {this.props.fetching && (this.props.dnpPackages || []).length === 0 ? (
+          <Loading msg="Loading installed packages..." />
+        ) : (
+          (this.props.dnpPackages || []).map((pkg, i) => (
+            <PackageRow key={i} pkg={pkg} moduleName={NAME} />
+          ))
+        )}
       </React.Fragment>
     );
   }
@@ -28,7 +33,8 @@ class PackagesList extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   corePackages: selector.getCorePackages,
-  dnpPackages: selector.getDnpPackages
+  dnpPackages: selector.getDnpPackages,
+  fetching: selector.fetching
 });
 
 const mapDispatchToProps = {};

@@ -2,6 +2,7 @@
 import * as t from "./actionTypes";
 
 const initialState = {
+  fetching: false,
   logs: {}
 };
 
@@ -15,6 +16,11 @@ export default function(state = initialState, action) {
           ...state.logs,
           [action.id]: action.logs
         }
+      };
+    case t.UPDATE_FETCHING:
+      return {
+        ...state,
+        fetching: action.fetching
       };
     default:
       return state;

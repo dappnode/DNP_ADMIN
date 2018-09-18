@@ -8,7 +8,9 @@ import Toast from "components/Toast";
 
 export function* listPackages() {
   try {
+    yield put({ type: t.UPDATE_FETCHING, fetching: true });
     const res = yield call(APIcall.listPackages);
+    yield put({ type: t.UPDATE_FETCHING, fetching: false });
     if (res.success) {
       yield put(a.updatePackages(res.result));
     } else {

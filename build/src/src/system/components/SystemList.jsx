@@ -7,6 +7,7 @@ import { NAME } from "../constants";
 // Components
 import SystemRow from "./SystemRow";
 import installer from "installer";
+import Loading from "components/Loading";
 // Styles
 import "packages/components/packages.css";
 
@@ -94,7 +95,7 @@ class UpdateSystem extends React.Component {
   }
 }
 
-class PackagesList extends React.Component {
+class SystemList extends React.Component {
   render() {
     const progressLog = findProgressLog(
       "core.dnp.dappnode.eth",
@@ -119,9 +120,13 @@ class PackagesList extends React.Component {
           updateCore={this.props.updateCore}
         />
 
-        {(this.props.corePackages || []).map((pkg, i) => (
-          <SystemRow key={i} pkg={pkg} moduleName={NAME} />
-        ))}
+        {this.props.fetching && (this.props.corePackages || []).length === 0 ? (
+          <Loading msg="Loading core packages..." />
+        ) : (
+          (this.props.corePackages || []).map((pkg, i) => (
+            <SystemRow key={i} pkg={pkg} moduleName={NAME} />
+          ))
+        )}
       </React.Fragment>
     );
   }
@@ -131,9 +136,9 @@ class PackagesList extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   corePackages: selector.getCorePackages,
-  dnpPackages: selector.getDnpPackages,
   coreDeps: selector.coreDeps,
-  progressLogs: installer.selectors.progressLogs
+  progressLogs: installer.selectors.progressLogs,
+  fetching: selector.fetching
 });
 
 const mapDispatchToProps = dispatch => {
@@ -147,4 +152,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PackagesList);
+)(SystemList);

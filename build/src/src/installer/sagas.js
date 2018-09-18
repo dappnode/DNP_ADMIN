@@ -106,6 +106,23 @@ export function* fetchDirectory() {
       console.log("fetch directory res", res);
       return new Toast(res);
     }
+
+    // Storing the result anyway in case the DAPPMANAGER is old
+    const directory = yield select(state => state.directory);
+    if (!Object.getOwnPropertyNames(directory).length) {
+      if (res.result && Array.isArray(res.result)) {
+        // Now the directory needs to be an object
+        const pkgs = {};
+        for (const pkg of res.result) {
+          pkgs[pkg.name] = pkg;
+        }
+        yield put({ type: "UPDATE_DIRECTORY", pkgs });
+      } else if (res.result && typeof res.result === "object") {
+        const pkgs = directory;
+        yield put({ type: "UPDATE_DIRECTORY", pkgs });
+      }
+    }
+
     /**
      * The data is received through progressive websocket events
      * in API/socketSubscription.js
@@ -139,7 +156,18 @@ export function* fetchPackageRequest({ id }) {
       manifest = pkg.manifest;
     }
 
+    // Stop request if manifest is not defined
+    if (!manifest) {
+      throw Error(
+        "Cannot resolve request of " +
+          id +
+          ", manifest not defined \n This maybe due to an outdated version of DNP_DAPPMANAGER. " +
+          "Please update your system: https://github.com/dappnode/DAppNode/wiki/DAppNode-Installation-Guide#3-how-to-restore-an-installed-dappnode-to-the-latest-version"
+      );
+    }
+
     // Resolve the request to install
+
     const { name, version } = manifest;
     yield put(a.updateFetchingRequest(id, true));
     const res = yield call(APIcall.resolveRequest, {

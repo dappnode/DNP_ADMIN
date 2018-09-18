@@ -114,9 +114,16 @@ export const getFilteredDirectory = state => {
 };
 
 export const getFilteredDirectoryNonCores = state =>
-  getFilteredDirectory(state).filter(
-    pkg => pkg.manifest && pkg.manifest.type && pkg.manifest.type !== "dncore"
-  );
+  getFilteredDirectory(state).filter(pkg => {
+    if (!pkg.manifest) {
+      // If packages are broken, display them anyway
+      return true;
+    } else {
+      return (
+        pkg.manifest && pkg.manifest.type && pkg.manifest.type !== "dncore"
+      );
+    }
+  });
 
 // Selected package, for installation modal
 

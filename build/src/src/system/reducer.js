@@ -3,6 +3,7 @@ import * as t from "./actionTypes";
 import merge from "deepmerge";
 
 const initialState = {
+  fetching: false,
   logs: {},
   systemUpdateAvailable: false,
   coreDeps: []
@@ -25,6 +26,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         coreDeps: action.coreDeps
+      };
+    case t.UPDATE_FETCHING:
+      return {
+        ...state,
+        fetching: action.fetching
       };
     default:
       return state;

@@ -4,12 +4,16 @@ import * as t from "./actionTypes";
 import * as a from "./actions";
 import semver from "semver";
 import Toast from "components/Toast";
+import uuidv4 from "uuid/v4";
+import installer from "installer";
 
 /***************************** Subroutines ************************************/
 
 export function* listPackages() {
   try {
+    yield put({ type: t.UPDATE_FETCHING, fetching: true });
     const res = yield call(APIcall.listPackages);
+    yield put({ type: t.UPDATE_FETCHING, fetching: false });
     if (res.success) {
       yield put(a.updatePackages(res.result));
     } else {
@@ -117,6 +121,7 @@ function* updateCore() {
   if (updatingCore) {
     return console.error("DAPPNODE CORE IS ALREADY UPDATING");
   }
+  const logId = uuidv4();
   const pendingToast = new Toast({
     message: "Updating DAppNode core...",
     pending: true
@@ -124,8 +129,10 @@ function* updateCore() {
   // blacklist the current package
   updatingCore = true;
   const res = yield call(APIcall.installPackageSafe, {
-    id: "core.dnp.dappnode.eth"
+    id: "core.dnp.dappnode.eth",
+    logId
   });
+  yield put({ type: installer.actionTypes.CLEAR_PROGRESS_LOG, logId });
   // Remove package from blacklist
   updatingCore = false;
   pendingToast.resolve(res);

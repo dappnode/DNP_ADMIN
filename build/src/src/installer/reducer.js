@@ -15,9 +15,10 @@ const initialState = {
 export default function(state = initialState, action) {
   switch (action.type) {
     case t.UPDATE_FETCHING:
-      return merge(state, {
+      return {
+        ...state,
         fetching: action.fetching
-      });
+      };
     case t.UPDATE_SELECTED_TYPES:
       return merge(state, {
         selectedTypes: action.payload
