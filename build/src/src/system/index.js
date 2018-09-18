@@ -2,14 +2,14 @@ import * as actions from "./actions";
 import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
-import Packages from "./components/PackagesRoot";
+import System from "./components/SystemRoot";
 import saga from "./sagas";
 
 const components = {
-  Packages
+  System
 };
 
-const component = Packages;
+const component = System;
 
 export default {
   actions,

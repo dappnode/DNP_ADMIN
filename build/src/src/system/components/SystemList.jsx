@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import * as action from "../actions";
 import { NAME } from "../constants";
 // Components
-import packages from "packages";
+import SystemRow from "./SystemRow";
 // Styles
 import "packages/components/packages.css";
 
@@ -95,7 +95,7 @@ class PackagesList extends React.Component {
         />
 
         {(this.props.corePackages || []).map((pkg, i) => (
-          <packages.components.PackageRow key={i} pkg={pkg} moduleName={NAME} />
+          <SystemRow key={i} pkg={pkg} moduleName={NAME} />
         ))}
       </React.Fragment>
     );

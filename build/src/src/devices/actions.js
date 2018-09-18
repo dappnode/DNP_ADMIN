@@ -4,21 +4,21 @@ import * as t from "./actionTypes";
 export const addDevice = id => ({
   type: t.CALL,
   method: "addDevice",
-  msg: "Adding " + id + "...",
+  message: "Adding " + id + "...",
   id
 });
 
 export const removeDevice = id => ({
   type: t.CALL,
   method: "removeDevice",
-  msg: "Removing " + id + "...",
+  message: "Removing " + id + "...",
   id
 });
 
 export const toggleAdmin = id => ({
   type: t.CALL,
   method: "toggleAdmin",
-  msg: "Toggling " + id + "admin credentials...",
+  message: "Toggling " + id + "admin credentials...",
   id
 });
 

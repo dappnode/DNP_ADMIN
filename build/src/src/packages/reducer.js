@@ -1,6 +1,5 @@
 //  PACKAGES
 import * as t from "./actionTypes";
-import merge from "deepmerge";
 
 const initialState = {
   logs: {}
@@ -9,11 +8,14 @@ const initialState = {
 export default function(state = initialState, action) {
   switch (action.type) {
     case t.UPDATE_LOG:
-      return merge(state, {
+      // Destructive operation, don't merge
+      return {
+        ...state,
         logs: {
+          ...state.logs,
           [action.id]: action.logs
         }
-      });
+      };
     default:
       return state;
   }

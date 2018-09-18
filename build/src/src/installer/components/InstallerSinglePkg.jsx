@@ -102,6 +102,10 @@ class InstallerInterfaceView extends React.Component {
       );
     } else {
       // Otherwise, show info an allow an install
+      let request = pkg.requestResult || {};
+      if ("fetchingRequest" in pkg) {
+        request.fetching = pkg.fetchingRequest;
+      }
       return (
         <React.Fragment>
           {header}
@@ -109,10 +113,7 @@ class InstallerInterfaceView extends React.Component {
             id={id}
             pkg={pkg}
             manifest={manifest}
-            request={{
-              ...(pkg.requestResult || {}),
-              fetching: pkg.fetchingRequest
-            }}
+            request={request}
           />
         </React.Fragment>
       );

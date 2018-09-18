@@ -5,19 +5,19 @@ import { connect } from "react-redux";
 import * as action from "../actions";
 import { NAME } from "../constants";
 // Components
-import PackageList from "./PackageList";
-import PackageInterface from "./PackageInterface";
+import SystemList from "./SystemList";
+import SystemInterface from "./SystemInterface";
 // Modules
 import status from "status";
 // Logic
 
-class Packages extends React.Component {
+class System extends React.Component {
   render() {
     return (
       <div>
         <status.components.DependenciesAlert deps={["wamp", "dappmanager"]} />
-        <Route exact path={"/" + NAME} component={PackageList} />
-        <Route path={"/" + NAME + "/:id"} component={PackageInterface} />
+        <Route exact path={"/" + NAME} component={SystemList} />
+        <Route path={"/" + NAME + "/:id"} component={SystemInterface} />
       </div>
     );
   }
@@ -38,4 +38,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Packages);
+)(System);

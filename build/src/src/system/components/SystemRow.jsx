@@ -6,35 +6,11 @@ import { shortName } from "utils/format";
 import { colors } from "utils/format";
 import { connect } from "react-redux";
 import * as action from "../actions";
-import { confirmAlert } from "react-confirm-alert"; // Import
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 
-class PackageRowView extends React.Component {
-  constructor(props) {
-    super(props);
-    this.removePackageConfirm = this.removePackageConfirm.bind(this);
-  }
-
+class SystemRowView extends React.Component {
   static propTypes = {
     moduleName: PropTypes.string.isRequired
   };
-
-  removePackageConfirm(pkg) {
-    confirmAlert({
-      title: "Removing " + shortName(pkg.name),
-      message: "Are you sure?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => this.props.removePackage(pkg)
-        },
-        {
-          label: "No",
-          onClick: () => {}
-        }
-      ]
-    });
-  }
 
   render() {
     let pkg = this.props.pkg || {};
@@ -80,14 +56,6 @@ class PackageRowView extends React.Component {
                 >
                   Open
                 </Link>
-                <button
-                  className="btn btn-outline-danger"
-                  type="button"
-                  style={{ width, paddingLeft: "0px", paddingRight: "0px" }}
-                  onClick={() => this.removePackageConfirm(this.props.pkg)}
-                >
-                  Remove
-                </button>
               </div>
             </div>
           </div>
@@ -97,27 +65,13 @@ class PackageRowView extends React.Component {
   }
 }
 
-function getPortsFromManifest(pkg) {
-  const manifest = pkg.manifest || {};
-  let image = manifest.image || {};
-  let packagePorts = image.ports || [];
-  let ports = packagePorts.map(p => p.split(":")[0]);
-  return ports;
-}
-
 const mapStateToProps = createStructuredSelector({});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    removePackage: pkg => {
-      dispatch(action.removePackage({ id: pkg.name, deleteVolumes: false }));
-      const ports = getPortsFromManifest(pkg);
-      if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
-    }
-  };
+const mapDispatchToProps = () => {
+  return {};
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PackageRowView);
+)(SystemRowView);

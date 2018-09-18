@@ -1,32 +1,60 @@
 import React from "react";
+import { connect } from "react-redux";
+import * as action from "../../actions";
+import { createStructuredSelector } from "reselect";
 
-let envInputTag = "envPckgInput_";
+function getCurrentEnvs(pkg) {
+  return pkg.envs || {};
+}
 
-export default class EnvVariables extends React.Component {
+function getDefaultEnvs(pkg) {
+  const envsArray = ((pkg.manifest || {}).image || {}).environment || [];
+  const defaultEnvs = {};
+  for (const row of envsArray) {
+    defaultEnvs[row.split("=")[0]] = row.split("=")[1] || "";
+  }
+  return defaultEnvs;
+}
+
+function getEnvs(pkg, state) {
+  const defaultEnvs = getDefaultEnvs(pkg);
+  const defaultEnvsNames = Object.keys(defaultEnvs);
+  const _state = Object.assign({}, state);
+  // Verify that the current state contains only this package's envs
+  for (const env of Object.getOwnPropertyNames(_state)) {
+    if (!defaultEnvsNames.includes(env)) {
+      delete _state[env];
+    }
+  }
+  return {
+    ...defaultEnvs,
+    ...getCurrentEnvs(pkg),
+    ..._state
+  };
+}
+
+class EnvVariablesView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      envs: this.props.envs || {}
-    };
+    this.state = {};
+    this.changeEnv = this.changeEnv.bind(this);
+    this.updateEnvs = this.updateEnvs.bind(this);
   }
 
-  changeEnv(env) {
-    return function(e) {
-      let envs = this.props.envs || {};
-      envs[env] = e.target.value;
-      this.setState({ envs });
-    };
+  changeEnv(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
   }
 
-  updateEnvs(e) {
-    this.props.updateEnvs(this.props.id, {
-      ...this.props.envs,
-      ...this.state.envs
-    });
+  updateEnvs() {
+    const pkg = this.props.pkg || {};
+    this.props.updateEnvs(this.props.id, getEnvs(pkg, this.state));
   }
 
   render() {
-    let envs = this.props.envs || {};
+    const pkg = this.props.pkg || {};
+    const envs = getEnvs(pkg, this.state);
+    // const envs = pkg.envs || {};
     if (Object.getOwnPropertyNames(envs).length === 0) {
       return null;
     }
@@ -35,16 +63,14 @@ export default class EnvVariables extends React.Component {
       return (
         <div key={i} className="input-group mb-3">
           <div className="input-group-prepend">
-            <span className="input-group-text" id="basic-addon1">
-              {env}
-            </span>
+            <span className="input-group-text">{env}</span>
           </div>
           <input
             type="text"
             className="form-control"
-            id={envInputTag + i}
+            name={env}
             value={envs[env]}
-            onChange={this.changeEnv(env).bind(this)}
+            onChange={this.changeEnv}
             aria-label={env}
             aria-describedby="basic-addon1"
           />
@@ -62,7 +88,7 @@ export default class EnvVariables extends React.Component {
               type="button"
               className="btn btn-outline-secondary tableAction-button"
               id={this.props.id}
-              onClick={this.updateEnvs.bind(this)}
+              onClick={this.updateEnvs}
             >
               Update environment variables
             </button>
@@ -72,3 +98,20 @@ export default class EnvVariables extends React.Component {
     );
   }
 }
+
+// Container
+
+const mapStateToProps = createStructuredSelector({});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    updateEnvs: (id, envs) => {
+      dispatch(action.updatePackageEnv({ id, envs, restart: true }));
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EnvVariablesView);

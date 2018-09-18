@@ -18,13 +18,29 @@ import "./checkbox.css";
  * @param {object} manifest
  * @return {object} {envName: 'envValue'}
  */
-function parseEnvs(manifest) {
-  const envsObj = {};
-  (((manifest || {}).image || {}).environment || []).forEach(env => {
-    const [name, value] = env.split("=");
-    envsObj[name] = value;
-  });
-  return envsObj;
+function getDefaultEnvs(manifest) {
+  const envsArray = ((manifest || {}).image || {}).environment || [];
+  const defaultEnvs = {};
+  for (const row of envsArray) {
+    defaultEnvs[row.split("=")[0]] = row.split("=")[1] || "";
+  }
+  return defaultEnvs;
+}
+
+function getEnvs(manifest, stateEnv) {
+  const defaultEnvs = getDefaultEnvs(manifest);
+  const defaultEnvsNames = Object.keys(defaultEnvs);
+  const _stateEnv = Object.assign({}, stateEnv);
+  // Verify that the current stateEnv contains only this package's envs
+  for (const env of Object.getOwnPropertyNames(_stateEnv)) {
+    if (!defaultEnvsNames.includes(env)) {
+      delete _stateEnv[env];
+    }
+  }
+  return {
+    ...defaultEnvs,
+    ..._stateEnv
+  };
 }
 
 /**
@@ -80,10 +96,7 @@ class ApproveInstallView extends React.Component {
 
   approveInstall() {
     // Get envs
-    const envs = {
-      ...parseEnvs(this.props.manifest),
-      ...this.state.envs
-    };
+    const envs = getEnvs(this.props.manifest, this.state.envs);
     // Get ports
     const ports = parsePorts(this.props.manifest);
     // Call install
@@ -98,13 +111,12 @@ class ApproveInstallView extends React.Component {
   }
 
   render() {
-    const manifest = this.props.manifest;
-    const envs = parseEnvs(manifest);
+    const envs = getEnvs(this.props.manifest, this.state.envs);
 
     // Get install tag: INSTALL / UPDATE / INSTALLED
     let tag = this.props.pkg.tag || "INSTALL";
 
-    const installAvailable = this.props.request && this.props.request.success;
+    const installAvailable = this.props.request && !this.props.request.fetching;
 
     const installButton = (
       <React.Fragment>

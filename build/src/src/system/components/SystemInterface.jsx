@@ -4,11 +4,11 @@ import { connect } from "react-redux";
 import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
 // Components
-import Controls from "./PackageViews/Controls";
+import Controls from "./SystemViews/Controls";
 // Packages
 import packages from "packages";
 
-class PackageInterface extends React.Component {
+class SystemInterface extends React.Component {
   render() {
     const pkg = this.props.pkg;
     if (!pkg) {
@@ -22,15 +22,15 @@ class PackageInterface extends React.Component {
 
     let id = pkg.name;
 
-    function selectPorts(pkg) {
+    function getPortsFromManifest(pkg) {
       const manifest = pkg.manifest || {};
-      let image = manifest.image || {};
-      let packagePorts = image.ports || [];
-      let ports = packagePorts.map(p => p.split(":")[0]);
+      const image = manifest.image || {};
+      const packagePorts = image.ports || [];
+      const ports = packagePorts.map(p => p.split(":")[0]);
       return ports;
     }
 
-    const ports = selectPorts(pkg);
+    const ports = getPortsFromManifest(pkg);
 
     // Merge current envs with default envs
     const envs = pkg.envs || {};
@@ -57,11 +57,7 @@ class PackageInterface extends React.Component {
           logPackage={options => this.props.logPackage(id, options)}
         />
 
-        <packages.components.Envs
-          id={id}
-          envs={envs}
-          updateEnvs={this.props.updateEnvs}
-        />
+        <packages.components.Envs id={id} pkg={pkg} />
 
         <Controls
           state={pkg.state}
@@ -89,9 +85,6 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateEnvs: envs => {
-      dispatch(action.updatePackageEnv({ envs, restart: true }));
-    },
     logPackage: (id, options) => {
       dispatch(action.logPackage({ id, options }));
     },
@@ -107,4 +100,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PackageInterface);
+)(SystemInterface);

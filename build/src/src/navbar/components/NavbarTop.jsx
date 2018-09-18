@@ -34,8 +34,13 @@ class NavbarTopView extends React.Component {
       <ul className="navbar-nav ml-auto">
         <li className="nav-item nav-item-infoText">
           <span
-            className="nav-link"
-            style={{ textTransform: "none", cursor: "auto" }}
+            style={{
+              textTransform: "none",
+              cursor: "auto",
+              padding: "0.5rem",
+              display: "block",
+              color: "#00000080"
+            }}
           >
             {DAppNodeTag.join("/")}
           </span>

@@ -7,9 +7,14 @@ export default class DashboardInterface extends React.Component {
   render() {
     // Color coding
     function statusToColor(status) {
-      if (status === 1) return colors.success;
+      if (status === 1) return "#1ccec0";
       if (status === 0) return colors.default;
-      if (status === -1) return colors.error;
+      if (status === -1) return "#ff0000";
+    }
+    function statusToIcon(status) {
+      if (status === 1) return "✓";
+      if (status === 0) return "";
+      if (status === -1) return "✕";
     }
 
     // From object to array
@@ -18,12 +23,14 @@ export default class DashboardInterface extends React.Component {
       .filter(id => id !== "mainnet")
       .map(id => ({
         color: statusToColor(status[id].status),
+        icon: statusToIcon(status[id].status),
         id,
         msg: status[id].msg
       }));
     const chains = this.props.chains || {};
     const chainsArray = Object.keys(chains).map(id => ({
       color: statusToColor(chains[id].status),
+      icon: statusToIcon(chains[id].status),
       id,
       msg: chains[id].msg
     }));
@@ -34,18 +41,16 @@ export default class DashboardInterface extends React.Component {
           <div className="card-body">
             <div className="row">
               {array.map((e, i) => (
-                <div
-                  key={i}
-                  className="col-xl-3 col-md-4 col-sm-6 col-xs-12"
-                  style={{ textTransform: "capitalize", overflow: "hidden" }}
-                >
-                  <span>{e.id + ": "}</span>
-                  <span
-                    className={"badge badge-primary"}
-                    style={{ fontSize: "85%", backgroundColor: e.color }}
-                  >
-                    {e.msg}
+                <div key={i} className="col-xl-3 col-md-4 col-sm-6 col-xs-12">
+                  <span style={{ color: e.color, fontWeight: 800 }}>
+                    {e.icon + " "}
                   </span>
+                  <span
+                    style={{ textTransform: "capitalize", overflow: "hidden" }}
+                  >
+                    <strong>{e.id + ": "}</strong>
+                  </span>
+                  {e.msg}
                 </div>
               ))}
             </div>

@@ -22,10 +22,10 @@ const NOWAMP = "Can't connect to WAMP";
 const tags = {
   wamp: "wamp",
   isAdmin: "isAdmin",
-  dapp: "dappmngr",
+  dapp: "dappmanager",
   vpn: "vpn",
   upnp: "upnp",
-  externalIP: "extIP",
+  externalIP: "externalIP",
   ipfs: "ipfs",
   mainnet: "mainnet"
 };
@@ -171,17 +171,7 @@ function* onConnectionClose({ reason, details = {} }) {
 }
 
 function* runIpfsMonitor() {
-  // Dispatching an action of type start will activate the channel
-  const channel = yield actionChannel(t.IPFS_START);
-
-  while (yield take(channel)) {
-    while (true) {
-      // This is check at every tick of the interval
-      yield call(checkIPFS);
-      // The actual interval of the loop
-      yield delay(5 * 1000);
-    }
-  }
+  yield fork(checkIPFS);
 }
 
 function* watchConnectionOpen() {

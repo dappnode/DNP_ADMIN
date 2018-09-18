@@ -57,17 +57,25 @@ export const getDirectory = state => {
   const _directory = directory(state);
   // Compute the installation tag
   for (const pkgName of Object.keys(_directory)) {
-    const latestVersion = ((_directory[pkgName] || {}).manifest || {}).version;
-    const _currentPkg = installedPackages(state).find(
-      pkg => pkg.name === pkgName
-    );
-    const currentVersion = (_currentPkg || {}).version;
-    _directory[pkgName].tag =
-      currentVersion && latestVersion
-        ? currentVersion === latestVersion
-          ? "UPDATED"
-          : "UPDATE"
-        : "INSTALL";
+    if (pkgName.startsWith("/ipfs/")) {
+      const installed = installedPackages(state).find(
+        pkg => pkg.origin === pkgName
+      );
+      _directory[pkgName].tag = installed ? "UPDATED" : "INSTALL";
+    } else {
+      const latestVersion = ((_directory[pkgName] || {}).manifest || {})
+        .version;
+      const _currentPkg = installedPackages(state).find(
+        pkg => pkg.name === pkgName
+      );
+      const currentVersion = (_currentPkg || {}).version;
+      _directory[pkgName].tag =
+        currentVersion && latestVersion
+          ? currentVersion === latestVersion
+            ? "UPDATED"
+            : "UPDATE"
+          : "INSTALL";
+    }
   }
   return _directory;
 };

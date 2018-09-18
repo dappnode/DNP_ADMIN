@@ -5,7 +5,9 @@ export default class Dependencies extends React.Component {
   render() {
     const request = this.props.request;
     let body;
-    if (request.fetching) {
+    if (!Object.keys(request).length) {
+      body = <p>Empty request</p>;
+    } else if (request.fetching) {
       body = (
         <React.Fragment>
           <p style={{ opacity: 0.6 }}>
@@ -20,7 +22,7 @@ export default class Dependencies extends React.Component {
       body = (
         <React.Fragment>
           <p style={{ color: "#2fbcb2" }}>
-            <strong>Compatibile ✓</strong>
+            <strong>✓ Compatibile</strong>
           </p>
           <div className="row">
             <div className="col-4" />
@@ -39,9 +41,16 @@ export default class Dependencies extends React.Component {
         </React.Fragment>
       );
     } else if (request.errors) {
-      body = <p style={{ color: "red" }}>Install request not compatible</p>;
+      body = (
+        <p style={{ color: "#d50f0fd1" }}>✕ Install request not compatible</p>
+      );
     } else {
-      body = <h5>Unkown state</h5>;
+      body = (
+        <p style={{ color: "#d50f0fd1" }}>
+          ✕ Something went wrong, broken request object{" "}
+          {JSON.stringify(request)}
+        </p>
+      );
     }
 
     return (

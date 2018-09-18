@@ -7,7 +7,12 @@ export function isIpfsHash(hash) {
 export function isDnpDomain(id) {
   if (!id || !id.includes(".")) return false;
   const [, dnpTag, , extension] = id.split(".");
-  return dnpTag && dnpTag === "dnp" && extension && extension === "eth";
+  return (
+    dnpTag &&
+    (dnpTag === "dnp" || dnpTag === "public") &&
+    extension &&
+    extension === "eth"
+  );
 }
 
 export function isIpfsMultiHash(multiHash) {
