@@ -6,8 +6,17 @@ import * as action from "../actions";
 import { NAME } from "../constants";
 // Components
 import SystemRow from "./SystemRow";
+import installer from "installer";
 // Styles
 import "packages/components/packages.css";
+
+function findProgressLog(pkgName, progressLogs) {
+  for (const logId of Object.keys(progressLogs)) {
+    if (Object.keys(progressLogs[logId]).includes(pkgName)) {
+      return progressLogs[logId];
+    }
+  }
+}
 
 class UpdateSystem extends React.Component {
   render() {
@@ -63,7 +72,11 @@ class UpdateSystem extends React.Component {
               ))}
               <div className="mt-3">{alerts}</div>
             </div>
-            <div className="btn-group" role="group" style={{ margin }}>
+            <div
+              className="btn-group float-right"
+              role="group"
+              style={{ margin }}
+            >
               <button
                 className="btn btn-outline-danger"
                 type="button"
@@ -83,11 +96,23 @@ class UpdateSystem extends React.Component {
 
 class PackagesList extends React.Component {
   render() {
+    const progressLog = findProgressLog(
+      "core.dnp.dappnode.eth",
+      this.props.progressLogs
+    );
+
     return (
       <React.Fragment>
         <div className="section-title" style={{ textTransform: "capitalize" }}>
           {NAME}
         </div>
+
+        {progressLog ? (
+          <installer.components.ProgressLog
+            progressLog={progressLog}
+            subtitle={"Updating DAppNode..."}
+          />
+        ) : null}
 
         <UpdateSystem
           coreDeps={this.props.coreDeps}
@@ -107,7 +132,8 @@ class PackagesList extends React.Component {
 const mapStateToProps = createStructuredSelector({
   corePackages: selector.getCorePackages,
   dnpPackages: selector.getDnpPackages,
-  coreDeps: selector.coreDeps
+  coreDeps: selector.coreDeps,
+  progressLogs: installer.selectors.progressLogs
 });
 
 const mapDispatchToProps = dispatch => {

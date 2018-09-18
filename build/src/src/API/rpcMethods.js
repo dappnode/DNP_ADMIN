@@ -84,13 +84,19 @@ export const getStatusExternalIp = () =>
 
 /* PACKAGE */
 
-// addPackage CALL DOCUMENTATION:
+// installPackage CALL DOCUMENTATION:
 // > kwargs: { id }
 // > result: {}
 
-export const addPackage = (kwargs = {}) =>
+export const installPackage = (kwargs = {}) =>
   wrapCall({
     event: "installPackage.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["id"])
+  });
+
+export const installPackageSafe = (kwargs = {}) =>
+  wrapCall({
+    event: "installPackageSafe.dnp.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id"])
   });
 

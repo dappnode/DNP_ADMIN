@@ -20,7 +20,9 @@ export default class ProgressLog extends React.Component {
     const progressLog = this.props.progressLog || {};
     return (
       <React.Fragment>
-        <div className="section-subtitle">Installing...</div>
+        <div className="section-subtitle">
+          {this.props.subtitle || "Installing..."}
+        </div>
         <div className="card mb-4">
           <div className="card-body">
             {Object.keys(progressLog).map((pkg, i) => (

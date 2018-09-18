@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { shortName } from "utils/format";
 import { colors } from "utils/format";
 import { connect } from "react-redux";
-import * as action from "../actions";
 
 class SystemRowView extends React.Component {
   static propTypes = {

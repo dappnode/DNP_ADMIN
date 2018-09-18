@@ -42,7 +42,7 @@ export function* install({ id, options }) {
       msg: "Fetching dependencies...",
       pkgName: id.split("@")[0]
     });
-    const res = yield call(APIcall.addPackage, { id, logId, options });
+    const res = yield call(APIcall.installPackage, { id, logId, options });
     // Remove package from blacklist
     yield put({ type: t.CLEAR_PROGRESS_LOG, logId });
     pendingToast.resolve(res);

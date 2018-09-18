@@ -1,14 +1,4 @@
-import {
-  actionChannel,
-  take,
-  call,
-  put,
-  all,
-  takeEvery,
-  fork
-} from "redux-saga/effects";
-import { delay } from "redux-saga";
-import * as t from "./actionTypes";
+import { call, put, all, takeEvery, fork } from "redux-saga/effects";
 import { updateStatus } from "./actions";
 import * as APIcall from "API/rpcMethods";
 import { NON_ADMIN_RESPONSE } from "./constants";

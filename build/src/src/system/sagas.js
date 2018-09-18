@@ -111,10 +111,25 @@ export function* checkCoreUpdate() {
   }
 }
 
+let updatingCore = false;
 function* updateCore() {
-  yield call(APIcall.addPackage, {
+  // Prevent double installations
+  if (updatingCore) {
+    return console.error("DAPPNODE CORE IS ALREADY UPDATING");
+  }
+  const pendingToast = new Toast({
+    message: "Updating DAppNode core...",
+    pending: true
+  });
+  // blacklist the current package
+  updatingCore = true;
+  const res = yield call(APIcall.installPackageSafe, {
     id: "core.dnp.dappnode.eth"
   });
+  // Remove package from blacklist
+  updatingCore = false;
+  pendingToast.resolve(res);
+
   yield call(checkCoreUpdate);
 }
 

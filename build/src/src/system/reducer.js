@@ -17,13 +17,15 @@ export default function(state = initialState, action) {
         }
       });
     case t.SYSTEM_UPDATE_AVAILABLE:
-      return merge(state, {
+      return {
+        ...state,
         systemUpdateAvailable: action.systemUpdateAvailable
-      });
+      };
     case t.CORE_DEPS:
-      return merge(state, {
+      return {
+        ...state,
         coreDeps: action.coreDeps
-      });
+      };
     default:
       return state;
   }
