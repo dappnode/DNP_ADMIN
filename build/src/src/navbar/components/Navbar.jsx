@@ -1,22 +1,39 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import ErrorBoundary from "react-error-boundary";
+import ErrorBoundary from "components/ErrorBoundary";
 // Components
 import NavbarSide from "./NavbarSide";
 import NavbarTop from "./NavbarTop";
 // css
 import "./sb-admin-navbar.css"; // default
 import "./styles.css"; // custom additions
+import LogoWide from "img/logo-wide.png";
 
 export default class Navbar extends React.Component {
   render() {
     return (
       <nav
+        style={{
+          borderWidth: "0px 0px 1px 0px",
+          height: "61px"
+        }}
         className="navbar navbar-expand-lg navbar-light bg-topnav navbar-border fixed-top"
         id="mainNav"
       >
-        <NavLink className="navbar-brand" to={"/"}>
-          ADMIN UI
+        {/* Top box, part of the top and sidenavbar (COLLAPSED) */}
+        <NavLink
+          className="navbar-brand"
+          to={"/"}
+          style={{
+            width: "var(--width)",
+            padding: "10px 25px",
+            // This relative -1em compensates the top-navbar padding preserving the exact same size image
+            // The logo size and position is fixed by: width 200px, padding-sides of 25px, pos-left 0px
+            position: "relative",
+            left: "-1em"
+          }}
+        >
+          <img src={LogoWide} className="img-fluid" alt="DAppNode logo" />
         </NavLink>
 
         <button
@@ -31,7 +48,11 @@ export default class Navbar extends React.Component {
           <span className="navbar-toggler-icon" />
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarResponsive">
+        <div
+          className="collapse navbar-collapse"
+          id="navbarResponsive"
+          style={{ backgroundColor: "white" }}
+        >
           <ErrorBoundary>
             <NavbarSide />
           </ErrorBoundary>

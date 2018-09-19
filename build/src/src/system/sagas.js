@@ -1,14 +1,25 @@
 import { call, put, takeEvery, all } from "redux-saga/effects";
-import * as APIcall from "API/crossbarCalls";
+import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
-import * as actions from "./actions";
+import * as a from "./actions";
 import semver from "semver";
+import Toast from "components/Toast";
+import uuidv4 from "uuid/v4";
+import installer from "installer";
 
 /***************************** Subroutines ************************************/
 
 export function* listPackages() {
   try {
-    const packages = yield call(APIcall.listPackages);
+    yield put({ type: t.UPDATE_FETCHING, fetching: true });
+    const res = yield call(APIcall.listPackages);
+    yield put({ type: t.UPDATE_FETCHING, fetching: false });
+    if (res.success) {
+      yield put(a.updatePackages(res.result));
+    } else {
+      new Toast(res);
+    }
+
     // listPackages CALL DOCUMENTATION:
     // > kwargs: {}
     // > result: [{
@@ -26,24 +37,19 @@ export function* listPackages() {
     //     envs: <Env variables> (object)
     //   },
     //   ...]
-
-    // Abort on error
-    if (!packages) return;
-
-    // Update packages
-    yield put(actions.updatePackages(packages));
   } catch (error) {
     console.error("Error fetching directory: ", error);
   }
 }
 
-function* callApi(action) {
+function* callApi({ method, kwargs, message }) {
   try {
-    yield call(APIcall[action.call], action.kwargs);
+    const pendingToast = new Toast({ message, pending: true });
+    const res = yield call(APIcall[method], kwargs);
+    pendingToast.resolve(res);
   } catch (error) {
-    console.error("Error on " + action.call + ": ", error);
+    console.error("Error on " + method + ": ", error);
   }
-  yield call(listPackages);
 }
 
 function shouldUpdate(v1, v2) {
@@ -55,13 +61,22 @@ function shouldUpdate(v1, v2) {
 
 export function* checkCoreUpdate() {
   try {
-    const packages = yield call(APIcall.listPackages);
-    const coreData = yield call(APIcall.fetchPackageData, {
+    const packagesRes = yield call(APIcall.listPackages);
+    const coreDataRes = yield call(APIcall.fetchPackageData, {
       id: "core.dnp.dappnode.eth"
     });
 
     // Abort on error
-    if (!packages || !coreData) return;
+    if (!packagesRes.success) {
+      console.error("Error listing packages", packagesRes.message);
+      return;
+    }
+    if (!coreDataRes.success) {
+      console.error("Error getting coreData", coreDataRes.message);
+      return;
+    }
+    const packages = packagesRes.result;
+    const coreData = coreDataRes.result;
 
     const coreDeps = coreData.manifest.dependencies;
     const coreDepsToInstall = [];
@@ -100,11 +115,50 @@ export function* checkCoreUpdate() {
   }
 }
 
+let updatingCore = false;
 function* updateCore() {
-  yield call(APIcall.addPackage, {
-    id: "core.dnp.dappnode.eth"
+  // Prevent double installations
+  if (updatingCore) {
+    return console.error("DAPPNODE CORE IS ALREADY UPDATING");
+  }
+  const logId = uuidv4();
+  const pendingToast = new Toast({
+    message: "Updating DAppNode core...",
+    pending: true
   });
+  // blacklist the current package
+  updatingCore = true;
+  const res = yield call(APIcall.installPackageSafe, {
+    id: "core.dnp.dappnode.eth",
+    logId
+  });
+  yield put({ type: installer.actionTypes.CLEAR_PROGRESS_LOG, logId });
+  // Remove package from blacklist
+  updatingCore = false;
+  pendingToast.resolve(res);
+
   yield call(checkCoreUpdate);
+}
+
+function* logPackage({ kwargs }) {
+  const { id } = kwargs;
+  try {
+    const res = yield call(APIcall.logPackage, kwargs);
+    if (res.success) {
+      const { logs } = res.result || {};
+      if (!logs) {
+        yield put(a.updateLog("Error, logs missing", id));
+      } else if (logs === "") {
+        yield put(a.updateLog("Received empty logs", id));
+      } else {
+        yield put(a.updateLog(logs, id));
+      }
+    } else {
+      yield put(a.updateLog("Error logging package: \n" + res.message, id));
+    }
+  } catch (e) {
+    console.error("Error getting package logs:", e);
+  }
 }
 
 /******************************************************************************/
@@ -112,11 +166,15 @@ function* updateCore() {
 /******************************************************************************/
 
 function* watchListPackages() {
-  yield takeEvery(t.LIST_PACKAGES, listPackages);
+  yield takeEvery("CONNECTION_OPEN", listPackages);
 }
 
 function* watchCall() {
   yield takeEvery(t.CALL, callApi);
+}
+
+function* watchLogPackage() {
+  yield takeEvery(t.LOG_PACKAGE, logPackage);
 }
 
 function* watchConnectionOpen() {
@@ -133,6 +191,7 @@ export default function* root() {
   yield all([
     watchListPackages(),
     watchCall(),
+    watchLogPackage(),
     watchConnectionOpen(),
     watchUpdateCore()
   ]);

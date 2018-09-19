@@ -2,24 +2,25 @@
 import * as t from "./actionTypes";
 
 const initialState = {
-  packages: [],
+  fetching: false,
   logs: {}
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case t.UPDATE_PACKAGES:
-      return {
-        ...state,
-        packages: action.packages
-      };
     case t.UPDATE_LOG:
+      // Destructive operation, don't merge
       return {
         ...state,
         logs: {
           ...state.logs,
           [action.id]: action.logs
         }
+      };
+    case t.UPDATE_FETCHING:
+      return {
+        ...state,
+        fetching: action.fetching
       };
     default:
       return state;

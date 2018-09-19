@@ -46,7 +46,7 @@ class DevicesView extends React.Component {
         <status.components.DependenciesAlert
           deps={["wamp", "vpn", "externalIP"]}
         />
-        <h1>Device manager</h1>
+        <div className="section-title">Devices</div>
 
         <div className="input-group mb-3">
           <input

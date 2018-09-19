@@ -5,3 +5,4 @@ socket.io.js
 build
 node_modules
 abi.js
+coverage

@@ -21,10 +21,10 @@ export default class Home extends React.Component {
               type="button"
               className="btn btn-outline-dark btn-lg btn-block"
             >
-              <div className="nav-link-icon">
+              <div className="text-center" style={{ opacity: 0.6 }}>
                 <item.icon scale={2.5} />
               </div>
-              <div>{item.name}</div>
+              <div style={{ fontSize: "16px" }}>{item.name}</div>
             </button>
           </NavLink>
         </div>

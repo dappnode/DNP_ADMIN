@@ -1,6 +1,6 @@
 // DASHBOARD
 import { call, put, takeEvery, all } from "redux-saga/effects";
-import * as APIcall from "API/crossbarCalls";
+import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
 
 /***************************** Subroutines ************************************/
@@ -15,10 +15,12 @@ export function* getUserActionLogs() {
     // > result: logs <string>
 
     // Abort on error
-    if (!res) return;
+    if (!res.success) {
+      return console.error("Error fetching userActionLogs", res.message);
+    }
 
     // Process userActionLogs
-    const userActionLogs = res
+    const userActionLogs = res.result
       .trim()
       .split("\n")
       .map(e => JSON.parse(e));

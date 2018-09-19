@@ -9,7 +9,7 @@ export default class PackageControls extends React.Component {
 
     const actions = [
       {
-        name: toggleButtonTag,
+        name: toggleButtonTag || "Toggle",
         text: "Toggle the state of the package from running to paused",
         action: this.props.togglePackage,
         availableForCore: false,
@@ -27,7 +27,7 @@ export default class PackageControls extends React.Component {
         name: "Remove volumes",
         text:
           "Deleting this package volumes is a permanent action and all data will be lost. In the case of the ethcahin core package, resyncing may take a few days",
-        action: this.props.restartPackageVolumes,
+        action: this.props.restartVolumes,
         availableForCore: true,
         type: "danger"
       },
@@ -53,20 +53,21 @@ export default class PackageControls extends React.Component {
       .filter(action => action.availableForCore || !this.props.isCORE)
       .map((action, i) => {
         // Remove the top border from the first row only
-        const style = i ? {} : { borderTop: "none" };
+        const style = i ? {} : { borderTop: "none", paddingTop: 0 };
         return (
           <tr key={i}>
-            <td style={style}>
+            <td style={{ ...style, paddingLeft: 0 }}>
               <strong>{action.name}</strong>
               <br />
               {action.text}
             </td>
-            <td style={{ ...style, textAlign: "right" }}>
+            <td style={{ ...style, textAlign: "right", paddingRight: 0 }}>
               <button
                 type="button"
                 className={
                   "btn btn-outline-" + action.type + " tableAction-button"
                 }
+                style={{ width: "100px", whiteSpace: "normal" }}
                 onClick={action.action}
               >
                 {action.name}
@@ -79,13 +80,11 @@ export default class PackageControls extends React.Component {
     // Table style -> Removes the space below the table, only for tables in cards
     return (
       <div className="border-bottom mb-4">
-        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
-          <h4>Package controls</h4>
-        </div>
+        <div className="section-subtitle">Package controls</div>
         <div className="card mb-4">
           <div className="card-body">
             <table
-              className="table table-hover table-responsive"
+              className="table table-responsive"
               style={{ marginBottom: "0" }}
             >
               <tbody>{rows}</tbody>

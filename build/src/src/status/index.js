@@ -5,11 +5,10 @@ import * as selectors from "./selectors";
 import reducer from "./reducer";
 import saga from "./sagas";
 
-import Status from "./components/Status";
 import DependenciesAlert from "./components/DependenciesAlert";
 
 export default {
-  component: Status,
+  component: null,
   components: {
     DependenciesAlert
   },

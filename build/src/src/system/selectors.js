@@ -22,14 +22,19 @@ import { NAME } from "./constants";
 
 // this.state.packageInfo[this.state.targetPackageName]
 
+// #### EXTERNAL
+const packages = state => state.installedPackages;
+
+// #### INTERNAL
+
 const local = state => state[NAME];
-const packages = state => local(state).packages;
 const logs = state => local(state).logs;
 export const systemUpdateAvailable = state =>
   local(state).systemUpdateAvailable;
 export const coreDeps = state => local(state).coreDeps;
 const pathname = state => state.router.location.pathname || "";
 const id = state => pathname(state).split(NAME + "/")[1] || "";
+export const fetching = state => local(state).fetching || false;
 
 // Package lists
 
