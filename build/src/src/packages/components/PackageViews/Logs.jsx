@@ -4,6 +4,7 @@ import Terminal from "./Terminal";
 import "./switch.css";
 
 const refreshInterval = 2 * 1000;
+const terminalID = "terminal";
 
 export default class DisplayLogs extends React.Component {
   constructor() {
@@ -65,6 +66,11 @@ export default class DisplayLogs extends React.Component {
     }
   };
 
+  scrollToBottom() {
+    const element = document.getElementById(terminalID);
+    if (element) element.scrollTop = element.scrollHeight;
+  }
+
   render() {
     let logs = this.props.logs || "";
     let logsArray = logs.split(/\r?\n/);
@@ -76,13 +82,11 @@ export default class DisplayLogs extends React.Component {
       .join("\n");
 
     return (
-      <div className="border-bottom mb-4">
-        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
-          <h4>Logs</h4>
-        </div>
+      <React.Fragment>
+        <div className="section-subtitle">Logs</div>
         <div className="card mb-4">
           <div className="card-body">
-            <div className="form-group">
+            <div className="float-left mr-4 mb-1">
               <span className="switch switch-sm">
                 <input
                   type="checkbox"
@@ -94,7 +98,7 @@ export default class DisplayLogs extends React.Component {
                 <label htmlFor="switch-refresh">Auto-refresh logs</label>
               </span>
             </div>
-            <div className="form-group">
+            <div className="float-left mr-4 mb-1">
               <span className="switch switch-sm">
                 <input
                   type="checkbox"
@@ -105,6 +109,20 @@ export default class DisplayLogs extends React.Component {
                 />
                 <label htmlFor="switch-ts">Display timestamps</label>
               </span>
+            </div>
+            <div className="float-left mr-4 mb-1">
+              <button
+                type="button"
+                className="btn btn-outline-secondary tableAction-button"
+                style={{
+                  marginBottom: "8px",
+                  position: "relative",
+                  top: "-3px"
+                }}
+                onClick={this.scrollToBottom.bind(this)}
+              >
+                Scroll to bottom
+              </button>
             </div>
             <div className="input-group mb-3">
               <div className="input-group-prepend">
@@ -130,10 +148,10 @@ export default class DisplayLogs extends React.Component {
                 onChange={this.change("search")}
               />
             </div>
-            <Terminal text={logsFiltered} />
+            <Terminal text={logsFiltered} terminalID={terminalID} />
           </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

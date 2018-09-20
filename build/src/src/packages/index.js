@@ -2,14 +2,22 @@ import * as actions from "./actions";
 import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
-import Packages from "./components/PackagesRoot";
+import PackagesRoot from "./components/PackagesRoot";
+import PackageRow from "./components/PackageRow";
+import Details from "./components/PackageViews/Details";
+import Logs from "./components/PackageViews/Logs";
+import Envs from "./components/PackageViews/Envs";
 import saga from "./sagas";
 
 const components = {
-  Packages
+  PackagesRoot,
+  PackageRow,
+  Details,
+  Logs,
+  Envs
 };
 
-const component = Packages;
+const component = PackagesRoot;
 
 export default {
   actions,

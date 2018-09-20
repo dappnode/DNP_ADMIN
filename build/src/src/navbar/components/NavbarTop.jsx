@@ -1,9 +1,7 @@
 import React from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import * as action from "../actions";
 import * as selector from "../selectors";
-import eventBus from "eventBus";
 // modules
 import chains from "chains";
 // Icons
@@ -12,20 +10,8 @@ import Link from "Icons/Link";
 import parseType from "utils/parseType";
 // Components
 import NavbarTopDropdownMessages from "./NavbarTopDropdownMessages";
-// Logic
-import { isOpen } from "API/crossbarCalls";
-
-let token;
 
 class NavbarTopView extends React.Component {
-  componentWillMount() {
-    token = eventBus.subscribe("connection_open", this.props.fetchVpnParams);
-    if (isOpen()) this.props.fetchVpnParams();
-  }
-  componentWillUnmount() {
-    eventBus.unsubscribe(token);
-  }
-
   render() {
     let chainInfo = Object.keys(this.props.chains).map(id => ({
       title: id,
@@ -48,8 +34,13 @@ class NavbarTopView extends React.Component {
       <ul className="navbar-nav ml-auto">
         <li className="nav-item nav-item-infoText">
           <span
-            className="nav-link"
-            style={{ textTransform: "none", cursor: "auto" }}
+            style={{
+              textTransform: "none",
+              cursor: "auto",
+              padding: "0.5rem",
+              display: "block",
+              color: "#00000080"
+            }}
           >
             {DAppNodeTag.join("/")}
           </span>
@@ -65,7 +56,7 @@ class NavbarTopView extends React.Component {
           </a>
         </li>
         <li className="nav-item nav-item-infoText">
-          <a href="https://leaderboard.dappnode.io/" className="nav-link">
+          <a href="https://dappnode.io/" className="nav-link">
             Donate
           </a>
         </li>
@@ -81,11 +72,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => {
-  return {
-    fetchVpnParams: () => {
-      dispatch(action.fetchVpnParams());
-    }
-  };
+  return {};
 };
 
 const NavbarTop = connect(

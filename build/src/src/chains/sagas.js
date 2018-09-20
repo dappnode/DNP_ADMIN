@@ -2,6 +2,7 @@ import { put, takeEvery, all, select } from "redux-saga/effects";
 import * as t from "./actionTypes";
 import { ethchains } from "./constants";
 import * as selector from "./selectors";
+import * as a from "./actions";
 
 /***************************** Subroutines ************************************/
 
@@ -19,6 +20,11 @@ function* installedPackage(action) {
   }
 }
 
+function* init() {
+  yield put(a.init());
+  yield put(a.initMainnet());
+}
+
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
@@ -27,8 +33,12 @@ function* watchInstalledPackage() {
   yield takeEvery(t.INSTALLED_PACKAGE, installedPackage);
 }
 
+function* watchConnectionOpen() {
+  yield takeEvery("CONNECTION_OPEN", init);
+}
+
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
-  yield all([watchInstalledPackage()]);
+  yield all([watchInstalledPackage(), watchConnectionOpen()]);
 }

@@ -1,67 +1,53 @@
 //  INSTALLER
 import * as t from "./actionTypes";
+import merge from "deepmerge";
 
 const initialState = {
   fetching: false,
   directory: [],
-  packages: {},
-  selectedPackageId: "",
-  selectedVersion: "",
   selectedTypes: [],
   input: "",
-  isInstalling: {}
+  isInstalling: {},
+  progressLogs: {},
+  shouldOpenPorts: false
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case t.ISINSTALLING:
-      return {
-        ...state,
-        isInstalling: {
-          ...state.isInstalling,
-          [action.id]: action.payload
-        }
-      };
     case t.UPDATE_FETCHING:
       return {
         ...state,
         fetching: action.fetching
       };
-    case t.UPDATE_DIRECTORY:
-      return {
-        ...state,
-        directory: action.directory
-      };
-    case t.UPDATE_PACKAGE:
-      return {
-        ...state,
-        packages: {
-          ...state.packages,
-          [action.id]: Object.assign(
-            state.packages[action.id] || {},
-            action.data
-          )
-        }
-      };
-    case t.UPDATE_SELECTED_PACKAGE:
-      return {
-        ...state,
-        selectedPackageId: action.payload
-      };
-    case t.UPDATE_SELECTED_VERSION:
-      return {
-        ...state,
-        selectedVersion: action.payload
-      };
     case t.UPDATE_SELECTED_TYPES:
-      return {
-        ...state,
+      return merge(state, {
         selectedTypes: action.payload
-      };
+      });
     case t.UPDATE_INPUT:
+      return merge(state, {
+        input: action.payload
+      });
+    case t.SHOULD_OPEN_PORTS:
+      return merge(state, {
+        shouldOpenPorts: action.shouldOpenPorts
+      });
+    case t.PROGRESS_LOG:
+      return merge(state, {
+        progressLogs: {
+          [action.logId]: {
+            [action.pkgName]: action.msg
+          }
+        }
+      });
+    case t.CLEAR_PROGRESS_LOG:
+      // When an installation has finished, clear all pkg's progressLogs
+      // that belonged to that installation, refered by the logId
+      const progressLogs = Object.assign({}, state.progressLogs);
+      delete progressLogs[action.logId];
+      // Destructive action, cannot use merge
       return {
         ...state,
-        input: action.payload
+        progressLogs
       };
     default:
       return state;

@@ -1,4 +1,7 @@
 :root {
+  --width: 200px;
+  --heigth: 61px;
+
   --sidenav-bg-color: #fff;
   --sidenav-color: #241f20;
   --sidenav-color-hover: #7f7a7b;
@@ -29,10 +32,6 @@
   float: right;
   /* content: '\f107'; */
   font-family: "FontAwesome";
-}
-
-#mainNav .navbar-collapse .navbar-sidenav .nav-link-collapse.collapsed:after {
-  /* content: '\f105'; */
 }
 
 #mainNav .navbar-collapse .navbar-sidenav .sidenav-second-level,
@@ -93,14 +92,6 @@
 #mainNav
   .navbar-collapse
   .navbar-nav
-  > .nav-item.dropdown.show
-  > .nav-link:after {
-  /* content: '\f107'; */
-}
-
-#mainNav
-  .navbar-collapse
-  .navbar-nav
   > .nav-item.dropdown
   .dropdown-menu
   > .dropdown-item
@@ -112,7 +103,7 @@
 
 @media (min-width: 992px) {
   #mainNav .navbar-brand {
-    width: 178px;
+    width: var(--width);
   }
   #mainNav .navbar-collapse {
     overflow: visible;
@@ -128,7 +119,7 @@
     margin-top: 56px;
   }
   #mainNav .navbar-collapse .navbar-sidenav > .nav-item {
-    width: 178px;
+    width: var(--width);
     padding: 0;
   }
   #mainNav .navbar-collapse .navbar-sidenav > .nav-item > .nav-link {
@@ -151,7 +142,7 @@
     > .nav-item
     .sidenav-third-level
     > li {
-    width: 178px;
+    width: var(--width);
   }
   #mainNav
     .navbar-collapse
@@ -224,7 +215,7 @@
     margin-top: calc(100vh - 56px);
   }
   #mainNav.fixed-top .sidenav-toggler > .nav-item {
-    width: 178px;
+    width: var(--width);
     padding: 0;
   }
   #mainNav.fixed-top .sidenav-toggler > .nav-item > .nav-link {
@@ -293,7 +284,7 @@ body.sidenav-toggled #mainNav.static-top #sidenavToggler i {
 
 @media (min-width: 992px) {
   .content-wrapper {
-    margin-left: 178px;
+    margin-left: var(--width);
   }
 }
 
@@ -548,7 +539,7 @@ footer.sticky-footer {
 
 @media (min-width: 992px) {
   footer.sticky-footer {
-    width: calc(100% - 178px);
+    width: calc(100% - var(--width));
   }
 }
 

@@ -5,7 +5,7 @@ import Circle from "Icons/Circle";
 class DropdownIcon extends React.Component {
   render() {
     return (
-      <a
+      <span
         className="nav-link dropdown-toggle mr-lg-2"
         id={this.props.name + "Dropdown"}
         data-toggle="dropdown"
@@ -20,7 +20,7 @@ class DropdownIcon extends React.Component {
         <span className={"indicator d-none d-lg-block text-" + this.props.type}>
           <Circle scale={1.3} />
         </span>
-      </a>
+      </span>
     );
   }
 }

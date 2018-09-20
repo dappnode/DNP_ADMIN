@@ -2,6 +2,17 @@
   --border-color: #e5e5e5;
 }
 
+.logo-funded-by {
+  opacity: 0.15;
+  -webkit-transition: opacity 500ms ease;
+  -moz-transition: opacity 500ms ease;
+  -o-transition: opacity 500ms ease;
+  transition: opacity 500ms ease;
+}
+.logo-funded-by:hover {
+  opacity: 0.5;
+}
+
 .sidenav-topbox-text {
   position: relative;
   top: -12px;
@@ -43,12 +54,8 @@
   padding-top: 56px;
 }
 
-.nav-item-bigger {
-  font-size: 110%;
-}
-
 .nav-link-icon {
-  margin-right: 6px;
+  margin-right: 19px;
   position: relative;
   /* top: 5px; */
   opacity: 0.6;

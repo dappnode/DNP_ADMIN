@@ -2,36 +2,29 @@ import React from "react";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
+import { NAME } from "../constants";
 // Components
 import PackageRow from "./PackageRow";
+import Loading from "components/Loading";
 // Styles
 import "./packages.css";
 
 class PackagesList extends React.Component {
   render() {
     return (
-      <div className="body">
-        <h1>Package manager</h1>
-        <br />
-        <div className="table-responsive">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Version</th>
-                <th>State</th>
-                <th />
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {this.props.dnpPackages.map((pkg, i) => (
-                <PackageRow key={i} pkg={pkg} />
-              ))}
-            </tbody>
-          </table>
+      <React.Fragment>
+        <div className="section-title" style={{ textTransform: "capitalize" }}>
+          {NAME}
         </div>
-      </div>
+
+        {this.props.fetching && (this.props.dnpPackages || []).length === 0 ? (
+          <Loading msg="Loading installed packages..." />
+        ) : (
+          (this.props.dnpPackages || []).map((pkg, i) => (
+            <PackageRow key={i} pkg={pkg} moduleName={NAME} />
+          ))
+        )}
+      </React.Fragment>
     );
   }
 }
@@ -40,7 +33,8 @@ class PackagesList extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   corePackages: selector.getCorePackages,
-  dnpPackages: selector.getDnpPackages
+  dnpPackages: selector.getDnpPackages,
+  fetching: selector.fetching
 });
 
 const mapDispatchToProps = {};

@@ -1,8 +1,9 @@
 //  PACKAGES
 import * as t from "./actionTypes";
+import merge from "deepmerge";
 
 const initialState = {
-  packages: [],
+  fetching: false,
   logs: {},
   systemUpdateAvailable: false,
   coreDeps: []
@@ -10,19 +11,12 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case t.UPDATE_PACKAGES:
-      return {
-        ...state,
-        packages: action.packages
-      };
     case t.UPDATE_LOG:
-      return {
-        ...state,
+      return merge(state, {
         logs: {
-          ...state.logs,
           [action.id]: action.logs
         }
-      };
+      });
     case t.SYSTEM_UPDATE_AVAILABLE:
       return {
         ...state,
@@ -32,6 +26,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         coreDeps: action.coreDeps
+      };
+    case t.UPDATE_FETCHING:
+      return {
+        ...state,
+        fetching: action.fetching
       };
     default:
       return state;

@@ -1,7 +1,7 @@
 // WATCHERS
 import * as t from "./actionTypes";
 import * as selector from "./selectors";
-import * as APIcalls from "API/crossbarCalls";
+import * as APIcalls from "API/rpcMethods";
 import modules from "./modules";
 import { ethchains } from "./constants";
 
@@ -48,8 +48,9 @@ export const initMainnet = () => dispatch => {
 
 export const init = () => (dispatch, getState) => {
   // Check which chains are ready
-  APIcalls.listPackages().then(packages => {
-    if (!packages) return;
+  APIcalls.listPackages().then(res => {
+    if (!res.success) return;
+    const packages = res.result;
     packages.forEach(pkg => {
       const chain = ethchains.find(chain => chain.name === pkg.name);
       if (!chain) return;

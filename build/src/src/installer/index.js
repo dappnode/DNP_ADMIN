@@ -1,18 +1,22 @@
 import * as actions from "./actions";
+import * as actionTypes from "./actionTypes";
 import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
 import saga from "./sagas";
-import Installer from "./containers/Installer";
+import InstallerRoot from "./components/InstallerRoot";
+import ProgressLog from "./components/InstallCardComponents/ProgressLog";
 
 const components = {
-  Installer
+  InstallerRoot,
+  ProgressLog
 };
 
-const component = Installer;
+const component = InstallerRoot;
 
 export default {
   actions,
+  actionTypes,
   component,
   components,
   constants,

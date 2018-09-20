@@ -5,6 +5,9 @@ import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
 import { push } from "connected-react-router";
 import { NAME } from "../constants";
+import { shortName } from "utils/format";
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 // Components
 import Details from "./PackageViews/Details";
 import Logs from "./PackageViews/Logs";
@@ -12,6 +15,28 @@ import Envs from "./PackageViews/Envs";
 import Controls from "./PackageViews/Controls";
 
 class PackageInterface extends React.Component {
+  constructor(props) {
+    super(props);
+    this.removePackageConfirm = this.removePackageConfirm.bind(this);
+  }
+
+  removePackageConfirm(pkg, deleteVolumes) {
+    confirmAlert({
+      title: "Removing " + shortName(pkg.name),
+      message: "Are you sure?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => this.props.removePackage(pkg, deleteVolumes)
+        },
+        {
+          label: "No",
+          onClick: () => {}
+        }
+      ]
+    });
+  }
+
   render() {
     const pkg = this.props.pkg;
     if (!pkg) {
@@ -23,28 +48,19 @@ class PackageInterface extends React.Component {
       );
     }
 
-    let id = pkg.name;
-
-    function selectPorts(pkg) {
-      const manifest = pkg.manifest || {};
-      let image = manifest.image || {};
-      let packagePorts = image.ports || [];
-      let ports = packagePorts.map(p => p.split(":")[0]);
-      return ports;
-    }
-
-    const ports = selectPorts(pkg);
+    const id = pkg.name;
 
     // let packageProperties = Object.getOwnPropertyNames(_package)
     // remove(packageProperties, ['id', 'isDNP', 'running', 'shortName'])
 
     return (
       <div>
-        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
-          <h1>{pkg.shortName} settings</h1>
+        <div className="section-title">
+          <span style={{ opacity: 0.3, fontWeight: 300 }}>Packages </span>
+          {id}
         </div>
 
-        <Details _package={pkg} />
+        <Details pkg={pkg} />
 
         <Logs
           id={id}
@@ -52,17 +68,15 @@ class PackageInterface extends React.Component {
           logPackage={options => this.props.logPackage(id, options)}
         />
 
-        <Envs id={id} envs={pkg.envs} updateEnvs={this.props.updateEnvs} />
+        <Envs id={id} pkg={pkg} />
 
         <Controls
           state={pkg.state}
           togglePackage={() => this.props.togglePackage(id)}
           restartPackage={() => this.props.restartPackage(id)}
-          restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
-          removePackage={() => this.props.removePackage(id, ports)}
-          removePackageAndData={() =>
-            this.props.removePackageAndData(id, ports)
-          }
+          restartVolumes={() => this.props.restartVolumes(id)}
+          removePackage={() => this.removePackageConfirm(pkg, false)}
+          removePackageAndData={() => this.removePackageConfirm(pkg, true)}
         />
       </div>
     );
@@ -71,21 +85,22 @@ class PackageInterface extends React.Component {
 
 // Container
 
+function getPortsFromManifest(pkg) {
+  const manifest = pkg.manifest || {};
+  let image = manifest.image || {};
+  let packagePorts = image.ports || [];
+  let ports = packagePorts.map(p => p.split(":")[0]);
+  return ports;
+}
+
 const mapStateToProps = createStructuredSelector({
-  id: selector.getId,
   pkg: selector.getPackage,
   packageList: selector.getPackages,
   logs: selector.getLogs
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = dispatch => {
   return {
-    setId: id => {
-      dispatch(action.setId(id));
-    },
-    updateEnvs: envs => {
-      dispatch(action.updatePackageEnv({ envs, restart: true }));
-    },
     logPackage: (id, options) => {
       dispatch(action.logPackage({ id, options }));
     },
@@ -98,13 +113,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     restartVolumes: id => {
       dispatch(action.restartVolumes({ id }));
     },
-    removePackage: (id, ports) => {
-      dispatch(action.removePackage({ id, deleteVolumes: false }));
-      if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
-      dispatch(push("/" + NAME));
-    },
-    removePackageAndData: (id, ports) => {
-      dispatch(action.removePackage({ id, deleteVolumes: true }));
+    removePackage: (pkg, deleteVolumes) => {
+      dispatch(action.removePackage({ id: pkg.name, deleteVolumes }));
+      const ports = getPortsFromManifest(pkg);
       if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
       dispatch(push("/" + NAME));
     }

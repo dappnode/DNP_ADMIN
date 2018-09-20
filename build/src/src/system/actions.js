@@ -1,6 +1,6 @@
 // INSTALLER
 import * as t from "./actionTypes";
-import * as APIcalls from "API/crossbarCalls";
+import { shortName } from "utils/format";
 
 // Used in package interface
 
@@ -8,15 +8,10 @@ export const updateCore = () => ({
   type: t.UPDATE_CORE
 });
 
-export const setId = id => ({
-  type: t.SET_ID,
-  payload: id
-});
-
 // Used in package root
 
 export const updatePackages = packages => ({
-  type: t.UPDATE_PACKAGES,
+  type: "UPDATE_INSTALLED_PACKAGES",
   packages
 });
 
@@ -27,55 +22,40 @@ export const listPackages = () => ({
 // Used in package interface / logs
 // #### TODO: refactor to sagas
 
-const updateLog = (logs, id) => ({
+export const updateLog = (logs, id) => ({
   type: t.UPDATE_LOG,
-  logs: logs === "" ? "Received empty logs" : logs,
-  id: id
+  logs,
+  id
 });
 
-export const logPackage = kwargs => dispatch => {
-  APIcalls.logPackage(kwargs).then(res => {
-    if (res) dispatch(updateLog(res.logs, res.id));
-  });
-};
+export const logPackage = kwargs => ({
+  type: t.LOG_PACKAGE,
+  kwargs
+});
 
 // Used in package interface / envs
 
 export const updatePackageEnv = kwargs => ({
   type: t.CALL,
-  call: "updatePackageEnv",
+  method: "updatePackageEnv",
+  message:
+    "Updating " + kwargs.id + " envs: " + JSON.stringify(kwargs.envs) + "...",
   kwargs
 });
 
 // Used in package interface / controls
 
-export const togglePackage = kwargs => ({
-  type: t.CALL,
-  call: "togglePackage",
-  kwargs
-});
-
 export const restartPackage = kwargs => ({
   type: t.CALL,
-  call: "restartPackage",
+  method: "restartPackage",
+  message: "Restarting " + shortName(kwargs.id) + "...",
   kwargs
 });
 
 export const restartVolumes = kwargs => ({
   type: t.CALL,
-  call: "restartVolumes",
-  kwargs
-});
-
-export const removePackage = kwargs => ({
-  type: t.CALL,
-  call: "removePackage",
-  kwargs
-});
-
-export const closePorts = kwargs => ({
-  type: t.CALL,
-  call: "managePorts",
+  method: "restartVolumes",
+  message: "Restarting " + shortName(kwargs.id) + " volumes...",
   kwargs
 });
 

@@ -1,79 +1,71 @@
 import React from "react";
-import parseType from "utils/parseType";
-import { NavLink } from "react-router-dom";
+import { colors } from "utils/format";
 
 import "./dashboard.css";
 
 export default class DashboardInterface extends React.Component {
   render() {
-    let chainIds = Object.keys(this.props.chains);
-    const chainsStatus = chainIds.map((id, i) => {
-      let e = this.props.chains[id];
-      let type = parseType(e.status);
-      // Only display inner borders, by removing all external borders
-      let style = { borderLeftWidth: "0", borderRightWidth: "0" };
-      if (i === 0) style.borderTopWidth = "0";
-      if (i === chainIds.length - 1) style.borderBottomWidth = "0";
+    // Color coding
+    function statusToColor(status) {
+      if (status === 1) return "#1ccec0";
+      if (status === 0) return colors.default;
+      if (status === -1) return "#ff0000";
+    }
+    function statusToIcon(status) {
+      if (status === 1) return "✓";
+      if (status === 0) return "";
+      if (status === -1) return "✕";
+    }
+
+    // From object to array
+    const status = this.props.status || {};
+    const statusArray = Object.keys(status)
+      .filter(id => id !== "mainnet")
+      .map(id => ({
+        color: statusToColor(status[id].status),
+        icon: statusToIcon(status[id].status),
+        id,
+        msg: status[id].msg
+      }));
+    const chains = this.props.chains || {};
+    const chainsArray = Object.keys(chains).map(id => ({
+      color: statusToColor(chains[id].status),
+      icon: statusToIcon(chains[id].status),
+      id,
+      msg: chains[id].msg
+    }));
+
+    function getStatusCard(array = []) {
       return (
-        <li key={i} className={"list-group-item text-" + type} style={style}>
-          <strong style={{ textTransform: "capitalize" }}>{id + ": "}</strong>
-          {e.msg}
-        </li>
-      );
-    });
-
-    let statusIds = Object.keys(this.props.status);
-    const dappnodeStatus = statusIds
-      .filter(e => e !== "mainnet")
-      .map((id, i) => {
-        let e = this.props.status[id];
-        let type = parseType(e.status);
-        // Only display inner borders, by removing all external borders
-        let style = { borderLeftWidth: "0", borderRightWidth: "0" };
-        if (i === 0) style.borderTopWidth = "0";
-        if (i === statusIds.length - 1) style.borderBottomWidth = "0";
-        return (
-          <li key={i} className={"list-group-item text-" + type} style={style}>
-            <strong style={{ textTransform: "capitalize" }}>{id + ": "}</strong>
-            {e.msg}
-          </li>
-        );
-      });
-
-    // userActionLogs
-
-    return (
-      <div>
-        <h1>Status</h1>
-        <div className="row">
-          <div className="col">
-            <div className="card mb-4">
-              <div className="card-header">DAppNode</div>
-              <div className="card-body" style={{ padding: "0px" }}>
-                <div className="table-responsive">
-                  <ul className="list-group">{dappnodeStatus}</ul>
+        <div className="card mb-3">
+          <div className="card-body">
+            <div className="row">
+              {array.map((e, i) => (
+                <div key={i} className="col-xl-3 col-md-4 col-sm-6 col-xs-12">
+                  <span style={{ color: e.color, fontWeight: 800 }}>
+                    {e.icon + " "}
+                  </span>
+                  <span
+                    style={{ textTransform: "capitalize", overflow: "hidden" }}
+                  >
+                    <strong>{e.id + ": "}</strong>
+                  </span>
+                  {e.msg}
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col">
-            <div className="card mb-4">
-              <div className="card-header">Chains</div>
-              <div className="card-body" style={{ padding: "0px" }}>
-                <div className="table-responsive">
-                  <ul className="list-group">{chainsStatus}</ul>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
-        <h1>Activity</h1>
-        <NavLink to={"/activity"}>
-          <button className="btn btn-outline-secondary ml-2 mr-2" type="button">
-            Go to activity
-          </button>
-        </NavLink>
+      );
+    }
+
+    return (
+      <div>
+        <div className="section-title">Status</div>
+        <div className="section-subtitle">DAppNode</div>
+        {getStatusCard(statusArray)}
+        <div className="section-subtitle">Chains</div>
+        {getStatusCard(chainsArray)}
       </div>
     );
   }
