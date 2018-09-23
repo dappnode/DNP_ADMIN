@@ -35,15 +35,16 @@ export const fetchPackageRequest = id => ({
   id
 });
 
-export const install = (id, options) => ({
+export const install = ({ id, vols, options }) => ({
   type: t.INSTALL,
   options,
+  vols,
   id
 });
 
 // Need to notify the chain that a package has been added
 
-export const updateEnv = (envs, id) => ({
+export const updateEnv = ({ id, envs }) => ({
   type: t.UPDATE_ENV,
   envs,
   id
