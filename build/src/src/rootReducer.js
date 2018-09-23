@@ -10,10 +10,13 @@ import status from "./status";
 import chains from "./chains";
 import activity from "./activity";
 
+// Prevent manifest arrays to keep populating
+const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
+
 const directoryReducer = (state = {}, action) => {
   switch (action.type) {
     case "UPDATE_DIRECTORY":
-      return merge(state, action.pkgs || {});
+      return merge(state, action.pkgs || {}, { arrayMerge: overwriteMerge });
     default:
       return state;
   }

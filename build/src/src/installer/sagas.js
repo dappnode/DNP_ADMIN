@@ -22,7 +22,7 @@ export function* shouldOpenPorts() {
   }
 }
 
-export function* install({ id, options }) {
+export function* install({ id, vols, options }) {
   try {
     // Load necessary info
     const isInstalling = yield select(s.isInstalling);
@@ -42,7 +42,12 @@ export function* install({ id, options }) {
       msg: "Fetching dependencies...",
       pkgName: id.split("@")[0]
     });
-    const res = yield call(APIcall.installPackage, { id, logId, options });
+    const res = yield call(APIcall.installPackage, {
+      id,
+      vols,
+      logId,
+      options
+    });
     // Remove package from blacklist
     yield put({ type: t.CLEAR_PROGRESS_LOG, logId });
     pendingToast.resolve(res);
