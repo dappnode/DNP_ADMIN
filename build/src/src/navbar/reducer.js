@@ -2,15 +2,15 @@
 import * as t from "./actionTypes";
 
 const initialState = {
-  vpnParams: {}
+  dappnodeIdentity: {}
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case t.PARAMS:
+    case t.UPDATE_DAPPNODE_IDENTITY:
       return {
         ...state,
-        vpnParams: action.payload
+        dappnodeIdentity: action.dappnodeIdentity
       };
     default:
       return state;

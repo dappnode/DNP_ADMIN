@@ -1,5 +1,4 @@
 import React from "react";
-import { colors } from "utils/format";
 
 import "./dashboard.css";
 
@@ -8,12 +7,12 @@ export default class DashboardInterface extends React.Component {
     // Color coding
     function statusToColor(status) {
       if (status === 1) return "#1ccec0";
-      if (status === 0) return colors.default;
+      if (status === 0) return "#ffff00";
       if (status === -1) return "#ff0000";
     }
     function statusToIcon(status) {
       if (status === 1) return "✓";
-      if (status === 0) return "";
+      if (status === 0) return "⚠";
       if (status === -1) return "✕";
     }
 

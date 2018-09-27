@@ -72,11 +72,24 @@ export const getVpnParams = () =>
     event: "getParams.vpn.dappnode.eth"
   });
 
-export const getStatusUPnP = () =>
+// getStatusUpnp CALL DOCUMENTATION:
+// > kwargs: {}
+// > result: {
+//     openPorts: <Bool>, // if ports have to be opened
+//     upnpAvailable: <Bool>,
+//   }
+export const getStatusUpnp = () =>
   wrapCall({
     event: "statusUPnP.vpn.dnp.dappnode.eth"
   });
 
+// getStatusExternalIp CALL DOCUMENTATION:
+// > kwargs: {}
+// > result: {
+//     externalIpResolves: <Bool>,
+//     externalIp: <String>,
+//     internalIp: <String>,
+//   }
 export const getStatusExternalIp = () =>
   wrapCall({
     event: "statusExternalIp.vpn.dnp.dappnode.eth"

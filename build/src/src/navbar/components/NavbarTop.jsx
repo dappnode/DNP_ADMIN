@@ -26,9 +26,6 @@ class NavbarTopView extends React.Component {
     //   messages={alerts}
     //   icon={Bell}
     // />
-    let DAppNodeTag = [];
-    if (this.props.name) DAppNodeTag.push(this.props.name);
-    if (this.props.ip) DAppNodeTag.push(this.props.ip);
 
     return (
       <ul className="navbar-nav ml-auto">
@@ -42,7 +39,7 @@ class NavbarTopView extends React.Component {
               color: "#00000080"
             }}
           >
-            {DAppNodeTag.join("/")}
+            {this.props.dappnodeIdentity}
           </span>
         </li>
         <NavbarTopDropdownMessages
@@ -66,12 +63,11 @@ class NavbarTopView extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  name: selector.getVpnParamsName,
-  ip: selector.getVpnParamsIp,
+  dappnodeIdentity: selector.getDappnodeIdentity,
   chains: chains.selectors.getAll
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = () => {
   return {};
 };
 

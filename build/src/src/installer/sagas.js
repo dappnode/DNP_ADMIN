@@ -11,11 +11,11 @@ import { idToUrl, isIpfsHash } from "./utils";
 /***************************** Subroutines ************************************/
 
 export function* shouldOpenPorts() {
-  const res = yield call(APIcall.getStatusUPnP);
+  const res = yield call(APIcall.getStatusUpnp);
   if (res.success) {
     yield put({
       type: t.SHOULD_OPEN_PORTS,
-      shouldOpenPorts: res.result.openPorts && res.result.UPnP
+      shouldOpenPorts: res.result.openPorts && res.result.upnpAvailable
     });
   } else {
     console.error("Error fetching UPnP status: " + res.message);
