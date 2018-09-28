@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as action from "../../actions";
+import * as selector from "../../selectors";
 import { createStructuredSelector } from "reselect";
 // Components
 import SpecialPermissions from "./SpecialPermissions";
@@ -13,6 +14,7 @@ import { Link } from "react-router-dom";
 import packages from "packages";
 // style
 import "./checkbox.css";
+import { select } from "redux-saga/effects";
 
 /**
  * Parses envs
@@ -108,6 +110,9 @@ class ApproveInstallView extends React.Component {
   }
 
   handleVolChange({ value, name }) {
+    if (value && value.startsWith("/")) {
+      this.props.getDiskSpaceAvailable({ path: value });
+    }
     this.setState({
       vols: {
         ...this.state.vols,
@@ -207,20 +212,29 @@ class ApproveInstallView extends React.Component {
         <Details pkg={this.props.pkg} subComponent={installButton} />
         <Dependencies request={this.props.request || {}} />
         <Envs envs={envs} handleEnvChange={this.handleEnvChange} />
-        <Vols vols={vols} handleVolChange={this.handleVolChange} />
+        <Vols
+          vols={vols}
+          handleVolChange={this.handleVolChange}
+          diskSpaceAvailable={this.props.diskSpaceAvailable}
+        />
         <SpecialPermissions />
       </React.Fragment>
     );
   }
 }
 
-const mapStateToProps = createStructuredSelector({});
+const mapStateToProps = createStructuredSelector({
+  diskSpaceAvailable: selector.diskSpaceAvailable
+});
 
 const mapDispatchToProps = dispatch => ({
   install: ({ id, envs, vols, ports, options }) => {
     dispatch(action.install({ id, vols, options }));
     dispatch(action.updateEnv({ id, envs }));
     dispatch(action.openPorts(ports));
+  },
+  getDiskSpaceAvailable: ({ path }) => {
+    dispatch(action.diskSpaceAvailable({ path }));
   }
 });
 

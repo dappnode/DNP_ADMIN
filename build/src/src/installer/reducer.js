@@ -9,7 +9,8 @@ const initialState = {
   input: "",
   isInstalling: {},
   progressLogs: {},
-  shouldOpenPorts: false
+  shouldOpenPorts: false,
+  diskSpaceAvailable: {}
 };
 
 export default function(state = initialState, action) {
@@ -49,6 +50,12 @@ export default function(state = initialState, action) {
         ...state,
         progressLogs
       };
+    case t.UPDATE_DISK_SPACE_AVAILABLE:
+      return merge(state, {
+        diskSpaceAvailable: {
+          [action.path]: action.status
+        }
+      });
     default:
       return state;
   }

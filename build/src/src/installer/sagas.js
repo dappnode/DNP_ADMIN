@@ -233,6 +233,34 @@ export function* fetchPackageData({ id }) {
   }
 }
 
+function* diskSpaceAvailable({ path }) {
+  try {
+    // If connection is not open yet, wait for it to open.
+    const connectionOpen = yield select(s.connectionOpen);
+    if (!connectionOpen) {
+      yield take("CONNECTION_OPEN");
+    }
+    const res = yield call(APIcall.diskSpaceAvailable, { path });
+    // Abort on error
+    if (!res.success) {
+      console.error("Disk space available returned error: ", res.message);
+    }
+
+    const { exists, totalSize, availableSize } = res.result;
+    console.log({ exists, totalSize, availableSize });
+    yield put({
+      type: t.UPDATE_DISK_SPACE_AVAILABLE,
+      status: exists ? `${availableSize} / ${totalSize}` : `non-existent`,
+      path
+    });
+  } catch (error) {
+    console.error(
+      "Error getting disk space available of " + path + ": ",
+      error
+    );
+  }
+}
+
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
@@ -262,6 +290,10 @@ function* watchOpenPorts() {
   yield takeEvery(t.OPEN_PORTS, openPorts);
 }
 
+function* watchDiskSpaceAvailable() {
+  yield takeEvery(t.DISK_SPACE_AVAILABLE, diskSpaceAvailable);
+}
+
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
@@ -271,6 +303,7 @@ export default function* root() {
     watchUpdateEnvs(),
     watchOpenPorts(),
     watchFetchPackageRequest(),
-    watchFetchPackageData()
+    watchFetchPackageData(),
+    watchDiskSpaceAvailable()
   ]);
 }

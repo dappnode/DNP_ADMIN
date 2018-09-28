@@ -32,6 +32,16 @@ export default class Vols extends React.Component {
                     handleVolChange({ value, name });
                   }}
                 />
+                {this.props.diskSpaceAvailable[vols[envName]] ? (
+                  <div className="input-group-append">
+                    <span
+                      className="input-group-text"
+                      style={{ backgroundColor: "white" }}
+                    >
+                      {this.props.diskSpaceAvailable[vols[envName]]}
+                    </span>
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>

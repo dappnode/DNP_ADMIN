@@ -14,5 +14,7 @@ export const UPDATE_INPUT = type("UPDATE_INPUT");
 export const PROGRESS_LOG = type("PROGRESS_LOG");
 export const CLEAR_PROGRESS_LOG = type("CLEAR_PROGRESS_LOG");
 export const FETCH_DIRECTORY = type("FETCH_DIRECTORY");
+export const DISK_SPACE_AVAILABLE = type("DISK_SPACE_AVAILABLE");
+export const UPDATE_DISK_SPACE_AVAILABLE = type("UPDATE_DISK_SPACE_AVAILABLE");
 
 // prefixing each type with the module name helps preventing name collisions

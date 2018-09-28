@@ -54,3 +54,8 @@ export const openPorts = ports => ({
   type: t.OPEN_PORTS,
   ports
 });
+
+export const diskSpaceAvailable = ({ path }) => ({
+  type: t.DISK_SPACE_AVAILABLE,
+  path
+});

@@ -283,3 +283,17 @@ export const resolveRequest = (kwargs = {}) =>
     event: "resolveRequest.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["req"])
   });
+
+// diskSpaceAvailable CALL DOCUMENTATION:
+// > kwargs: { path }
+// > result: {
+//       exists: <Bool>
+//       totalSize: <String> 340G
+//       availableSize: <String> 219G
+//   }
+
+export const diskSpaceAvailable = (kwargs = {}) =>
+  wrapCall({
+    event: "diskSpaceAvailable.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["path"])
+  });

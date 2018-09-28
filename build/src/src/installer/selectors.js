@@ -42,6 +42,7 @@ export const isInstalling = state => local(state).isInstalling;
 export const fetching = state => local(state).fetching || false;
 export const shouldOpenPorts = state => local(state).shouldOpenPorts;
 export const progressLogs = state => local(state).progressLogs;
+export const diskSpaceAvailable = state => local(state).diskSpaceAvailable;
 
 const filterCompleted = todos => todos.filter(t => t.completed);
 const filterActive = todos => todos.filter(t => !t.completed);
