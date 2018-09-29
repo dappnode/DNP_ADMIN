@@ -14,7 +14,6 @@ import { Link } from "react-router-dom";
 import packages from "packages";
 // style
 import "./checkbox.css";
-import { select } from "redux-saga/effects";
 
 /**
  * Parses envs

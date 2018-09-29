@@ -1,8 +1,26 @@
 import React from "react";
+import { connect } from "react-redux";
+import * as action from "../actions";
+import * as selectors from "../selectors";
+import { createStructuredSelector } from "reselect";
+// modules
+import status from "status";
+import chains from "chains";
 
 import "./dashboard.css";
 
-export default class DashboardInterface extends React.Component {
+let token;
+
+class DashboardView extends React.Component {
+  componentDidMount() {
+    // Start interval
+    this.props.getDappnodeStats();
+    token = setInterval(this.props.getDappnodeStats, 5 * 1000);
+  }
+  componentWillUnmount() {
+    clearInterval(token);
+  }
+
   render() {
     // Color coding
     function statusToColor(status) {
@@ -16,7 +34,7 @@ export default class DashboardInterface extends React.Component {
       if (status === -1) return "✕";
     }
 
-    // From object to array
+    // STATUS From object to array
     const status = this.props.status || {};
     const statusArray = Object.keys(status)
       .filter(id => id !== "mainnet")
@@ -26,6 +44,8 @@ export default class DashboardInterface extends React.Component {
         id,
         msg: status[id].msg
       }));
+
+    // CHAINS From object to array
     const chains = this.props.chains || {};
     const chainsArray = Object.keys(chains).map(id => ({
       color: statusToColor(chains[id].status),
@@ -33,6 +53,22 @@ export default class DashboardInterface extends React.Component {
       id,
       msg: chains[id].msg
     }));
+
+    // DAPPNODE STATS From object to array
+    const dappnodeStats = this.props.dappnodeStats || {};
+    const dappnodeStatsArray = Object.keys(dappnodeStats).map(id => {
+      const value = parseFloat(dappnodeStats[id]);
+      let status;
+      if (value > 90) status = -1;
+      else if (value > 85) status = 0;
+      else status = 1;
+      return {
+        color: statusToColor(status),
+        icon: statusToIcon(status),
+        id,
+        msg: dappnodeStats[id]
+      };
+    });
 
     function getStatusCard(array = []) {
       return (
@@ -65,7 +101,28 @@ export default class DashboardInterface extends React.Component {
         {getStatusCard(statusArray)}
         <div className="section-subtitle">Chains</div>
         {getStatusCard(chainsArray)}
+        <div className="section-subtitle">DAppNode stats</div>
+        {getStatusCard(dappnodeStatsArray)}
       </div>
     );
   }
 }
+
+const mapStateToProps = createStructuredSelector({
+  status: status.selectors.getAll,
+  chains: chains.selectors.getAll,
+  dappnodeStats: selectors.dappnodeStats
+});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getDappnodeStats: () => {
+      dispatch(action.getDappnodeStats());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DashboardView);
