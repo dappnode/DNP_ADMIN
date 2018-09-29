@@ -297,3 +297,17 @@ export const diskSpaceAvailable = (kwargs = {}) =>
     event: "diskSpaceAvailable.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["path"])
   });
+
+// getStats CALL DOCUMENTATION:
+// > kwargs: { path }
+// > result: status =
+//   {
+//       cpu, <String>
+//       memory, <String>
+//       disk, <String>
+//   }
+
+export const getStats = () =>
+  wrapCall({
+    event: "getStats.dappmanager.dnp.dappnode.eth"
+  });
