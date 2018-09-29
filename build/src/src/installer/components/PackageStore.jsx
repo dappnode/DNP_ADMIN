@@ -18,7 +18,11 @@ class Card extends React.Component {
   render() {
     const pkg = enhancePkg(this.props.pkg);
 
-    let img = pkg.error ? errorImg : pkg.avatar || defaultAvatar;
+    let img = pkg.error
+      ? errorImg
+      : pkg.avatar
+        ? "data:image/png;base64," + pkg.avatar
+        : defaultAvatar;
 
     const manifest = pkg.manifest || {};
     const kwArray = manifest.keywords || [];

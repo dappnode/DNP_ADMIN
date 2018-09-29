@@ -6,7 +6,9 @@ export default class Details extends React.Component {
   render() {
     const pkg = this.props.pkg;
     const manifest = pkg.manifest || {};
-    const avatar = pkg.avatar || defaultAvatar;
+    const avatar = pkg.avatar
+      ? "data:image/png;base64," + pkg.avatar
+      : defaultAvatar;
     const size = manifest.image ? humanFileSize(manifest.image.size) || "" : "";
     return (
       <React.Fragment>
