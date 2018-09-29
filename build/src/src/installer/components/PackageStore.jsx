@@ -2,7 +2,7 @@ import React from "react";
 import ClipboardJS from "clipboard";
 import PropTypes from "prop-types";
 import Loading from "components/Loading";
-import errorImg from "img/error-min.png";
+import errorAvatar from "img/errorAvatar.png";
 import ipfsBadgeImg from "img/IPFS-badge-small.png";
 import enhancePkg from "utils/enhancePkg";
 import { Link } from "react-router-dom";
@@ -19,7 +19,7 @@ class Card extends React.Component {
     const pkg = enhancePkg(this.props.pkg);
 
     let img = pkg.error
-      ? errorImg
+      ? errorAvatar
       : pkg.avatar
         ? "data:image/png;base64," + pkg.avatar
         : defaultAvatar;
