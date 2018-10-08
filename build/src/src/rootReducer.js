@@ -40,6 +40,15 @@ const sessionReducer = (state = null, action) => {
   }
 };
 
+const isSyncingReducer = (state = null, action) => {
+  switch (action.type) {
+    case "UPDATE_IS_SYNCING":
+      return action.isSyncing;
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   [devices.constants.NAME]: devices.reducer,
   [installer.constants.NAME]: installer.reducer,
@@ -52,5 +61,6 @@ export default combineReducers({
   [activity.constants.NAME]: activity.reducer,
   session: sessionReducer,
   directory: directoryReducer,
-  installedPackages: installedPackagesReducer
+  installedPackages: installedPackagesReducer,
+  isSyncing: isSyncingReducer
 });

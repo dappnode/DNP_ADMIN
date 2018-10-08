@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { NAME } from "../constants";
 import packages from "packages";
 import defaultAvatar from "img/defaultAvatar.png";
+import IsSyncing from "./IsSyncing";
 
 const NAME_PACKAGES = packages.constants.NAME;
 
@@ -108,6 +109,8 @@ export default class PackageStore extends React.Component {
 
     if (this.props.fetching && this.props.directory.length === 0) {
       return <Loading msg="Loading package directory..." />;
+    } else if (this.props.isSyncing) {
+      return <IsSyncing />;
     } else {
       return <div className="row">{cards}</div>;
     }

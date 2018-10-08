@@ -6,6 +6,7 @@ import * as s from "./selectors";
 import uuidv4 from "uuid/v4";
 import Toast from "components/Toast";
 import { shortName } from "utils/format";
+import isSyncing from "utils/isSyncing";
 import { idToUrl, isIpfsHash } from "./utils";
 
 /***************************** Subroutines ************************************/
@@ -100,10 +101,13 @@ export function* openPorts({ ports }) {
   }
 }
 
-// For installer: throttle(ms, pattern, saga, ...args)
-
 export function* fetchDirectory() {
   try {
+    // If chain is not synced yet, cancel request.
+    if(yield call(isSyncing)) {
+      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+    }
+
     yield put({ type: t.UPDATE_FETCHING, fetching: true });
     const res = yield call(APIcall.fetchDirectory);
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
@@ -142,6 +146,10 @@ export function* fetchPackageRequest({ id }) {
     const connectionOpen = yield select(s.connectionOpen);
     if (!connectionOpen) {
       yield take("CONNECTION_OPEN");
+    }
+    // If chain is not synced yet, cancel request.
+    if(yield call(isSyncing)) {
+      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
     }
 
     // If package is already loaded, skip
