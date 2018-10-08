@@ -1,4 +1,4 @@
-import autobahn from "autobahn";
+import autobahn from "autobahn-browser";
 import store from "../store";
 import socketSubscriptions from "./socketSubscriptions";
 
