@@ -1,4 +1,5 @@
 import { call, put, all, takeEvery, fork } from "redux-saga/effects";
+import { delay } from "redux-saga";
 import { updateStatus } from "./actions";
 import * as APIcall from "API/rpcMethods";
 import { NON_ADMIN_RESPONSE } from "./constants";
@@ -22,6 +23,7 @@ const tags = {
 
 /***************************** Subroutines ************************************/
 
+let delayMs = 2000
 function* checkIPFS() {
   try {
     yield call(checkIpfsConnection);
@@ -30,6 +32,10 @@ function* checkIPFS() {
   } catch (err) {
     // Did NOT work:
     yield put(updateStatus({ id: tags.ipfs, status: -1, msg: err }));
+    // Keep retrying until the connection is ok
+    delayMs = delayMs*2
+    yield delay(delayMs)
+    yield call(checkIPFS);
   }
 }
 
