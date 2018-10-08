@@ -69,7 +69,7 @@ export const fetchDevices = () =>
 
 export const getVpnParams = () =>
   wrapCall({
-    event: "getParams.vpn.dappnode.eth"
+    event: "getParams.vpn.dnp.dappnode.eth"
   });
 
 // getStatusUpnp CALL DOCUMENTATION:
@@ -93,6 +93,15 @@ export const getStatusUpnp = () =>
 export const getStatusExternalIp = () =>
   wrapCall({
     event: "statusExternalIp.vpn.dnp.dappnode.eth"
+  });
+
+// getStatusExternalIp CALL DOCUMENTATION:
+// > kwargs: {ip}
+// > result: {}
+export const setStaticIp = (kwargs = {}) =>
+  wrapCall({
+    event: "setStaticIp.vpn.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["staticIp"])
   });
 
 /* PACKAGE */
