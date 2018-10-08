@@ -108,7 +108,6 @@ export function* fetchDirectory() {
     const res = yield call(APIcall.fetchDirectory);
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
     if (!res.success) {
-      console.log("fetch directory res", res);
       return new Toast(res);
     }
 
@@ -205,7 +204,7 @@ export function* fetchPackageData({ id }) {
     // Abort on error
     if (!res.success) {
       if (res.message.includes("Resolver could not found a match")) {
-        console.log("No match found for " + id);
+        console.error("No match found for " + id);
       } else {
         console.error("Error fetching package data: ", res.message);
       }
@@ -247,7 +246,6 @@ function* diskSpaceAvailable({ path }) {
     }
 
     const { exists, totalSize, availableSize } = res.result;
-    console.log({ exists, totalSize, availableSize });
     yield put({
       type: t.UPDATE_DISK_SPACE_AVAILABLE,
       status: exists ? `${availableSize} / ${totalSize}` : `non-existent`,

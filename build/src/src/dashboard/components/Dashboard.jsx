@@ -56,19 +56,21 @@ class DashboardView extends React.Component {
 
     // DAPPNODE STATS From object to array
     const dappnodeStats = this.props.dappnodeStats || {};
-    const dappnodeStatsArray = Object.keys(dappnodeStats).map(id => {
-      const value = parseFloat(dappnodeStats[id]);
-      let status;
-      if (value > 90) status = -1;
-      else if (value > 85) status = 0;
-      else status = 1;
-      return {
-        color: statusToColor(status),
-        icon: statusToIcon(status),
-        id,
-        msg: dappnodeStats[id]
-      };
-    });
+    const dappnodeStatsArray = Object.keys(dappnodeStats)
+      .filter(id => dappnodeStats[id] && !dappnodeStats[id].includes("NaN"))
+      .map(id => {
+        const value = parseFloat(dappnodeStats[id]);
+        let status;
+        if (value > 90) status = -1;
+        else if (value > 85) status = 0;
+        else status = 1;
+        return {
+          color: statusToColor(status),
+          icon: statusToIcon(status),
+          id,
+          msg: dappnodeStats[id]
+        };
+      });
 
     function getStatusCard(array = []) {
       return (
