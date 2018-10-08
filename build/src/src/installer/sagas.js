@@ -6,6 +6,7 @@ import * as s from "./selectors";
 import uuidv4 from "uuid/v4";
 import Toast from "components/Toast";
 import { shortName } from "utils/format";
+import isSyncing from "utils/isSyncing";
 import { idToUrl, isIpfsHash } from "./utils";
 
 /***************************** Subroutines ************************************/
@@ -100,15 +101,17 @@ export function* openPorts({ ports }) {
   }
 }
 
-// For installer: throttle(ms, pattern, saga, ...args)
-
 export function* fetchDirectory() {
   try {
+    // If chain is not synced yet, cancel request.
+    if(yield call(isSyncing)) {
+      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+    }
+
     yield put({ type: t.UPDATE_FETCHING, fetching: true });
     const res = yield call(APIcall.fetchDirectory);
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
     if (!res.success) {
-      console.log("fetch directory res", res);
       return new Toast(res);
     }
 
@@ -143,6 +146,10 @@ export function* fetchPackageRequest({ id }) {
     const connectionOpen = yield select(s.connectionOpen);
     if (!connectionOpen) {
       yield take("CONNECTION_OPEN");
+    }
+    // If chain is not synced yet, cancel request.
+    if(yield call(isSyncing)) {
+      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
     }
 
     // If package is already loaded, skip
@@ -205,7 +212,7 @@ export function* fetchPackageData({ id }) {
     // Abort on error
     if (!res.success) {
       if (res.message.includes("Resolver could not found a match")) {
-        console.log("No match found for " + id);
+        console.error("No match found for " + id);
       } else {
         console.error("Error fetching package data: ", res.message);
       }
@@ -247,7 +254,6 @@ function* diskSpaceAvailable({ path }) {
     }
 
     const { exists, totalSize, availableSize } = res.result;
-    console.log({ exists, totalSize, availableSize });
     yield put({
       type: t.UPDATE_DISK_SPACE_AVAILABLE,
       status: exists ? `${availableSize} / ${totalSize}` : `non-existent`,

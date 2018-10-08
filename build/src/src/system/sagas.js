@@ -6,6 +6,7 @@ import semver from "semver";
 import Toast from "components/Toast";
 import uuidv4 from "uuid/v4";
 import installer from "installer";
+import isSyncing from "utils/isSyncing";
 
 /***************************** Subroutines ************************************/
 
@@ -61,6 +62,11 @@ function shouldUpdate(v1, v2) {
 
 export function* checkCoreUpdate() {
   try {
+    // If chain is not synced yet, cancel request.
+    if(yield call(isSyncing)) {
+      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+    }
+
     const packagesRes = yield call(APIcall.listPackages);
     const coreDataRes = yield call(APIcall.fetchPackageData, {
       id: "core.dnp.dappnode.eth"

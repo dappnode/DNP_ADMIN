@@ -109,9 +109,9 @@ class ApproveInstallView extends React.Component {
   }
 
   handleVolChange({ value, name }) {
-    if (value && value.startsWith("/")) {
-      this.props.getDiskSpaceAvailable({ path: value });
-    }
+    // if (value && value.startsWith("/")) {
+    //   this.props.getDiskSpaceAvailable({ path: value });
+    // }
     this.setState({
       vols: {
         ...this.state.vols,

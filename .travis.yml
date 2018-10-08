@@ -23,7 +23,7 @@ before_script:
   - npm run lint
 script:
   # Test that it builds correctly
-  - docker-compose -f ./docker-compose-admin.yml build
+  - docker-compose -f ../../docker-compose-admin.yml build
   # Run the in-app tests
   - npm test -- --coverage # Include coverage when running tests
 after_success: # Upload coverage reports

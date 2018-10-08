@@ -30,6 +30,7 @@ export const session = state => state.session;
 export const connectionOpen = state => session(state) && session(state).isOpen;
 export const directory = state => state.directory;
 export const installedPackages = state => state.installedPackages || [];
+export const isSyncing = state => state.isSyncing;
 
 // #### INTERNAL SELECTORS
 const local = state => state[NAME];
