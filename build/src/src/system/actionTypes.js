@@ -12,5 +12,8 @@ export const UPDATE_PACKAGES = type("UPDATE_PACKAGES");
 export const CORE_DEPS = type("CORE_DEPS");
 export const UPDATE_CORE = type("UPDATE_CORE");
 export const SYSTEM_UPDATE_AVAILABLE = type("SYSTEM_UPDATE_AVAILABLE");
+// Static IP
+export const SET_STATIC_IP = type("SET_STATIC_IP");
+export const UPDATE_STATIC_IP = type("UPDATE_STATIC_IP");
 
 // prefixing each type with the module name helps preventing name collisions
