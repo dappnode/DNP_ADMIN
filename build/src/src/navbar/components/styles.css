@@ -57,8 +57,12 @@
 .nav-link-icon {
   margin-right: 19px;
   position: relative;
-  /* top: 5px; */
+  bottom: 1px;
   opacity: 0.6;
+}
+
+.nav-link-text-sidebar {
+  opacity: 0.8;
 }
 
 .sidenav-topbox {
