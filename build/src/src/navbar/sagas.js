@@ -6,7 +6,13 @@ function* fetchVpnParams() {
   try {
     const res = yield call(APIcall.getVpnParams);
     if (res.success) {
-      yield put(a.updateVpnParams(res.result));
+      const result = res.result || {};
+      yield put(
+        a.updateDappnodeIdentity({
+          ip: result.ip,
+          name: result.name
+        })
+      );
     }
   } catch (e) {
     console.error("Error getting vpn parameters");

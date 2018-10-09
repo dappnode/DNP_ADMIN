@@ -90,7 +90,9 @@ export default class NavbarSide extends React.Component {
               <span className="nav-link-text nav-link-icon">
                 <item.icon />
               </span>
-              <span className="nav-link-text">{item.name}</span>
+              <span className="nav-link-text nav-link-text-sidebar">
+                {item.name}
+              </span>
             </NavLink>
           </li>
         ))}

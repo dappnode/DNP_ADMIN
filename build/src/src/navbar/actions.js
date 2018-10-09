@@ -1,7 +1,7 @@
 // NAVBAR
 import * as t from "./actionTypes";
 
-export const updateVpnParams = params => ({
-  type: t.PARAMS,
-  payload: params
+export const updateDappnodeIdentity = dappnodeIdentity => ({
+  type: t.UPDATE_DAPPNODE_IDENTITY,
+  dappnodeIdentity
 });

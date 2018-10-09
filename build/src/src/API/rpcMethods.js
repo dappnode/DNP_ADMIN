@@ -69,17 +69,39 @@ export const fetchDevices = () =>
 
 export const getVpnParams = () =>
   wrapCall({
-    event: "getParams.vpn.dappnode.eth"
+    event: "getParams.vpn.dnp.dappnode.eth"
   });
 
-export const getStatusUPnP = () =>
+// getStatusUpnp CALL DOCUMENTATION:
+// > kwargs: {}
+// > result: {
+//     openPorts: <Bool>, // if ports have to be opened
+//     upnpAvailable: <Bool>,
+//   }
+export const getStatusUpnp = () =>
   wrapCall({
     event: "statusUPnP.vpn.dnp.dappnode.eth"
   });
 
+// getStatusExternalIp CALL DOCUMENTATION:
+// > kwargs: {}
+// > result: {
+//     externalIpResolves: <Bool>,
+//     externalIp: <String>,
+//     internalIp: <String>,
+//   }
 export const getStatusExternalIp = () =>
   wrapCall({
     event: "statusExternalIp.vpn.dnp.dappnode.eth"
+  });
+
+// getStatusExternalIp CALL DOCUMENTATION:
+// > kwargs: {ip}
+// > result: {}
+export const setStaticIp = (kwargs = {}) =>
+  wrapCall({
+    event: "setStaticIp.vpn.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["staticIp"])
   });
 
 /* PACKAGE */
@@ -269,4 +291,32 @@ export const resolveRequest = (kwargs = {}) =>
   wrapCall({
     event: "resolveRequest.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["req"])
+  });
+
+// diskSpaceAvailable CALL DOCUMENTATION:
+// > kwargs: { path }
+// > result: {
+//       exists: <Bool>
+//       totalSize: <String> 340G
+//       availableSize: <String> 219G
+//   }
+
+export const diskSpaceAvailable = (kwargs = {}) =>
+  wrapCall({
+    event: "diskSpaceAvailable.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["path"])
+  });
+
+// getStats CALL DOCUMENTATION:
+// > kwargs: { path }
+// > result: status =
+//   {
+//       cpu, <String>
+//       memory, <String>
+//       disk, <String>
+//   }
+
+export const getStats = () =>
+  wrapCall({
+    event: "getStats.dappmanager.dnp.dappnode.eth"
   });

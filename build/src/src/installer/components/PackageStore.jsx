@@ -2,13 +2,14 @@ import React from "react";
 import ClipboardJS from "clipboard";
 import PropTypes from "prop-types";
 import Loading from "components/Loading";
-import errorImg from "img/error-min.png";
+import errorAvatar from "img/errorAvatar.png";
 import ipfsBadgeImg from "img/IPFS-badge-small.png";
 import enhancePkg from "utils/enhancePkg";
 import { Link } from "react-router-dom";
 import { NAME } from "../constants";
 import packages from "packages";
 import defaultAvatar from "img/defaultAvatar.png";
+import IsSyncing from "./IsSyncing";
 
 const NAME_PACKAGES = packages.constants.NAME;
 
@@ -18,7 +19,7 @@ class Card extends React.Component {
   render() {
     const pkg = enhancePkg(this.props.pkg);
 
-    let img = pkg.error ? errorImg : pkg.avatar || defaultAvatar;
+    let img = pkg.error ? errorAvatar : pkg.avatar || defaultAvatar;
 
     const manifest = pkg.manifest || {};
     const kwArray = manifest.keywords || [];
@@ -108,6 +109,8 @@ export default class PackageStore extends React.Component {
 
     if (this.props.fetching && this.props.directory.length === 0) {
       return <Loading msg="Loading package directory..." />;
+    } else if (this.props.isSyncing) {
+      return <IsSyncing />;
     } else {
       return <div className="row">{cards}</div>;
     }

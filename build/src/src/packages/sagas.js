@@ -3,6 +3,7 @@ import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
 import Toast from "components/Toast";
+import PubSub from "eventBus";
 
 /***************************** Subroutines ************************************/
 
@@ -64,6 +65,7 @@ function* logPackage({ kwargs }) {
       }
     } else {
       yield put(a.updateLog("Error logging package: \n" + res.message, id));
+      PubSub.publish("LOG_ERROR");
     }
   } catch (e) {
     console.error("Error getting package logs:", e);

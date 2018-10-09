@@ -2,10 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as action from "../../actions";
+import * as selector from "../../selectors";
 import { createStructuredSelector } from "reselect";
 // Components
 import SpecialPermissions from "./SpecialPermissions";
 import Envs from "./Envs";
+import Vols from "./Vols";
 import Dependencies from "./Dependencies";
 import Details from "./Details";
 import { Link } from "react-router-dom";
@@ -18,22 +20,17 @@ import "./checkbox.css";
  * @param {object} manifest
  * @return {object} {envName: 'envValue'}
  */
-function getDefaultEnvs(manifest) {
+
+function getEnvs(manifest, stateEnv) {
   const envsArray = ((manifest || {}).image || {}).environment || [];
   const defaultEnvs = {};
   for (const row of envsArray) {
     defaultEnvs[row.split("=")[0]] = row.split("=")[1] || "";
   }
-  return defaultEnvs;
-}
-
-function getEnvs(manifest, stateEnv) {
-  const defaultEnvs = getDefaultEnvs(manifest);
-  const defaultEnvsNames = Object.keys(defaultEnvs);
   const _stateEnv = Object.assign({}, stateEnv);
   // Verify that the current stateEnv contains only this package's envs
   for (const env of Object.getOwnPropertyNames(_stateEnv)) {
-    if (!defaultEnvsNames.includes(env)) {
+    if (!Object.keys(defaultEnvs).includes(env)) {
       delete _stateEnv[env];
     }
   }
@@ -41,6 +38,31 @@ function getEnvs(manifest, stateEnv) {
     ...defaultEnvs,
     ..._stateEnv
   };
+}
+
+function getVols(manifest, stateVol, onlyState) {
+  const volsArray = ((manifest || {}).image || {}).volumes || [];
+  const defaultVols = {};
+  for (const row of volsArray) {
+    const [hostPath] = row.split(":");
+    defaultVols[row] = hostPath;
+  }
+  const _stateVol = Object.assign({}, stateVol);
+  // Verify that the current stateEnv contains only this package's envs
+  for (const vol of Object.getOwnPropertyNames(_stateVol)) {
+    if (!Object.keys(defaultVols).includes(vol)) {
+      delete _stateVol[vol];
+    }
+  }
+  // Do not include default vols
+  if (onlyState) {
+    return _stateVol;
+  } else {
+    return {
+      ...defaultVols,
+      ..._stateVol
+    };
+  }
 }
 
 /**
@@ -59,11 +81,13 @@ class ApproveInstallView extends React.Component {
     super(props);
     this.state = {
       envs: {},
+      vols: {},
       options: {
         BYPASS_CORE_RESTRICTION: false
       }
     };
     this.handleEnvChange = this.handleEnvChange.bind(this);
+    this.handleVolChange = this.handleVolChange.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.approveInstall = this.approveInstall.bind(this);
   }
@@ -84,6 +108,18 @@ class ApproveInstallView extends React.Component {
     });
   }
 
+  handleVolChange({ value, name }) {
+    // if (value && value.startsWith("/")) {
+    //   this.props.getDiskSpaceAvailable({ path: value });
+    // }
+    this.setState({
+      vols: {
+        ...this.state.vols,
+        [name]: value
+      }
+    });
+  }
+
   handleOptionChange(e) {
     const { name, checked } = e.target;
     this.setState({
@@ -98,6 +134,8 @@ class ApproveInstallView extends React.Component {
     // Get envs
     const envs = getEnvs(this.props.manifest, this.state.envs);
     // Get ports
+    const vols = getVols(this.props.manifest, this.state.vols, true);
+    // Get ports
     const ports = parsePorts(this.props.manifest);
     // Call install
     // Path ipfs names:
@@ -107,11 +145,12 @@ class ApproveInstallView extends React.Component {
     else id = name + "@" + version;
     // Fire install call
     let options = this.state.options;
-    this.props.install(id, envs, ports, options);
+    this.props.install({ id, envs, vols, ports, options });
   }
 
   render() {
     const envs = getEnvs(this.props.manifest, this.state.envs);
+    const vols = getVols(this.props.manifest, this.state.vols);
 
     // Get install tag: INSTALL / UPDATE / INSTALLED
     let tag = this.props.pkg.tag || "INSTALL";
@@ -172,19 +211,29 @@ class ApproveInstallView extends React.Component {
         <Details pkg={this.props.pkg} subComponent={installButton} />
         <Dependencies request={this.props.request || {}} />
         <Envs envs={envs} handleEnvChange={this.handleEnvChange} />
+        <Vols
+          vols={vols}
+          handleVolChange={this.handleVolChange}
+          diskSpaceAvailable={this.props.diskSpaceAvailable}
+        />
         <SpecialPermissions />
       </React.Fragment>
     );
   }
 }
 
-const mapStateToProps = createStructuredSelector({});
+const mapStateToProps = createStructuredSelector({
+  diskSpaceAvailable: selector.diskSpaceAvailable
+});
 
 const mapDispatchToProps = dispatch => ({
-  install: (id, envs, ports, options) => {
-    dispatch(action.install(id, options));
-    dispatch(action.updateEnv(envs, id));
+  install: ({ id, envs, vols, ports, options }) => {
+    dispatch(action.install({ id, vols, options }));
+    dispatch(action.updateEnv({ id, envs }));
     dispatch(action.openPorts(ports));
+  },
+  getDiskSpaceAvailable: ({ path }) => {
+    dispatch(action.diskSpaceAvailable({ path }));
   }
 });
 

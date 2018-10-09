@@ -8,6 +8,7 @@ import status from "./status";
 import chains from "./chains";
 import activity from "./activity";
 import navbar from "./navbar";
+import dashboard from "./dashboard";
 
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
@@ -20,6 +21,7 @@ export default function* rootSaga() {
     status.saga(),
     chains.saga(),
     activity.saga(),
-    navbar.saga()
+    navbar.saga(),
+    dashboard.saga()
   ]);
 }

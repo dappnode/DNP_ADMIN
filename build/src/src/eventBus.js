@@ -1,9 +1,13 @@
 import eventBus from "pubsub-js";
 
+// import PubSub from "eventBus"
+//
 // var MY_TOPIC = 'hello';
-// PubSub.subscribe(MY_TOPIC, function (msg, data) {
+// token = PubSub.subscribe(MY_TOPIC, function (msg, data) {
 //     console.log(data)
 // });
+//
+// PubSub.unsubscribe(token);
 
 // PubSub.publish(MY_TOPIC, 'world');
 
