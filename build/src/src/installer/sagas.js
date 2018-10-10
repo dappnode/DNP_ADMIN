@@ -6,23 +6,24 @@ import * as s from "./selectors";
 import uuidv4 from "uuid/v4";
 import Toast from "components/Toast";
 import { shortName } from "utils/format";
+import isSyncing from "utils/isSyncing";
 import { idToUrl, isIpfsHash } from "./utils";
 
 /***************************** Subroutines ************************************/
 
 export function* shouldOpenPorts() {
-  const res = yield call(APIcall.getStatusUPnP);
+  const res = yield call(APIcall.getStatusUpnp);
   if (res.success) {
     yield put({
       type: t.SHOULD_OPEN_PORTS,
-      shouldOpenPorts: res.result.openPorts && res.result.UPnP
+      shouldOpenPorts: res.result.openPorts && res.result.upnpAvailable
     });
   } else {
     console.error("Error fetching UPnP status: " + res.message);
   }
 }
 
-export function* install({ id, options }) {
+export function* install({ id, vols, options }) {
   try {
     // Load necessary info
     const isInstalling = yield select(s.isInstalling);
@@ -42,7 +43,12 @@ export function* install({ id, options }) {
       msg: "Fetching dependencies...",
       pkgName: id.split("@")[0]
     });
-    const res = yield call(APIcall.installPackage, { id, logId, options });
+    const res = yield call(APIcall.installPackage, {
+      id,
+      vols,
+      logId,
+      options
+    });
     // Remove package from blacklist
     yield put({ type: t.CLEAR_PROGRESS_LOG, logId });
     pendingToast.resolve(res);
@@ -95,15 +101,17 @@ export function* openPorts({ ports }) {
   }
 }
 
-// For installer: throttle(ms, pattern, saga, ...args)
-
 export function* fetchDirectory() {
   try {
+    // If chain is not synced yet, cancel request.
+    if(yield call(isSyncing)) {
+      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+    }
+
     yield put({ type: t.UPDATE_FETCHING, fetching: true });
     const res = yield call(APIcall.fetchDirectory);
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
     if (!res.success) {
-      console.log("fetch directory res", res);
       return new Toast(res);
     }
 
@@ -138,6 +146,10 @@ export function* fetchPackageRequest({ id }) {
     const connectionOpen = yield select(s.connectionOpen);
     if (!connectionOpen) {
       yield take("CONNECTION_OPEN");
+    }
+    // If chain is not synced yet, cancel request.
+    if(yield call(isSyncing)) {
+      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
     }
 
     // If package is already loaded, skip
@@ -200,7 +212,7 @@ export function* fetchPackageData({ id }) {
     // Abort on error
     if (!res.success) {
       if (res.message.includes("Resolver could not found a match")) {
-        console.log("No match found for " + id);
+        console.error("No match found for " + id);
       } else {
         console.error("Error fetching package data: ", res.message);
       }
@@ -225,6 +237,33 @@ export function* fetchPackageData({ id }) {
     return manifest;
   } catch (error) {
     console.error("Error fetching directory: ", error);
+  }
+}
+
+function* diskSpaceAvailable({ path }) {
+  try {
+    // If connection is not open yet, wait for it to open.
+    const connectionOpen = yield select(s.connectionOpen);
+    if (!connectionOpen) {
+      yield take("CONNECTION_OPEN");
+    }
+    const res = yield call(APIcall.diskSpaceAvailable, { path });
+    // Abort on error
+    if (!res.success) {
+      console.error("Disk space available returned error: ", res.message);
+    }
+
+    const { exists, totalSize, availableSize } = res.result;
+    yield put({
+      type: t.UPDATE_DISK_SPACE_AVAILABLE,
+      status: exists ? `${availableSize} / ${totalSize}` : `non-existent`,
+      path
+    });
+  } catch (error) {
+    console.error(
+      "Error getting disk space available of " + path + ": ",
+      error
+    );
   }
 }
 
@@ -257,6 +296,10 @@ function* watchOpenPorts() {
   yield takeEvery(t.OPEN_PORTS, openPorts);
 }
 
+function* watchDiskSpaceAvailable() {
+  yield takeEvery(t.DISK_SPACE_AVAILABLE, diskSpaceAvailable);
+}
+
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
@@ -266,6 +309,7 @@ export default function* root() {
     watchUpdateEnvs(),
     watchOpenPorts(),
     watchFetchPackageRequest(),
-    watchFetchPackageData()
+    watchFetchPackageData(),
+    watchDiskSpaceAvailable()
   ]);
 }

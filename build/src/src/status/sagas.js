@@ -1,4 +1,5 @@
 import { call, put, all, takeEvery, fork } from "redux-saga/effects";
+import { delay } from "redux-saga";
 import { updateStatus } from "./actions";
 import * as APIcall from "API/rpcMethods";
 import { NON_ADMIN_RESPONSE } from "./constants";
@@ -22,6 +23,7 @@ const tags = {
 
 /***************************** Subroutines ************************************/
 
+let delayMs = 2000
 function* checkIPFS() {
   try {
     yield call(checkIpfsConnection);
@@ -30,14 +32,28 @@ function* checkIPFS() {
   } catch (err) {
     // Did NOT work:
     yield put(updateStatus({ id: tags.ipfs, status: -1, msg: err }));
+    // Keep retrying until the connection is ok
+    delayMs = delayMs*2
+    yield delay(delayMs)
+    yield call(checkIPFS);
   }
 }
 
-function* getStatusUPnP() {
+function* getStatusUpnp() {
   try {
-    const res = yield call(APIcall.getStatusUPnP);
+    const res = yield call(APIcall.getStatusUpnp);
     if (res.success) {
-      const { status, msg } = statusUPnPLogic(res.result);
+      const result = res.result;
+      let status = result.openPorts && !result.upnpAvailable ? 0 : 1;
+      let msg;
+      if (result.openPorts && !result.upnpAvailable) {
+        msg =
+          "UPnP device not found, please try to activate it in your router or manually open the required ports when installing packages";
+      } else if (!result.openPorts) {
+        msg = "UPnP not necessary";
+      } else {
+        msg = "ok";
+      }
       yield put(updateStatus({ id: tags.upnp, status, msg }));
     } else {
       console.error("Error fetching UPnP status" + res.message);
@@ -47,25 +63,31 @@ function* getStatusUPnP() {
   }
 }
 
-function statusUPnPLogic(res) {
-  let status = res.openPorts && !res.UPnP ? 0 : 1;
-  let msg;
-  if (res.openPorts && !res.UPnP) {
-    msg =
-      "UPnP device not found, please try to activate it in your router or manually open the required ports when installing packages";
-  } else if (!res.openPorts) {
-    msg = "UPnP not necessary";
-  } else {
-    msg = "ok";
-  }
-  return { status, msg };
-}
-
 function* getStatusExternalIp() {
   try {
     const res = yield call(APIcall.getStatusExternalIp);
     if (res.success) {
-      const { status, msg } = statusExternalIpLogic(res.result);
+      // Determine if user will have to open ports
+      const result = res.result || {};
+      let status = 0;
+      let msg = "Error verifying external ip status";
+      if (result) {
+        if (result.externalIpResolves) {
+          msg = "Resolves";
+          status = 1;
+        } else {
+          msg =
+            "External IP does not resolve (" +
+            (result.attempts || 10) +
+            " attempts). " +
+            "Please use the internal IP: " +
+            (result.internalIp || "(missing-ip)") +
+            " when you are in the same network as your DAppNode" +
+            " and the external IP: " +
+            (result.externalIp || "(missing-ip)") +
+            " otherwise";
+        }
+      }
       yield put(updateStatus({ id: tags.externalIP, status, msg }));
     } else {
       console.error("Error fetching external IP status: " + res.message);
@@ -73,30 +95,6 @@ function* getStatusExternalIp() {
   } catch (e) {
     // It will throw when connection is not open, ignore
   }
-}
-
-function statusExternalIpLogic(res) {
-  // Determine if user will have to open ports
-  let status = 0;
-  let msg = "Error verifying external ip status";
-  if (res) {
-    if (res.externalIpResolves) {
-      msg = "Resolves";
-      status = 1;
-    } else {
-      msg =
-        "External IP does not resolve (" +
-        (res.attempts || 10) +
-        " attempts). " +
-        "Please use the internal IP: " +
-        (res.INT_IP || "ERROR") +
-        " when you are in the same network as your DAppNode" +
-        " and the external IP: " +
-        (res.EXT_IP || "ERROR") +
-        " otherwise";
-    }
-  }
-  return { status, msg };
 }
 
 function* initializeLoadingMessages() {
@@ -133,7 +131,7 @@ function* onConnectionOpen({ session }) {
   // Check if the vpn is connected and then get its info
   const vpnRes = yield call(checkPackage, session, tags.vpn);
   if (vpnRes.status === 1) {
-    yield all([call(getStatusUPnP), call(getStatusExternalIp)]);
+    yield all([call(getStatusUpnp), call(getStatusExternalIp)]);
   }
 }
 

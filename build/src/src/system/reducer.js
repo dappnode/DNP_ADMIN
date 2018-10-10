@@ -6,7 +6,8 @@ const initialState = {
   fetching: false,
   logs: {},
   systemUpdateAvailable: false,
-  coreDeps: []
+  coreDeps: [],
+  staticIp: null
 };
 
 export default function(state = initialState, action) {
@@ -31,6 +32,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         fetching: action.fetching
+      };
+    case t.UPDATE_STATIC_IP:
+      return {
+        ...state,
+        staticIp: action.staticIp
       };
     default:
       return state;

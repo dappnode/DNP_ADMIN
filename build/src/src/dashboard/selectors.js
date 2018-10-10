@@ -20,4 +20,10 @@ import { NAME } from "./constants";
 
 // Utils
 
-export const getAll = state => state[NAME];
+// #### EXTERNAL SELECTORS
+export const session = state => state.session;
+export const connectionOpen = state => session(state) && session(state).isOpen;
+
+// #### INTERNAL SELECTORS
+export const local = state => state[NAME];
+export const dappnodeStats = state => local(state).dappnodeStats;

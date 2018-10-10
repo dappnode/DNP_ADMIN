@@ -19,6 +19,11 @@ import { NAME } from "./constants";
 // From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
 
 const local = state => state[NAME];
-const vpnParams = state => local(state).vpnParams || {};
-export const getVpnParamsName = state => vpnParams(state).NAME || "";
-export const getVpnParamsIp = state => vpnParams(state).IP || "";
+export const getDappnodeIdentity = state => {
+  const params = local(state).dappnodeIdentity || {};
+  const { ip, name } = params;
+  const s = [];
+  if (ip) s.push(ip);
+  if (name) s.push(name);
+  return s.join("/");
+};

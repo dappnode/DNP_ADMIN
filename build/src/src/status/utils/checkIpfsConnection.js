@@ -23,7 +23,7 @@ export default function checkIpfsConnection() {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       reject("Timeout expired, ipfs may be down");
-    }, 3000);
+    }, 10000);
 
     const ipfs = ipfsSingleton.get();
     ipfs.cat("QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB", function(

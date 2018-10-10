@@ -5,7 +5,7 @@
   "dependencies": {
     "@parity/api": "^2.1.23",
     "ansi_up": "^3.0.0",
-    "autobahn": "^18.3.2",
+    "autobahn-browser": "^18.3.2",
     "bootstrap": "^4.1.1",
     "browser-ipfs": "0.0.6",
     "clipboard": "^2.0.1",

@@ -14,6 +14,7 @@ import PackageStore from "./PackageStore";
 import chains from "chains";
 // Styles
 import "./installer.css";
+import { select } from "redux-saga/effects";
 
 class InstallerView extends React.Component {
   static propTypes = {
@@ -70,6 +71,7 @@ class InstallerView extends React.Component {
           fetching={this.props.fetching}
           directory={this.props.directory}
           openPackage={this.props.openPackage}
+          isSyncing={this.props.isSyncing}
         />
       </div>
     );
@@ -80,7 +82,8 @@ const mapStateToProps = createStructuredSelector({
   directory: selector.getFilteredDirectoryNonCores,
   selectedTypes: selector.getSelectedTypes,
   inputValue: selector.getInput,
-  fetching: selector.fetching
+  fetching: selector.fetching,
+  isSyncing: selector.isSyncing
 });
 
 const mapDispatchToProps = dispatch => {

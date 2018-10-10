@@ -30,6 +30,7 @@ export const session = state => state.session;
 export const connectionOpen = state => session(state) && session(state).isOpen;
 export const directory = state => state.directory;
 export const installedPackages = state => state.installedPackages || [];
+export const isSyncing = state => state.isSyncing;
 
 // #### INTERNAL SELECTORS
 const local = state => state[NAME];
@@ -42,6 +43,7 @@ export const isInstalling = state => local(state).isInstalling;
 export const fetching = state => local(state).fetching || false;
 export const shouldOpenPorts = state => local(state).shouldOpenPorts;
 export const progressLogs = state => local(state).progressLogs;
+export const diskSpaceAvailable = state => local(state).diskSpaceAvailable;
 
 const filterCompleted = todos => todos.filter(t => t.completed);
 const filterActive = todos => todos.filter(t => !t.completed);

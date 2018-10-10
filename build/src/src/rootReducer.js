@@ -10,10 +10,13 @@ import status from "./status";
 import chains from "./chains";
 import activity from "./activity";
 
+// Prevent manifest arrays to keep populating
+const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
+
 const directoryReducer = (state = {}, action) => {
   switch (action.type) {
     case "UPDATE_DIRECTORY":
-      return merge(state, action.pkgs || {});
+      return merge(state, action.pkgs || {}, { arrayMerge: overwriteMerge });
     default:
       return state;
   }
@@ -37,6 +40,15 @@ const sessionReducer = (state = null, action) => {
   }
 };
 
+const isSyncingReducer = (state = null, action) => {
+  switch (action.type) {
+    case "UPDATE_IS_SYNCING":
+      return action.isSyncing;
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   [devices.constants.NAME]: devices.reducer,
   [installer.constants.NAME]: installer.reducer,
@@ -49,5 +61,6 @@ export default combineReducers({
   [activity.constants.NAME]: activity.reducer,
   session: sessionReducer,
   directory: directoryReducer,
-  installedPackages: installedPackagesReducer
+  installedPackages: installedPackagesReducer,
+  isSyncing: isSyncingReducer
 });

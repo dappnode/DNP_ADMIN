@@ -1,10 +1,13 @@
 import React from "react";
+import PubSub from "eventBus";
 
 import Terminal from "./Terminal";
 import "./switch.css";
 
 const refreshInterval = 2 * 1000;
 const terminalID = "terminal";
+
+let token;
 
 export default class DisplayLogs extends React.Component {
   constructor() {
@@ -25,10 +28,16 @@ export default class DisplayLogs extends React.Component {
 
   componentDidMount() {
     this.handle = setInterval(this.logPackage, refreshInterval);
+    const logErrorHandler = () => {
+      clearInterval(this.handle);
+      this.setState({ autoRefresh: false });
+    };
+    token = PubSub.subscribe("LOG_ERROR", logErrorHandler.bind(this));
   }
 
   componentWillUnmount() {
     clearInterval(this.handle);
+    PubSub.unsubscribe(token);
   }
 
   logPackage() {

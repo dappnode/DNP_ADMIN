@@ -6,6 +6,7 @@ import semver from "semver";
 import Toast from "components/Toast";
 import uuidv4 from "uuid/v4";
 import installer from "installer";
+import isSyncing from "utils/isSyncing";
 
 /***************************** Subroutines ************************************/
 
@@ -61,6 +62,11 @@ function shouldUpdate(v1, v2) {
 
 export function* checkCoreUpdate() {
   try {
+    // If chain is not synced yet, cancel request.
+    if(yield call(isSyncing)) {
+      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+    }
+
     const packagesRes = yield call(APIcall.listPackages);
     const coreDataRes = yield call(APIcall.fetchPackageData, {
       id: "core.dnp.dappnode.eth"
@@ -161,12 +167,39 @@ function* logPackage({ kwargs }) {
   }
 }
 
+function* setStaticIp({ staticIp }) {
+  try {
+    const pendingToast = new Toast({
+      message: "setting static ip...",
+      pending: true
+    });
+    const res = yield call(APIcall.setStaticIp, { staticIp });
+    pendingToast.resolve(res);
+
+    yield call(getStaticIp);
+  } catch (e) {
+    console.error("Error setting static IP:", e);
+  }
+}
+
+function* getStaticIp() {
+  try {
+    const res = yield call(APIcall.getVpnParams);
+    const { staticIp } = (res || {}).result || {};
+    yield put(a.updateStaticIp(staticIp));
+  } catch (e) {
+    console.error("Error getting static IP:", e);
+  }
+}
+
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
 
-function* watchListPackages() {
+function* watchConnectionOpen() {
+  yield takeEvery("CONNECTION_OPEN", checkCoreUpdate);
   yield takeEvery("CONNECTION_OPEN", listPackages);
+  yield takeEvery("CONNECTION_OPEN", getStaticIp);
 }
 
 function* watchCall() {
@@ -177,22 +210,22 @@ function* watchLogPackage() {
   yield takeEvery(t.LOG_PACKAGE, logPackage);
 }
 
-function* watchConnectionOpen() {
-  yield takeEvery("CONNECTION_OPEN", checkCoreUpdate);
-}
-
 function* watchUpdateCore() {
   yield takeEvery(t.UPDATE_CORE, updateCore);
+}
+
+function* watchSetStaticIp() {
+  yield takeEvery(t.SET_STATIC_IP, setStaticIp);
 }
 
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
   yield all([
-    watchListPackages(),
+    watchConnectionOpen(),
     watchCall(),
     watchLogPackage(),
-    watchConnectionOpen(),
-    watchUpdateCore()
+    watchUpdateCore(),
+    watchSetStaticIp()
   ]);
 }
