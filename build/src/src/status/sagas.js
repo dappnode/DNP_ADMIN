@@ -143,7 +143,7 @@ function* checkPackage(session, id) {
 
 function* onConnectionClose({ reason, details = {} }) {
   yield put(updateStatus({ id: tags.wamp, status: -1, msg: NOWAMP }));
-  const nonAdmin = (details.message || "").includes(NON_ADMIN_RESPONSE);
+  const nonAdmin = (details.message || "").includes("could not authenticate session");
   yield put(
     updateStatus({
       id: tags.isAdmin,
