@@ -14,7 +14,6 @@ import PackageStore from "./PackageStore";
 import chains from "chains";
 // Styles
 import "./installer.css";
-import { select } from "redux-saga/effects";
 
 class InstallerView extends React.Component {
   static propTypes = {

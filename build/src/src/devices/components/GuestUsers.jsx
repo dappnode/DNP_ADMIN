@@ -8,7 +8,7 @@ import { guestsName } from "../constants";
 
 new ClipboardJS(".btn");
 
-const guestsIpRange = "172.200.31-34";
+// const guestsIpRange = "172.200.31-34";
 
 export default class GuestUsers extends React.Component {
   resetGuestUsersPassword() {

@@ -2,7 +2,6 @@ import { call, put, all, takeEvery, fork } from "redux-saga/effects";
 import { delay } from "redux-saga";
 import { updateStatus } from "./actions";
 import * as APIcall from "API/rpcMethods";
-import { NON_ADMIN_RESPONSE } from "./constants";
 import checkWampPackage from "./utils/checkWampPackage";
 import checkIpfsConnection from "./utils/checkIpfsConnection";
 import chains from "chains";
