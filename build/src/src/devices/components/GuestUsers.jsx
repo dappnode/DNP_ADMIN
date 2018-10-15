@@ -3,12 +3,9 @@ import ClipboardJS from "clipboard";
 import { NavLink } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
-import "./adminBadge.css";
-import { guestsName } from "../constants";
+import { guestsName, guestsIpRange } from "../constants";
 
 new ClipboardJS(".btn");
-
-const guestsIpRange = "172.33.100.1-172.33.255.254";
 
 export default class GuestUsers extends React.Component {
   resetGuestUsersPassword() {
