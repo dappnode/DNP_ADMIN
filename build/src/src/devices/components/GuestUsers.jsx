@@ -8,7 +8,7 @@ import { guestsName } from "../constants";
 
 new ClipboardJS(".btn");
 
-// const guestsIpRange = "172.200.31-34";
+const guestsIpRange = "172.33.100.1-172.33.255.254";
 
 export default class GuestUsers extends React.Component {
   resetGuestUsersPassword() {
@@ -35,7 +35,7 @@ export default class GuestUsers extends React.Component {
     const device = {
       ...(guestUsersDevice || {}),
       name: guestsName,
-      ip: "*"
+      ip: guestsIpRange
     };
 
     let url = device.otp || "";
