@@ -3,7 +3,10 @@ import * as t from "devices/actionTypes";
 
 describe("Request reducer", () => {
   it("has a default state", () => {
-    expect(reducer(undefined, { type: undefined })).toEqual([]);
+    expect(reducer(undefined, { type: undefined })).toEqual({
+      fetching: false,
+      devices: []
+    });
   });
 
   it("has a default state", () => {
@@ -13,6 +16,9 @@ describe("Request reducer", () => {
         type: t.UPDATE,
         devices
       })
-    ).toEqual(devices);
+    ).toEqual({
+      fetching: false,
+      devices
+    });
   });
 });

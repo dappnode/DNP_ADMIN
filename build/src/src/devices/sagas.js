@@ -7,7 +7,10 @@ import Toast from "components/Toast";
 
 export function* fetchDevices() {
   try {
+    yield put({ type: t.UPDATE_FETCHING, fetching: true });
     const res = yield call(APIcall.fetchDevices);
+    yield put({ type: t.UPDATE_FETCHING, fetching: false });
+
     if (res.success) {
       yield put({ type: t.UPDATE, devices: res.result });
     } else {
@@ -18,10 +21,10 @@ export function* fetchDevices() {
   }
 }
 
-function* callApi({ method, id, message }) {
+function* callApi({ method, kwargs, message }) {
   try {
     const pendingToast = new Toast({ message, pending: true });
-    const res = yield call(APIcall[method], { id });
+    const res = yield call(APIcall[method], kwargs);
     pendingToast.resolve(res);
   } catch (error) {
     console.error("Error on " + method + ": ", error);

@@ -72,6 +72,17 @@ export const getVpnParams = () =>
     event: "getParams.vpn.dnp.dappnode.eth"
   });
 
+export const toggleGuestUsers = () =>
+  wrapCall({
+    event: "toggleGuestUsers.vpn.dnp.dappnode.eth"
+  });
+
+export const resetGuestUsersPassword = () =>
+  wrapCall({
+    event: "resetGuestUsersPassword.vpn.dnp.dappnode.eth"
+  });
+
+
 // getStatusUpnp CALL DOCUMENTATION:
 // > kwargs: {}
 // > result: {

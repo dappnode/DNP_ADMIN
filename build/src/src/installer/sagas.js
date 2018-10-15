@@ -104,7 +104,7 @@ export function* openPorts({ ports }) {
 export function* fetchDirectory() {
   try {
     // If chain is not synced yet, cancel request.
-    if(yield call(isSyncing)) {
+    if (yield call(isSyncing)) {
       return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
     }
 
