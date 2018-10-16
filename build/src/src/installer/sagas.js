@@ -82,7 +82,7 @@ export function* updateEnvs({ id, envs, restart }) {
   }
 }
 
-export function* openPorts({ ports = [] }) {
+export function* managePorts({ action, ports = [] }) {
   try {
     // Remove duplicates
     ports = uniqArray(ports)
@@ -91,7 +91,7 @@ export function* openPorts({ ports = [] }) {
     if (shouldOpenPorts && ports.length > 0) {
       
       const pendingToast = new Toast({
-        message: "Opening ports " + ports.join(", ") + "...",
+        message: `${action} ports ${ports.join(", ")}...`,
         pending: true
       });
       const res = yield call(APIcall.managePorts, {
@@ -101,7 +101,7 @@ export function* openPorts({ ports = [] }) {
       pendingToast.resolve(res);
     }
   } catch (error) {
-    console.error("Error opening ports: ", error);
+    console.error(`Error on ${action} ports: `, error);
   }
 }
 
@@ -296,8 +296,8 @@ function* watchUpdateEnvs() {
   yield takeEvery(t.UPDATE_ENV, updateEnvs);
 }
 
-function* watchOpenPorts() {
-  yield takeEvery(t.OPEN_PORTS, openPorts);
+function* watchManagerPorts() {
+  yield takeEvery(t.MANAGE_PORTS, managePorts);
 }
 
 function* watchDiskSpaceAvailable() {
@@ -311,7 +311,7 @@ export default function* root() {
     watchConnectionOpen(),
     watchInstall(),
     watchUpdateEnvs(),
-    watchOpenPorts(),
+    watchManagerPorts(),
     watchFetchPackageRequest(),
     watchFetchPackageData(),
     watchDiskSpaceAvailable()

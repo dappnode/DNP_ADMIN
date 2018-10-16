@@ -116,7 +116,7 @@ const mapDispatchToProps = dispatch => {
     removePackage: (pkg, deleteVolumes) => {
       dispatch(action.removePackage({ id: pkg.name, deleteVolumes }));
       const ports = getPortsFromManifest(pkg);
-      if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
+      if (ports.length) dispatch(action.closePorts(ports));
       dispatch(push("/" + NAME));
     }
   };
