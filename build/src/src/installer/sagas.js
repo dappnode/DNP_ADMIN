@@ -8,6 +8,7 @@ import Toast from "components/Toast";
 import { shortName } from "utils/format";
 import isSyncing from "utils/isSyncing";
 import { idToUrl, isIpfsHash } from "./utils";
+import uniqArray from "utils/uniqArray";
 
 /***************************** Subroutines ************************************/
 
@@ -81,11 +82,14 @@ export function* updateEnvs({ id, envs, restart }) {
   }
 }
 
-export function* openPorts({ ports }) {
+export function* openPorts({ ports = [] }) {
   try {
+    // Remove duplicates
+    ports = uniqArray(ports)
+    // Only open ports if necessary
     const shouldOpenPorts = yield select(s.shouldOpenPorts);
     if (shouldOpenPorts && ports.length > 0) {
-      // #### Only if necessary!!!
+      
       const pendingToast = new Toast({
         message: "Opening ports " + ports.join(", ") + "...",
         pending: true

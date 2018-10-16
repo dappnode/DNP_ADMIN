@@ -12,6 +12,7 @@ import Dependencies from "./Dependencies";
 import Details from "./Details";
 import { Link } from "react-router-dom";
 import packages from "packages";
+import uniqArray from "utils/uniqArray";
 // style
 import "./checkbox.css";
 
@@ -136,7 +137,7 @@ class ApproveInstallView extends React.Component {
     // Get ports
     const vols = getVols(this.props.manifest, this.state.vols, true);
     // Get ports
-    const ports = parsePorts(this.props.manifest);
+    const ports = uniqArray(parsePorts(this.props.manifest));
     // Call install
     // Path ipfs names:
     let id = this.props.id;
