@@ -22,16 +22,6 @@ class SystemInterface extends React.Component {
 
     let id = pkg.name;
 
-    function getPortsFromManifest(pkg) {
-      const manifest = pkg.manifest || {};
-      const image = manifest.image || {};
-      const packagePorts = image.ports || [];
-      const ports = packagePorts.map(p => p.split(":")[0]);
-      return ports;
-    }
-
-    const ports = getPortsFromManifest(pkg);
-
     // Merge current envs with default envs
     const envs = pkg.envs || {};
     const defaultEnvs = ((pkg.manifest || {}).image || {}).environment || [];
@@ -61,13 +51,8 @@ class SystemInterface extends React.Component {
 
         <Controls
           state={pkg.state}
-          togglePackage={() => this.props.togglePackage(id)}
           restartPackage={() => this.props.restartPackage(id)}
           restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
-          removePackage={() => this.props.removePackage(id, ports)}
-          removePackageAndData={() =>
-            this.props.removePackageAndData(id, ports)
-          }
         />
       </div>
     );

@@ -13,6 +13,8 @@ import Details from "./PackageViews/Details";
 import Logs from "./PackageViews/Logs";
 import Envs from "./PackageViews/Envs";
 import Controls from "./PackageViews/Controls";
+// utils
+import parsePorts from "utils/parsePorts";
 
 class PackageInterface extends React.Component {
   constructor(props) {
@@ -85,14 +87,6 @@ class PackageInterface extends React.Component {
 
 // Container
 
-function getPortsFromManifest(pkg) {
-  const manifest = pkg.manifest || {};
-  let image = manifest.image || {};
-  let packagePorts = image.ports || [];
-  let ports = packagePorts.map(p => p.split(":")[0]);
-  return ports;
-}
-
 const mapStateToProps = createStructuredSelector({
   pkg: selector.getPackage,
   packageList: selector.getPackages,
@@ -115,7 +109,7 @@ const mapDispatchToProps = dispatch => {
     },
     removePackage: (pkg, deleteVolumes) => {
       dispatch(action.removePackage({ id: pkg.name, deleteVolumes }));
-      const ports = getPortsFromManifest(pkg);
+      const ports = parsePorts(pkg.manifest || {});
       if (ports.length) dispatch(action.closePorts(ports));
       dispatch(push("/" + NAME));
     }

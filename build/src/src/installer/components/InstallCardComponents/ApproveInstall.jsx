@@ -12,7 +12,7 @@ import Dependencies from "./Dependencies";
 import Details from "./Details";
 import { Link } from "react-router-dom";
 import packages from "packages";
-import uniqArray from "utils/uniqArray";
+import parsePorts from "utils/parsePorts";
 // style
 import "./checkbox.css";
 
@@ -64,15 +64,6 @@ function getVols(manifest, stateVol, onlyState) {
       ..._stateVol
     };
   }
-}
-
-/**
- * Parses ports
- * @param {object} manifest
- * @return {array} ['8080', '4001']
- */
-function parsePorts(manifest) {
-  return (((manifest || {}).image || {}).ports || []).map(p => p.split(":")[0]);
 }
 
 const options = ["BYPASS_CORE_RESTRICTION"];
@@ -137,7 +128,7 @@ class ApproveInstallView extends React.Component {
     // Get ports
     const vols = getVols(this.props.manifest, this.state.vols, true);
     // Get ports
-    const ports = uniqArray(parsePorts(this.props.manifest));
+    const ports = parsePorts(this.props.manifest);
     // Call install
     // Path ipfs names:
     let id = this.props.id;
