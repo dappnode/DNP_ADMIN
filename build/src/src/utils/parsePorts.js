@@ -19,4 +19,4 @@ function parsePorts(manifest) {
     return uniqArray(portsFormatted)
 }
 
-module.exports = parsePorts;
+export default parsePorts;
