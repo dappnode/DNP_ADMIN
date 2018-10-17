@@ -188,6 +188,7 @@ function* getStaticIp() {
     const res = yield call(APIcall.getVpnParams);
     const { staticIp } = (res || {}).result || {};
     yield put(a.updateStaticIp(staticIp));
+    yield put(a.updateStaticIpInput(staticIp));
   } catch (e) {
     console.error("Error getting static IP:", e);
   }

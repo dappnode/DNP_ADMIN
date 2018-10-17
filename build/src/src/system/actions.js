@@ -69,4 +69,9 @@ export const updateStaticIp = staticIp => ({
   staticIp
 });
 
+export const updateStaticIpInput = staticIpInput => ({
+  type: t.UPDATE_STATIC_IP_INPUT,
+  staticIpInput
+});
+
 // #### After removing a package, uninstallChain

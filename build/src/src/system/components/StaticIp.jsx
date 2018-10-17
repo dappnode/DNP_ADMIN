@@ -1,12 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { createStructuredSelector } from "reselect";
+import * as selector from "../selectors";
+import { connect } from "react-redux";
+import * as action from "../actions";
+import ipRegex from "ip-regex";
 
-const inputId = "static-ip-input-id";
-
-export default class StaticIp extends React.Component {
+class StaticIpView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { enable: false };
+    this.state = {
+      enable: false
+    };
   }
 
   static propTypes = {
@@ -23,8 +28,7 @@ export default class StaticIp extends React.Component {
   }
 
   setStaticIp() {
-    const staticIp = document.getElementById(inputId).value;
-    this.props.setStaticIp(staticIp);
+    this.props.setStaticIp(this.props.staticIpInput);
     this.setState({ enable: false });
   }
 
@@ -32,10 +36,14 @@ export default class StaticIp extends React.Component {
     const margin = "5px";
     const padding = "0.7rem";
 
+    const { staticIp, staticIpInput } = this.props;
+    const ipIsValid =
+      staticIpInput && ipRegex({ exact: true }).test(staticIpInput);
+
     // Three states:
     let content;
     // 1. Disabled
-    if (!this.props.staticIp && !this.state.enable) {
+    if (!staticIp && !this.state.enable) {
       content = (
         <button
           className="btn btn-outline-secondary"
@@ -47,19 +55,21 @@ export default class StaticIp extends React.Component {
       );
     }
     // 2. Disabled but about to enable
-    if (!this.props.staticIp && this.state.enable) {
+    if (this.state.enable) {
       content = (
         <div className="input-group">
           <input
-            id={inputId}
             type="text"
             className="form-control"
             placeholder="Your static ip..."
+            value={staticIpInput}
+            onChange={e => this.props.updateStaticIpInput(e.target.value)}
           />
           <div className="input-group-append">
             <button
               className="btn btn-outline-secondary"
               type="button"
+              disabled={!ipIsValid}
               onClick={this.setStaticIp.bind(this)}
             >
               Set
@@ -69,19 +79,21 @@ export default class StaticIp extends React.Component {
       );
     }
     // 3. Enabled
-    if (this.props.staticIp) {
+    if (staticIp && !this.state.enable) {
       content = (
         <div className="input-group">
           <input
-            id={inputId}
             type="text"
             className="form-control"
-            placeholder={this.props.staticIp || "Your static ip..."}
+            placeholder="Your static ip..."
+            value={staticIpInput}
+            onChange={e => this.props.updateStaticIpInput(e.target.value)}
           />
           <div className="input-group-append">
             <button
               className="btn btn-outline-secondary"
               type="button"
+              disabled={!ipIsValid}
               onClick={this.setStaticIp.bind(this)}
             >
               Set
@@ -115,3 +127,26 @@ export default class StaticIp extends React.Component {
     );
   }
 }
+
+// Container
+
+const mapStateToProps = createStructuredSelector({
+  staticIp: selector.staticIp,
+  staticIpInput: selector.staticIpInput
+});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setStaticIp: staticIp => {
+      dispatch(action.setStaticIp(staticIp));
+    },
+    updateStaticIpInput: staticIpInput => {
+      dispatch(action.updateStaticIpInput(staticIpInput));
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(StaticIpView);
