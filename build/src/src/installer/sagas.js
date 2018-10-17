@@ -95,7 +95,7 @@ export function* managePorts({ action, ports = [] }) {
         pending: true
       });
       const res = yield call(APIcall.managePorts, {
-        action: "open",
+        action,
         ports
       });
       pendingToast.resolve(res);
