@@ -4,7 +4,7 @@ import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
 import * as action from "../actions";
-import ipRegex from "ip-regex";
+import isIpv4 from "utils/isIpv4";
 
 class StaticIpView extends React.Component {
   constructor(props) {
@@ -37,8 +37,7 @@ class StaticIpView extends React.Component {
     const padding = "0.7rem";
 
     const { staticIp, staticIpInput } = this.props;
-    const ipIsValid =
-      staticIpInput && ipRegex({ exact: true }).test(staticIpInput);
+    const ipIsValid = isIpv4(staticIpInput);
 
     // Three states:
     let content;
