@@ -46,7 +46,6 @@ class NavbarTopView extends React.Component {
               .map(key => `<strong>${key}:</strong> ${dnIdn[key]}`)
               .join("<br/>")}
             data-html="true"
-            className="dappnode-identity"
             style={{
               textTransform: "none",
               cursor: "pointer",
