@@ -13,8 +13,12 @@ function parsePorts(manifest) {
         .filter(e => e.includes(":"))
         // Transform ['30303:30303/udp'] => ['30303 UDP']
         .map(p => {
-          const hostPort = p.split(":")[0];
-          return `${hostPort} ${p.includes("udp") ? "UDP" : "TCP"}`;
+          const hostPortNumber = p.split(":")[0];
+          const portType = p.split("/")[1] || 'TCP';
+          return {
+              number: hostPortNumber,
+              type: portType
+          }
         })
     return uniqArray(portsFormatted)
 }
