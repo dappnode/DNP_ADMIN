@@ -91,7 +91,7 @@ export function* managePorts({ action, ports = [] }) {
     if (shouldOpenPorts && ports.length > 0) {
       
       const pendingToast = new Toast({
-        message: `${action} ports ${ports.join(", ")}...`,
+        message: `${action} ports ${ports.map(p => `${p.number} ${p.type}`).join(", ")}...`,
         pending: true
       });
       const res = yield call(APIcall.managePorts, {

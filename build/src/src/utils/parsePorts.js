@@ -17,7 +17,7 @@ function parsePorts(manifest) {
           const portType = p.split("/")[1] || 'TCP';
           return {
               number: hostPortNumber,
-              type: portType
+              type: portType ? portType.toUpperCase() : portType
           }
         })
     return uniqArray(portsFormatted)
