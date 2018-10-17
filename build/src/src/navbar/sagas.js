@@ -27,6 +27,7 @@ function* fetchVpnParams() {
 
 function* watchConnectionOpen() {
   yield takeEvery("CONNECTION_OPEN", fetchVpnParams);
+  yield takeEvery("FETCH_DAPPNODE_PARAMS", fetchVpnParams);
 }
 
 // notice how we now only export the rootSaga

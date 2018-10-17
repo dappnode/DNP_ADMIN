@@ -176,6 +176,7 @@ function* setStaticIp({ staticIp }) {
     const res = yield call(APIcall.setStaticIp, { staticIp });
     pendingToast.resolve(res);
 
+    yield put({type: "FETCH_DAPPNODE_PARAMS"})
     yield call(getStaticIp);
   } catch (e) {
     console.error("Error setting static IP:", e);
