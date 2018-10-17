@@ -66,8 +66,6 @@ function getVols(manifest, stateVol, onlyState) {
   }
 }
 
-const options = ["BYPASS_CORE_RESTRICTION"];
-
 class ApproveInstallView extends React.Component {
   constructor(props) {
     super(props);
@@ -149,6 +147,15 @@ class ApproveInstallView extends React.Component {
 
     const installAvailable = this.props.request && !this.props.request.fetching;
 
+    // Filter options according to the current package
+    // 1. If package is core and from ipfs, show "BYPASS_CORE_RESTRICTION" option
+    const options = [];
+    if (
+      (this.props.id || "").startsWith("/ipfs/") &&
+      ((this.props.manifest || {}).type || "") === "dncore"
+    )
+      options.push("BYPASS_CORE_RESTRICTION");
+
     const installButton = (
       <React.Fragment>
         <div className="float-right ml-3">
@@ -172,7 +179,7 @@ class ApproveInstallView extends React.Component {
           )}
         </div>
         <div className="float-right">
-          {this.props.id && this.props.id.startsWith("/ipfs/")
+          {options.length
             ? options.map((option, i) => (
                 <label
                   key={i}
