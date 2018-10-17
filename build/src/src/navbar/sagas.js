@@ -10,7 +10,9 @@ function* fetchVpnParams() {
       yield put(
         a.updateDappnodeIdentity({
           ip: result.ip,
-          name: result.name
+          name: result.name,
+          staticIp: result.staticIp,
+          domain: result.domain
         })
       );
     }

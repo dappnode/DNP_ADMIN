@@ -38,6 +38,7 @@ export default class NavbarSide extends React.Component {
   componentDidMount() {
     $(".navbar-nav>li>a").on("click", function() {
       $(".navbar-collapse").collapse("hide");
+      $(".popover").popover("hide");
     });
     $(() => {
       $('[data-toggle="tooltip"]').tooltip();
