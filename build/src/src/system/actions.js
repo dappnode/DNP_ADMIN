@@ -52,9 +52,9 @@ export const restartPackage = kwargs => ({
   kwargs
 });
 
-export const restartVolumes = kwargs => ({
+export const restartPackageVolumes = kwargs => ({
   type: t.CALL,
-  method: "restartVolumes",
+  method: "restartPackageVolumes",
   message: "Restarting " + shortName(kwargs.id) + " volumes...",
   kwargs
 });

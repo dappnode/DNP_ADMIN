@@ -76,7 +76,7 @@ class PackageInterface extends React.Component {
           state={pkg.state}
           togglePackage={() => this.props.togglePackage(id)}
           restartPackage={() => this.props.restartPackage(id)}
-          restartVolumes={() => this.props.restartVolumes(id)}
+          restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
           removePackage={() => this.removePackageConfirm(pkg, false)}
           removePackageAndData={() => this.removePackageConfirm(pkg, true)}
         />
@@ -104,8 +104,8 @@ const mapDispatchToProps = dispatch => {
     restartPackage: id => {
       dispatch(action.restartPackage({ id }));
     },
-    restartVolumes: id => {
-      dispatch(action.restartVolumes({ id }));
+    restartPackageVolumes: id => {
+      dispatch(action.restartPackageVolumes({ id }));
     },
     removePackage: (pkg, deleteVolumes) => {
       dispatch(action.removePackage({ id: pkg.name, deleteVolumes }));

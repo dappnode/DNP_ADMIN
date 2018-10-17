@@ -76,8 +76,8 @@ const mapDispatchToProps = dispatch => {
     restartPackage: id => {
       dispatch(action.restartPackage({ id }));
     },
-    restartVolumes: id => {
-      dispatch(action.restartVolumes({ id }));
+    restartPackageVolumes: id => {
+      dispatch(action.restartPackageVolumes({ id }));
     }
   };
 };

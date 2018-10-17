@@ -165,11 +165,11 @@ export const restartPackage = (kwargs = {}) =>
     initText: "Restarting " + shortName(kwargs.id)
   });
 
-// restartVolumes CALL DOCUMENTATION:
+// restartPackageVolumes CALL DOCUMENTATION:
 // > kwargs: { id, deleteVolumes }
 // > result: {}
 
-export const restartVolumes = (kwargs = {}) =>
+export const restartPackageVolumes = (kwargs = {}) =>
   wrapCall({
     event: "restartPackageVolumes.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id"]),
