@@ -8,6 +8,8 @@ import { connect } from "react-redux";
 import * as action from "../actions";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+// utils
+import parsePorts from "utils/parsePorts";
 
 class PackageRowView extends React.Component {
   constructor(props) {
