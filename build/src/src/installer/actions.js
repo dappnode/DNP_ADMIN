@@ -51,7 +51,8 @@ export const updateEnv = ({ id, envs }) => ({
 });
 
 export const openPorts = ports => ({
-  type: t.OPEN_PORTS,
+  type: t.MANAGE_PORTS,
+  action: 'open',
   ports
 });
 

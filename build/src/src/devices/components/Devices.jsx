@@ -1,10 +1,12 @@
 import React from "react";
-import DeviceList from "./DeviceList";
 import status from "status";
 import { connect } from "react-redux";
 import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
+import DeviceList from "./DeviceList";
+import GuestUsers from "./GuestUsers";
+import Loading from "components/Loading";
 
 class DevicesView extends React.Component {
   constructor() {
@@ -42,7 +44,7 @@ class DevicesView extends React.Component {
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <status.components.DependenciesAlert
           deps={["wamp", "vpn", "externalIP"]}
         />
@@ -69,18 +71,34 @@ class DevicesView extends React.Component {
           </div>
         </div>
 
-        <DeviceList
-          deviceList={this.props.deviceList}
-          removeDevice={this.removeDevice.bind(this)}
-          toggleAdmin={this.toggleAdmin.bind(this)}
-        />
-      </div>
+        {this.props.fetching && this.props.deviceList.length === 0 ? (
+          <Loading msg="Loading device list..." />
+        ) : (
+          <React.Fragment>
+            <DeviceList
+              deviceList={this.props.deviceList}
+              removeDevice={this.removeDevice.bind(this)}
+              toggleAdmin={this.toggleAdmin.bind(this)}
+            />
+
+            {this.props.deviceList.length ? (
+              <GuestUsers
+                guestUsersDevice={this.props.guestUsersDevice}
+                toggleGuestUsers={this.props.toggleGuestUsers}
+                resetGuestUsersPassword={this.props.resetGuestUsersPassword}
+              />
+            ) : null}
+          </React.Fragment>
+        )}
+      </React.Fragment>
     );
   }
 }
 
 const mapStateToProps = createStructuredSelector({
-  deviceList: selector.getDevices
+  deviceList: selector.getDevicesWithoutGuest,
+  guestUsersDevice: selector.getGuestUsersDevice,
+  fetching: selector.getFetching
 });
 
 const mapDispatchToProps = dispatch => {
@@ -95,6 +113,12 @@ const mapDispatchToProps = dispatch => {
     },
     toggleAdmin: id => {
       dispatch(action.toggleAdmin(id));
+    },
+    toggleGuestUsers: () => {
+      dispatch(action.toggleGuestUsers());
+    },
+    resetGuestUsersPassword: () => {
+      dispatch(action.resetGuestUsersPassword());
     }
   };
 };

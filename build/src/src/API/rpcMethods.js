@@ -72,6 +72,17 @@ export const getVpnParams = () =>
     event: "getParams.vpn.dnp.dappnode.eth"
   });
 
+export const toggleGuestUsers = () =>
+  wrapCall({
+    event: "toggleGuestUsers.vpn.dnp.dappnode.eth"
+  });
+
+export const resetGuestUsersPassword = () =>
+  wrapCall({
+    event: "resetGuestUsersPassword.vpn.dnp.dappnode.eth"
+  });
+
+
 // getStatusUpnp CALL DOCUMENTATION:
 // > kwargs: {}
 // > result: {
@@ -154,11 +165,11 @@ export const restartPackage = (kwargs = {}) =>
     initText: "Restarting " + shortName(kwargs.id)
   });
 
-// restartVolumes CALL DOCUMENTATION:
+// restartPackageVolumes CALL DOCUMENTATION:
 // > kwargs: { id, deleteVolumes }
 // > result: {}
 
-export const restartVolumes = (kwargs = {}) =>
+export const restartPackageVolumes = (kwargs = {}) =>
   wrapCall({
     event: "restartPackageVolumes.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id"]),

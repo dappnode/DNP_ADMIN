@@ -2,7 +2,6 @@ import { call, put, all, takeEvery, fork } from "redux-saga/effects";
 import { delay } from "redux-saga";
 import { updateStatus } from "./actions";
 import * as APIcall from "API/rpcMethods";
-import { NON_ADMIN_RESPONSE } from "./constants";
 import checkWampPackage from "./utils/checkWampPackage";
 import checkIpfsConnection from "./utils/checkIpfsConnection";
 import chains from "chains";
@@ -143,7 +142,7 @@ function* checkPackage(session, id) {
 
 function* onConnectionClose({ reason, details = {} }) {
   yield put(updateStatus({ id: tags.wamp, status: -1, msg: NOWAMP }));
-  const nonAdmin = (details.message || "").includes(NON_ADMIN_RESPONSE);
+  const nonAdmin = (details.message || "").includes("could not authenticate session");
   yield put(
     updateStatus({
       id: tags.isAdmin,

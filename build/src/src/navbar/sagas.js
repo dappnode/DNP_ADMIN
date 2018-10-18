@@ -10,7 +10,9 @@ function* fetchVpnParams() {
       yield put(
         a.updateDappnodeIdentity({
           ip: result.ip,
-          name: result.name
+          name: result.name,
+          staticIp: result.staticIp,
+          domain: result.domain
         })
       );
     }
@@ -25,6 +27,7 @@ function* fetchVpnParams() {
 
 function* watchConnectionOpen() {
   yield takeEvery("CONNECTION_OPEN", fetchVpnParams);
+  yield takeEvery("FETCH_DAPPNODE_PARAMS", fetchVpnParams);
 }
 
 // notice how we now only export the rootSaga

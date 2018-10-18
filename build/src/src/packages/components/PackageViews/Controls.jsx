@@ -27,7 +27,7 @@ export default class PackageControls extends React.Component {
         name: "Remove volumes",
         text:
           "Deleting this package volumes is a permanent action and all data will be lost. In the case of the ethcahin core package, resyncing may take a few days",
-        action: this.props.restartVolumes,
+        action: this.props.restartPackageVolumes,
         availableForCore: true,
         type: "danger"
       },

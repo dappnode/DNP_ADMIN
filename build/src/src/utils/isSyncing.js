@@ -17,8 +17,8 @@ const cacheTime = 120 * 1000; // ms
 const isSyncingRpcCall = () => web3.eth.isSyncing()
     .then(res => {
         if (!res) return false
-        const currentBlock = parseInt(res.currentBlock);
-        const highestBlock = parseInt(res.highestBlock);
+        const currentBlock = parseInt(res.currentBlock, 10);
+        const highestBlock = parseInt(res.highestBlock, 10);
         return Math.abs(currentBlock - highestBlock) > blockDiff
     })
     .catch(err => {

@@ -1,4 +1,4 @@
-import { NAME } from "./constants";
+import { NAME, guestsName } from "./constants";
 
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
@@ -17,4 +17,12 @@ import { NAME } from "./constants";
 
 // From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
 
-export const getDevices = state => state[NAME];
+export const local = state => state[NAME];
+
+export const getDevices = state => local(state).devices;
+export const getFetching = state => local(state).fetching;
+
+export const getDevicesWithoutGuest = state => getDevices(state).filter(u => 
+    (u.name || '').toLowerCase() !== guestsName.toLowerCase())
+export const getGuestUsersDevice = state => getDevices(state).find(u => 
+    (u.name || '').toLowerCase() === guestsName.toLowerCase())

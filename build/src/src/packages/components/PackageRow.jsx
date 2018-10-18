@@ -8,6 +8,8 @@ import { connect } from "react-redux";
 import * as action from "../actions";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+// utils
+import parsePorts from "utils/parsePorts";
 
 class PackageRowView extends React.Component {
   constructor(props) {
@@ -97,22 +99,14 @@ class PackageRowView extends React.Component {
   }
 }
 
-function getPortsFromManifest(pkg) {
-  const manifest = pkg.manifest || {};
-  let image = manifest.image || {};
-  let packagePorts = image.ports || [];
-  let ports = packagePorts.map(p => p.split(":")[0]);
-  return ports;
-}
-
 const mapStateToProps = createStructuredSelector({});
 
 const mapDispatchToProps = dispatch => {
   return {
     removePackage: pkg => {
       dispatch(action.removePackage({ id: pkg.name, deleteVolumes: false }));
-      const ports = getPortsFromManifest(pkg);
-      if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
+      const ports = parsePorts(pkg.manifest || {});
+      if (ports.length) dispatch(action.closePorts(ports));
     }
   };
 };

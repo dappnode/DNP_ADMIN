@@ -20,10 +20,10 @@ import { NAME } from "./constants";
 
 const local = state => state[NAME];
 export const getDappnodeIdentity = state => {
+  const cleanObj = {}
   const params = local(state).dappnodeIdentity || {};
-  const { ip, name } = params;
-  const s = [];
-  if (ip) s.push(ip);
-  if (name) s.push(name);
-  return s.join("/");
+  for (const param of Object.keys(params)) {
+    if (params[param]) cleanObj[param] = params[param]
+  }
+  return cleanObj
 };

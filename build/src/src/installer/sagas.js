@@ -8,6 +8,7 @@ import Toast from "components/Toast";
 import { shortName } from "utils/format";
 import isSyncing from "utils/isSyncing";
 import { idToUrl, isIpfsHash } from "./utils";
+import uniqArray from "utils/uniqArray";
 
 /***************************** Subroutines ************************************/
 
@@ -81,30 +82,33 @@ export function* updateEnvs({ id, envs, restart }) {
   }
 }
 
-export function* openPorts({ ports }) {
+export function* managePorts({ action, ports = [] }) {
   try {
+    // Remove duplicates
+    ports = uniqArray(ports)
+    // Only open ports if necessary
     const shouldOpenPorts = yield select(s.shouldOpenPorts);
     if (shouldOpenPorts && ports.length > 0) {
-      // #### Only if necessary!!!
+      
       const pendingToast = new Toast({
-        message: "Opening ports " + ports.join(", ") + "...",
+        message: `${action} ports ${ports.map(p => `${p.number} ${p.type}`).join(", ")}...`,
         pending: true
       });
       const res = yield call(APIcall.managePorts, {
-        action: "open",
+        action,
         ports
       });
       pendingToast.resolve(res);
     }
   } catch (error) {
-    console.error("Error opening ports: ", error);
+    console.error(`Error on ${action} ports: `, error);
   }
 }
 
 export function* fetchDirectory() {
   try {
     // If chain is not synced yet, cancel request.
-    if(yield call(isSyncing)) {
+    if (yield call(isSyncing)) {
       return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
     }
 
@@ -292,8 +296,8 @@ function* watchUpdateEnvs() {
   yield takeEvery(t.UPDATE_ENV, updateEnvs);
 }
 
-function* watchOpenPorts() {
-  yield takeEvery(t.OPEN_PORTS, openPorts);
+function* watchManagerPorts() {
+  yield takeEvery(t.MANAGE_PORTS, managePorts);
 }
 
 function* watchDiskSpaceAvailable() {
@@ -307,7 +311,7 @@ export default function* root() {
     watchConnectionOpen(),
     watchInstall(),
     watchUpdateEnvs(),
-    watchOpenPorts(),
+    watchManagerPorts(),
     watchFetchPackageRequest(),
     watchFetchPackageData(),
     watchDiskSpaceAvailable()

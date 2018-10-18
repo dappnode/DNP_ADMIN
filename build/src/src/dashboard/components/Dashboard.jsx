@@ -57,8 +57,11 @@ class DashboardView extends React.Component {
     // DAPPNODE STATS From object to array
     const dappnodeStats = this.props.dappnodeStats || {};
     const dappnodeStatsArray = Object.keys(dappnodeStats)
-      .filter(id => dappnodeStats[id] && !dappnodeStats[id].includes("NaN"))
+      .filter(
+        id => dappnodeStats[id] && !String(dappnodeStats[id]).includes("NaN")
+      )
       .map(id => {
+        const text = String(dappnodeStats[id]);
         const value = parseFloat(dappnodeStats[id]);
         let status;
         if (value > 90) status = -1;
@@ -68,7 +71,7 @@ class DashboardView extends React.Component {
           color: statusToColor(status),
           icon: statusToIcon(status),
           id,
-          msg: dappnodeStats[id]
+          msg: text.includes("%") ? text : `${text}%`
         };
       });
 

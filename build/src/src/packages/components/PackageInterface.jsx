@@ -13,6 +13,8 @@ import Details from "./PackageViews/Details";
 import Logs from "./PackageViews/Logs";
 import Envs from "./PackageViews/Envs";
 import Controls from "./PackageViews/Controls";
+// utils
+import parsePorts from "utils/parsePorts";
 
 class PackageInterface extends React.Component {
   constructor(props) {
@@ -74,7 +76,7 @@ class PackageInterface extends React.Component {
           state={pkg.state}
           togglePackage={() => this.props.togglePackage(id)}
           restartPackage={() => this.props.restartPackage(id)}
-          restartVolumes={() => this.props.restartVolumes(id)}
+          restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
           removePackage={() => this.removePackageConfirm(pkg, false)}
           removePackageAndData={() => this.removePackageConfirm(pkg, true)}
         />
@@ -84,14 +86,6 @@ class PackageInterface extends React.Component {
 }
 
 // Container
-
-function getPortsFromManifest(pkg) {
-  const manifest = pkg.manifest || {};
-  let image = manifest.image || {};
-  let packagePorts = image.ports || [];
-  let ports = packagePorts.map(p => p.split(":")[0]);
-  return ports;
-}
 
 const mapStateToProps = createStructuredSelector({
   pkg: selector.getPackage,
@@ -110,13 +104,13 @@ const mapDispatchToProps = dispatch => {
     restartPackage: id => {
       dispatch(action.restartPackage({ id }));
     },
-    restartVolumes: id => {
-      dispatch(action.restartVolumes({ id }));
+    restartPackageVolumes: id => {
+      dispatch(action.restartPackageVolumes({ id }));
     },
     removePackage: (pkg, deleteVolumes) => {
       dispatch(action.removePackage({ id: pkg.name, deleteVolumes }));
-      const ports = getPortsFromManifest(pkg);
-      if (ports.length) dispatch(action.closePorts({ action: "close", ports }));
+      const ports = parsePorts(pkg.manifest || {});
+      if (ports.length) dispatch(action.closePorts(ports));
       dispatch(push("/" + NAME));
     }
   };
