@@ -52,9 +52,9 @@ export const restartPackage = kwargs => ({
   kwargs
 });
 
-export const restartVolumes = kwargs => ({
+export const restartPackageVolumes = kwargs => ({
   type: t.CALL,
-  method: "restartVolumes",
+  method: "restartPackageVolumes",
   message: "Restarting " + shortName(kwargs.id) + " volumes...",
   kwargs
 });
@@ -67,6 +67,11 @@ export const setStaticIp = staticIp => ({
 export const updateStaticIp = staticIp => ({
   type: t.UPDATE_STATIC_IP,
   staticIp
+});
+
+export const updateStaticIpInput = staticIpInput => ({
+  type: t.UPDATE_STATIC_IP_INPUT,
+  staticIpInput
 });
 
 // #### After removing a package, uninstallChain

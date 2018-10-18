@@ -36,6 +36,7 @@ const pathname = state => state.router.location.pathname || "";
 const id = state => pathname(state).split(NAME + "/")[1] || "";
 export const fetching = state => local(state).fetching || false;
 export const staticIp = state => local(state).staticIp;
+export const staticIpInput = state => local(state).staticIpInput;
 
 // Package lists
 

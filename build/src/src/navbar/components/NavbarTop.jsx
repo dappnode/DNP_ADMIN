@@ -2,6 +2,7 @@ import React from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import * as selector from "../selectors";
+import $ from "jquery";
 // modules
 import chains from "chains";
 // Icons
@@ -12,6 +13,12 @@ import parseType from "utils/parseType";
 import NavbarTopDropdownMessages from "./NavbarTopDropdownMessages";
 
 class NavbarTopView extends React.Component {
+  componentDidMount() {
+    $(() => {
+      $('[data-toggle="popover"]').popover();
+    });
+  }
+
   render() {
     let chainInfo = Object.keys(this.props.chains).map(id => ({
       title: id,
@@ -26,20 +33,27 @@ class NavbarTopView extends React.Component {
     //   messages={alerts}
     //   icon={Bell}
     // />
+    const dnIdn = this.props.dappnodeIdentity;
 
     return (
       <ul className="navbar-nav ml-auto">
         <li className="nav-item nav-item-infoText">
           <span
+            data-container="body"
+            data-toggle="popover"
+            data-placement="bottom"
+            data-content={Object.keys(dnIdn)
+              .map(key => `<strong>${key}:</strong> ${dnIdn[key]}`)
+              .join("<br/>")}
+            data-html="true"
             style={{
               textTransform: "none",
-              cursor: "auto",
+              cursor: "pointer",
               padding: "0.5rem",
-              display: "block",
-              color: "#00000080"
+              display: "block"
             }}
           >
-            {this.props.dappnodeIdentity}
+            {dnIdn.name}
           </span>
         </li>
         <NavbarTopDropdownMessages

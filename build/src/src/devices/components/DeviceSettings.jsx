@@ -5,6 +5,7 @@ import * as selector from "../selectors";
 import { NavLink } from "react-router-dom";
 import QRCode from "qrcode.react";
 import "./adminBadge.css";
+import { guestsName, guestsIpRange } from "../constants";
 
 class DevicesSettings extends React.Component {
   render() {
@@ -20,10 +21,14 @@ class DevicesSettings extends React.Component {
     // />
     const name = device ? device.name : "Device not found";
     const url = device ? device.otp || "" : null;
-    const ip = device ? device.ip || "" : "Go back to the device list";
+    let ip = device ? device.ip || "" : "Go back to the device list";
     const badge = ip.startsWith("172.33.10.") ? (
       <span className="adminBadge">ADMIN</span>
     ) : null;
+
+    if (name === guestsName) {
+      ip = guestsIpRange;
+    }
 
     return (
       <div>

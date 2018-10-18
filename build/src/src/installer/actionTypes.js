@@ -4,7 +4,7 @@ const type = tag => NAME + "/" + tag;
 
 export const INSTALL = type("INSTALL");
 export const UPDATE_ENV = type("UPDATE_ENV");
-export const OPEN_PORTS = type("OPEN_PORTS");
+export const MANAGE_PORTS = type("MANAGE_PORTS");
 export const SHOULD_OPEN_PORTS = type("SHOULD_OPEN_PORTS");
 export const FETCH_PACKAGE_DATA = type("FETCH_PACKAGE_DATA");
 export const FETCH_PACKAGE_REQUEST = type("FETCH_PACKAGE_REQUEST");

@@ -99,6 +99,10 @@
   margin-right: 15px;
   position: relative;
   top: 2px;
+  color: #00000080;
+}
+.nav-item-infoText:hover {
+  color: #000000b8;
 }
 
 .nav-item.dropdown {
