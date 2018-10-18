@@ -22,7 +22,7 @@ export default class Dependencies extends React.Component {
       body = (
         <React.Fragment>
           <p style={{ color: "#2fbcb2" }}>
-            <strong>✓ Compatibile</strong>
+            <strong>✓ Compatible</strong>
           </p>
           <div className="row">
             <div className="col-4" />

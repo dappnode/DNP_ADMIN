@@ -49,6 +49,7 @@ class SystemList extends React.Component {
         <StaticIp
           staticIp={this.props.staticIp}
           setStaticIp={this.props.setStaticIp}
+          updateStaticIp={this.props.updateStaticIp}
         />
 
         {this.props.fetching && (this.props.corePackages || []).length === 0 ? (
@@ -70,16 +71,12 @@ const mapStateToProps = createStructuredSelector({
   coreDeps: selector.coreDeps,
   progressLogs: installer.selectors.progressLogs,
   fetching: selector.fetching,
-  staticIp: selector.staticIp
 });
 
 const mapDispatchToProps = dispatch => {
   return {
     updateCore: () => {
       dispatch(action.updateCore());
-    },
-    setStaticIp: staticIp => {
-      dispatch(action.setStaticIp(staticIp));
     }
   };
 };
