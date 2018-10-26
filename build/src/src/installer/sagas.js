@@ -151,9 +151,12 @@ export function* fetchPackageRequest({ id }) {
     if (!connectionOpen) {
       yield take("CONNECTION_OPEN");
     }
+    
     // If chain is not synced yet, cancel request.
-    if(yield call(isSyncing)) {
-      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+    if (id && !id.includes("ipfs/")) {
+      if (yield call(isSyncing)) {
+        return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+      }
     }
 
     // If package is already loaded, skip

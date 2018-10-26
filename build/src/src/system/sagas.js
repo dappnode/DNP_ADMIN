@@ -63,7 +63,7 @@ function shouldUpdate(v1, v2) {
 export function* checkCoreUpdate() {
   try {
     // If chain is not synced yet, cancel request.
-    if(yield call(isSyncing)) {
+    if (yield call(isSyncing)) {
       return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
     }
 
