@@ -226,6 +226,9 @@ export function* fetchPackageData({ id }) {
       return;
     }
     const { manifest, avatar } = res.result || {};
+    if (!manifest) {
+      throw Error('Missing manifest for fetchPackageData: ', {id, res})
+    }
     // Add ipfs hash inside the manifest too, so it is searchable
     if (manifest) manifest.origin = isIpfsHash(id) ? id : null;
     // Update directory
@@ -243,7 +246,7 @@ export function* fetchPackageData({ id }) {
     });
     return manifest;
   } catch (error) {
-    console.error("Error fetching directory: ", error);
+    console.error("Error fetching package data: ", error);
   }
 }
 
