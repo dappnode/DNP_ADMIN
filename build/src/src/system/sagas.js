@@ -60,10 +60,14 @@ function shouldUpdate(v1, v2) {
   return semver.lt(v1, v2);
 }
 
+function isEmpty(obj) {
+  return !Boolean(Object.getOwnPropertyNames(obj).length)
+}
+
 export function* checkCoreUpdate() {
   try {
     // If chain is not synced yet, cancel request.
-    if(yield call(isSyncing)) {
+    if (yield call(isSyncing)) {
       return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
     }
 
@@ -72,14 +76,16 @@ export function* checkCoreUpdate() {
       id: "core.dnp.dappnode.eth"
     });
 
-    // Abort on error
-    if (!packagesRes.success) {
-      console.error("Error listing packages", packagesRes.message);
-      return;
+    // Check if the dappmanager says mainnet is still syncing
+    if (coreDataRes.message && coreDataRes.message.includes('Mainnet is still syncing')) {
+      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
     }
-    if (!coreDataRes.success) {
-      console.error("Error getting coreData", coreDataRes.message);
-      return;
+    // Abort on error
+    if (!packagesRes.success || !packagesRes.result || isEmpty(packagesRes.result)) {
+      return console.error("Error listing packages", packagesRes.message);
+    }
+    if (!coreDataRes.success || !coreDataRes.result || isEmpty(coreDataRes.result)) {
+      return console.error("Error getting coreData", coreDataRes.message);
     }
     const packages = packagesRes.result;
     const coreData = coreDataRes.result;

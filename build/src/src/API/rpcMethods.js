@@ -129,7 +129,7 @@ export const installPackage = (kwargs = {}) =>
 
 export const installPackageSafe = (kwargs = {}) =>
   wrapCall({
-    event: "installPackageSafe.dnp.dappmanager.dnp.dappnode.eth",
+    event: "installPackageSafe.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["id"])
   });
 
