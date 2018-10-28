@@ -37,4 +37,11 @@ export default function socketSubscriptions(session) {
       pkgs
     });
   });
+
+  session.subscribe("devices.vpn.dnp.dappnode.eth", (_, {devices}) => {
+    store.dispatch({
+      type: "UPDATE_DEVICES",
+      devices
+    });
+  });
 }

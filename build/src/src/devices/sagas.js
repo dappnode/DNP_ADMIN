@@ -12,7 +12,7 @@ export function* fetchDevices() {
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
 
     if (res.success) {
-      yield put({ type: t.UPDATE, devices: res.result });
+      yield put({ type: "UPDATE_DEVICES", devices: res.result });
     } else {
       new Toast(res);
     }
