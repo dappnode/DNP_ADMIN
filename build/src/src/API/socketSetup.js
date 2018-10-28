@@ -25,7 +25,7 @@ export function initApi() {
   // connection closed, lost or unable to connect
   connection.onclose = (reason, details) => {
     store.dispatch({ type: "CONNECTION_CLOSE", reason, details });
-    // No need to log errors, autobahn will log them anyway
+    console.error("CONNECTION_CLOSE", {reason, details})
   };
 
   connection.open();
