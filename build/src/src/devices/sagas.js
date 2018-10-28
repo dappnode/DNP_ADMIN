@@ -36,8 +36,12 @@ function* callApi({ method, kwargs, message }) {
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
 
-function* watchFetchDevices() {
+function* watchConnectionOption() {
   yield takeEvery("CONNECTION_OPEN", fetchDevices);
+}
+
+function* watchFetchDevices() {
+  yield takeEvery("FETCH_DEVICES", fetchDevices);
 }
 
 function* watchCall() {
@@ -47,5 +51,5 @@ function* watchCall() {
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
-  yield all([watchFetchDevices(), watchCall()]);
+  yield all([watchFetchDevices(), watchCall(), watchConnectionOption()]);
 }

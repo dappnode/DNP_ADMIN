@@ -183,6 +183,7 @@ function* setStaticIp({ staticIp }) {
     pendingToast.resolve(res);
 
     yield put({type: "FETCH_DAPPNODE_PARAMS"})
+    yield put({type: "FETCH_DEVICES"})
     yield call(getStaticIp);
   } catch (e) {
     console.error("Error setting static IP:", e);
