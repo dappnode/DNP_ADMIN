@@ -1,0 +1,5 @@
+version: '3.4'
+services:
+    admin.dnp.dappnode.eth:
+        image: 'admin.dnp.dappnode.eth:0.1.13'
+        build: ./build
