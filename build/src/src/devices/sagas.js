@@ -12,7 +12,7 @@ export function* fetchDevices() {
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
 
     if (res.success) {
-      yield put({ type: t.UPDATE, devices: res.result });
+      yield put({ type: "UPDATE_DEVICES", devices: res.result });
     } else {
       new Toast(res);
     }
@@ -36,8 +36,12 @@ function* callApi({ method, kwargs, message }) {
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
 
-function* watchFetchDevices() {
+function* watchConnectionOption() {
   yield takeEvery("CONNECTION_OPEN", fetchDevices);
+}
+
+function* watchFetchDevices() {
+  yield takeEvery("FETCH_DEVICES", fetchDevices);
 }
 
 function* watchCall() {
@@ -47,5 +51,5 @@ function* watchCall() {
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* root() {
-  yield all([watchFetchDevices(), watchCall()]);
+  yield all([watchFetchDevices(), watchCall(), watchConnectionOption()]);
 }

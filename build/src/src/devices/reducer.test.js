@@ -13,7 +13,7 @@ describe("Request reducer", () => {
     const devices = ["jordi"];
     expect(
       reducer(undefined, {
-        type: t.UPDATE,
+        type: "UPDATE_DEVICES",
         devices
       })
     ).toEqual({

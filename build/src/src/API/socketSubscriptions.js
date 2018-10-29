@@ -37,4 +37,13 @@ export default function socketSubscriptions(session) {
       pkgs
     });
   });
+
+  // devices is an array and is sent as an arg not kwarg
+  session.subscribe("devices.vpn.dnp.dappnode.eth", (devices) => {
+    if (!Array.isArray(devices)) return
+    store.dispatch({
+      type: "UPDATE_DEVICES",
+      devices
+    });
+  });
 }
