@@ -71,6 +71,11 @@ class NavbarTopView extends React.Component {
             Donate
           </a>
         </li>
+        <li className="nav-item nav-item-infoText">
+          <a href="https://github.com/dappnode/DAppNode/issues/new" target="_blank" rel="noopener noreferrer" className="nav-link btn dappnode-background-color btn-lg">
+            Report Issue
+          </a>
+        </li>
       </ul>
     );
   }
