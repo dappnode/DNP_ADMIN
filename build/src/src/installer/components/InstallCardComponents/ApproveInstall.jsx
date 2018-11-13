@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 import * as action from "../../actions";
 import * as selector from "../../selectors";
-import { createStructuredSelector } from "reselect";
+import * as utils from "../../utils";
 // Components
 import SpecialPermissions from "./SpecialPermissions";
 import Envs from "./Envs";
@@ -136,6 +137,17 @@ class ApproveInstallView extends React.Component {
     // Fire install call
     let options = this.state.options;
     this.props.install({ id, envs, vols, ports, options });
+    // Fire call to set dependency envs
+    if (this.props.manifest && this.props.manifest.dependencies) {
+      for (const depName of Object.keys(this.props.manifest.dependencies)) {
+        const depVersion = this.props.manifest.dependencies[depName];
+        if (utils.isIpfsHash(depVersion)) {
+          this.props.updateDefaultEnvs({ id: depVersion });
+        } else {
+          this.props.updateDefaultEnvs({ id: depName });
+        }
+      }
+    }
   }
 
   render() {
@@ -233,6 +245,9 @@ const mapDispatchToProps = dispatch => ({
   },
   getDiskSpaceAvailable: ({ path }) => {
     dispatch(action.diskSpaceAvailable({ path }));
+  },
+  updateDefaultEnvs: ({ id }) => {
+    dispatch(action.updateDefaultEnvs({ id }));
   }
 });
 
