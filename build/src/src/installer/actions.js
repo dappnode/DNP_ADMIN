@@ -50,6 +50,11 @@ export const updateEnv = ({ id, envs }) => ({
   id
 });
 
+export const updateDefaultEnvs = ({ id }) => ({
+  type: t.UPDATE_DEFAULT_ENVS,
+  id
+});
+
 export const openPorts = ports => ({
   type: t.MANAGE_PORTS,
   action: 'open',

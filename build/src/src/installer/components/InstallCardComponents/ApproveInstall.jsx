@@ -136,6 +136,12 @@ class ApproveInstallView extends React.Component {
     // Fire install call
     let options = this.state.options;
     this.props.install({ id, envs, vols, ports, options });
+    // Fire call to set dependency envs
+    if (this.props.manifest && this.props.manifest.dependencies) {
+      for (const depName of Object.keys(this.props.manifest.dependencies)) {
+        this.props.updateDefaultEnvs({ id: depName });
+      }
+    }
   }
 
   render() {
@@ -233,6 +239,9 @@ const mapDispatchToProps = dispatch => ({
   },
   getDiskSpaceAvailable: ({ path }) => {
     dispatch(action.diskSpaceAvailable({ path }));
+  },
+  updateDefaultEnvs: ({ id }) => {
+    dispatch(action.updateDefaultEnvs({ id }));
   }
 });
 

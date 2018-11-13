@@ -63,6 +63,37 @@ export function* install({ id, vols, options }) {
 // After successful installation notify the chain
 // chains.actions.installedChain(selectedPackageName)(dispatch, getState);
 
+function getDefaultEnvs(manifest) {
+  const envsArray = ((manifest || {}).image || {}).environment || [];
+  const defaultEnvs = {};
+  for (const row of envsArray) {
+    defaultEnvs[row.split("=")[0]] = row.split("=")[1] || "";
+  }
+  return defaultEnvs
+}
+
+export function* updateDefaultEnvs({ id }) {
+  try {
+    const res = yield call(APIcall.fetchPackageData, { id });
+    if (!res.success) {
+      if (res.message.includes("Resolver could not found a match")) {
+        console.error("No match found for " + id);
+      } else {
+        console.error("Error fetching package data for updateDefaultEnvs: ", res.message);
+      }
+      return;
+    }
+    const { manifest } = res.result || {};
+    if (!manifest) {
+      throw Error('Missing manifest for updateDefaultEnvs: ', {id, res})
+    }
+    const envs = getDefaultEnvs(manifest)
+    yield call(updateEnvs, { id, envs })
+  } catch(e) {
+    console.error("Error updating default envs: ", e);
+  }
+}
+
 export function* updateEnvs({ id, envs, restart }) {
   try {
     if (Object.getOwnPropertyNames(envs).length > 0) {
@@ -286,6 +317,18 @@ function* watchConnectionOpen() {
   yield takeEvery("CONNECTION_OPEN", shouldOpenPorts);
 }
 
+// const watchers = {
+//   [t.UPDATE_DEFAULT_ENVS]: updateDefaultEnvs,
+// }
+
+// Object.keys(watchers).map(actionType => function* () {
+//   yield takeEvery(actionType, watchers[actionType])
+// })
+
+function* watchUpdateDefaultEnvs() {
+  yield takeEvery(t.UPDATE_DEFAULT_ENVS, updateDefaultEnvs);
+}
+
 function* watchFetchPackageData() {
   yield takeEvery(t.FETCH_PACKAGE_DATA, fetchPackageData);
 }
@@ -317,6 +360,7 @@ export default function* root() {
     watchConnectionOpen(),
     watchInstall(),
     watchUpdateEnvs(),
+    watchUpdateDefaultEnvs(),
     watchManagerPorts(),
     watchFetchPackageRequest(),
     watchFetchPackageData(),
