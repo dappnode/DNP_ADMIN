@@ -44,6 +44,7 @@ export default class Home extends React.Component {
               className="btn dappnode-background-color btn-lg"
               href={SURVEY_LINK}
               role="button"
+              rel="noopener noreferrer" target="_blank"
             >
               Fill survey
             </a>
