@@ -60,6 +60,9 @@ class DevicesView extends React.Component {
             aria-describedby="basic-addon2"
             value={this.state.deviceName}
             onChange={this.updateDeviceName.bind(this)}
+            onKeyPress={e => {
+              if (e.key === "Enter") this.handleAddDevice.bind(this)();
+            }}
           />
           <div className="input-group-append">
             <button
