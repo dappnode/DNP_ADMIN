@@ -20,10 +20,13 @@ import { NAME } from "./constants";
 
 const local = state => state[NAME];
 export const getDappnodeIdentity = state => {
-  const cleanObj = {}
-  const params = local(state).dappnodeIdentity || {};
-  for (const param of Object.keys(params)) {
-    if (params[param]) cleanObj[param] = params[param]
-  }
-  return cleanObj
+  const params = Object.assign({}, local(state).dappnodeIdentity || {});
+  // Remove keys that contain an undefined value
+  Object.keys(params).forEach(key => {
+    if (!params[key]) delete params[key]
+  })
+  // If the static IP is set, don't show the regular IP
+  if (params.staticIp && params.ip) delete params.ip
+
+  return params
 };
