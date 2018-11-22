@@ -21,6 +21,8 @@ export default class PackageDetails extends React.Component {
 
     const pkg = this.props.pkg || {};
 
+    console.log(pkg);
+
     return (
       <div className="mb-4">
         <div className="section-subtitle">Stats</div>
@@ -35,6 +37,19 @@ export default class PackageDetails extends React.Component {
               {pkg.name ? (
                 <a href={"http://my." + pkg.name}>{"my." + pkg.name}</a>
               ) : null}
+            </div>
+            <div>
+              <strong>Volumes: </strong>
+              <ul>
+                {(pkg.volumes || []).map((volume, i) => (
+                  <li key={i}>
+                    <span style={{ opacity: 0.5 }}>
+                      {volume.name || "unnamed"}:
+                    </span>{" "}
+                    {volume.path}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
