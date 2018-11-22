@@ -53,7 +53,7 @@ class InstallerView extends React.Component {
               type="button"
               onClick={() => this.props.openPackage(this.props.inputValue)}
             >
-              Install
+              Search
             </button>
           </div>
         </div>

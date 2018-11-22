@@ -83,7 +83,9 @@ class Card extends React.Component {
                     style={{ textTransform: "uppercase", marginTop: "12px" }}
                     disabled={disable}
                   >
-                    {pkg.tag}
+                    {/* Rename tag from "install" to "get" because there were too many "install" tags 
+                        Cannot change the actual tag because it is used for logic around the installer */}
+                    {pkg.tag === "INSTALL" ? "GET" : pkg.tag}
                   </button>
                 </div>
               </div>
