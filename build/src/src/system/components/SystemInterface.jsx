@@ -29,7 +29,7 @@ class SystemInterface extends React.Component {
       if (!envs[env]) envs[env] = "";
     });
 
-    // let packageProperties = Object.getOwnPropertyNames(_package)
+    // let packageProperties = Object.getOwnPropertyNames(pkg)
     // remove(packageProperties, ['id', 'isDNP', 'running', 'shortName'])
 
     return (
@@ -39,7 +39,7 @@ class SystemInterface extends React.Component {
           {id}
         </div>
 
-        <packages.components.Details _package={pkg} />
+        <packages.components.Details pkg={pkg} />
 
         <packages.components.Logs
           id={id}
