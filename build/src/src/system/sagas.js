@@ -7,6 +7,7 @@ import Toast from "components/Toast";
 import uuidv4 from "uuid/v4";
 import installer from "installer";
 import isSyncing from "utils/isSyncing";
+import navbar from "navbar";
 
 /***************************** Subroutines ************************************/
 
@@ -181,9 +182,14 @@ function* setStaticIp({ staticIp }) {
     });
     const res = yield call(APIcall.setStaticIp, { staticIp });
     pendingToast.resolve(res);
-
     yield put({type: "FETCH_DAPPNODE_PARAMS"})
     yield put({type: "FETCH_DEVICES"})
+    yield put({type: navbar.actionTypes.PUSH_NOTIFICATION, notification: {
+      id: "staticIpUpdated",
+      type: 'warning',
+      title: 'Update connection profiles',
+      body: 'Your static IP was changed, please download and install your VPN connection profile again. Instruct your users to do so also.'
+    }})
     yield call(getStaticIp);
   } catch (e) {
     console.error("Error setting static IP:", e);
