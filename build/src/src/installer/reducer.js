@@ -5,7 +5,7 @@ import merge from "deepmerge";
 const initialState = {
   fetching: false,
   directory: [],
-  selectedTypes: [],
+  selectedTypes: {},
   input: "",
   isInstalling: {},
   progressLogs: {},

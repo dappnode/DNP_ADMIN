@@ -1,20 +1,6 @@
 import React from "react";
 
-const defaultTypes = ["library"];
-
-function add(e, array) {
-  if (array.includes(e)) return array;
-  else array.push(e);
-  return array;
-}
-
-function remove(e, array) {
-  const index = array.indexOf(e);
-  if (index > -1) {
-    array.splice(index, 1);
-  }
-  return array;
-}
+const defaultTypes = { library: false };
 
 export default class TypeFilter extends React.Component {
   // directory={this.state.directory}
@@ -22,12 +8,16 @@ export default class TypeFilter extends React.Component {
 
   onChange(e) {
     const type = e.target.id;
-    let selectedTypes = this.props.selectedTypes || [];
-
     if (e.target.checked) {
-      this.props.updateSelectedTypes(add(type, selectedTypes));
+      this.props.updateSelectedTypes({
+        ...this.props.selectedTypes,
+        [type]: true
+      });
     } else {
-      this.props.updateSelectedTypes(remove(type, selectedTypes));
+      this.props.updateSelectedTypes({
+        ...this.props.selectedTypes,
+        [type]: false
+      });
     }
   }
 
@@ -37,22 +27,18 @@ export default class TypeFilter extends React.Component {
     let uniqueTypes = defaultTypes;
     Object.getOwnPropertyNames(directory).forEach(pkgName => {
       const pkg = directory[pkgName];
-      if (
-        pkg &&
-        pkg.manifest &&
-        pkg.manifest.type &&
-        !uniqueTypes.includes(pkg.manifest.type)
-      ) {
-        uniqueTypes.push(pkg.manifest.type);
+      if (pkg && pkg.manifest && pkg.manifest.type) {
+        uniqueTypes[pkg.manifest.type] = true;
       }
     });
 
-    const selectedTypes = this.props.selectedTypes || [];
-    const items = uniqueTypes.map((type, i) => (
+    const selectedTypes = this.props.selectedTypes || {};
+    const items = Object.keys(uniqueTypes).map((type, i) => (
       <label key={i} htmlFor={type} className="mr-3">
         <input
           onChange={this.onChange.bind(this)}
-          checked={selectedTypes.includes(type)}
+          // "checked" should always be defined to prevent react's error "uncontrolled to controlled input"
+          checked={selectedTypes[type] || false}
           className="mr-2"
           type="checkbox"
           value=""

@@ -19,7 +19,7 @@ class InstallerView extends React.Component {
   static propTypes = {
     // State -> props
     directory: PropTypes.array.isRequired,
-    selectedTypes: PropTypes.array.isRequired,
+    selectedTypes: PropTypes.object.isRequired,
     inputValue: PropTypes.string.isRequired,
     fetching: PropTypes.bool.isRequired,
     // Dispatch -> props
@@ -95,7 +95,6 @@ const mapDispatchToProps = dispatch => {
       // Empty the input bar
       dispatch(action.updateInput(""));
     },
-
     updateInput: e => {
       // Correct the ipfs format and fecth if correct
       const id = utils.correctPackageName(e.target.value);
@@ -109,7 +108,6 @@ const mapDispatchToProps = dispatch => {
       // Update input field
       dispatch(action.updateInput(id));
     },
-
     updateSelectedTypes: types => {
       dispatch(action.updateSelectedTypes(types));
     }

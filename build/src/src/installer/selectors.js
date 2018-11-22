@@ -37,7 +37,7 @@ const local = state => state[NAME];
 const packages = state => local(state).packages;
 export const packageData = state => local(state).packageData;
 export const selectedPackageId = state => local(state).selectedPackageId;
-const selectedTypes = state => local(state).selectedTypes;
+const selectedTypes = state => local(state).selectedTypes
 const inputValue = state => local(state).input;
 export const isInstalling = state => local(state).isInstalling;
 export const fetching = state => local(state).fetching || false;
@@ -99,13 +99,13 @@ export const getFilteredDirectory = state => {
     // Filter by type
     .filter(pkg => {
       const types = selectedTypes(state);
-      if (types.length === 0) return true;
+      if (Object.keys(types).length === 0) return true;
       // Prevent the app from crashing with defective packages
       return (
         pkg &&
         pkg.manifest &&
         pkg.manifest.type &&
-        types.includes(pkg.manifest.type)
+        types[pkg.manifest.type]
       );
     });
   if (selectedPackages.length) {
