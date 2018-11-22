@@ -30,3 +30,5 @@ export const getDappnodeIdentity = state => {
 
   return params
 };
+
+export const getNotifications = state => local(state).notifications

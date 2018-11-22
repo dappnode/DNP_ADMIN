@@ -6,11 +6,13 @@ class DropdownIcon extends React.Component {
   render() {
     return (
       <span
-        className="nav-link dropdown-toggle mr-lg-2"
+        className="nav-link dropdown-toggle"
         id={this.props.name + "Dropdown"}
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
+        style={{ paddingRight: 0, paddingLeft: 0 }}
+        id={this.props.id}
       >
         <this.props.icon />
         <span className="d-lg-none">
@@ -25,12 +27,43 @@ class DropdownIcon extends React.Component {
   }
 }
 
+/**
+ * Expects a prop messages =
+ * [
+ *   {
+ *     type: "danger" / "warning" / "sucess" / "default",
+ *     rightText: "text",
+ *     title: "text",
+ *     body: "body"
+ *   }
+ * ]
+ */
+
 export default class NavbarTopDropdownMessages extends React.Component {
+  componentDidMount() {
+    if (this.props.onClick)
+      document
+        .getElementById("notification-button-" + this.props.name)
+        .addEventListener("click", this.props.onClick.bind(this));
+  }
+
   render() {
-    let globalType = "success";
-    let messageTypes = this.props.messages.map(message => message.type || "");
+    if (!Array.isArray(this.props.messages)) {
+      console.error(
+        "Mandatory prop messages must be an array in component NavbarTopDropdownMessages: ",
+        this.props.messages
+      );
+      return null;
+    }
+
+    // Compute the color of the circle next to the icon
+    let globalType = "light"; // Light is a white circle
+    let messageTypes = this.props.messages
+      .filter(message => !message.viewed)
+      .map(message => message.type || "");
     if (messageTypes.includes("danger")) globalType = "danger";
     else if (messageTypes.includes("warning")) globalType = "warning";
+    else if (messageTypes.includes("success")) globalType = "success";
 
     let listItems = this.props.messages.map((message, i) => {
       let type = message.type || "default";
@@ -49,13 +82,24 @@ export default class NavbarTopDropdownMessages extends React.Component {
       );
     });
     return (
-      <li className="nav-item dropdown">
+      <li
+        className="nav-item dropdown"
+        style={{
+          position: "relative",
+          left: "12px",
+          margin: "0 5px"
+        }}
+      >
         <DropdownIcon
           type={globalType}
           name={this.props.name}
           icon={this.props.icon}
+          id={"notification-button-" + this.props.name}
         />
-        <div className="dropdown-menu" aria-labelledby="messagesDropdown">
+        <div
+          className="dropdown-menu dropdown-menu-right scrollable-menu"
+          aria-labelledby="messagesDropdown"
+        >
           <h6 className="dropdown-header">{this.props.name}:</h6>
           {listItems}
         </div>

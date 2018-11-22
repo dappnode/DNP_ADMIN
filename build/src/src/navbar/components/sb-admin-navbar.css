@@ -11,6 +11,12 @@
   --topnav-color-hover: #7f7a7b;
 }
 
+.scrollable-menu {
+  height: auto;
+  max-height: 350px;
+  overflow-x: hidden;
+}
+
 .bg-topnav {
   background-color: var(--topnav-bg-color);
 }
