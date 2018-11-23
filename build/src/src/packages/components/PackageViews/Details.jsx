@@ -21,7 +21,14 @@ export default class PackageDetails extends React.Component {
 
     const pkg = this.props.pkg || {};
 
-    console.log(pkg);
+    // In the manifest, homepage = {userui: "http://some.link"}
+    const linksObj = (pkg.manifest || {}).homepage || {};
+    const links = Object.keys(linksObj).map(name => ({
+      name,
+      url: linksObj[name]
+    }));
+
+    console.log({ pkg, linksObj, links });
 
     return (
       <div className="mb-4">
@@ -40,16 +47,43 @@ export default class PackageDetails extends React.Component {
             </div>
             <div>
               <strong>Volumes: </strong>
-              <ul>
-                {(pkg.volumes || []).map((volume, i) => (
-                  <li key={i}>
-                    <span style={{ opacity: 0.5 }}>
-                      {volume.name || "unnamed"}:
-                    </span>{" "}
-                    {volume.path}
-                  </li>
-                ))}
-              </ul>
+              {!(pkg.volumes || []).length ? (
+                <span>no volumes</span>
+              ) : (
+                <ul>
+                  {(pkg.volumes || []).map((volume, i) => (
+                    <li key={i}>
+                      <span style={{ opacity: 0.5 }}>
+                        {volume.name || "unnamed"}:
+                      </span>{" "}
+                      {volume.path}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div>
+              <strong>Links: </strong>
+              {!(links || []).length ? (
+                <span>no links</span>
+              ) : (
+                <ul>
+                  {(links || []).map((link, i) => (
+                    <li key={i}>
+                      <span style={{ opacity: 0.5 }}>
+                        {link.name || "unnamed"}:
+                      </span>{" "}
+                      <a
+                        href={link.url}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {link.url}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>
