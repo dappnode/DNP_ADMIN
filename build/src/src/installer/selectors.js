@@ -82,6 +82,10 @@ export const getDirectory = state => {
   return _directory;
 };
 
+export const directoryLoaded = state => {
+  return Boolean(Object.keys(directory(state)).length)
+}
+
 export const getFilteredDirectory = state => {
   const allPackages = Object.values(getDirectory(state)).reverse();
   const selectedPackages = allPackages
@@ -108,11 +112,7 @@ export const getFilteredDirectory = state => {
         types[pkg.manifest.type]
       );
     });
-  if (selectedPackages.length) {
     return selectedPackages;
-  } else {
-    return allPackages;
-  }
 };
 
 export const getFilteredDirectoryNonCores = state =>

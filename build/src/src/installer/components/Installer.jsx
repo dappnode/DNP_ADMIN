@@ -69,6 +69,7 @@ class InstallerView extends React.Component {
         <PackageStore
           fetching={this.props.fetching}
           directory={this.props.directory}
+          directoryLoaded={this.props.directoryLoaded}
           openPackage={this.props.openPackage}
           isSyncing={this.props.isSyncing}
         />
@@ -79,6 +80,7 @@ class InstallerView extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   directory: selector.getFilteredDirectoryNonCores,
+  directoryLoaded: selector.directoryLoaded,
   selectedTypes: selector.getSelectedTypes,
   inputValue: selector.getInput,
   fetching: selector.fetching,

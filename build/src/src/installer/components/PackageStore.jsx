@@ -2,6 +2,7 @@ import React from "react";
 import ClipboardJS from "clipboard";
 import PropTypes from "prop-types";
 import Loading from "components/Loading";
+import NoPackageFound from "./NoPackageFound";
 import errorAvatar from "img/errorAvatar.png";
 import ipfsBadgeImg from "img/IPFS-badge-small.png";
 import enhancePkg from "utils/enhancePkg";
@@ -100,6 +101,7 @@ class Card extends React.Component {
 export default class PackageStore extends React.Component {
   static propTypes = {
     directory: PropTypes.array.isRequired,
+    directoryLoaded: PropTypes.bool.isRequired,
     openPackage: PropTypes.func.isRequired,
     fetching: PropTypes.bool.isRequired
   };
@@ -113,6 +115,11 @@ export default class PackageStore extends React.Component {
       return <Loading msg="Loading package directory..." />;
     } else if (this.props.isSyncing) {
       return <IsSyncing />;
+    } else if (
+      this.props.directoryLoaded &&
+      this.props.directory.length === 0
+    ) {
+      return <NoPackageFound />;
     } else {
       return <div className="row">{cards}</div>;
     }
