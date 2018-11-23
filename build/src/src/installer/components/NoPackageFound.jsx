@@ -2,7 +2,7 @@ import React from "react";
 
 const PACKAGE_SURVEY_LINK = "https://goo.gl/forms/EjVTHu6UBWBk60Z62";
 
-function Loading(props) {
+function NoPackageFound(props) {
   return (
     <React.Fragment>
       <div className="row justify-content-center mt-5">
@@ -35,4 +35,4 @@ function Loading(props) {
   );
 }
 
-export default Loading;
+export default NoPackageFound;

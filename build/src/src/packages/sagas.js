@@ -14,6 +14,7 @@ export function* listPackages() {
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
     if (res.success) {
       yield put(a.updatePackages(res.result));
+      yield put({type: t.HAS_FETCHED_PACKAGES});
     } else {
       new Toast(res);
     }

@@ -33,6 +33,7 @@ const logs = state => local(state).logs;
 const pathname = state => state.router.location.pathname || "";
 const id = state => pathname(state).split(NAME + "/")[1] || "";
 export const fetching = state => local(state).fetching || false;
+export const hasFetched = state => local(state).hasFetched || false;
 
 // Package lists
 

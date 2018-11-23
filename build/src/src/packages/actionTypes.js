@@ -8,5 +8,6 @@ export const LIST_PACKAGES = type("LIST_PACKAGES");
 export const UPDATE_FETCHING = type("UPDATE_FETCHING");
 export const UPDATE_LOG = type("UPDATE_LOG");
 export const UPDATE_PACKAGES = type("UPDATE_PACKAGES");
+export const HAS_FETCHED_PACKAGES = type("HAS_FETCHED_PACKAGES");
 
 // prefixing each type with the module name helps preventing name collisions
