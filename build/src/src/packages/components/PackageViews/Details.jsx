@@ -28,7 +28,16 @@ export default class PackageDetails extends React.Component {
       url: linksObj[name]
     }));
 
-    console.log({ pkg, linksObj, links });
+    // pkg.ports = [{IP: "0.0.0.0", PrivatePort: 30304, PublicPort: 32770, Type: "tcp"}, ...]
+    // pkg.portsToClose = [{number: 32771, type: "TCP"}, ...]
+    const ports = (pkg.ports || []).map(portObj => {
+      const locked = Boolean(
+        (pkg.portsToClose || []).find(
+          _portObj => _portObj.number == portObj.PublicPort
+        )
+      );
+      return { ...portObj, locked };
+    });
 
     return (
       <div className="mb-4">
@@ -80,6 +89,24 @@ export default class PackageDetails extends React.Component {
                       >
                         {link.url}
                       </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div>
+              <strong>Ports: </strong>
+              {!(ports || []).length ? (
+                <span>no ports</span>
+              ) : (
+                <ul>
+                  {(ports || []).map((port, i) => (
+                    <li key={i}>
+                      {port.PrivatePort} -> {port.PublicPort}{" "}
+                      {port.Type ? port.Type.toUpperCase() : port.Type}{" "}
+                      {port.locked ? (
+                        <span style={{ opacity: 0.5 }}>(locked)</span>
+                      ) : null}
                     </li>
                   ))}
                 </ul>
