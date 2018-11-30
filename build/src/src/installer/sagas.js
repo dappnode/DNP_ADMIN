@@ -24,7 +24,7 @@ export function* shouldOpenPorts() {
   }
 }
 
-export function* install({ id, vols, options }) {
+export function* install({ id, userSetVols, userSetPorts, options }) {
   try {
     // Load necessary info
     const isInstalling = yield select(s.isInstalling);
@@ -46,7 +46,8 @@ export function* install({ id, vols, options }) {
     });
     const res = yield call(APIcall.installPackage, {
       id,
-      vols,
+      userSetVols,
+      userSetPorts,
       logId,
       options
     });
@@ -113,6 +114,12 @@ export function* updateEnvs({ id, envs, restart }) {
   }
 }
 
+/**
+ * 
+ * @param {Object} kwargs { ports: 
+ *   [ { number: 30303, type: TCP }, ...]
+ * }
+ */
 export function* managePorts({ action, ports = [] }) {
   try {
     // Remove duplicates
@@ -120,15 +127,11 @@ export function* managePorts({ action, ports = [] }) {
     // Only open ports if necessary
     const shouldOpenPorts = yield select(s.shouldOpenPorts);
     if (shouldOpenPorts && ports.length > 0) {
-      
       const pendingToast = new Toast({
         message: `${action} ports ${ports.map(p => `${p.number} ${p.type}`).join(", ")}...`,
         pending: true
       });
-      const res = yield call(APIcall.managePorts, {
-        action,
-        ports
-      });
+      const res = yield call(APIcall.managePorts, { action, ports });
       pendingToast.resolve(res);
     }
   } catch (error) {

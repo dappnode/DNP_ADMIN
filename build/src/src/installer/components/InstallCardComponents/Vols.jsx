@@ -1,11 +1,16 @@
 import React from "react";
 
+function parseVol(vol) {
+  // HOST:CONTAINER:accessMode, return [HOST, CONTAINER:accessMode]
+  return vol.split(/:(.+)/); // regex to split by first occurrence of ":"
+}
+
 export default class Vols extends React.Component {
   render() {
-    const { vols, handleVolChange } = this.props;
+    const { userSetVols = {}, manifestVols = [], handleVolChange } = this.props;
 
     // If no vols, return null
-    if (!Object.keys(vols || {}).length) {
+    if (!manifestVols.length) {
       return null;
     }
 
@@ -13,37 +18,48 @@ export default class Vols extends React.Component {
       <React.Fragment>
         <div className="section-subtitle">Volumes</div>
         <div className="card mb-4">
-          <div className="card-body" style={{ paddingBottom: "0.25rem" }}>
-            {Object.keys(vols).map((envName, i) => (
-              <div key={i} className="form-row mb-3 input-group">
-                <div className="input-group-prepend">
-                  <span className="input-group-text" id="inputGroupPrepend">
-                    {envName}
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  className="form-control"
-                  name={envName}
-                  placeholder={"enter value..."}
-                  value={vols[envName]}
-                  onChange={e => {
-                    const { value, name } = e.target;
-                    handleVolChange({ value, name });
-                  }}
-                />
-                {this.props.diskSpaceAvailable[vols[envName]] ? (
+          <div
+            className="card-body"
+            style={{ paddingBottom: "0.25rem", textAlign: "right" }}
+          >
+            <span
+              style={{
+                opacity: 0.5,
+                position: "relative",
+                bottom: "6px",
+                right: "6px"
+              }}
+            >
+              Host path : Container path (: access mode)
+            </span>
+            {manifestVols.map((vol, i) => {
+              // HOST:CONTAINER:accessMode
+              let [hostPath, containerPath] = parseVol(vol);
+              if (userSetVols[vol]) hostPath = parseVol(userSetVols[vol])[0];
+              return (
+                <div key={i} className="form-row mb-3 input-group">
+                  <input
+                    style={{ textAlign: "right" }}
+                    type="text"
+                    className="form-control"
+                    placeholder={"enter volume path..."}
+                    value={hostPath || ""}
+                    onChange={e => {
+                      handleVolChange({
+                        newVol: `${e.target.value}:${containerPath}`,
+                        vol
+                      });
+                    }}
+                  />
                   <div className="input-group-append">
-                    <span
-                      className="input-group-text"
-                      style={{ backgroundColor: "white" }}
-                    >
-                      {this.props.diskSpaceAvailable[vols[envName]]}
-                    </span>
+                    <span className="input-group-text">:</span>
                   </div>
-                ) : null}
-              </div>
-            ))}
+                  <div className="input-group-append">
+                    <span className="input-group-text">{containerPath}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </React.Fragment>
