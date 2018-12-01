@@ -1,4 +1,5 @@
 import React from "react";
+import TableInput from "./TableInput";
 
 function parseVol(vol) {
   // HOST:CONTAINER:accessMode, return [HOST, CONTAINER:accessMode]
@@ -18,46 +19,43 @@ export default class Vols extends React.Component {
       <React.Fragment>
         <div className="section-subtitle">Volumes</div>
         <div className="card mb-4">
-          <div
-            className="card-body"
-            style={{ paddingBottom: "0.25rem", textAlign: "right" }}
-          >
-            <span
-              style={{
-                opacity: 0.5,
-                position: "relative",
-                bottom: "6px",
-                right: "6px"
-              }}
-            >
-              Host path : Container path (: access mode)
-            </span>
+          <div className="card-body" style={{ paddingBottom: "0.25rem" }}>
+            {/* HEADER */}
+            <div class="row" style={{ opacity: 0.5 }}>
+              <div class="col" style={{ paddingRight: "7.5px" }}>
+                <h6>Host path</h6>
+              </div>
+              <div class="col" style={{ paddingLeft: "7.5px" }}>
+                <h6>Container path (:ro)</h6>
+              </div>
+            </div>
+
+            {/* PSEUDO-TABLE */}
             {manifestVols.map((vol, i) => {
               // HOST:CONTAINER:accessMode
               let [hostPath, containerPath] = parseVol(vol);
               if (userSetVols[vol]) hostPath = parseVol(userSetVols[vol])[0];
               return (
-                <div key={i} className="form-row mb-3 input-group">
-                  <input
-                    style={{ textAlign: "right" }}
-                    type="text"
-                    className="form-control"
-                    placeholder={"enter volume path..."}
-                    value={hostPath || ""}
-                    onChange={e => {
-                      handleVolChange({
-                        newVol: `${e.target.value}:${containerPath}`,
-                        vol
-                      });
-                    }}
-                  />
-                  <div className="input-group-append">
-                    <span className="input-group-text">:</span>
+                <React.Fragment>
+                  <div class="row">
+                    <div class="col" style={{ paddingRight: "7.5px" }}>
+                      <TableInput
+                        placeholder={"enter volume path..."}
+                        value={hostPath || ""}
+                        onChange={e => {
+                          handleVolChange({
+                            newVol: `${e.target.value}:${containerPath}`,
+                            vol
+                          });
+                        }}
+                      />
+                    </div>
+
+                    <div class="col" style={{ paddingLeft: "7.5px" }}>
+                      <TableInput lock={true} value={containerPath} />
+                    </div>
                   </div>
-                  <div className="input-group-append">
-                    <span className="input-group-text">{containerPath}</span>
-                  </div>
-                </div>
+                </React.Fragment>
               );
             })}
           </div>
