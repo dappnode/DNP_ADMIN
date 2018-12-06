@@ -21,11 +21,11 @@ export default class Vols extends React.Component {
         <div className="card mb-4">
           <div className="card-body" style={{ paddingBottom: "0.25rem" }}>
             {/* HEADER */}
-            <div class="row" style={{ opacity: 0.5 }}>
-              <div class="col" style={{ paddingRight: "7.5px" }}>
+            <div className="row" style={{ opacity: 0.5 }}>
+              <div className="col" style={{ paddingRight: "7.5px" }}>
                 <h6>Host path</h6>
               </div>
-              <div class="col" style={{ paddingLeft: "7.5px" }}>
+              <div className="col" style={{ paddingLeft: "7.5px" }}>
                 <h6>Container path (:ro)</h6>
               </div>
             </div>
@@ -36,8 +36,8 @@ export default class Vols extends React.Component {
               let [hostPath, containerPath] = parseVol(vol);
               if (userSetVols[vol]) hostPath = parseVol(userSetVols[vol])[0];
               return (
-                <div class="row" key={i}>
-                  <div class="col" style={{ paddingRight: "7.5px" }}>
+                <div className="row" key={i}>
+                  <div className="col" style={{ paddingRight: "7.5px" }}>
                     <TableInput
                       placeholder={"enter volume path..."}
                       value={hostPath || ""}
@@ -50,7 +50,7 @@ export default class Vols extends React.Component {
                     />
                   </div>
 
-                  <div class="col" style={{ paddingLeft: "7.5px" }}>
+                  <div className="col" style={{ paddingLeft: "7.5px" }}>
                     <TableInput lock={true} value={containerPath} />
                   </div>
                 </div>

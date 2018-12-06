@@ -27,7 +27,7 @@ export default function(props) {
           type="text"
           className="form-control"
           value={props.value}
-          readonly="true"
+          readOnly="true"
           style={{
             color: lockTextColor,
             backgroundColor: lockBackgroundColor,

@@ -27,11 +27,11 @@ export default class Ports extends React.Component {
         <div className="card mb-4">
           <div className="card-body" style={{ paddingBottom: "0.25rem" }}>
             {/* HEADER */}
-            <div class="row" style={{ opacity: 0.5 }}>
-              <div class="col" style={{ paddingRight: "7.5px" }}>
+            <div className="row" style={{ opacity: 0.5 }}>
+              <div className="col" style={{ paddingRight: "7.5px" }}>
                 <h6>Host port</h6>
               </div>
-              <div class="col" style={{ paddingLeft: "7.5px" }}>
+              <div className="col" style={{ paddingLeft: "7.5px" }}>
                 <h6>Package port / type</h6>
               </div>
             </div>
@@ -42,8 +42,8 @@ export default class Ports extends React.Component {
               if (userSetPorts[port])
                 hostPort = parsePort(userSetPorts[port])[0];
               return (
-                <div class="row" key={i}>
-                  <div class="col" style={{ paddingRight: "7.5px" }}>
+                <div className="row" key={i}>
+                  <div className="col" style={{ paddingRight: "7.5px" }}>
                     <TableInput
                       placeholder={"ephemeral port (32768-65535)"}
                       value={hostPort || ""}
@@ -59,7 +59,7 @@ export default class Ports extends React.Component {
                     />
                   </div>
 
-                  <div class="col" style={{ paddingLeft: "7.5px" }}>
+                  <div className="col" style={{ paddingLeft: "7.5px" }}>
                     <TableInput lock={true} value={containerPort} />
                   </div>
                 </div>
