@@ -19,11 +19,18 @@ export function* getUserActionLogs() {
       return console.error("Error fetching userActionLogs", res.message);
     }
 
-    // Process userActionLogs
-    const userActionLogs = res.result
+    // Process userActionLogs. They are json objects appended in a log file
+    let userActionLogs = []
+    res.result
       .trim()
       .split("\n")
-      .map(e => JSON.parse(e));
+      .forEach((stringifiedLog, i) => {
+        try {
+          userActionLogs.push(JSON.parse(stringifiedLog))
+        } catch(e) {
+          console.error(`Error parsing userActionLog #${i}: ${e.message}. StringifiedLog: `,stringifiedLog)
+        }
+      })
 
     // Collapse equal errors
     for (let i = 0; i < userActionLogs.length; i++) {
