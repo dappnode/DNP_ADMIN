@@ -5,7 +5,6 @@ import * as selectors from "../selectors";
 import { createStructuredSelector } from "reselect";
 // modules
 import status from "status";
-import chains from "chains";
 
 import "./dashboard.css";
 
@@ -45,14 +44,17 @@ class DashboardView extends React.Component {
         msg: status[id].msg
       }));
 
-    // CHAINS From object to array
-    const chains = this.props.chains || {};
-    const chainsArray = Object.keys(chains).map(id => ({
-      color: statusToColor(chains[id].status),
-      icon: statusToIcon(chains[id].status),
-      id,
-      msg: chains[id].msg
-    }));
+    // ChainData, from data array to formated array
+    const chainData = this.props.chainData || [];
+    const chainDataArray = chainData.map(chain => {
+      const status = chain.error ? -1 : chain.syncing ? 0 : 1;
+      return {
+        color: statusToColor(status),
+        icon: statusToIcon(status),
+        id: chain.name,
+        msg: chain.msg
+      };
+    });
 
     // DAPPNODE STATS From object to array
     const dappnodeStats = this.props.dappnodeStats || {};
@@ -105,7 +107,7 @@ class DashboardView extends React.Component {
         <div className="section-subtitle">DAppNode</div>
         {getStatusCard(statusArray)}
         <div className="section-subtitle">Chains</div>
-        {getStatusCard(chainsArray)}
+        {getStatusCard(chainDataArray)}
         <div className="section-subtitle">DAppNode stats</div>
         {getStatusCard(dappnodeStatsArray)}
       </div>
@@ -115,7 +117,7 @@ class DashboardView extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   status: status.selectors.getAll,
-  chains: chains.selectors.getAll,
+  chainData: selectors.chainData,
   dappnodeStats: selectors.dappnodeStats
 });
 

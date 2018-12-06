@@ -5,7 +5,6 @@ import * as selectors from "../selectors";
 import ActivityList from "./ActivityList";
 
 import status from "status";
-import chains from "chains";
 
 import "./activity.css";
 
@@ -48,7 +47,6 @@ class ActivityView extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   status: status.selectors.getAll,
-  chains: chains.selectors.getAll,
   userActionLogs: selectors.getUserActionLogs
 });
 

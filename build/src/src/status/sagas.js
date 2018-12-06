@@ -4,7 +4,6 @@ import { updateStatus } from "./actions";
 import * as APIcall from "API/rpcMethods";
 import checkWampPackage from "./utils/checkWampPackage";
 import checkIpfsConnection from "./utils/checkIpfsConnection";
-import chains from "chains";
 import { push } from "connected-react-router";
 
 const NOWAMP = "Can't connect to WAMP";
@@ -17,7 +16,6 @@ const tags = {
   upnp: "upnp",
   externalIP: "externalIP",
   ipfs: "ipfs",
-  mainnet: "mainnet"
 };
 
 /***************************** Subroutines ************************************/
@@ -104,12 +102,6 @@ function* initializeLoadingMessages() {
   );
 }
 
-function* mainnetUpdate(action) {
-  if (action.id !== "Mainnet") return;
-  const { msg, status } = action.payload;
-  yield put(updateStatus({ id: tags.mainnet, status, msg }));
-}
-
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
@@ -117,10 +109,6 @@ function* mainnetUpdate(action) {
 // The channels below can be stopped by changing the code a little bit
 // You would fire a STOP action to stop the channel loop and a START to restart.
 // Example: https://github.com/jaysoo/example-redux-saga/blob/master/src/timer/saga.js
-
-function* watchMainnetUpdate() {
-  yield takeEvery(chains.actionTypes.UPDATE_STATUS, mainnetUpdate);
-}
 
 function* onConnectionOpen({ session }) {
   yield put(updateStatus({ id: tags.wamp, status: 1, msg: "ok" }));
@@ -176,7 +164,6 @@ export default function* root() {
     call(initializeLoadingMessages),
     runIpfsMonitor(),
     watchConnectionOpen(),
-    watchConnectionClose(),
-    watchMainnetUpdate()
+    watchConnectionClose()
   ]);
 }

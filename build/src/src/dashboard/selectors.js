@@ -23,6 +23,7 @@ import { NAME } from "./constants";
 // #### EXTERNAL SELECTORS
 export const session = state => state.session;
 export const connectionOpen = state => session(state) && session(state).isOpen;
+export const chainData = state => state.chainData;
 
 // #### INTERNAL SELECTORS
 export const local = state => state[NAME];

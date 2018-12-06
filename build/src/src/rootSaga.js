@@ -5,7 +5,6 @@ import installer from "./installer";
 import packages from "./packages";
 import system from "./system";
 import status from "./status";
-import chains from "./chains";
 import activity from "./activity";
 import navbar from "./navbar";
 import dashboard from "./dashboard";
@@ -19,7 +18,6 @@ export default function* rootSaga() {
     packages.saga(),
     system.saga(),
     status.saga(),
-    chains.saga(),
     activity.saga(),
     navbar.saga(),
     dashboard.saga()

@@ -61,9 +61,6 @@ export function* install({ id, userSetVols, userSetPorts, options }) {
   }
 }
 
-// After successful installation notify the chain
-// chains.actions.installedChain(selectedPackageName)(dispatch, getState);
-
 function getDefaultEnvs(manifest) {
   const envsArray = ((manifest || {}).image || {}).environment || [];
   const defaultEnvs = {};
