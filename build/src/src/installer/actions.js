@@ -35,11 +35,9 @@ export const fetchPackageRequest = id => ({
   id
 });
 
-export const install = ({ id, vols, options }) => ({
+export const install = (kwargs) => ({
   type: t.INSTALL,
-  options,
-  vols,
-  id
+  ...kwargs
 });
 
 // Need to notify the chain that a package has been added
