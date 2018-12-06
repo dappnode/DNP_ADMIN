@@ -42,29 +42,27 @@ export default class Ports extends React.Component {
               if (userSetPorts[port])
                 hostPort = parsePort(userSetPorts[port])[0];
               return (
-                <React.Fragment>
-                  <div class="row">
-                    <div class="col" style={{ paddingRight: "7.5px" }}>
-                      <TableInput
-                        placeholder={"ephemeral port (32768-65535)"}
-                        value={hostPort || ""}
-                        onChange={e => {
-                          const newHostPort = e.target.value;
-                          handlePortChange({
-                            newPort: newHostPort.length
-                              ? `${e.target.value}:${containerPort}`
-                              : containerPort,
-                            port
-                          });
-                        }}
-                      />
-                    </div>
-
-                    <div class="col" style={{ paddingLeft: "7.5px" }}>
-                      <TableInput lock={true} value={containerPort} />
-                    </div>
+                <div class="row" key={i}>
+                  <div class="col" style={{ paddingRight: "7.5px" }}>
+                    <TableInput
+                      placeholder={"ephemeral port (32768-65535)"}
+                      value={hostPort || ""}
+                      onChange={e => {
+                        const newHostPort = e.target.value;
+                        handlePortChange({
+                          newPort: newHostPort.length
+                            ? `${e.target.value}:${containerPort}`
+                            : containerPort,
+                          port
+                        });
+                      }}
+                    />
                   </div>
-                </React.Fragment>
+
+                  <div class="col" style={{ paddingLeft: "7.5px" }}>
+                    <TableInput lock={true} value={containerPort} />
+                  </div>
+                </div>
               );
             })}
           </div>

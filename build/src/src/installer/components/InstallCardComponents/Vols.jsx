@@ -36,26 +36,24 @@ export default class Vols extends React.Component {
               let [hostPath, containerPath] = parseVol(vol);
               if (userSetVols[vol]) hostPath = parseVol(userSetVols[vol])[0];
               return (
-                <React.Fragment>
-                  <div class="row">
-                    <div class="col" style={{ paddingRight: "7.5px" }}>
-                      <TableInput
-                        placeholder={"enter volume path..."}
-                        value={hostPath || ""}
-                        onChange={e => {
-                          handleVolChange({
-                            newVol: `${e.target.value}:${containerPath}`,
-                            vol
-                          });
-                        }}
-                      />
-                    </div>
-
-                    <div class="col" style={{ paddingLeft: "7.5px" }}>
-                      <TableInput lock={true} value={containerPath} />
-                    </div>
+                <div class="row" key={i}>
+                  <div class="col" style={{ paddingRight: "7.5px" }}>
+                    <TableInput
+                      placeholder={"enter volume path..."}
+                      value={hostPath || ""}
+                      onChange={e => {
+                        handleVolChange({
+                          newVol: `${e.target.value}:${containerPath}`,
+                          vol
+                        });
+                      }}
+                    />
                   </div>
-                </React.Fragment>
+
+                  <div class="col" style={{ paddingLeft: "7.5px" }}>
+                    <TableInput lock={true} value={containerPath} />
+                  </div>
+                </div>
               );
             })}
           </div>

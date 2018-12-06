@@ -27,26 +27,24 @@ export default class Envs extends React.Component {
 
             {/* PSEUDO-TABLE */}
             {Object.keys(envs).map((envName, i) => (
-              <React.Fragment>
-                <div class="row">
-                  <div class="col" style={{ paddingRight: "7.5px" }}>
-                    <TableInput lock={true} value={envName} />
-                  </div>
-
-                  <div class="col" style={{ paddingLeft: "7.5px" }}>
-                    <TableInput
-                      placeholder={"enter value..."}
-                      value={envs[envName]}
-                      onChange={e => {
-                        handleEnvChange({
-                          value: e.target.value,
-                          name: envName
-                        });
-                      }}
-                    />
-                  </div>
+              <div class="row" key={i}>
+                <div class="col" style={{ paddingRight: "7.5px" }}>
+                  <TableInput lock={true} value={envName} />
                 </div>
-              </React.Fragment>
+
+                <div class="col" style={{ paddingLeft: "7.5px" }}>
+                  <TableInput
+                    placeholder={"enter value..."}
+                    value={envs[envName]}
+                    onChange={e => {
+                      handleEnvChange({
+                        value: e.target.value,
+                        name: envName
+                      });
+                    }}
+                  />
+                </div>
+              </div>
             ))}
           </div>
         </div>
