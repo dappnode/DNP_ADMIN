@@ -21,15 +21,16 @@ export function initApi() {
     store.dispatch({ type: "CONNECTION_OPEN", session });
     console.log("CONNECTED to \nurl: " + url + " \nrealm: " + realm);
     socketSubscriptions(session);
-    initialCalls(session)
+    initialCalls(session);
     // For testing:
-    window.call = (event, args = [], kwargs = {}) => session.call(event, args, kwargs)
+    window.call = (event, args = [], kwargs = {}) =>
+      session.call(event, args, kwargs);
   };
 
   // connection closed, lost or unable to connect
   connection.onclose = (reason, details) => {
     store.dispatch({ type: "CONNECTION_CLOSE", reason, details });
-    console.error("CONNECTION_CLOSE", {reason, details})
+    console.error("CONNECTION_CLOSE", { reason, details });
   };
 
   connection.open();

@@ -10,15 +10,15 @@ import status from "./status";
 import activity from "./activity";
 
 const modules = [
-  navbar, 
-  devices, 
-  installer, 
-  dashboard, 
-  packages, 
-  system, 
-  status, 
+  navbar,
+  devices,
+  installer,
+  dashboard,
+  packages,
+  system,
+  status,
   activity
-]
+];
 
 // Prevent manifest arrays to keep populating
 const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
@@ -65,12 +65,12 @@ const globalReducers = {
         return state;
     }
   }
-}
+};
 
-// Map modules to reducers: 
-const moduleReducers = {}
+// Map modules to reducers:
+const moduleReducers = {};
 for (const _module of modules) {
-  moduleReducers[_module.constants.NAME] = _module.reducer
+  moduleReducers[_module.constants.NAME] = _module.reducer;
 }
 
 export default combineReducers({

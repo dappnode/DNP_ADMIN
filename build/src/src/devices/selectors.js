@@ -22,7 +22,11 @@ export const local = state => state[NAME];
 export const getDevices = state => local(state).devices;
 export const getFetching = state => local(state).fetching;
 
-export const getDevicesWithoutGuest = state => getDevices(state).filter(u => 
-    (u.name || '').toLowerCase() !== guestsName.toLowerCase())
-export const getGuestUsersDevice = state => getDevices(state).find(u => 
-    (u.name || '').toLowerCase() === guestsName.toLowerCase())
+export const getDevicesWithoutGuest = state =>
+  getDevices(state).filter(
+    u => (u.name || "").toLowerCase() !== guestsName.toLowerCase()
+  );
+export const getGuestUsersDevice = state =>
+  getDevices(state).find(
+    u => (u.name || "").toLowerCase() === guestsName.toLowerCase()
+  );

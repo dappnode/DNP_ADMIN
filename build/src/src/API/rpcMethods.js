@@ -82,7 +82,6 @@ export const resetGuestUsersPassword = () =>
     event: "resetGuestUsersPassword.vpn.dnp.dappnode.eth"
   });
 
-
 // getStatusUpnp CALL DOCUMENTATION:
 // > kwargs: {}
 // > result: {

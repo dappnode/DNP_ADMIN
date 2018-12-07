@@ -5,6 +5,9 @@ import * as a from "./actions";
 import Toast from "components/Toast";
 import PubSub from "eventBus";
 
+// Experiment
+// import urlencode from "urlencode";
+
 /***************************** Subroutines ************************************/
 
 export function* listPackages() {
@@ -14,7 +17,8 @@ export function* listPackages() {
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
     if (res.success) {
       yield put(a.updatePackages(res.result));
-      yield put({type: t.HAS_FETCHED_PACKAGES});
+      yield put({ type: t.HAS_FETCHED_PACKAGES });
+      // console.log("packages", res.result);
     } else {
       new Toast(res);
     }

@@ -3,7 +3,7 @@ import * as t from "./actionTypes";
 
 const initialState = {
   dappnodeIdentity: {},
-  notifications: [],
+  notifications: []
 };
 
 export default function(state = initialState, action) {
@@ -23,7 +23,7 @@ export default function(state = initialState, action) {
         viewed: false,
         timestamp: Date.now(),
         id: action.notification.id || String(Math.random()).slice(2)
-      }
+      };
       return {
         ...state,
         notifications: [
@@ -31,16 +31,16 @@ export default function(state = initialState, action) {
           // Clean other notifications with the same id
           ...state.notifications.filter(n => n.id !== action.notification.id)
         ]
-      }
+      };
     case t.VIEWED_NOTIFICATIONS:
       const notifications = state.notifications.map(notification => {
-        notification.viewed = true
-        return notification
-      })
+        notification.viewed = true;
+        return notification;
+      });
       return {
         ...state,
         notifications
-      }
+      };
     default:
       return state;
   }
