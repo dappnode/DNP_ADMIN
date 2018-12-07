@@ -8,4 +8,4 @@ export const updateDappnodeIdentity = dappnodeIdentity => ({
 
 export const viewedNotifications = () => ({
   type: t.VIEWED_NOTIFICATIONS
-})
+});

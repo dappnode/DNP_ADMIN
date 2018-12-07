@@ -8,7 +8,7 @@ const initialState = {
   systemUpdateAvailable: false,
   coreDeps: [],
   staticIp: null,
-  staticIpInput: '',
+  staticIpInput: ""
 };
 
 export default function(state = initialState, action) {
