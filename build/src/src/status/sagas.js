@@ -15,12 +15,12 @@ const tags = {
   vpn: "vpn",
   upnp: "upnp",
   externalIP: "externalIP",
-  ipfs: "ipfs",
+  ipfs: "ipfs"
 };
 
 /***************************** Subroutines ************************************/
 
-let delayMs = 2000
+let delayMs = 2000;
 function* checkIPFS() {
   try {
     yield call(checkIpfsConnection);
@@ -30,8 +30,8 @@ function* checkIPFS() {
     // Did NOT work:
     yield put(updateStatus({ id: tags.ipfs, status: -1, msg: err }));
     // Keep retrying until the connection is ok
-    delayMs = delayMs*2
-    yield delay(delayMs)
+    delayMs = delayMs * 2;
+    yield delay(delayMs);
     yield call(checkIPFS);
   }
 }
@@ -130,7 +130,9 @@ function* checkPackage(session, id) {
 
 function* onConnectionClose({ reason, details = {} }) {
   yield put(updateStatus({ id: tags.wamp, status: -1, msg: NOWAMP }));
-  const nonAdmin = (details.message || "").includes("could not authenticate session");
+  const nonAdmin = (details.message || "").includes(
+    "could not authenticate session"
+  );
   yield put(
     updateStatus({
       id: tags.isAdmin,

@@ -20,17 +20,20 @@ export function* getUserActionLogs() {
     }
 
     // Process userActionLogs. They are json objects appended in a log file
-    let userActionLogs = []
+    let userActionLogs = [];
     res.result
       .trim()
       .split("\n")
       .forEach((stringifiedLog, i) => {
         try {
-          userActionLogs.push(JSON.parse(stringifiedLog))
-        } catch(e) {
-          console.error(`Error parsing userActionLog #${i}: ${e.message}. StringifiedLog: `,stringifiedLog)
+          userActionLogs.push(JSON.parse(stringifiedLog));
+        } catch (e) {
+          console.error(
+            `Error parsing userActionLog #${i}: ${e.message}. StringifiedLog: `,
+            stringifiedLog
+          );
         }
-      })
+      });
 
     // Collapse equal errors
     for (let i = 0; i < userActionLogs.length; i++) {

@@ -1,5 +1,5 @@
-const Web3 = require('web3');
-const web3 = new Web3('http://my.ethchain.dnp.dappnode.eth:8545');
+const Web3 = require("web3");
+const web3 = new Web3("http://my.ethchain.dnp.dappnode.eth:8545");
 
 const blockDiff = 50;
 const cacheTime = 120 * 1000; // ms
@@ -14,16 +14,18 @@ const cacheTime = 120 * 1000; // ms
  * @return {Bool} Returns true if it's syncing and the blockDiff
  * is big enough. Returns false otherwise
  */
-const isSyncingRpcCall = () => web3.eth.isSyncing()
+const isSyncingRpcCall = () =>
+  web3.eth
+    .isSyncing()
     .then(res => {
-        if (!res) return false
-        const currentBlock = parseInt(res.currentBlock, 10);
-        const highestBlock = parseInt(res.highestBlock, 10);
-        return Math.abs(currentBlock - highestBlock) > blockDiff
+      if (!res) return false;
+      const currentBlock = parseInt(res.currentBlock, 10);
+      const highestBlock = parseInt(res.highestBlock, 10);
+      return Math.abs(currentBlock - highestBlock) > blockDiff;
     })
     .catch(err => {
-        console.error('Error calling isSyncing', err)
-    })
+      console.error("Error calling isSyncing", err);
+    });
 
 /**
  * CACHE RESPONSE WRAP
@@ -32,8 +34,8 @@ const isSyncingRpcCall = () => web3.eth.isSyncing()
  * the result will be cached for a short period of time (30s)
  */
 const isSyncingCache = {
-    lastCheck: 0,
-    res: false,
+  lastCheck: 0,
+  res: false
 };
 
 /**
@@ -45,11 +47,11 @@ const isSyncingCache = {
  * @return {Bool} isSyncing: true / false
  */
 async function isSyncingWrap() {
-    if (Date.now() - isSyncingCache.lastCheck > cacheTime) {
-        isSyncingCache.lastCheck = Date.now();
-        isSyncingCache.res = await isSyncingRpcCall();
-    }
-    return isSyncingCache.res;
+  if (Date.now() - isSyncingCache.lastCheck > cacheTime) {
+    isSyncingCache.lastCheck = Date.now();
+    isSyncingCache.res = await isSyncingRpcCall();
+  }
+  return isSyncingCache.res;
 }
 
 export default isSyncingWrap;

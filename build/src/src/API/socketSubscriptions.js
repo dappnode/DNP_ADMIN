@@ -39,8 +39,8 @@ export default function socketSubscriptions(session) {
   });
 
   // devices is an array and is sent as an arg not kwarg
-  session.subscribe("devices.vpn.dnp.dappnode.eth", (devices) => {
-    if (!Array.isArray(devices)) return
+  session.subscribe("devices.vpn.dnp.dappnode.eth", devices => {
+    if (!Array.isArray(devices)) return;
     store.dispatch({
       type: "UPDATE_DEVICES",
       devices
@@ -48,12 +48,11 @@ export default function socketSubscriptions(session) {
   });
 
   // devices is an array and is sent as an arg not kwarg
-  session.subscribe('chainData.dappmanager.dnp.dappnode.eth', (chainData) => {
-    if (!Array.isArray(chainData)) return
+  session.subscribe("chainData.dappmanager.dnp.dappnode.eth", chainData => {
+    if (!Array.isArray(chainData)) return;
     store.dispatch({
       type: "UPDATE_CHAIN_DATA",
       chainData
     });
   });
-  
 }
