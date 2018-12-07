@@ -52,7 +52,7 @@ class DashboardView extends React.Component {
         color: statusToColor(status),
         icon: statusToIcon(status),
         id: chain.name,
-        msg: chain.msg
+        msg: chain.message
       };
     });
 

@@ -39,6 +39,9 @@ class DropdownIcon extends React.Component {
  * ]
  */
 
+function progressBar(percent) {
+  return <div className="determinate" style={{ width: percent + "%" }} />;
+}
 export default class NavbarTopDropdownMessages extends React.Component {
   componentDidMount() {
     if (this.props.onClick)
@@ -77,6 +80,31 @@ export default class NavbarTopDropdownMessages extends React.Component {
             </span>
             <span className="small float-right text-muted">{rightText}</span>
             <div className="dropdown-message small">{message.body}</div>
+
+            {message.progress ? (
+              <div className="dropdown-message small">
+                <div
+                  className="progress"
+                  style={{
+                    opacity: 0.4,
+                    position: "relative",
+                    bottom: "-4px",
+                    margin: 0
+                  }}
+                >
+                  {progressBar(Math.round(100 * message.progress))}
+                </div>
+                <div
+                  className="text-center"
+                  style={{
+                    position: "relative",
+                    bottom: "14px"
+                  }}
+                >
+                  {`${Math.round(100 * message.progress)} %`}
+                </div>
+              </div>
+            ) : null}
           </a>
         </div>
       );

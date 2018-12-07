@@ -18,10 +18,11 @@ class NavbarTopView extends React.Component {
   }
 
   render() {
-    const chainInfo = this.props.chainData.map(chain => ({
+    const chainInfo = this.props.chainData.map((chain = {}) => ({
       title: chain.name,
-      body: chain.error || chain.msg,
-      type: chain.error ? "danger" : chain.syncing ? "warning" : "success"
+      body: chain.message,
+      type: chain.error ? "danger" : chain.syncing ? "warning" : "success",
+      progress: chain.progress
     }));
 
     let notificationsInfo = this.props.notifications;
