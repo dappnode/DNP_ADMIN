@@ -37,7 +37,7 @@ const local = state => state[NAME];
 const packages = state => local(state).packages;
 export const packageData = state => local(state).packageData;
 export const selectedPackageId = state => local(state).selectedPackageId;
-const selectedTypes = state => local(state).selectedTypes
+const selectedTypes = state => local(state).selectedTypes;
 const inputValue = state => local(state).input;
 export const isInstalling = state => local(state).isInstalling;
 export const fetching = state => local(state).fetching || false;
@@ -83,8 +83,8 @@ export const getDirectory = state => {
 };
 
 export const directoryLoaded = state => {
-  return Boolean(Object.keys(directory(state)).length)
-}
+  return Boolean(Object.keys(directory(state)).length);
+};
 
 export const getFilteredDirectory = state => {
   const allPackages = Object.values(getDirectory(state)).reverse();
@@ -106,13 +106,10 @@ export const getFilteredDirectory = state => {
       if (Object.keys(types).length === 0) return true;
       // Prevent the app from crashing with defective packages
       return (
-        pkg &&
-        pkg.manifest &&
-        pkg.manifest.type &&
-        types[pkg.manifest.type]
+        pkg && pkg.manifest && pkg.manifest.type && types[pkg.manifest.type]
       );
     });
-    return selectedPackages;
+  return selectedPackages;
 };
 
 export const getFilteredDirectoryNonCores = state =>

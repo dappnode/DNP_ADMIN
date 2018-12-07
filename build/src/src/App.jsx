@@ -15,9 +15,20 @@ import installer from "./installer";
 import packages from "./packages";
 import system from "./system";
 import navbar from "./navbar";
+import troubleshoot from "./troubleshoot";
 
 // Redux
 import { ToastContainer } from "react-toastify";
+
+const modules = [
+  dashboard,
+  devices,
+  installer,
+  packages,
+  system,
+  activity,
+  troubleshoot
+];
 
 export default class App extends React.Component {
   // App is the parent container of any other component.
@@ -34,30 +45,13 @@ export default class App extends React.Component {
             <ErrorBoundary>
               <Notifications />
               <Route exact path="/" component={Home} />
-              <Route
-                path={"/" + dashboard.constants.NAME}
-                component={dashboard.component}
-              />
-              <Route
-                path={"/" + devices.constants.NAME}
-                component={devices.component}
-              />
-              <Route
-                path={"/" + installer.constants.NAME}
-                component={installer.component}
-              />
-              <Route
-                path={"/" + packages.constants.NAME}
-                component={packages.component}
-              />
-              <Route
-                path={"/" + system.constants.NAME}
-                component={system.component}
-              />
-              <Route
-                path={"/" + activity.constants.NAME}
-                component={activity.component}
-              />
+              {modules.map((_module, i) => (
+                <Route
+                  key={i}
+                  path={"/" + _module.constants.NAME}
+                  component={_module.component}
+                />
+              ))}
               <Route path={"/nonadmin"} component={NonAdmin} />
             </ErrorBoundary>
           </div>

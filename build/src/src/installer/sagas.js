@@ -68,7 +68,7 @@ function getDefaultEnvs(manifest) {
   for (const row of envsArray) {
     defaultEnvs[row.split("=")[0]] = row.split("=")[1] || "";
   }
-  return defaultEnvs
+  return defaultEnvs;
 }
 
 export function* updateDefaultEnvs({ id }) {
@@ -78,17 +78,20 @@ export function* updateDefaultEnvs({ id }) {
       if (res.message.includes("Resolver could not found a match")) {
         console.error("No match found for " + id);
       } else {
-        console.error("Error fetching package data for updateDefaultEnvs: ", res.message);
+        console.error(
+          "Error fetching package data for updateDefaultEnvs: ",
+          res.message
+        );
       }
       return;
     }
     const { manifest } = res.result || {};
     if (!manifest) {
-      throw Error('Missing manifest for updateDefaultEnvs: ', {id, res})
+      throw Error("Missing manifest for updateDefaultEnvs: ", { id, res });
     }
-    const envs = getDefaultEnvs(manifest)
-    yield call(updateEnvs, { id, envs })
-  } catch(e) {
+    const envs = getDefaultEnvs(manifest);
+    yield call(updateEnvs, { id, envs });
+  } catch (e) {
     console.error("Error updating default envs: ", e);
   }
 }
@@ -113,20 +116,22 @@ export function* updateEnvs({ id, envs, restart }) {
 }
 
 /**
- * 
- * @param {Object} kwargs { ports: 
+ *
+ * @param {Object} kwargs { ports:
  *   [ { number: 30303, type: TCP }, ...]
  * }
  */
 export function* managePorts({ action, ports = [] }) {
   try {
     // Remove duplicates
-    ports = uniqArray(ports)
+    ports = uniqArray(ports);
     // Only open ports if necessary
     const shouldOpenPorts = yield select(s.shouldOpenPorts);
     if (shouldOpenPorts && ports.length > 0) {
       const pendingToast = new Toast({
-        message: `${action} ports ${ports.map(p => `${p.number} ${p.type}`).join(", ")}...`,
+        message: `${action} ports ${ports
+          .map(p => `${p.number} ${p.type}`)
+          .join(", ")}...`,
         pending: true
       });
       const res = yield call(APIcall.managePorts, { action, ports });
@@ -141,7 +146,7 @@ export function* fetchDirectory() {
   try {
     // If chain is not synced yet, cancel request.
     if (yield call(isSyncing)) {
-      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
     }
 
     yield put({ type: t.UPDATE_FETCHING, fetching: true });
@@ -183,11 +188,11 @@ export function* fetchPackageRequest({ id }) {
     if (!connectionOpen) {
       yield take("CONNECTION_OPEN");
     }
-    
+
     // If chain is not synced yet, cancel request.
     if (id && !id.includes("ipfs/")) {
       if (yield call(isSyncing)) {
-        return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+        return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
       }
     }
 
@@ -259,7 +264,7 @@ export function* fetchPackageData({ id }) {
     }
     const { manifest, avatar } = res.result || {};
     if (!manifest) {
-      throw Error('Missing manifest for fetchPackageData: ', {id, res})
+      throw Error("Missing manifest for fetchPackageData: ", { id, res });
     }
     // Add ipfs hash inside the manifest too, so it is searchable
     if (manifest) manifest.origin = isIpfsHash(id) ? id : null;

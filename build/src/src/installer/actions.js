@@ -35,7 +35,7 @@ export const fetchPackageRequest = id => ({
   id
 });
 
-export const install = (kwargs) => ({
+export const install = kwargs => ({
   type: t.INSTALL,
   ...kwargs
 });
@@ -55,7 +55,7 @@ export const updateDefaultEnvs = ({ id }) => ({
 
 export const openPorts = ports => ({
   type: t.MANAGE_PORTS,
-  action: 'open',
+  action: "open",
   ports
 });
 

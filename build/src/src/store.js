@@ -21,7 +21,7 @@ const middleware = [
 
 // eslint-disable-next-line no-underscore-dangle
 let devTools =
-  (typeof window === "object" && !window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__)
+  typeof window === "object" && !window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? // In production: pass an empty function. This can prevent unexpected errors
       a => a
     : // In development: activate the devtools extension

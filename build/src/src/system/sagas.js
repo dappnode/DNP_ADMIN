@@ -63,14 +63,14 @@ function shouldUpdate(v1, v2) {
 }
 
 function isEmpty(obj) {
-  return !Boolean(Object.getOwnPropertyNames(obj).length)
+  return !Boolean(Object.getOwnPropertyNames(obj).length);
 }
 
 export function* checkCoreUpdate() {
   try {
     // If chain is not synced yet, cancel request.
     if (yield call(isSyncing)) {
-      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
     }
 
     const packagesRes = yield call(APIcall.listPackages);
@@ -79,14 +79,25 @@ export function* checkCoreUpdate() {
     });
 
     // Check if the dappmanager says mainnet is still syncing
-    if (coreDataRes.message && coreDataRes.message.includes('Mainnet is still syncing')) {
-      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+    if (
+      coreDataRes.message &&
+      coreDataRes.message.includes("Mainnet is still syncing")
+    ) {
+      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
     }
     // Abort on error
-    if (!packagesRes.success || !packagesRes.result || isEmpty(packagesRes.result)) {
+    if (
+      !packagesRes.success ||
+      !packagesRes.result ||
+      isEmpty(packagesRes.result)
+    ) {
       return console.error("Error listing packages", packagesRes.message);
     }
-    if (!coreDataRes.success || !coreDataRes.result || isEmpty(coreDataRes.result)) {
+    if (
+      !coreDataRes.success ||
+      !coreDataRes.result ||
+      isEmpty(coreDataRes.result)
+    ) {
       return console.error("Error getting coreData", coreDataRes.message);
     }
     const packages = packagesRes.result;
@@ -183,14 +194,18 @@ function* setStaticIp({ staticIp }) {
     });
     const res = yield call(APIcall.setStaticIp, { staticIp });
     pendingToast.resolve(res);
-    yield put({type: "FETCH_DAPPNODE_PARAMS"})
-    yield put({type: "FETCH_DEVICES"})
-    yield put({type: navbar.actionTypes.PUSH_NOTIFICATION, notification: {
-      id: "staticIpUpdated",
-      type: 'warning',
-      title: 'Update connection profiles',
-      body: 'Your static IP was changed, please download and install your VPN connection profile again. Instruct your users to do so also.'
-    }})
+    yield put({ type: "FETCH_DAPPNODE_PARAMS" });
+    yield put({ type: "FETCH_DEVICES" });
+    yield put({
+      type: navbar.actionTypes.PUSH_NOTIFICATION,
+      notification: {
+        id: "staticIpUpdated",
+        type: "warning",
+        title: "Update connection profiles",
+        body:
+          "Your static IP was changed, please download and install your VPN connection profile again. Instruct your users to do so also."
+      }
+    });
     yield call(getStaticIp);
   } catch (e) {
     console.error("Error setting static IP:", e);

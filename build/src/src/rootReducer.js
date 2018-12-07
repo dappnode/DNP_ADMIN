@@ -8,17 +8,19 @@ import packages from "./packages";
 import system from "./system";
 import status from "./status";
 import activity from "./activity";
+import troubleshoot from "./troubleshoot";
 
 const modules = [
-  navbar, 
-  devices, 
-  installer, 
-  dashboard, 
-  packages, 
-  system, 
-  status, 
-  activity
-]
+  navbar,
+  devices,
+  installer,
+  dashboard,
+  packages,
+  system,
+  status,
+  activity,
+  troubleshoot
+];
 
 // Prevent manifest arrays to keep populating
 const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
@@ -76,12 +78,12 @@ const globalReducers = {
         return state;
     }
   }
-}
+};
 
-// Map modules to reducers: 
-const moduleReducers = {}
+// Map modules to reducers:
+const moduleReducers = {};
 for (const _module of modules) {
-  moduleReducers[_module.constants.NAME] = _module.reducer
+  moduleReducers[_module.constants.NAME] = _module.reducer;
 }
 
 export default combineReducers({
