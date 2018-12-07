@@ -8,6 +8,7 @@ import packages from "./packages";
 import system from "./system";
 import status from "./status";
 import activity from "./activity";
+import troubleshoot from "./troubleshoot";
 
 const modules = [
   navbar,
@@ -17,7 +18,8 @@ const modules = [
   packages,
   system,
   status,
-  activity
+  activity,
+  troubleshoot
 ];
 
 // Prevent manifest arrays to keep populating
