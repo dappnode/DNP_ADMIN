@@ -8,6 +8,7 @@ import status from "./status";
 import activity from "./activity";
 import navbar from "./navbar";
 import dashboard from "./dashboard";
+import troubleshoot from "./troubleshoot";
 
 const modules = [
   devices,
@@ -17,8 +18,9 @@ const modules = [
   status,
   activity,
   navbar,
-  dashboard
-]
+  dashboard,
+  troubleshoot
+];
 
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once

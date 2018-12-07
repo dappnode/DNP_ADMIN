@@ -1,5 +1,5 @@
-import { call, put, takeEvery, all } from "redux-saga/effects";
-import rootWatcher from "utils/rootWatcher"
+import { call, put, fork, takeEvery, all } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
@@ -223,18 +223,22 @@ function* getStaticIp() {
   }
 }
 
+function* onConnectionOpen(action) {
+  yield fork(checkCoreUpdate, action);
+  yield fork(listPackages, action);
+  yield fork(getStaticIp, action);
+}
+
 /******************************* Watchers *************************************/
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 const watchers = {
-  ["CONNECTION_OPEN"]: checkCoreUpdate,
-  ["CONNECTION_OPEN"]: listPackages,
-  ["CONNECTION_OPEN"]: getStaticIp,
+  CONNECTION_OPEN: onConnectionOpen,
   [t.CALL]: callApi,
   [t.LOG_PACKAGE]: logPackage,
   [t.UPDATE_CORE]: updateCore,
   [t.SET_STATIC_IP]: setStaticIp
-}
+};
 
-export default rootWatcher(watchers)
+export default rootWatcher(watchers);

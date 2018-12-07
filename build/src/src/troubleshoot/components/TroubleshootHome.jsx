@@ -10,7 +10,9 @@ import Loading from "components/Loading";
 // import "./packages.css";
 
 class PackagesList extends React.Component {
-  componentWillMount() {}
+  componentWillMount() {
+    this.props.computeIssueUrl();
+  }
   render() {
     let content;
     if (false) {
@@ -22,7 +24,10 @@ class PackagesList extends React.Component {
           {NAME}
         </div>
         {content}
-        <a href={this.props.issueUrl}>Report issue</a>
+
+        <a className="btn dappnode-background-color" href={this.props.issueUrl}>
+          Report issue
+        </a>
       </React.Fragment>
     );
   }

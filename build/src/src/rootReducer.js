@@ -73,7 +73,7 @@ const globalReducers = {
         return {
           ...state,
           [action.packageName]: action.connected
-        }
+        };
       default:
         return state;
     }

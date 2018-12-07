@@ -1,5 +1,5 @@
-import { call, put, select, take } from "redux-saga/effects";
-import rootWatcher from "utils/rootWatcher"
+import { call, put, select, take, fork } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
@@ -314,20 +314,24 @@ function* diskSpaceAvailable({ path }) {
   }
 }
 
+function* onConnectionOpen(action) {
+  yield fork(fetchDirectory, action);
+  yield fork(shouldOpenPorts, action);
+}
+
 /******************************* Watchers *************************************/
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 const watchers = {
-  ["CONNECTION_OPEN"]: fetchDirectory,
-  ["CONNECTION_OPEN"]: shouldOpenPorts,
+  CONNECTION_OPEN: onConnectionOpen,
   [t.UPDATE_DEFAULT_ENVS]: updateDefaultEnvs,
   [t.FETCH_PACKAGE_DATA]: fetchPackageData,
   [t.FETCH_PACKAGE_REQUEST]: fetchPackageRequest,
   [t.INSTALL]: install,
   [t.UPDATE_ENV]: updateEnvs,
   [t.MANAGE_PORTS]: managePorts,
-  [t.DISK_SPACE_AVAILABLE]: diskSpaceAvailable,
-}
+  [t.DISK_SPACE_AVAILABLE]: diskSpaceAvailable
+};
 
-export default rootWatcher(watchers)
+export default rootWatcher(watchers);
