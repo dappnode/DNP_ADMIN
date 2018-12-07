@@ -1,6 +1,7 @@
 import autobahn from "autobahn-browser";
 import store from "../store";
 import socketSubscriptions from "./socketSubscriptions";
+import initialCalls from "./initialCalls";
 
 // Initalize app
 // Development
@@ -20,6 +21,9 @@ export function initApi() {
     store.dispatch({ type: "CONNECTION_OPEN", session });
     console.log("CONNECTED to \nurl: " + url + " \nrealm: " + realm);
     socketSubscriptions(session);
+    initialCalls(session)
+    // For testing:
+    window.call = (event, args = [], kwargs = {}) => session.call(event, args, kwargs)
   };
 
   // connection closed, lost or unable to connect

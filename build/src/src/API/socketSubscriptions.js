@@ -46,4 +46,14 @@ export default function socketSubscriptions(session) {
       devices
     });
   });
+
+  // devices is an array and is sent as an arg not kwarg
+  session.subscribe('chainData.dappmanager.dnp.dappnode.eth', (chainData) => {
+    if (!Array.isArray(chainData)) return
+    store.dispatch({
+      type: "UPDATE_CHAIN_DATA",
+      chainData
+    });
+  });
+  
 }

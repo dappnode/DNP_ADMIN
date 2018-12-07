@@ -7,60 +7,73 @@ import dashboard from "./dashboard";
 import packages from "./packages";
 import system from "./system";
 import status from "./status";
-import chains from "./chains";
 import activity from "./activity";
+
+const modules = [
+  navbar, 
+  devices, 
+  installer, 
+  dashboard, 
+  packages, 
+  system, 
+  status, 
+  activity
+]
 
 // Prevent manifest arrays to keep populating
 const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
 
-const directoryReducer = (state = {}, action) => {
-  switch (action.type) {
-    case "UPDATE_DIRECTORY":
-      return merge(state, action.pkgs || {}, { arrayMerge: overwriteMerge });
-    default:
-      return state;
+// Define global reducers. This live outside from the module construction
+const globalReducers = {
+  directory: (state = {}, action) => {
+    switch (action.type) {
+      case "UPDATE_DIRECTORY":
+        return merge(state, action.pkgs || {}, { arrayMerge: overwriteMerge });
+      default:
+        return state;
+    }
+  },
+  installedPackages: (state = [], action) => {
+    switch (action.type) {
+      case "UPDATE_INSTALLED_PACKAGES":
+        return action.packages;
+      default:
+        return state;
+    }
+  },
+  session: (state = null, action) => {
+    switch (action.type) {
+      case "CONNECTION_OPEN":
+        return action.session;
+      default:
+        return state;
+    }
+  },
+  isSyncing: (state = null, action) => {
+    switch (action.type) {
+      case "UPDATE_IS_SYNCING":
+        return action.isSyncing;
+      default:
+        return state;
+    }
+  },
+  chainData: (state = [], action) => {
+    switch (action.type) {
+      case "UPDATE_CHAIN_DATA":
+        return action.chainData;
+      default:
+        return state;
+    }
   }
-};
+}
 
-const installedPackagesReducer = (state = [], action) => {
-  switch (action.type) {
-    case "UPDATE_INSTALLED_PACKAGES":
-      return action.packages;
-    default:
-      return state;
-  }
-};
-
-const sessionReducer = (state = null, action) => {
-  switch (action.type) {
-    case "CONNECTION_OPEN":
-      return action.session;
-    default:
-      return state;
-  }
-};
-
-const isSyncingReducer = (state = null, action) => {
-  switch (action.type) {
-    case "UPDATE_IS_SYNCING":
-      return action.isSyncing;
-    default:
-      return state;
-  }
-};
+// Map modules to reducers: 
+const moduleReducers = {}
+for (const _module of modules) {
+  moduleReducers[_module.constants.NAME] = _module.reducer
+}
 
 export default combineReducers({
-  [devices.constants.NAME]: devices.reducer,
-  [installer.constants.NAME]: installer.reducer,
-  [dashboard.constants.NAME]: dashboard.reducer,
-  [packages.constants.NAME]: packages.reducer,
-  [system.constants.NAME]: system.reducer,
-  [status.constants.NAME]: status.reducer,
-  [chains.constants.NAME]: chains.reducer,
-  [navbar.constants.NAME]: navbar.reducer,
-  [activity.constants.NAME]: activity.reducer,
-  session: sessionReducer,
-  directory: directoryReducer,
-  installedPackages: installedPackagesReducer,
-  isSyncing: isSyncingReducer
+  ...globalReducers,
+  ...moduleReducers
 });

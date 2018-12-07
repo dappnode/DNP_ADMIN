@@ -18,6 +18,12 @@ import { NAME } from "./constants";
 
 // From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
 
+// EXTERNAL
+
+export const chainData = state => state.chainData;
+
+// INTERNAL
+
 const local = state => state[NAME];
 export const getDappnodeIdentity = state => {
   const params = Object.assign({}, local(state).dappnodeIdentity || {});

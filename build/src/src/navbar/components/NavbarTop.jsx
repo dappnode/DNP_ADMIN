@@ -4,13 +4,9 @@ import { connect } from "react-redux";
 import * as selector from "../selectors";
 import * as action from "../actions";
 import $ from "jquery";
-// modules
-import chains from "chains";
 // Icons
 import Link from "Icons/Link";
 import Bell from "Icons/Bell";
-// Utils
-import parseType from "utils/parseType";
 // Components
 import NavbarTopDropdownMessages from "./NavbarTopDropdownMessages";
 
@@ -22,10 +18,11 @@ class NavbarTopView extends React.Component {
   }
 
   render() {
-    const chainInfo = Object.keys(this.props.chains).map(id => ({
-      title: id,
-      body: this.props.chains[id].msg,
-      type: parseType(this.props.chains[id].status)
+    const chainInfo = this.props.chainData.map((chain = {}) => ({
+      title: chain.name,
+      body: chain.message,
+      type: chain.error ? "danger" : chain.syncing ? "warning" : "success",
+      progress: chain.progress
     }));
 
     let notificationsInfo = this.props.notifications;
@@ -83,7 +80,7 @@ class NavbarTopView extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   dappnodeIdentity: selector.getDappnodeIdentity,
-  chains: chains.selectors.getAll,
+  chainData: selector.chainData,
   notifications: selector.getNotifications
 });
 

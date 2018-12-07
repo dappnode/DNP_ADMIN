@@ -10,8 +10,6 @@ import { push } from "connected-react-router";
 // Components
 import TypeFilter from "./TypeFilter";
 import PackageStore from "./PackageStore";
-// Modules
-import chains from "chains";
 // Styles
 import "./installer.css";
 
@@ -63,8 +61,6 @@ class InstallerView extends React.Component {
           selectedTypes={this.props.selectedTypes}
           updateSelectedTypes={this.props.updateSelectedTypes}
         />
-
-        <chains.components.ChainStatusLog />
 
         <PackageStore
           fetching={this.props.fetching}
