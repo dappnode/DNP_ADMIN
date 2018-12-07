@@ -1,4 +1,5 @@
-import { call, put, takeEvery, all, select, take } from "redux-saga/effects";
+import { call, put, select, take } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher"
 import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
@@ -308,62 +309,20 @@ function* diskSpaceAvailable({ path }) {
   }
 }
 
-/******************************************************************************/
-/******************************* WATCHERS *************************************/
-/******************************************************************************/
+/******************************* Watchers *************************************/
 
-function* watchConnectionOpen() {
-  yield takeEvery("CONNECTION_OPEN", fetchDirectory);
-  yield takeEvery("CONNECTION_OPEN", shouldOpenPorts);
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  ["CONNECTION_OPEN"]: fetchDirectory,
+  ["CONNECTION_OPEN"]: shouldOpenPorts,
+  [t.UPDATE_DEFAULT_ENVS]: updateDefaultEnvs,
+  [t.FETCH_PACKAGE_DATA]: fetchPackageData,
+  [t.FETCH_PACKAGE_REQUEST]: fetchPackageRequest,
+  [t.INSTALL]: install,
+  [t.UPDATE_ENV]: updateEnvs,
+  [t.MANAGE_PORTS]: managePorts,
+  [t.DISK_SPACE_AVAILABLE]: diskSpaceAvailable,
 }
 
-// const watchers = {
-//   [t.UPDATE_DEFAULT_ENVS]: updateDefaultEnvs,
-// }
-
-// Object.keys(watchers).map(actionType => function* () {
-//   yield takeEvery(actionType, watchers[actionType])
-// })
-
-function* watchUpdateDefaultEnvs() {
-  yield takeEvery(t.UPDATE_DEFAULT_ENVS, updateDefaultEnvs);
-}
-
-function* watchFetchPackageData() {
-  yield takeEvery(t.FETCH_PACKAGE_DATA, fetchPackageData);
-}
-
-function* watchFetchPackageRequest() {
-  yield takeEvery(t.FETCH_PACKAGE_REQUEST, fetchPackageRequest);
-}
-
-function* watchInstall() {
-  yield takeEvery(t.INSTALL, install);
-}
-
-function* watchUpdateEnvs() {
-  yield takeEvery(t.UPDATE_ENV, updateEnvs);
-}
-
-function* watchManagerPorts() {
-  yield takeEvery(t.MANAGE_PORTS, managePorts);
-}
-
-function* watchDiskSpaceAvailable() {
-  yield takeEvery(t.DISK_SPACE_AVAILABLE, diskSpaceAvailable);
-}
-
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([
-    watchConnectionOpen(),
-    watchInstall(),
-    watchUpdateEnvs(),
-    watchUpdateDefaultEnvs(),
-    watchManagerPorts(),
-    watchFetchPackageRequest(),
-    watchFetchPackageData(),
-    watchDiskSpaceAvailable()
-  ]);
-}
+export default rootWatcher(watchers)

@@ -1,4 +1,5 @@
-import { put, takeEvery, all, call } from "redux-saga/effects";
+import { put, call } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher"
 import * as APIcall from "API/rpcMethods";
 import * as a from "./actions";
 
@@ -21,17 +22,13 @@ function* fetchVpnParams() {
   }
 }
 
-/******************************************************************************/
-/******************************* WATCHERS *************************************/
-/******************************************************************************/
+/******************************* Watchers *************************************/
 
-function* watchConnectionOpen() {
-  yield takeEvery("CONNECTION_OPEN", fetchVpnParams);
-  yield takeEvery("FETCH_DAPPNODE_PARAMS", fetchVpnParams);
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  ["CONNECTION_OPEN"]: fetchVpnParams,
+  ["FETCH_DAPPNODE_PARAMS"]: fetchVpnParams,
 }
 
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([watchConnectionOpen()]);
-}
+export default rootWatcher(watchers)

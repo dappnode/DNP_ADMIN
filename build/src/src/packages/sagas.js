@@ -1,4 +1,5 @@
-import { call, put, takeEvery, all } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher"
 import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
@@ -73,24 +74,14 @@ function* logPackage({ kwargs }) {
   }
 }
 
-/******************************************************************************/
-/******************************* WATCHERS *************************************/
-/******************************************************************************/
+/******************************* Watchers *************************************/
 
-function* watchListPackages() {
-  yield takeEvery("CONNECTION_OPEN", listPackages);
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  ["CONNECTION_OPEN"]: listPackages,
+  [t.CALL]: callApi,
+  [t.LOG_PACKAGE]: logPackage
 }
 
-function* watchCall() {
-  yield takeEvery(t.CALL, callApi);
-}
-
-function* watchLogPackage() {
-  yield takeEvery(t.LOG_PACKAGE, logPackage);
-}
-
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([watchListPackages(), watchCall(), watchLogPackage()]);
-}
+export default rootWatcher(watchers)
