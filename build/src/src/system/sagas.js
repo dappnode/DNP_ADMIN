@@ -1,4 +1,5 @@
 import { call, put, takeEvery, all } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher"
 import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
@@ -222,40 +223,18 @@ function* getStaticIp() {
   }
 }
 
-/******************************************************************************/
-/******************************* WATCHERS *************************************/
-/******************************************************************************/
+/******************************* Watchers *************************************/
 
-function* watchConnectionOpen() {
-  yield takeEvery("CONNECTION_OPEN", checkCoreUpdate);
-  yield takeEvery("CONNECTION_OPEN", listPackages);
-  yield takeEvery("CONNECTION_OPEN", getStaticIp);
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  ["CONNECTION_OPEN"]: checkCoreUpdate,
+  ["CONNECTION_OPEN"]: listPackages,
+  ["CONNECTION_OPEN"]: getStaticIp,
+  [t.CALL]: callApi,
+  [t.LOG_PACKAGE]: logPackage,
+  [t.UPDATE_CORE]: updateCore,
+  [t.SET_STATIC_IP]: setStaticIp
 }
 
-function* watchCall() {
-  yield takeEvery(t.CALL, callApi);
-}
-
-function* watchLogPackage() {
-  yield takeEvery(t.LOG_PACKAGE, logPackage);
-}
-
-function* watchUpdateCore() {
-  yield takeEvery(t.UPDATE_CORE, updateCore);
-}
-
-function* watchSetStaticIp() {
-  yield takeEvery(t.SET_STATIC_IP, setStaticIp);
-}
-
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([
-    watchConnectionOpen(),
-    watchCall(),
-    watchLogPackage(),
-    watchUpdateCore(),
-    watchSetStaticIp()
-  ]);
-}
+export default rootWatcher(watchers)

@@ -1,5 +1,6 @@
-import { call, put, all, takeEvery, fork } from "redux-saga/effects";
+import { call, put, all, fork } from "redux-saga/effects";
 import { delay } from "redux-saga";
+import rootWatcher from "utils/rootWatcher"
 import { updateStatus } from "./actions";
 import * as APIcall from "API/rpcMethods";
 import checkWampPackage from "./utils/checkWampPackage";
@@ -151,21 +152,13 @@ function* runIpfsMonitor() {
   yield fork(checkIPFS);
 }
 
-function* watchConnectionOpen() {
-  yield takeEvery("CONNECTION_OPEN", onConnectionOpen);
+/******************************* Watchers *************************************/
+
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  ["CONNECTION_OPEN"]: onConnectionOpen,
+  ["CONNECTION_CLOSE"]: onConnectionClose,
 }
 
-function* watchConnectionClose() {
-  yield takeEvery("CONNECTION_CLOSE", onConnectionClose);
-}
-
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([
-    call(initializeLoadingMessages),
-    runIpfsMonitor(),
-    watchConnectionOpen(),
-    watchConnectionClose()
-  ]);
-}
+export default rootWatcher(watchers)

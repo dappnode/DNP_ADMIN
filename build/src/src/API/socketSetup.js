@@ -2,6 +2,7 @@ import autobahn from "autobahn-browser";
 import store from "../store";
 import socketSubscriptions from "./socketSubscriptions";
 import initialCalls from "./initialCalls";
+import pingPackage from './pingPackage'
 
 // Initalize app
 // Development
@@ -20,8 +21,25 @@ export function initApi() {
   connection.onopen = session => {
     store.dispatch({ type: "CONNECTION_OPEN", session });
     console.log("CONNECTED to \nurl: " + url + " \nrealm: " + realm);
+    // Crete socket subscriptions
     socketSubscriptions(session);
-    initialCalls(session);
+
+    // Execute initial calls
+    initialCalls(session)
+
+    // Run sanity checks
+    async function pingPackages() {
+      for (const packageName of ['dappmanager', 'vpn']) {
+        const connected = await pingPackage(session, packageName)
+        store.dispatch({ type: "UPDATE_PACKAGE_STATUS", packageName, connected });
+      }
+    }
+    const pingInterval = setInterval(() => {
+      if (session.isOpen) pingPackages()
+      else clearInterval(pingInterval)
+    }, 5000) 
+    pingPackages()
+
     // For testing:
     window.call = (event, args = [], kwargs = {}) =>
       session.call(event, args, kwargs);
