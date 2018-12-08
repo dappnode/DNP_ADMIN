@@ -2,7 +2,9 @@
 import * as t from "./actionTypes";
 
 const initialState = {
-  issueUrl: "https://github.com/dappnode/DNP_ADMIN/issues/new"
+  issueUrl: "https://github.com/dappnode/DNP_ADMIN/issues/new",
+  diagnoses: [],
+  info: {}
 };
 
 export default function(state = initialState, action) {
@@ -11,6 +13,24 @@ export default function(state = initialState, action) {
       return {
         ...state,
         issueUrl: action.issueUrl
+      };
+    case t.UPDATE_INFO:
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          [action.topic]: action.info
+        }
+      };
+    case t.UPDATE_DIAGNOSE:
+      return {
+        ...state,
+        diagnoses: [...state.diagnoses, action.diagnose]
+      };
+    case t.CLEAR_DIAGNOSE:
+      return {
+        ...state,
+        diagnoses: []
       };
     default:
       return state;

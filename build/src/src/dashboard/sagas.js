@@ -1,5 +1,5 @@
 import { put, takeEvery, all, call, select, take } from "redux-saga/effects";
-import rootWatcher from "utils/rootWatcher"
+import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
 import * as a from "./actions";
 import * as s from "./selectors";
@@ -27,7 +27,7 @@ function* getDappnodeStats() {
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 const watchers = {
-  [t.GET_DAPPNODE_STATS]: getDappnodeStats,
-}
+  [t.GET_DAPPNODE_STATS]: getDappnodeStats
+};
 
-export default rootWatcher(watchers)
+export default rootWatcher(watchers);

@@ -1,5 +1,6 @@
 // PACKAGES
 import { NAME } from "./constants";
+import urlencode from "urlencode";
 
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
@@ -25,4 +26,27 @@ export const installedPackages = state => state.installedPackages;
 // #### INTERNAL
 
 const local = state => state[NAME];
-export const issueUrl = state => local(state).issueUrl;
+export const diagnoses = state => local(state).diagnoses;
+export const issueUrl = state => {
+  const info = local(state).info;
+  // Construct issueUrl from the available info
+  let title = "";
+  let body = `*Before filing a new issue, please **provide the following information**.*`;
+  // Append core versions
+  if (info.packageList) {
+    // dnp = {
+    //   name: "vpn.dnp.dappnode.eth"
+    //   version: "0.1.19"
+    // }
+    const msgVersions = info.packageList
+      .filter(dnp => dnp.isCORE)
+      .map(dnp => `- **${dnp.name}**: ${dnp.version}`)
+      .join("\n");
+    body += `\n\n## Current versions\n${msgVersions}`;
+  }
+  // Construct issueUrl
+  const repo = "DNP_ADMIN";
+  // eslint-disable-next-line
+  const issueUrl = `https://github.com/dappnode/${repo}/issues/new?title=${urlencode(title)}&body=${urlencode(body)}`;
+  return issueUrl;
+};

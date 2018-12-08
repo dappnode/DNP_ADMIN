@@ -21,8 +21,7 @@ import { NAME } from "./constants";
 // Utils
 
 // #### EXTERNAL SELECTORS
-export const session = state => state.session;
-export const connectionOpen = state => session(state) && session(state).isOpen;
+export const connectionOpen = state => state.session && state.session.isOpen;
 export const chainData = state => state.chainData;
 
 // #### INTERNAL SELECTORS

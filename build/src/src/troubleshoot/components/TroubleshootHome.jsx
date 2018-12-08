@@ -9,9 +9,20 @@ import Loading from "components/Loading";
 // Styles
 // import "./packages.css";
 
+function statusToColor(status) {
+  if (status === 1) return "#1ccec0";
+  if (status === 0) return "#ffff00";
+  if (status === -1) return "#ff0000";
+}
+function statusToIcon(status) {
+  if (status === 1) return "✓";
+  if (status === 0) return "⚠";
+  if (status === -1) return "✕";
+}
+
 class PackagesList extends React.Component {
   componentWillMount() {
-    this.props.computeIssueUrl();
+    this.props.diagnose();
   }
   render() {
     let content;
@@ -25,6 +36,30 @@ class PackagesList extends React.Component {
         </div>
         {content}
 
+        <div className="border-bottom mb-4">
+          <div className="section-subtitle">Diagnose</div>
+          <div className="card mb-4">
+            <div className="card-body">
+              {this.props.diagnoses.map(({ ok, msg, solution }, i) => (
+                <div key={i}>
+                  <div>
+                    <span
+                      style={{
+                        color: ok ? "#1ccec0" : "#ff0000",
+                        fontWeight: 800
+                      }}
+                    >
+                      {ok ? "✓" : "✕"}
+                    </span>{" "}
+                    {msg}
+                  </div>
+                  {ok ? null : <ul>{solution.map(item => <li>{item}</li>)}</ul>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <a className="btn dappnode-background-color" href={this.props.issueUrl}>
           Report issue
         </a>
@@ -36,13 +71,14 @@ class PackagesList extends React.Component {
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  issueUrl: selector.issueUrl
+  issueUrl: selector.issueUrl,
+  diagnoses: selector.diagnoses
 });
 
 const mapDispatchToProps = dispatch => {
   return {
-    computeIssueUrl: () => {
-      dispatch(action.computeIssueUrl());
+    diagnose: () => {
+      dispatch(action.diagnose());
     }
   };
 };
