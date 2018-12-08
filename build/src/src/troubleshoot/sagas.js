@@ -53,6 +53,11 @@ function* diagnoseUpnp() {
   yield put(a.updateDiagnose(_diagnose));
 }
 
+function* diagnoseExternalIp() {
+  const _diagnose = yield call(diagnoses.diagnoseExternalIp);
+  yield put(a.updateDiagnose(_diagnose));
+}
+
 function* diagnoseConnection() {
   const connectionAttempted = yield select(state => state.session);
   if (!connectionAttempted) {
@@ -74,6 +79,7 @@ function* diagnoseConnection() {
     yield fork(diagnoseVpn);
     yield fork(diagnoseIpfs);
     yield fork(diagnoseUpnp);
+    yield fork(diagnoseExternalIp);
   }
 }
 
