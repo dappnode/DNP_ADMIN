@@ -1,6 +1,6 @@
 import { call, put, all, fork } from "redux-saga/effects";
 import { delay } from "redux-saga";
-import rootWatcher from "utils/rootWatcher"
+import rootWatcher from "utils/rootWatcher";
 import { updateStatus } from "./actions";
 import * as APIcall from "API/rpcMethods";
 import checkWampPackage from "./utils/checkWampPackage";
@@ -157,8 +157,8 @@ function* runIpfsMonitor() {
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 const watchers = {
-  ["CONNECTION_OPEN"]: onConnectionOpen,
-  ["CONNECTION_CLOSE"]: onConnectionClose,
-}
+  CONNECTION_OPEN: onConnectionOpen,
+  CONNECTION_CLOSE: onConnectionClose
+};
 
-export default rootWatcher(watchers)
+export default rootWatcher(watchers);

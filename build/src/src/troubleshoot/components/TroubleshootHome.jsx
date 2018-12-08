@@ -40,7 +40,7 @@ class PackagesList extends React.Component {
           <div className="section-subtitle">Diagnose</div>
           <div className="card mb-4">
             <div className="card-body">
-              {this.props.diagnoses.map(({ ok, msg, solution }, i) => (
+              {this.props.diagnoses.map(({ ok, msg, solution = [] }, i) => (
                 <div key={i}>
                   <div>
                     <span

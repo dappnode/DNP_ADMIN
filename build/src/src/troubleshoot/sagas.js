@@ -5,6 +5,7 @@ import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
 import * as selector from "./selectors";
+import diagnoses from "./diagnoses";
 
 import pingPackage from "utils/pingPackage";
 
@@ -15,10 +16,35 @@ function* diagnoseDappmanager() {
   const isConnected = yield call(pingPackage, session, "dappmanager");
   yield put(
     a.updateDiagnose({
-      ok: session.isOpen,
+      ok: isConnected,
       msg: isConnected
-        ? "DAPPMANAGER connected"
+        ? "DAPPMANAGER is connected"
         : "DAPPMANAGER is not connected"
+    })
+  );
+}
+
+function* diagnoseVpn() {
+  const session = yield select(state => state.session);
+  const isConnected = yield call(pingPackage, session, "vpn");
+  yield put(
+    a.updateDiagnose({
+      ok: isConnected,
+      msg: isConnected ? "VPN is connected" : "VPN is not connected"
+    })
+  );
+}
+
+function* diagnoseIpfs() {
+  const { ok, msg } = yield call(diagnoses.diagnoseIpfs);
+  yield put(
+    a.updateDiagnose({
+      ok,
+      msg: ok ? "IPFS resolves" : "IPFS is not resolving: " + msg,
+      solution: [
+        `Go to the system tab and make sure IPFS is running. Otherwise open the package and click 'restart'`,
+        `If the problem persist make sure your disc has not run of space; IPFS may malfunction in that case.`
+      ]
     })
   );
 }
@@ -40,11 +66,13 @@ function* diagnoseConnection() {
     })
   );
   if (session.isOpen) {
-    yield call(diagnoseDappmanager);
+    yield fork(diagnoseDappmanager);
+    yield fork(diagnoseVpn);
+    yield fork(diagnoseIpfs);
   }
 }
 
-export function* diagnose() {
+export function* runDiagnoses() {
   // Fetch info
   yield fork(fetchInfo);
   // Run diagnoses
@@ -73,7 +101,7 @@ export function* fetchPackages() {
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 const watchers = {
-  [t.DIAGNOSE]: diagnose
+  [t.DIAGNOSE]: runDiagnoses
 };
 
 export default rootWatcher(watchers);
