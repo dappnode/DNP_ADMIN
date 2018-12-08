@@ -4,21 +4,8 @@ import * as selector from "../selectors";
 import * as action from "../actions";
 import { connect } from "react-redux";
 import { NAME } from "../constants";
-// Components
-import Loading from "components/Loading";
 // Styles
 // import "./packages.css";
-
-function statusToColor(status) {
-  if (status === 1) return "#1ccec0";
-  if (status === 0) return "#ffff00";
-  if (status === -1) return "#ff0000";
-}
-function statusToIcon(status) {
-  if (status === 1) return "✓";
-  if (status === 0) return "⚠";
-  if (status === -1) return "✕";
-}
 
 class PackagesList extends React.Component {
   componentWillMount() {
@@ -26,9 +13,6 @@ class PackagesList extends React.Component {
   }
   render() {
     let content;
-    if (false) {
-      content = <Loading msg="Loading installed packages..." />;
-    }
     return (
       <React.Fragment>
         <div className="section-title" style={{ textTransform: "capitalize" }}>

@@ -4,7 +4,6 @@ import assertConnectionOpen from "utils/assertConnectionOpen";
 import * as APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
-import * as selector from "./selectors";
 import diagnoses from "./diagnoses";
 
 import pingPackage from "utils/pingPackage";
@@ -49,6 +48,11 @@ function* diagnoseIpfs() {
   );
 }
 
+function* diagnoseUpnp() {
+  const _diagnose = yield call(diagnoses.diagnoseUpnp);
+  yield put(a.updateDiagnose(_diagnose));
+}
+
 function* diagnoseConnection() {
   const connectionAttempted = yield select(state => state.session);
   if (!connectionAttempted) {
@@ -69,6 +73,7 @@ function* diagnoseConnection() {
     yield fork(diagnoseDappmanager);
     yield fork(diagnoseVpn);
     yield fork(diagnoseIpfs);
+    yield fork(diagnoseUpnp);
   }
 }
 
