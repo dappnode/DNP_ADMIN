@@ -2,6 +2,13 @@
 import { NAME } from "./constants";
 import urlencode from "urlencode";
 
+const repo = "DNP_ADMIN";
+const username = "dappnode";
+
+function baseUrl(username, repo) {
+  return `https://github.com/${username}/${repo}/issues/new`;
+}
+
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
 // are always present.
@@ -27,10 +34,9 @@ export const installedPackages = state => state.installedPackages;
 
 const local = state => state[NAME];
 export const diagnoses = state => local(state).diagnoses;
-export const issueUrl = state => {
+export const issueBody = state => {
   const info = local(state).info;
   // Construct issueUrl from the available info
-  let title = "";
   let body = `*Before filing a new issue, please **provide the following information**.*`;
   // Append core versions
   if (info.packageList) {
@@ -40,13 +46,28 @@ export const issueUrl = state => {
     // }
     const msgVersions = info.packageList
       .filter(dnp => dnp.isCORE)
-      .map(dnp => `- **${dnp.name}**: ${dnp.version}`)
-      .join("\n");
-    body += `\n\n## Current versions\n${msgVersions}`;
+      .map(dnp => `- **${dnp.name}**: ${dnp.version}`);
+    body += `\n\n## Current versions\n${msgVersions.join("\n")}`;
   }
+  // Append system info
+  if (info.diskUsage) {
+    // info.diskUsage = "85%"
+    let systemInfo = [];
+    systemInfo.push(`- **${"disk usage"}**: ${info.diskUsage}`);
+    body += `\n\n## System info\n${systemInfo.join("\n")}`;
+  }
+  return body;
+};
+export const issueUrl = state => {
+  // Construct issueUrl from the available info
+  let title = "";
+  let body = issueBody(state);
   // Construct issueUrl
-  const repo = "DNP_ADMIN";
+
   // eslint-disable-next-line
-  const issueUrl = `https://github.com/dappnode/${repo}/issues/new?title=${urlencode(title)}&body=${urlencode(body)}`;
+  const issueUrl = `${baseUrl(username, repo)}?title=${urlencode(title)}&body=${urlencode(body)}`;
   return issueUrl;
+};
+export const issueUrlRaw = state => {
+  return `${baseUrl(username, repo)}`;
 };

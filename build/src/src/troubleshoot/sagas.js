@@ -1,4 +1,4 @@
-import { call, fork, put, take, race, select } from "redux-saga/effects";
+import { call, all, fork, put, take, race, select } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import assertConnectionOpen from "utils/assertConnectionOpen";
 import * as APIcall from "API/rpcMethods";
@@ -92,16 +92,27 @@ export function* runDiagnoses() {
 }
 
 export function* fetchInfo() {
-  yield call(fetchPackages);
+  yield call(assertConnectionOpen);
+  yield all([call(fetchPackages), call(fetchDiskUsage)]);
 }
 
 export function* fetchPackages() {
   try {
-    yield call(assertConnectionOpen);
     const res = yield call(APIcall.listPackages);
     if (!res.success)
       throw Error("Unsuccessful reponse to listPackages: " + res.message);
     yield put(a.updateInfo("packageList", res.result));
+  } catch (e) {
+    console.error("Error fetching installed packages", e);
+  }
+}
+
+export function* fetchDiskUsage() {
+  try {
+    const res = yield call(APIcall.getStats);
+    if (!res.success || (res.success && !res.result))
+      throw Error("Unsuccessful reponse to getStats: " + res.message);
+    yield put(a.updateInfo("diskUsage", res.result.disk));
   } catch (e) {
     console.error("Error fetching installed packages", e);
   }
