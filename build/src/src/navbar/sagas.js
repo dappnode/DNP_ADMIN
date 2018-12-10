@@ -2,7 +2,7 @@ import { put, call, select } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
 import * as a from "./actions";
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import * as selector from "./selectors";
 
 function* fetchVpnParams() {
@@ -28,9 +28,9 @@ function* removeDappmanagerNotifications() {
   // Load notifications
   const notifications = yield select(selector.getNotifications);
   // Check the ones that came from the dappmanager
-  const ids = notifications.filter(
-    notification => notification.fromDappmanager
-  );
+  const ids = notifications
+    .filter(notification => notification.fromDappmanager)
+    .map(notification => notification.id);
   if (ids.length) {
     // Send the ids to the dappmanager
     yield call(APIcall.notificationsRemove, { ids });

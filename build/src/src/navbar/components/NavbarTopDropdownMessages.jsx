@@ -7,7 +7,6 @@ class DropdownIcon extends React.Component {
     return (
       <span
         className="nav-link dropdown-toggle"
-        id={this.props.name + "Dropdown"}
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
