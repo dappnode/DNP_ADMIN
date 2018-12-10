@@ -1,7 +1,7 @@
 import { call, put, select, take, fork } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import * as a from "./actions";
 import * as s from "./selectors";
 import uuidv4 from "uuid/v4";

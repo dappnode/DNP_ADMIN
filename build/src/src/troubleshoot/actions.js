@@ -1,5 +1,5 @@
 // INSTALLER
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 // Used in package root
 

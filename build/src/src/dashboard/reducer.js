@@ -1,5 +1,5 @@
 // DASHBOARD
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import merge from "deepmerge";
 
 const initialState = {

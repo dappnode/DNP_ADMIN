@@ -1,7 +1,7 @@
 import { call, put } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import * as a from "./actions";
 import Toast from "components/Toast";
 import PubSub from "eventBus";

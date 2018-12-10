@@ -1,5 +1,5 @@
 // DASHBOARD
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 export const updateDappnodeStats = ({ stats }) => ({
   type: t.UPDATE_DAPPNODE_STATS,

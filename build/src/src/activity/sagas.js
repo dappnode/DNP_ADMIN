@@ -1,8 +1,8 @@
 // DASHBOARD
 import { call, put, takeEvery, all } from "redux-saga/effects";
-import rootWatcher from "utils/rootWatcher"
+import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 /***************************** Subroutines ************************************/
 
@@ -67,7 +67,7 @@ export function* getUserActionLogs() {
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 const watchers = {
-  ["CONNECTION_OPEN"]: getUserActionLogs,
-}
+  "CONNECTION_OPEN": getUserActionLogs
+};
 
-export default rootWatcher(watchers)
+export default rootWatcher(watchers);

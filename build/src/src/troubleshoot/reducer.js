@@ -1,5 +1,5 @@
 //  PACKAGES
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 const initialState = {
   issueUrl: "https://github.com/dappnode/DNP_ADMIN/issues/new",

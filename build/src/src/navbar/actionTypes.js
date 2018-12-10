@@ -1,18 +1,17 @@
 // NAVBAR
 import { NAME } from "./constants";
+import generateActionTypes from "utils/generateActionTypes";
 
-// prefixing each type with the module name helps preventing name collisions
-const type = tag => NAME + "/" + tag;
-
-function generateTypes(actionTypes) {
-  const obj = {};
-  actionTypes.forEach(actionType => {
-    obj[actionType] = type(actionType);
-  });
-  return obj;
-}
-
-export default generateTypes([
+/**
+ * Generates the actionTypes object = {
+ *   UPDATE_DAPPNODE_IDENTITY: "navbar/UPDATE_DAPPNODE_IDENTITY",
+ *   PUSH_NOTIFICATION: "navbar/PUSH_NOTIFICATION",
+ *   ...
+ * }
+ *
+ * This utility eases the addition of new actionTypes, and ensures a common format
+ */
+export default generateActionTypes(NAME, [
   "UPDATE_DAPPNODE_IDENTITY",
   "PUSH_NOTIFICATION",
   "VIEWED_NOTIFICATIONS",

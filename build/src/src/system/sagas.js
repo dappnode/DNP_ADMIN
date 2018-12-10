@@ -1,7 +1,7 @@
 import { call, put, fork, takeEvery, all } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import * as a from "./actions";
 import semver from "semver";
 import Toast from "components/Toast";

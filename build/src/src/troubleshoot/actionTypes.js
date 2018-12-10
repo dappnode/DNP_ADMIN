@@ -1,12 +1,20 @@
 import { NAME } from "./constants";
+import generateActionTypes from "utils/generateActionTypes";
 
-const type = tag => NAME + "/" + tag;
-
-export const DIAGNOSE = type("DIAGNOSE");
-export const UPDATE_DIAGNOSE = type("UPDATE_DIAGNOSE");
-export const CLEAR_DIAGNOSE = type("CLEAR_DIAGNOSE");
-export const COMPUTE_ISSUE_URL = type("COMPUTE_ISSUE_URL");
-export const UPDATE_ISSUE_URL = type("UPDATE_ISSUE_URL");
-export const UPDATE_INFO = type("UPDATE_INFO");
-
-// prefixing each type with the module name helps preventing name collisions
+/**
+ * Generates the actionTypes object = {
+ *   UPDATE_DAPPNODE_IDENTITY: "navbar/UPDATE_DAPPNODE_IDENTITY",
+ *   PUSH_NOTIFICATION: "navbar/PUSH_NOTIFICATION",
+ *   ...
+ * }
+ *
+ * This utility eases the addition of new actionTypes, and ensures a common format
+ */
+export default generateActionTypes(NAME, [
+  "DIAGNOSE",
+  "UPDATE_DIAGNOSE",
+  "CLEAR_DIAGNOSE",
+  "COMPUTE_ISSUE_URL",
+  "UPDATE_ISSUE_URL",
+  "UPDATE_INFO"
+]);

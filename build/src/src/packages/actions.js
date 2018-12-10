@@ -1,5 +1,5 @@
 // INSTALLER
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import { shortName } from "utils/format";
 import installer from "installer";
 
