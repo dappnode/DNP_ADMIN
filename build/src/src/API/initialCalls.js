@@ -1,21 +1,43 @@
-// import store from "../store";
+import store from "../store";
+import * as APIcall from "API/rpcMethods";
+import navbar from "navbar";
 
 export default function initialCalls(session) {
   // Execute initial calls
 
-  requestChainData();
   // Request chainData recursively
   function requestChainData() {
-    session
-      .call("requestChainData.dappmanager.dnp.dappnode.eth")
-      .then(JSON.parse)
-      .catch(e => ({ success: false, message: e.message }))
-      .then(res => {
-        if (!res.success)
-          console.error(`Error requesting chain data: ${res.message}`);
-        else setTimeout(requestChainData, 5 * 60 * 1000);
-      });
+    APIcall.requestChainData().then(res => {
+      if (!res.success)
+        console.error(`Error requesting chain data: ${res.message}`);
+      else setTimeout(requestChainData, 5 * 60 * 1000);
+    });
   }
+  requestChainData();
+
+  // > result: notifications =
+  //   {
+  //       "notificiation-id": {
+  //          id: 'diskSpaceRanOut-stoppedPackages',
+  //          type: 'error',
+  //          title: 'Disk space ran out, stopped packages',
+  //          body: `Available disk space is less than a safe ...`,
+  //       },
+  //       ...
+  //   }
+  APIcall.notificationsGet().then(res => {
+    if (!res.success)
+      console.error(`Error requesting notifications: ${res.message}`);
+    else {
+      console.log("Received notifications form the dappmanager", res.result);
+      Object.values(res.result || {}).forEach(notification => {
+        store.dispatch({
+          type: navbar.actionTypes.PUSH_NOTIFICATION,
+          notification: { ...notification, fromDappmanager: true }
+        });
+      });
+    }
+  });
 
   //   Execute subscriptions. Dispatch to store example
   //

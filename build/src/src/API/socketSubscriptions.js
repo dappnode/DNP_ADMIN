@@ -1,4 +1,5 @@
 import store from "../store";
+import navbar from "navbar";
 
 export default function socketSubscriptions(session) {
   session.subscribe(
@@ -47,7 +48,7 @@ export default function socketSubscriptions(session) {
     });
   });
 
-  // devices is an array and is sent as an arg not kwarg
+  // chain is an array and is sent as an arg not kwarg
   session.subscribe("chainData.dappmanager.dnp.dappnode.eth", chainData => {
     if (!Array.isArray(chainData)) return;
     store.dispatch({
@@ -55,4 +56,14 @@ export default function socketSubscriptions(session) {
       chainData
     });
   });
+
+  session.subscribe(
+    "pushNotification.dappmanager.dnp.dappnode.eth",
+    (_, notification) => {
+      store.dispatch({
+        type: navbar.actionTypes.PUSH_NOTIFICATION,
+        notification: { ...notification, fromDappmanager: true }
+      });
+    }
+  );
 }

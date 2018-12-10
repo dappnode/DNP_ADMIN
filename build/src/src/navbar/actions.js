@@ -1,5 +1,5 @@
 // NAVBAR
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 export const updateDappnodeIdentity = dappnodeIdentity => ({
   type: t.UPDATE_DAPPNODE_IDENTITY,
@@ -8,4 +8,8 @@ export const updateDappnodeIdentity = dappnodeIdentity => ({
 
 export const viewedNotifications = () => ({
   type: t.VIEWED_NOTIFICATIONS
+});
+
+export const removeDappmanagerNotifications = () => ({
+  type: t.REMOVE_DAPPMANAGER_NOTIFICATIONS
 });
