@@ -27,6 +27,8 @@ class SystemList extends React.Component {
       "core.dnp.dappnode.eth",
       this.props.progressLogs
     );
+    // Don't show "core.dnp.dappnode.eth" actual progress log information
+    delete (progressLog || {})["core.dnp.dappnode.eth"];
 
     return (
       <React.Fragment>
@@ -70,7 +72,7 @@ const mapStateToProps = createStructuredSelector({
   corePackages: selector.getCorePackages,
   coreDeps: selector.coreDeps,
   progressLogs: installer.selectors.progressLogs,
-  fetching: selector.fetching,
+  fetching: selector.fetching
 });
 
 const mapDispatchToProps = dispatch => {
