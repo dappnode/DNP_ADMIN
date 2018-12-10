@@ -8,6 +8,7 @@ import packages from "./packages";
 import system from "./system";
 import status from "./status";
 import activity from "./activity";
+import troubleshoot from "./troubleshoot";
 
 const modules = [
   navbar,
@@ -17,7 +18,8 @@ const modules = [
   packages,
   system,
   status,
-  activity
+  activity,
+  troubleshoot
 ];
 
 // Prevent manifest arrays to keep populating
@@ -45,6 +47,8 @@ const globalReducers = {
     switch (action.type) {
       case "CONNECTION_OPEN":
         return action.session;
+      case "CONNECTION_CLOSE":
+        return action.session;
       default:
         return state;
     }
@@ -61,6 +65,17 @@ const globalReducers = {
     switch (action.type) {
       case "UPDATE_CHAIN_DATA":
         return action.chainData;
+      default:
+        return state;
+    }
+  },
+  packageStatus: (state = {}, action) => {
+    switch (action.type) {
+      case "UPDATE_PACKAGE_STATUS":
+        return {
+          ...state,
+          [action.packageName]: action.connected
+        };
       default:
         return state;
     }

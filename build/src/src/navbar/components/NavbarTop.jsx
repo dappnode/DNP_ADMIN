@@ -1,12 +1,15 @@
 import React from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
+import { NavLink } from "react-router-dom";
 import * as selector from "../selectors";
 import * as action from "../actions";
 import $ from "jquery";
 // Icons
 import Link from "Icons/Link";
 import Bell from "Icons/Bell";
+// Modules
+import troubleshoot from "troubleshoot";
 // Components
 import NavbarTopDropdownMessages from "./NavbarTopDropdownMessages";
 
@@ -65,13 +68,13 @@ class NavbarTopView extends React.Component {
         />
         <li className="nav-item nav-item-infoText">
           <a href="https://dappnode.io/" className="nav-link">
-            About
+            Donate
           </a>
         </li>
         <li className="nav-item nav-item-infoText">
-          <a href="https://dappnode.io/" className="nav-link">
-            Donate
-          </a>
+          <NavLink className="nav-link" to={"/" + troubleshoot.constants.NAME}>
+            Report
+          </NavLink>
         </li>
       </ul>
     );

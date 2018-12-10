@@ -26,8 +26,7 @@ import { isIpfsHash } from "./utils";
 // this.state.packageInfo[this.state.targetPackageName]
 
 // #### EXTERNAL SELECTORS
-export const session = state => state.session;
-export const connectionOpen = state => session(state) && session(state).isOpen;
+export const connectionOpen = state => state.session && state.session.isOpen;
 export const directory = state => state.directory;
 export const installedPackages = state => state.installedPackages || [];
 export const isSyncing = state => state.isSyncing;

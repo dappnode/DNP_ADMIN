@@ -8,18 +8,22 @@ import status from "./status";
 import activity from "./activity";
 import navbar from "./navbar";
 import dashboard from "./dashboard";
+import troubleshoot from "./troubleshoot";
+
+const modules = [
+  devices,
+  installer,
+  packages,
+  system,
+  status,
+  activity,
+  navbar,
+  dashboard,
+  troubleshoot
+];
 
 // notice how we now only export the rootSaga
 // single entry point to start all Sagas at once
 export default function* rootSaga() {
-  yield all([
-    devices.saga(),
-    installer.saga(),
-    packages.saga(),
-    system.saga(),
-    status.saga(),
-    activity.saga(),
-    navbar.saga(),
-    dashboard.saga()
-  ]);
+  yield all(modules.filter(m => m.saga).map(m => m.saga()));
 }
