@@ -6,9 +6,6 @@ import * as a from "./actions";
 import Toast from "components/Toast";
 import PubSub from "eventBus";
 
-// Experiment
-import urlencode from "urlencode";
-
 /***************************** Subroutines ************************************/
 
 export function* listPackages() {

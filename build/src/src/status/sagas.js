@@ -1,10 +1,8 @@
 import { call, put, all, fork } from "redux-saga/effects";
-import { delay } from "redux-saga";
 import rootWatcher from "utils/rootWatcher";
 import { updateStatus } from "./actions";
 import * as APIcall from "API/rpcMethods";
 import checkWampPackage from "./utils/checkWampPackage";
-import checkIpfsConnection from "./utils/checkIpfsConnection";
 import { push } from "connected-react-router";
 
 const NOWAMP = "Can't connect to WAMP";
@@ -20,22 +18,6 @@ const tags = {
 };
 
 /***************************** Subroutines ************************************/
-
-let delayMs = 2000;
-function* checkIPFS() {
-  try {
-    yield call(checkIpfsConnection);
-    // Did work:
-    yield put(updateStatus({ id: tags.ipfs, status: 1, msg: "ok" }));
-  } catch (err) {
-    // Did NOT work:
-    yield put(updateStatus({ id: tags.ipfs, status: -1, msg: err }));
-    // Keep retrying until the connection is ok
-    delayMs = delayMs * 2;
-    yield delay(delayMs);
-    yield call(checkIPFS);
-  }
-}
 
 function* getStatusUpnp() {
   try {
@@ -95,14 +77,6 @@ function* getStatusExternalIp() {
   }
 }
 
-function* initializeLoadingMessages() {
-  yield all(
-    Object.keys(tags).map(tag =>
-      put(updateStatus({ id: tags[tag], status: 0, msg: "verifying..." }))
-    )
-  );
-}
-
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
@@ -146,10 +120,6 @@ function* onConnectionClose({ reason, details = {} }) {
   }
   yield put(updateStatus({ id: tags.dapp, status: 0, msg: NOWAMP }));
   yield put(updateStatus({ id: tags.vpn, status: 0, msg: NOWAMP }));
-}
-
-function* runIpfsMonitor() {
-  yield fork(checkIPFS);
 }
 
 /******************************* Watchers *************************************/

@@ -1,4 +1,4 @@
-import { call, put, fork, takeEvery, all } from "redux-saga/effects";
+import { call, put, fork } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
 import t from "./actionTypes";
