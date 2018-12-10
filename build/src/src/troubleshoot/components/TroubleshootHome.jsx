@@ -41,7 +41,11 @@ class PackagesList extends React.Component {
                     </span>{" "}
                     {msg}
                   </div>
-                  {ok ? null : <ul>{solution.map(item => <li>{item}</li>)}</ul>}
+                  {ok ? null : (
+                    <ul>
+                      {solution.map((item, j) => <li key={j}>{item}</li>)}
+                    </ul>
+                  )}
                 </div>
               ))}
             </div>
