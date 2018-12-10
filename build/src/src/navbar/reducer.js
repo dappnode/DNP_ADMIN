@@ -33,13 +33,21 @@ export default function(state = initialState, action) {
         ]
       };
     case t.VIEWED_NOTIFICATIONS:
-      const notifications = state.notifications.map(notification => {
-        notification.viewed = true;
-        return notification;
-      });
       return {
         ...state,
-        notifications
+        notifications: state.notifications.map(notification => ({
+          ...notification,
+          viewed: true
+        }))
+      };
+    case t.REMOVE_DAPPMANAGER_NOTIFICATIONS:
+      return {
+        ...state,
+        notifications: state.notifications.map(notification => {
+          // Remove the fromDappmanager property immutably
+          const { fromDappmanager, ..._notification } = notification;
+          return _notification;
+        })
       };
     default:
       return state;

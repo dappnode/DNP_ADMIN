@@ -9,3 +9,7 @@ export const updateDappnodeIdentity = dappnodeIdentity => ({
 export const viewedNotifications = () => ({
   type: t.VIEWED_NOTIFICATIONS
 });
+
+export const removeDappmanagerNotifications = () => ({
+  type: t.REMOVE_DAPPMANAGER_NOTIFICATIONS
+});
