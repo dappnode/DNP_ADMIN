@@ -19,7 +19,7 @@ function NoPackagesYet(props) {
           style={{ color: "inherit", textDecoration: "inherit" }}
           to={"/" + installer.constants.NAME}
         >
-          <a
+          <button
             className="btn dappnode-pill"
             style={{
               backgroundColor: "#ffffff00",
@@ -30,7 +30,7 @@ function NoPackagesYet(props) {
             }}
           >
             INSTALLER
-          </a>
+          </button>
         </Link>
       </div>
     </React.Fragment>
