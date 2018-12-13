@@ -4,6 +4,7 @@ import "./loadBar.css";
 export default class Dependencies extends React.Component {
   render() {
     const request = this.props.request;
+    const installedPackages = this.props.installedPackages;
     let body;
     if (!Object.keys(request).length) {
       body = <p>Empty request</p>;
@@ -18,6 +19,8 @@ export default class Dependencies extends React.Component {
           </div>
         </React.Fragment>
       );
+    } else if (!request.success) {
+      body = <p style={{ color: "#d50f0fd1" }}>✕ {request.message}</p>;
     } else if (request.success) {
       body = (
         <React.Fragment>
@@ -29,13 +32,16 @@ export default class Dependencies extends React.Component {
             <div className="col-4">Current version</div>
             <div className="col-4">Requested version</div>
           </div>
-          {Object.keys(request.success).map((pkg, i) => (
+          {Object.keys(request.success).map((dnpName, i) => (
             <div key={i} className="row">
-              <div className="col-4 text-truncate">{pkg}</div>
+              <div className="col-4 text-truncate">{dnpName}</div>
               <div className="col-4 text-truncate">
-                {request.state[pkg] || "not installed"}
+                {(installedPackages.find(dnp => dnp.name === dnpName) || {})
+                  .version || "-"}
               </div>
-              <div className="col-4 text-truncate">{request.success[pkg]}</div>
+              <div className="col-4 text-truncate">
+                {request.success[dnpName]}
+              </div>
             </div>
           ))}
         </React.Fragment>

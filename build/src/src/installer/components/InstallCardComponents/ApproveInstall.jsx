@@ -230,7 +230,10 @@ class ApproveInstallView extends React.Component {
     return (
       <React.Fragment>
         <Details pkg={this.props.pkg} subComponent={installButton} />
-        <Dependencies request={this.props.request || {}} />
+        <Dependencies
+          request={this.props.request || {}}
+          installedPackages={this.props.installedPackages}
+        />
         <Envs envs={envs} handleEnvChange={this.handleEnvChange} />
         <Vols
           manifestVols={manifestVols}
@@ -250,7 +253,8 @@ class ApproveInstallView extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  diskSpaceAvailable: selector.diskSpaceAvailable
+  diskSpaceAvailable: selector.diskSpaceAvailable,
+  installedPackages: selector.installedPackages
 });
 
 const mapDispatchToProps = dispatch => ({
