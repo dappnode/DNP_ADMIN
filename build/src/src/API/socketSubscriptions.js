@@ -59,6 +59,10 @@ export default function socketSubscriptions(session) {
       if ((chain.message || "").includes("Invalid JSON RPC response")) {
         chain.message = `DNP stopped or unreachable (invalid response)`;
       }
+      if ((chain.message || "").toLowerCase().includes("synced #0")) {
+        chain.message = `Syncing...`;
+        chain.syncing = true;
+      }
     });
     store.dispatch({
       type: "UPDATE_CHAIN_DATA",
