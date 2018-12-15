@@ -51,6 +51,15 @@ export default function socketSubscriptions(session) {
   // chain is an array and is sent as an arg not kwarg
   session.subscribe("chainData.dappmanager.dnp.dappnode.eth", chainData => {
     if (!Array.isArray(chainData)) return;
+    // Rename known errors
+    chainData.forEach(chain => {
+      if ((chain.message || "").includes("ECONNREFUSED")) {
+        chain.message = `DNP stopped or unreachable (connection refused)`;
+      }
+      if ((chain.message || "").includes("Invalid JSON RPC response")) {
+        chain.message = `DNP stopped or unreachable (invalid response)`;
+      }
+    });
     store.dispatch({
       type: "UPDATE_CHAIN_DATA",
       chainData
