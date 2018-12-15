@@ -25,32 +25,38 @@ export default class ProgressLog extends React.Component {
         </div>
         <div className="card mb-4">
           <div className="card-body">
-            {Object.keys(progressLog).map((pkg, i) => (
-              <div key={i} className="row">
-                <div className="col-6 text-truncate">{pkg}</div>
-                <div className="col-6 text-truncate" style={{ height: "28px" }}>
+            {Object.keys(progressLog)
+              // Don't show "core.dnp.dappnode.eth" actual progress log information
+              .filter(pkg => pkg !== "core.dnp.dappnode.eth")
+              .map((pkg, i) => (
+                <div key={i} className="row">
+                  <div className="col-6 text-truncate">{pkg}</div>
                   <div
-                    className="progress"
-                    style={{
-                      opacity: 0.4,
-                      position: "relative",
-                      bottom: "4px"
-                    }}
+                    className="col-6 text-truncate"
+                    style={{ height: "28px" }}
                   >
-                    {progressBar(progressLog[pkg])}
-                  </div>
-                  <div
-                    className="text-center"
-                    style={{
-                      position: "relative",
-                      bottom: "40px"
-                    }}
-                  >
-                    {progressLog[pkg]}
+                    <div
+                      className="progress"
+                      style={{
+                        opacity: 0.4,
+                        position: "relative",
+                        bottom: "4px"
+                      }}
+                    >
+                      {progressBar(progressLog[pkg])}
+                    </div>
+                    <div
+                      className="text-center"
+                      style={{
+                        position: "relative",
+                        bottom: "40px"
+                      }}
+                    >
+                      {progressLog[pkg]}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </React.Fragment>
