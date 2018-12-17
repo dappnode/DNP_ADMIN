@@ -47,7 +47,7 @@ $ git clone https://github.com/dappnode/DNP_ADMIN.git
 ```
 
 ```
-$ docker-compose -f docker-compose-admin.yml build
+$ docker-compose build
 or 
 $ docker build --rm -f build/Dockerfile -t dnp_admin:dev build 
 ```
@@ -56,19 +56,19 @@ $ docker build --rm -f build/Dockerfile -t dnp_admin:dev build
 
 #### Start
 ```
-$ docker-compose -f docker-compose-admin.yml up -d
+$ docker-compose up -d
 ```
 #### Stop
 ```
-$ docker-compose -f docker-compose-admin.yml down
+$ docker-compose down
 ```
 #### Status
 ```
-$ docker-compose -f docker-compose-admin.yml ps
+$ docker-compose ps
 ```
 #### Logs
 ```
-$ docker-compose -f docker-compose-admin.yml logs -f
+$ docker-compose logs -f
 ```
 
 ## Generating a tar.xz image
