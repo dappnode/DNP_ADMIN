@@ -23,17 +23,29 @@ export default class PackageDetails extends React.Component {
 
     // In the manifest, homepage = {userui: "http://some.link"}
     const linksObj = (pkg.manifest || {}).homepage || {};
-    const links = Object.keys(linksObj).map(name => ({
-      name,
-      url: linksObj[name]
-    }));
+    let links;
+    if (typeof linksObj === "object") {
+      links = Object.keys(linksObj).map(name => ({
+        name,
+        url: linksObj[name]
+      }));
+    } else if (typeof linksObj === "string") {
+      links = [
+        {
+          name: "homepage",
+          url: linksObj
+        }
+      ];
+    } else {
+      links = [];
+    }
 
     // pkg.ports = [{IP: "0.0.0.0", PrivatePort: 30304, PublicPort: 32770, Type: "tcp"}, ...]
     // pkg.portsToClose = [{number: 32771, type: "TCP"}, ...]
     const ports = (pkg.ports || []).map(portObj => {
       const locked = Boolean(
         (pkg.portsToClose || []).find(
-          _portObj => _portObj.number == portObj.PublicPort
+          _portObj => String(_portObj.number) === String(portObj.PublicPort)
         )
       );
       return { ...portObj, locked };
