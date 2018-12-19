@@ -42,10 +42,11 @@ export const install = kwargs => ({
 
 // Need to notify the chain that a package has been added
 
-export const updateEnv = ({ id, envs }) => ({
+export const updateEnv = ({ id, envs, isCORE }) => ({
   type: t.UPDATE_ENV,
   envs,
-  id
+  id,
+  isCORE
 });
 
 export const updateDefaultEnvs = ({ id }) => ({

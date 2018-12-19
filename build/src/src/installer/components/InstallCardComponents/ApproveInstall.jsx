@@ -143,8 +143,17 @@ class ApproveInstallView extends React.Component {
     };
 
     // Fire install call
+    const isCORE = manifest.type === "dncore";
     const options = this.state.options;
-    this.props.install({ id, envs, userSetVols, userSetPorts, ports, options });
+    this.props.install({
+      id,
+      envs,
+      isCORE,
+      userSetVols,
+      userSetPorts,
+      ports,
+      options
+    });
     // Fire call to set dependency envs
     if (manifest && manifest.dependencies) {
       for (const depName of Object.keys(manifest.dependencies)) {
@@ -258,9 +267,17 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-  install: ({ id, envs, userSetVols, userSetPorts, ports, options }) => {
+  install: ({
+    id,
+    envs,
+    isCORE,
+    userSetVols,
+    userSetPorts,
+    ports,
+    options
+  }) => {
     dispatch(action.install({ id, userSetVols, userSetPorts, options }));
-    dispatch(action.updateEnv({ id, envs }));
+    dispatch(action.updateEnv({ id, envs, isCORE }));
     dispatch(action.openPorts(ports));
   },
   getDiskSpaceAvailable: ({ path }) => {

@@ -96,16 +96,19 @@ export function* updateDefaultEnvs({ id }) {
   }
 }
 
-export function* updateEnvs({ id, envs, restart }) {
+export function* updateEnvs({ id, envs, isCORE, restart }) {
   try {
     if (Object.getOwnPropertyNames(envs).length > 0) {
       const pendingToast = new Toast({
-        message: "Updating " + id + " envs: " + JSON.stringify(envs),
+        message: `Updating ${id} ${
+          isCORE ? "(core)" : ""
+        } envs: ${JSON.stringify(envs)}`,
         pending: true
       });
       const res = yield call(APIcall.updatePackageEnv, {
         id,
         envs,
+        isCORE,
         restart
       });
       pendingToast.resolve(res);
