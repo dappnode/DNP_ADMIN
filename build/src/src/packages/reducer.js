@@ -1,8 +1,9 @@
 //  PACKAGES
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 const initialState = {
   fetching: false,
+  hasFetched: false,
   logs: {}
 };
 
@@ -21,6 +22,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         fetching: action.fetching
+      };
+    case t.HAS_FETCHED_PACKAGES:
+      return {
+        ...state,
+        hasFetched: true
       };
     default:
       return state;

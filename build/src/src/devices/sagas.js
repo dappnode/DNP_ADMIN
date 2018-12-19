@@ -1,6 +1,7 @@
-import { call, put, takeEvery, all } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import Toast from "components/Toast";
 
 /***************************** Subroutines ************************************/
@@ -32,24 +33,14 @@ function* callApi({ method, kwargs, message }) {
   yield call(fetchDevices);
 }
 
-/******************************************************************************/
-/******************************* WATCHERS *************************************/
-/******************************************************************************/
+/******************************* Watchers *************************************/
 
-function* watchConnectionOption() {
-  yield takeEvery("CONNECTION_OPEN", fetchDevices);
-}
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  CONNECTION_OPEN: fetchDevices,
+  FETCH_DEVICES: fetchDevices,
+  [t.CALL]: callApi
+};
 
-function* watchFetchDevices() {
-  yield takeEvery("FETCH_DEVICES", fetchDevices);
-}
-
-function* watchCall() {
-  yield takeEvery(t.CALL, callApi);
-}
-
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([watchFetchDevices(), watchCall(), watchConnectionOption()]);
-}
+export default rootWatcher(watchers);

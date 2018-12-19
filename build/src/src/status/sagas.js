@@ -1,10 +1,8 @@
-import { call, put, all, takeEvery, fork } from "redux-saga/effects";
-import { delay } from "redux-saga";
+import { call, put, all, fork } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher";
 import { updateStatus } from "./actions";
 import * as APIcall from "API/rpcMethods";
 import checkWampPackage from "./utils/checkWampPackage";
-import checkIpfsConnection from "./utils/checkIpfsConnection";
-import chains from "chains";
 import { push } from "connected-react-router";
 
 const NOWAMP = "Can't connect to WAMP";
@@ -16,27 +14,10 @@ const tags = {
   vpn: "vpn",
   upnp: "upnp",
   externalIP: "externalIP",
-  ipfs: "ipfs",
-  mainnet: "mainnet"
+  ipfs: "ipfs"
 };
 
 /***************************** Subroutines ************************************/
-
-let delayMs = 2000
-function* checkIPFS() {
-  try {
-    yield call(checkIpfsConnection);
-    // Did work:
-    yield put(updateStatus({ id: tags.ipfs, status: 1, msg: "ok" }));
-  } catch (err) {
-    // Did NOT work:
-    yield put(updateStatus({ id: tags.ipfs, status: -1, msg: err }));
-    // Keep retrying until the connection is ok
-    delayMs = delayMs*2
-    yield delay(delayMs)
-    yield call(checkIPFS);
-  }
-}
 
 function* getStatusUpnp() {
   try {
@@ -96,20 +77,6 @@ function* getStatusExternalIp() {
   }
 }
 
-function* initializeLoadingMessages() {
-  yield all(
-    Object.keys(tags).map(tag =>
-      put(updateStatus({ id: tags[tag], status: 0, msg: "verifying..." }))
-    )
-  );
-}
-
-function* mainnetUpdate(action) {
-  if (action.id !== "Mainnet") return;
-  const { msg, status } = action.payload;
-  yield put(updateStatus({ id: tags.mainnet, status, msg }));
-}
-
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
@@ -117,10 +84,6 @@ function* mainnetUpdate(action) {
 // The channels below can be stopped by changing the code a little bit
 // You would fire a STOP action to stop the channel loop and a START to restart.
 // Example: https://github.com/jaysoo/example-redux-saga/blob/master/src/timer/saga.js
-
-function* watchMainnetUpdate() {
-  yield takeEvery(chains.actionTypes.UPDATE_STATUS, mainnetUpdate);
-}
 
 function* onConnectionOpen({ session }) {
   yield put(updateStatus({ id: tags.wamp, status: 1, msg: "ok" }));
@@ -142,7 +105,9 @@ function* checkPackage(session, id) {
 
 function* onConnectionClose({ reason, details = {} }) {
   yield put(updateStatus({ id: tags.wamp, status: -1, msg: NOWAMP }));
-  const nonAdmin = (details.message || "").includes("could not authenticate session");
+  const nonAdmin = (details.message || "").includes(
+    "could not authenticate session"
+  );
   yield put(
     updateStatus({
       id: tags.isAdmin,
@@ -157,26 +122,13 @@ function* onConnectionClose({ reason, details = {} }) {
   yield put(updateStatus({ id: tags.vpn, status: 0, msg: NOWAMP }));
 }
 
-function* runIpfsMonitor() {
-  yield fork(checkIPFS);
-}
+/******************************* Watchers *************************************/
 
-function* watchConnectionOpen() {
-  yield takeEvery("CONNECTION_OPEN", onConnectionOpen);
-}
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  CONNECTION_OPEN: onConnectionOpen,
+  CONNECTION_CLOSE: onConnectionClose
+};
 
-function* watchConnectionClose() {
-  yield takeEvery("CONNECTION_CLOSE", onConnectionClose);
-}
-
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([
-    call(initializeLoadingMessages),
-    runIpfsMonitor(),
-    watchConnectionOpen(),
-    watchConnectionClose(),
-    watchMainnetUpdate()
-  ]);
-}
+export default rootWatcher(watchers);

@@ -1,5 +1,5 @@
 // DEVICES
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 export const addDevice = id => ({
   type: t.CALL,

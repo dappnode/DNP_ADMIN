@@ -1,11 +1,11 @@
 //  INSTALLER
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import merge from "deepmerge";
 
 const initialState = {
   fetching: false,
   directory: [],
-  selectedTypes: [],
+  selectedTypes: {},
   input: "",
   isInstalling: {},
   progressLogs: {},

@@ -1,16 +1,13 @@
-import { put, takeEvery, all, call, select, take } from "redux-saga/effects";
+import { put, call } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher";
+import assertConnectionOpen from "utils/assertConnectionOpen";
 import * as APIcall from "API/rpcMethods";
 import * as a from "./actions";
-import * as s from "./selectors";
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 function* getDappnodeStats() {
   try {
-    // If connection is not open yet, wait for it to open.
-    const connectionOpen = yield select(s.connectionOpen);
-    if (!connectionOpen) {
-      yield take("CONNECTION_OPEN");
-    }
+    yield call(assertConnectionOpen);
     const res = yield call(APIcall.getStats);
     if (res.success) {
       const stats = res.result || {};
@@ -21,16 +18,12 @@ function* getDappnodeStats() {
   }
 }
 
-/******************************************************************************/
-/******************************* WATCHERS *************************************/
-/******************************************************************************/
+/******************************* Watchers *************************************/
 
-function* watchGetDappnodeStats() {
-  yield takeEvery(t.GET_DAPPNODE_STATS, getDappnodeStats);
-}
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  [t.GET_DAPPNODE_STATS]: getDappnodeStats
+};
 
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([watchGetDappnodeStats()]);
-}
+export default rootWatcher(watchers);

@@ -1,5 +1,5 @@
 // INSTALLER
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 export const updateFetching = fetching => ({
   type: t.UPDATE_FETCHING,
@@ -35,24 +35,28 @@ export const fetchPackageRequest = id => ({
   id
 });
 
-export const install = ({ id, vols, options }) => ({
+export const install = kwargs => ({
   type: t.INSTALL,
-  options,
-  vols,
-  id
+  ...kwargs
 });
 
 // Need to notify the chain that a package has been added
 
-export const updateEnv = ({ id, envs }) => ({
+export const updateEnv = ({ id, envs, isCORE }) => ({
   type: t.UPDATE_ENV,
   envs,
+  id,
+  isCORE
+});
+
+export const updateDefaultEnvs = ({ id }) => ({
+  type: t.UPDATE_DEFAULT_ENVS,
   id
 });
 
 export const openPorts = ports => ({
   type: t.MANAGE_PORTS,
-  action: 'open',
+  action: "open",
   ports
 });
 

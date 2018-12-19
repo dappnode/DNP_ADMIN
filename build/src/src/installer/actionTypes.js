@@ -1,20 +1,29 @@
 import { NAME } from "./constants";
+import generateActionTypes from "utils/generateActionTypes";
 
-const type = tag => NAME + "/" + tag;
-
-export const INSTALL = type("INSTALL");
-export const UPDATE_ENV = type("UPDATE_ENV");
-export const MANAGE_PORTS = type("MANAGE_PORTS");
-export const SHOULD_OPEN_PORTS = type("SHOULD_OPEN_PORTS");
-export const FETCH_PACKAGE_DATA = type("FETCH_PACKAGE_DATA");
-export const FETCH_PACKAGE_REQUEST = type("FETCH_PACKAGE_REQUEST");
-export const UPDATE_FETCHING = type("UPDATE_FETCHING");
-export const UPDATE_SELECTED_TYPES = type("UPDATE_SELECTED_TYPES");
-export const UPDATE_INPUT = type("UPDATE_INPUT");
-export const PROGRESS_LOG = type("PROGRESS_LOG");
-export const CLEAR_PROGRESS_LOG = type("CLEAR_PROGRESS_LOG");
-export const FETCH_DIRECTORY = type("FETCH_DIRECTORY");
-export const DISK_SPACE_AVAILABLE = type("DISK_SPACE_AVAILABLE");
-export const UPDATE_DISK_SPACE_AVAILABLE = type("UPDATE_DISK_SPACE_AVAILABLE");
-
-// prefixing each type with the module name helps preventing name collisions
+/**
+ * Generates the actionTypes object = {
+ *   UPDATE_DAPPNODE_IDENTITY: "navbar/UPDATE_DAPPNODE_IDENTITY",
+ *   PUSH_NOTIFICATION: "navbar/PUSH_NOTIFICATION",
+ *   ...
+ * }
+ *
+ * This utility eases the addition of new actionTypes, and ensures a common format
+ */
+export default generateActionTypes(NAME, [
+  "INSTALL",
+  "UPDATE_ENV",
+  "UPDATE_DEFAULT_ENVS",
+  "MANAGE_PORTS",
+  "SHOULD_OPEN_PORTS",
+  "FETCH_PACKAGE_DATA",
+  "FETCH_PACKAGE_REQUEST",
+  "UPDATE_FETCHING",
+  "UPDATE_SELECTED_TYPES",
+  "UPDATE_INPUT",
+  "PROGRESS_LOG",
+  "CLEAR_PROGRESS_LOG",
+  "FETCH_DIRECTORY",
+  "DISK_SPACE_AVAILABLE",
+  "UPDATE_DISK_SPACE_AVAILABLE"
+]);

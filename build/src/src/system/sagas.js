@@ -1,12 +1,14 @@
-import { call, put, takeEvery, all } from "redux-saga/effects";
+import { call, put, fork } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import * as a from "./actions";
 import semver from "semver";
 import Toast from "components/Toast";
 import uuidv4 from "uuid/v4";
 import installer from "installer";
 import isSyncing from "utils/isSyncing";
+import navbar from "navbar";
 
 /***************************** Subroutines ************************************/
 
@@ -61,14 +63,14 @@ function shouldUpdate(v1, v2) {
 }
 
 function isEmpty(obj) {
-  return !Boolean(Object.getOwnPropertyNames(obj).length)
+  return !Boolean(Object.getOwnPropertyNames(obj).length);
 }
 
 export function* checkCoreUpdate() {
   try {
     // If chain is not synced yet, cancel request.
     if (yield call(isSyncing)) {
-      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
     }
 
     const packagesRes = yield call(APIcall.listPackages);
@@ -77,14 +79,25 @@ export function* checkCoreUpdate() {
     });
 
     // Check if the dappmanager says mainnet is still syncing
-    if (coreDataRes.message && coreDataRes.message.includes('Mainnet is still syncing')) {
-      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+    if (
+      coreDataRes.message &&
+      coreDataRes.message.includes("Mainnet is still syncing")
+    ) {
+      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
     }
     // Abort on error
-    if (!packagesRes.success || !packagesRes.result || isEmpty(packagesRes.result)) {
+    if (
+      !packagesRes.success ||
+      !packagesRes.result ||
+      isEmpty(packagesRes.result)
+    ) {
       return console.error("Error listing packages", packagesRes.message);
     }
-    if (!coreDataRes.success || !coreDataRes.result || isEmpty(coreDataRes.result)) {
+    if (
+      !coreDataRes.success ||
+      !coreDataRes.result ||
+      isEmpty(coreDataRes.result)
+    ) {
       return console.error("Error getting coreData", coreDataRes.message);
     }
     const packages = packagesRes.result;
@@ -181,9 +194,18 @@ function* setStaticIp({ staticIp }) {
     });
     const res = yield call(APIcall.setStaticIp, { staticIp });
     pendingToast.resolve(res);
-
-    yield put({type: "FETCH_DAPPNODE_PARAMS"})
-    yield put({type: "FETCH_DEVICES"})
+    yield put({ type: "FETCH_DAPPNODE_PARAMS" });
+    yield put({ type: "FETCH_DEVICES" });
+    yield put({
+      type: navbar.actionTypes.PUSH_NOTIFICATION,
+      notification: {
+        id: "staticIpUpdated",
+        type: "warning",
+        title: "Update connection profiles",
+        body:
+          "Your static IP was changed, please download and install your VPN connection profile again. Instruct your users to do so also."
+      }
+    });
     yield call(getStaticIp);
   } catch (e) {
     console.error("Error setting static IP:", e);
@@ -201,40 +223,22 @@ function* getStaticIp() {
   }
 }
 
-/******************************************************************************/
-/******************************* WATCHERS *************************************/
-/******************************************************************************/
-
-function* watchConnectionOpen() {
-  yield takeEvery("CONNECTION_OPEN", checkCoreUpdate);
-  yield takeEvery("CONNECTION_OPEN", listPackages);
-  yield takeEvery("CONNECTION_OPEN", getStaticIp);
+function* onConnectionOpen(action) {
+  yield fork(checkCoreUpdate, action);
+  yield fork(listPackages, action);
+  yield fork(getStaticIp, action);
 }
 
-function* watchCall() {
-  yield takeEvery(t.CALL, callApi);
-}
+/******************************* Watchers *************************************/
 
-function* watchLogPackage() {
-  yield takeEvery(t.LOG_PACKAGE, logPackage);
-}
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  CONNECTION_OPEN: onConnectionOpen,
+  [t.CALL]: callApi,
+  [t.LOG_PACKAGE]: logPackage,
+  [t.UPDATE_CORE]: updateCore,
+  [t.SET_STATIC_IP]: setStaticIp
+};
 
-function* watchUpdateCore() {
-  yield takeEvery(t.UPDATE_CORE, updateCore);
-}
-
-function* watchSetStaticIp() {
-  yield takeEvery(t.SET_STATIC_IP, setStaticIp);
-}
-
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([
-    watchConnectionOpen(),
-    watchCall(),
-    watchLogPackage(),
-    watchUpdateCore(),
-    watchSetStaticIp()
-  ]);
-}
+export default rootWatcher(watchers);

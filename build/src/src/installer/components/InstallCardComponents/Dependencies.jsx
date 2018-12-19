@@ -3,7 +3,8 @@ import "./loadBar.css";
 
 export default class Dependencies extends React.Component {
   render() {
-    const request = this.props.request;
+    const request = this.props.request || {};
+    const installedPackages = this.props.installedPackages || {};
     let body;
     if (!Object.keys(request).length) {
       body = <p>Empty request</p>;
@@ -18,6 +19,8 @@ export default class Dependencies extends React.Component {
           </div>
         </React.Fragment>
       );
+    } else if (!request.success) {
+      body = <p style={{ color: "#d50f0fd1" }}>✕ {request.message}</p>;
     } else if (request.success) {
       body = (
         <React.Fragment>
@@ -29,15 +32,28 @@ export default class Dependencies extends React.Component {
             <div className="col-4">Current version</div>
             <div className="col-4">Requested version</div>
           </div>
-          {Object.keys(request.success).map((pkg, i) => (
-            <div key={i} className="row">
-              <div className="col-4 text-truncate">{pkg}</div>
-              <div className="col-4 text-truncate">
-                {request.state[pkg] || "not installed"}
-              </div>
-              <div className="col-4 text-truncate">{request.success[pkg]}</div>
-            </div>
-          ))}
+          {Object.keys(request.success || {}).map((dnpName, i) => {
+            try {
+              return (
+                <div key={i} className="row">
+                  <div className="col-4 text-truncate">{dnpName}</div>
+                  <div className="col-4 text-truncate">
+                    {(installedPackages.find(dnp => dnp.name === dnpName) || {})
+                      .version || "-"}
+                  </div>
+                  <div className="col-4 text-truncate">
+                    {(request.success || {})[dnpName]}
+                  </div>
+                </div>
+              );
+            } catch (e) {
+              console.warn(
+                `Error generating row in <Dependencies> for dnpName ${dnpName}`,
+                e
+              );
+              return null;
+            }
+          })}
         </React.Fragment>
       );
     } else if (request.errors) {

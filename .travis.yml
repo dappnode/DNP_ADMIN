@@ -33,7 +33,7 @@ jobs:
         - docker
       script:
         - docker-compose -f "$(find . -maxdepth 1 -name "docker-compose*")" build
-
+        
     # Deploy stage, all code below is common between DAppNode packages
     ##################################################################
     - stage: release

@@ -18,12 +18,23 @@ import { NAME } from "./constants";
 
 // From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
 
+// EXTERNAL
+
+export const chainData = state => state.chainData;
+
+// INTERNAL
+
 const local = state => state[NAME];
 export const getDappnodeIdentity = state => {
-  const cleanObj = {}
-  const params = local(state).dappnodeIdentity || {};
-  for (const param of Object.keys(params)) {
-    if (params[param]) cleanObj[param] = params[param]
-  }
-  return cleanObj
+  const params = Object.assign({}, local(state).dappnodeIdentity || {});
+  // Remove keys that contain an undefined value
+  Object.keys(params).forEach(key => {
+    if (!params[key]) delete params[key];
+  });
+  // If the static IP is set, don't show the regular IP
+  if (params.staticIp && params.ip) delete params.ip;
+
+  return params;
 };
+
+export const getNotifications = state => local(state).notifications;

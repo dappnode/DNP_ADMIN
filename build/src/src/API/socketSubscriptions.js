@@ -1,4 +1,5 @@
 import store from "../store";
+import navbar from "navbar";
 
 export default function socketSubscriptions(session) {
   session.subscribe(
@@ -39,11 +40,43 @@ export default function socketSubscriptions(session) {
   });
 
   // devices is an array and is sent as an arg not kwarg
-  session.subscribe("devices.vpn.dnp.dappnode.eth", (devices) => {
-    if (!Array.isArray(devices)) return
+  session.subscribe("devices.vpn.dnp.dappnode.eth", devices => {
+    if (!Array.isArray(devices)) return;
     store.dispatch({
       type: "UPDATE_DEVICES",
       devices
     });
   });
+
+  // chain is an array and is sent as an arg not kwarg
+  session.subscribe("chainData.dappmanager.dnp.dappnode.eth", chainData => {
+    if (!Array.isArray(chainData)) return;
+    // Rename known errors
+    chainData.forEach(chain => {
+      if ((chain.message || "").includes("ECONNREFUSED")) {
+        chain.message = `DNP stopped or unreachable (connection refused)`;
+      }
+      if ((chain.message || "").includes("Invalid JSON RPC response")) {
+        chain.message = `DNP stopped or unreachable (invalid response)`;
+      }
+      if ((chain.message || "").toLowerCase().includes("synced #0")) {
+        chain.message = `Syncing...`;
+        chain.syncing = true;
+      }
+    });
+    store.dispatch({
+      type: "UPDATE_CHAIN_DATA",
+      chainData
+    });
+  });
+
+  session.subscribe(
+    "pushNotification.dappmanager.dnp.dappnode.eth",
+    (_, notification) => {
+      store.dispatch({
+        type: navbar.actionTypes.PUSH_NOTIFICATION,
+        notification: { ...notification, fromDappmanager: true }
+      });
+    }
+  );
 }

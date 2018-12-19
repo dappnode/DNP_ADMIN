@@ -79,7 +79,10 @@ export default class GuestUsers extends React.Component {
                           paddingLeft: "0px",
                           paddingRight: "0px"
                         }}
-                        onClick={this.props.toggleGuestUsers}
+                        // Sending disabling = true, to know when the guest users
+                        // are being disabled in order to show a notification
+                        // Handled at Devices.jsx
+                        onClick={this.props.toggleGuestUsers.bind(this, true)}
                       >
                         Disable
                       </button>
@@ -132,7 +135,10 @@ export default class GuestUsers extends React.Component {
                           paddingLeft: "0px",
                           paddingRight: "0px"
                         }}
-                        onClick={this.props.toggleGuestUsers}
+                        // Sending disabling = false, to know when the guest users
+                        // are being disabled in order to show a notification
+                        // Handled at Devices.jsx
+                        onClick={this.props.toggleGuestUsers.bind(this, false)}
                       >
                         Enable
                       </button>

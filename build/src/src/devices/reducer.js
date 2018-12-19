@@ -1,5 +1,5 @@
 // DEVICES
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 const initialState = {
   fetching: false,

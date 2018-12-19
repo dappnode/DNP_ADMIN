@@ -1,6 +1,7 @@
-import { call, put, takeEvery, all, select, take } from "redux-saga/effects";
+import { call, put, select, take, fork } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import * as a from "./actions";
 import * as s from "./selectors";
 import uuidv4 from "uuid/v4";
@@ -13,18 +14,22 @@ import uniqArray from "utils/uniqArray";
 /***************************** Subroutines ************************************/
 
 export function* shouldOpenPorts() {
-  const res = yield call(APIcall.getStatusUpnp);
-  if (res.success) {
-    yield put({
-      type: t.SHOULD_OPEN_PORTS,
-      shouldOpenPorts: res.result.openPorts && res.result.upnpAvailable
-    });
-  } else {
-    console.error("Error fetching UPnP status: " + res.message);
+  try {
+    const res = yield call(APIcall.getStatusUpnp);
+    if (res.success) {
+      yield put({
+        type: t.SHOULD_OPEN_PORTS,
+        shouldOpenPorts: res.result.openPorts && res.result.upnpAvailable
+      });
+    } else {
+      console.error("Error fetching UPnP status: " + res.message);
+    }
+  } catch (e) {
+    console.error(`Error feching shouldOpenPorts: ${e.stack}`);
   }
 }
 
-export function* install({ id, vols, options }) {
+export function* install({ id, userSetVols, userSetPorts, options }) {
   try {
     // Load necessary info
     const isInstalling = yield select(s.isInstalling);
@@ -46,7 +51,8 @@ export function* install({ id, vols, options }) {
     });
     const res = yield call(APIcall.installPackage, {
       id,
-      vols,
+      userSetVols,
+      userSetPorts,
       logId,
       options
     });
@@ -60,19 +66,53 @@ export function* install({ id, vols, options }) {
   }
 }
 
-// After successful installation notify the chain
-// chains.actions.installedChain(selectedPackageName)(dispatch, getState);
+function getDefaultEnvs(manifest) {
+  const envsArray = ((manifest || {}).image || {}).environment || [];
+  const defaultEnvs = {};
+  for (const row of envsArray) {
+    defaultEnvs[row.split("=")[0]] = row.split("=")[1] || "";
+  }
+  return defaultEnvs;
+}
 
-export function* updateEnvs({ id, envs, restart }) {
+export function* updateDefaultEnvs({ id }) {
+  try {
+    const res = yield call(APIcall.fetchPackageData, { id });
+    if (!res.success) {
+      if (res.message.includes("Resolver could not found a match")) {
+        console.error("No match found for " + id);
+      } else {
+        console.error(
+          "Error fetching package data for updateDefaultEnvs: ",
+          res.message
+        );
+      }
+      return;
+    }
+    const { manifest } = res.result || {};
+    if (!manifest) {
+      throw Error("Missing manifest for updateDefaultEnvs: ", { id, res });
+    }
+    const envs = getDefaultEnvs(manifest);
+    yield call(updateEnvs, { id, envs });
+  } catch (e) {
+    console.error("Error updating default envs: ", e);
+  }
+}
+
+export function* updateEnvs({ id, envs, isCORE, restart }) {
   try {
     if (Object.getOwnPropertyNames(envs).length > 0) {
       const pendingToast = new Toast({
-        message: "Updating " + id + " envs: " + JSON.stringify(envs),
+        message: `Updating ${id} ${
+          isCORE ? "(core)" : ""
+        } envs: ${JSON.stringify(envs)}`,
         pending: true
       });
       const res = yield call(APIcall.updatePackageEnv, {
         id,
         envs,
+        isCORE,
         restart
       });
       pendingToast.resolve(res);
@@ -82,22 +122,26 @@ export function* updateEnvs({ id, envs, restart }) {
   }
 }
 
+/**
+ *
+ * @param {Object} kwargs { ports:
+ *   [ { number: 30303, type: TCP }, ...]
+ * }
+ */
 export function* managePorts({ action, ports = [] }) {
   try {
     // Remove duplicates
-    ports = uniqArray(ports)
+    ports = uniqArray(ports);
     // Only open ports if necessary
     const shouldOpenPorts = yield select(s.shouldOpenPorts);
     if (shouldOpenPorts && ports.length > 0) {
-      
       const pendingToast = new Toast({
-        message: `${action} ports ${ports.map(p => `${p.number} ${p.type}`).join(", ")}...`,
+        message: `${action} ports ${ports
+          .map(p => `${p.number} ${p.type}`)
+          .join(", ")}...`,
         pending: true
       });
-      const res = yield call(APIcall.managePorts, {
-        action,
-        ports
-      });
+      const res = yield call(APIcall.managePorts, { action, ports });
       pendingToast.resolve(res);
     }
   } catch (error) {
@@ -109,7 +153,7 @@ export function* fetchDirectory() {
   try {
     // If chain is not synced yet, cancel request.
     if (yield call(isSyncing)) {
-      return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
     }
 
     yield put({ type: t.UPDATE_FETCHING, fetching: true });
@@ -151,11 +195,11 @@ export function* fetchPackageRequest({ id }) {
     if (!connectionOpen) {
       yield take("CONNECTION_OPEN");
     }
-    
+
     // If chain is not synced yet, cancel request.
     if (id && !id.includes("ipfs/")) {
       if (yield call(isSyncing)) {
-        return yield put({type: "UPDATE_IS_SYNCING", isSyncing: true});
+        return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
       }
     }
 
@@ -227,7 +271,7 @@ export function* fetchPackageData({ id }) {
     }
     const { manifest, avatar } = res.result || {};
     if (!manifest) {
-      throw Error('Missing manifest for fetchPackageData: ', {id, res})
+      throw Error("Missing manifest for fetchPackageData: ", { id, res });
     }
     // Add ipfs hash inside the manifest too, so it is searchable
     if (manifest) manifest.origin = isIpfsHash(id) ? id : null;
@@ -277,49 +321,24 @@ function* diskSpaceAvailable({ path }) {
   }
 }
 
-/******************************************************************************/
-/******************************* WATCHERS *************************************/
-/******************************************************************************/
-
-function* watchConnectionOpen() {
-  yield takeEvery("CONNECTION_OPEN", fetchDirectory);
-  yield takeEvery("CONNECTION_OPEN", shouldOpenPorts);
+function* onConnectionOpen(action) {
+  yield fork(fetchDirectory, action);
+  yield fork(shouldOpenPorts, action);
 }
 
-function* watchFetchPackageData() {
-  yield takeEvery(t.FETCH_PACKAGE_DATA, fetchPackageData);
-}
+/******************************* Watchers *************************************/
 
-function* watchFetchPackageRequest() {
-  yield takeEvery(t.FETCH_PACKAGE_REQUEST, fetchPackageRequest);
-}
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  CONNECTION_OPEN: onConnectionOpen,
+  [t.UPDATE_DEFAULT_ENVS]: updateDefaultEnvs,
+  [t.FETCH_PACKAGE_DATA]: fetchPackageData,
+  [t.FETCH_PACKAGE_REQUEST]: fetchPackageRequest,
+  [t.INSTALL]: install,
+  [t.UPDATE_ENV]: updateEnvs,
+  [t.MANAGE_PORTS]: managePorts,
+  [t.DISK_SPACE_AVAILABLE]: diskSpaceAvailable
+};
 
-function* watchInstall() {
-  yield takeEvery(t.INSTALL, install);
-}
-
-function* watchUpdateEnvs() {
-  yield takeEvery(t.UPDATE_ENV, updateEnvs);
-}
-
-function* watchManagerPorts() {
-  yield takeEvery(t.MANAGE_PORTS, managePorts);
-}
-
-function* watchDiskSpaceAvailable() {
-  yield takeEvery(t.DISK_SPACE_AVAILABLE, diskSpaceAvailable);
-}
-
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([
-    watchConnectionOpen(),
-    watchInstall(),
-    watchUpdateEnvs(),
-    watchManagerPorts(),
-    watchFetchPackageRequest(),
-    watchFetchPackageData(),
-    watchDiskSpaceAvailable()
-  ]);
-}
+export default rootWatcher(watchers);

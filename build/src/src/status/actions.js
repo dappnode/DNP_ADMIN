@@ -1,5 +1,5 @@
 // WATCHERS
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 export const updateStatus = status => ({
   type: t.UPDATE_STATUS,

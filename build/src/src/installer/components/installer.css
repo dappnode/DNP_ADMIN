@@ -1,3 +1,14 @@
+.input-lock {
+  background-color: #f9fafb !important;
+  border-left-width: "0px" !important;
+}
+
+.input-lock-prepend {
+  border-right-width: "0px" !important;
+  background-color: #f9fafb !important;
+  padding-right: "0px" !important;
+}
+
 .installer-filter-by {
   padding-right: 50px;
 }

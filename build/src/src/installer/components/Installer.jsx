@@ -10,8 +10,6 @@ import { push } from "connected-react-router";
 // Components
 import TypeFilter from "./TypeFilter";
 import PackageStore from "./PackageStore";
-// Modules
-import chains from "chains";
 // Styles
 import "./installer.css";
 
@@ -19,7 +17,7 @@ class InstallerView extends React.Component {
   static propTypes = {
     // State -> props
     directory: PropTypes.array.isRequired,
-    selectedTypes: PropTypes.array.isRequired,
+    selectedTypes: PropTypes.object.isRequired,
     inputValue: PropTypes.string.isRequired,
     fetching: PropTypes.bool.isRequired,
     // Dispatch -> props
@@ -53,7 +51,7 @@ class InstallerView extends React.Component {
               type="button"
               onClick={() => this.props.openPackage(this.props.inputValue)}
             >
-              Install
+              Search
             </button>
           </div>
         </div>
@@ -64,11 +62,10 @@ class InstallerView extends React.Component {
           updateSelectedTypes={this.props.updateSelectedTypes}
         />
 
-        <chains.components.ChainStatusLog />
-
         <PackageStore
           fetching={this.props.fetching}
           directory={this.props.directory}
+          directoryLoaded={this.props.directoryLoaded}
           openPackage={this.props.openPackage}
           isSyncing={this.props.isSyncing}
         />
@@ -79,6 +76,7 @@ class InstallerView extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   directory: selector.getFilteredDirectoryNonCores,
+  directoryLoaded: selector.directoryLoaded,
   selectedTypes: selector.getSelectedTypes,
   inputValue: selector.getInput,
   fetching: selector.fetching,
@@ -95,7 +93,6 @@ const mapDispatchToProps = dispatch => {
       // Empty the input bar
       dispatch(action.updateInput(""));
     },
-
     updateInput: e => {
       // Correct the ipfs format and fecth if correct
       const id = utils.correctPackageName(e.target.value);
@@ -109,7 +106,6 @@ const mapDispatchToProps = dispatch => {
       // Update input field
       dispatch(action.updateInput(id));
     },
-
     updateSelectedTypes: types => {
       dispatch(action.updateSelectedTypes(types));
     }

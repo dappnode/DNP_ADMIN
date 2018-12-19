@@ -82,7 +82,6 @@ export const resetGuestUsersPassword = () =>
     event: "resetGuestUsersPassword.vpn.dnp.dappnode.eth"
   });
 
-
 // getStatusUpnp CALL DOCUMENTATION:
 // > kwargs: {}
 // > result: {
@@ -330,4 +329,42 @@ export const diskSpaceAvailable = (kwargs = {}) =>
 export const getStats = () =>
   wrapCall({
     event: "getStats.dappmanager.dnp.dappnode.eth"
+  });
+
+// requestChainData CALL DOCUMENTATION:
+// > kwargs: {}
+// > result: {}
+
+export const requestChainData = () =>
+  wrapCall({
+    event: "requestChainData.dappmanager.dnp.dappnode.eth"
+  });
+
+// notificationsGet CALL DOCUMENTATION:
+// > kwargs: { path }
+// > result: notifications =
+//   {
+//       "notificiation-id": {
+//          id: 'diskSpaceRanOut-stoppedPackages',
+//          type: 'error',
+//          title: 'Disk space ran out, stopped packages',
+//          body: `Available disk space is less than a safe ...`,
+//       },
+//       ...
+//   }
+
+export const notificationsGet = () =>
+  wrapCall({
+    event: "notificationsGet.dappmanager.dnp.dappnode.eth"
+  });
+
+// notificationsRemove CALL DOCUMENTATION:
+// > kwargs: { ids }
+//   ids = [ "notification-id1", "notification-id2" ]
+// > result: {}
+
+export const notificationsRemove = (kwargs = {}) =>
+  wrapCall({
+    event: "notificationsRemove.dappmanager.dnp.dappnode.eth",
+    kwargs: assertKwargs(kwargs, ["ids"])
   });

@@ -1,5 +1,4 @@
 import reducer from "devices/reducer";
-import * as t from "devices/actionTypes";
 
 describe("Request reducer", () => {
   it("has a default state", () => {

@@ -70,7 +70,7 @@ const mapStateToProps = createStructuredSelector({
   corePackages: selector.getCorePackages,
   coreDeps: selector.coreDeps,
   progressLogs: installer.selectors.progressLogs,
-  fetching: selector.fetching,
+  fetching: selector.fetching
 });
 
 const mapDispatchToProps = dispatch => {
