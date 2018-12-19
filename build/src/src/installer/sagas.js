@@ -14,14 +14,18 @@ import uniqArray from "utils/uniqArray";
 /***************************** Subroutines ************************************/
 
 export function* shouldOpenPorts() {
-  const res = yield call(APIcall.getStatusUpnp);
-  if (res.success) {
-    yield put({
-      type: t.SHOULD_OPEN_PORTS,
-      shouldOpenPorts: res.result.openPorts && res.result.upnpAvailable
-    });
-  } else {
-    console.error("Error fetching UPnP status: " + res.message);
+  try {
+    const res = yield call(APIcall.getStatusUpnp);
+    if (res.success) {
+      yield put({
+        type: t.SHOULD_OPEN_PORTS,
+        shouldOpenPorts: res.result.openPorts && res.result.upnpAvailable
+      });
+    } else {
+      console.error("Error fetching UPnP status: " + res.message);
+    }
+  } catch (e) {
+    console.error(`Error feching shouldOpenPorts: ${e.stack}`);
   }
 }
 

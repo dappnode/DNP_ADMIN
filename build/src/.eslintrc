@@ -4,5 +4,8 @@
     "plugin:prettier/recommended",
     "plugin:redux-saga/recommended"
   ],
-  "plugins": ["redux-saga"]
+  "plugins": ["redux-saga"],
+  "rules": {
+    "redux-saga/no-unhandled-errors": "warn"
+  }
 }
