@@ -2,21 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-// Modules
-import chains from "chains";
 // Styles
 import "./installer.css";
 
 class InstallerView extends React.Component {
   static propTypes = {
-    chains: PropTypes.object.isRequired
+    mainnet: PropTypes.object.isRequired
   };
 
   render() {
     const margin = "5px";
     const padding = "0.7rem";
-
-    const mainnet = (this.props.chains["Mainnet"] || {}).msg;
 
     return (
       <React.Fragment>
@@ -31,7 +27,7 @@ class InstallerView extends React.Component {
                   their IPFS hash. Thank you for your patience and to
                   decentralize the network.
                 </p>
-                <p>{mainnet}</p>
+                <p>{this.props.mainnet.msg}</p>
               </div>
             </div>
           </div>
@@ -42,7 +38,12 @@ class InstallerView extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  chains: chains.selectors.getAll
+  mainnet: state => {
+    const mainnet = state.chainData.find(
+      chain => (chain.name || "").toLowerCase() === "mainnet"
+    );
+    return mainnet || {};
+  }
 });
 
 const mapDispatchToProps = () => {

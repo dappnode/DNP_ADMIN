@@ -1,7 +1,7 @@
 // INSTALLER
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import { shortName } from "utils/format";
-import installer from "installer"
+import installer from "installer";
 
 // Used in package root
 
@@ -74,7 +74,7 @@ export const removePackage = kwargs => ({
 
 export const closePorts = ports => ({
   type: installer.actionTypes.MANAGE_PORTS,
-  action: 'close',
+  action: "close",
   ports
 });
 

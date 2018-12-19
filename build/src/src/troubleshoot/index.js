@@ -1,21 +1,20 @@
-// WATCHERS
 import * as actions from "./actions";
-import * as actionTypes from "./actionTypes";
 import * as constants from "./constants";
 import reducer from "./reducer";
-import "./modules";
 import * as selectors from "./selectors";
+import TroubleshootRoot from "./components/TroubleshootRoot";
 import saga from "./sagas";
 
-import ChainStatusLog from "./components/ChainStatusLog";
+const components = {
+  TroubleshootRoot
+};
+
+const component = TroubleshootRoot;
 
 export default {
-  component: null,
-  components: {
-    ChainStatusLog
-  },
   actions,
-  actionTypes,
+  component,
+  components,
   constants,
   reducer,
   selectors,

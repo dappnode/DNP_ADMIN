@@ -1,7 +1,8 @@
 // DASHBOARD
-import { call, put, takeEvery, all } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
+import rootWatcher from "utils/rootWatcher";
 import * as APIcall from "API/rpcMethods";
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 
 /***************************** Subroutines ************************************/
 
@@ -19,11 +20,21 @@ export function* getUserActionLogs() {
       return console.error("Error fetching userActionLogs", res.message);
     }
 
-    // Process userActionLogs
-    const userActionLogs = res.result
+    // Process userActionLogs. They are json objects appended in a log file
+    let userActionLogs = [];
+    res.result
       .trim()
       .split("\n")
-      .map(e => JSON.parse(e));
+      .forEach((stringifiedLog, i) => {
+        try {
+          userActionLogs.push(JSON.parse(stringifiedLog));
+        } catch (e) {
+          console.error(
+            `Error parsing userActionLog #${i}: ${e.message}. StringifiedLog: `,
+            stringifiedLog
+          );
+        }
+      });
 
     // Collapse equal errors
     for (let i = 0; i < userActionLogs.length; i++) {
@@ -51,16 +62,12 @@ export function* getUserActionLogs() {
   }
 }
 
-/******************************************************************************/
-/******************************* WATCHERS *************************************/
-/******************************************************************************/
+/******************************* Watchers *************************************/
 
-function* watchConnectionOpen() {
-  yield takeEvery("CONNECTION_OPEN", getUserActionLogs);
-}
+// Each saga is mapped with its actionType using takeEvery
+// takeEvery(actionType, watchers[actionType])
+const watchers = {
+  CONNECTION_OPEN: getUserActionLogs
+};
 
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
-export default function* root() {
-  yield all([watchConnectionOpen()]);
-}
+export default rootWatcher(watchers);

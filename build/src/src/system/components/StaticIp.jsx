@@ -53,27 +53,47 @@ class StaticIpView extends React.Component {
         </button>
       );
     }
+    // Declared components as varibles to avoid code duplication
+    // - inputFieldComponent is used in case 2, 3
+    // - setButtonComponent is used in case 2, 3
+    // - disableButtonComponent is used in case 3
+    const inputFieldComponent = (
+      <input
+        type="text"
+        className="form-control"
+        placeholder="Your static ip..."
+        value={staticIpInput}
+        onChange={e => this.props.updateStaticIpInput(e.target.value)}
+        onKeyPress={e => {
+          if (e.key === "Enter" && ipIsValid) this.setStaticIp.bind(this)();
+        }}
+      />
+    );
+    const setButtonComponent = (
+      <button
+        className="btn btn-outline-secondary"
+        type="button"
+        disabled={!ipIsValid}
+        onClick={this.setStaticIp.bind(this)}
+      >
+        Set
+      </button>
+    );
+    const disableButtonComponent = (
+      <button
+        className="btn btn-outline-danger"
+        type="button"
+        onClick={this.disableStaticIp.bind(this)}
+      >
+        Disable
+      </button>
+    );
     // 2. Disabled but about to enable
     if (this.state.enable) {
       content = (
         <div className="input-group">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Your static ip..."
-            value={staticIpInput}
-            onChange={e => this.props.updateStaticIpInput(e.target.value)}
-          />
-          <div className="input-group-append">
-            <button
-              className="btn btn-outline-secondary"
-              type="button"
-              disabled={!ipIsValid}
-              onClick={this.setStaticIp.bind(this)}
-            >
-              Set
-            </button>
-          </div>
+          {inputFieldComponent}
+          <div className="input-group-append">{setButtonComponent}</div>
         </div>
       );
     }
@@ -81,29 +101,10 @@ class StaticIpView extends React.Component {
     if (staticIp && !this.state.enable) {
       content = (
         <div className="input-group">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Your static ip..."
-            value={staticIpInput}
-            onChange={e => this.props.updateStaticIpInput(e.target.value)}
-          />
+          {inputFieldComponent}
           <div className="input-group-append">
-            <button
-              className="btn btn-outline-secondary"
-              type="button"
-              disabled={!ipIsValid}
-              onClick={this.setStaticIp.bind(this)}
-            >
-              Set
-            </button>
-            <button
-              className="btn btn-outline-danger"
-              type="button"
-              onClick={this.disableStaticIp.bind(this)}
-            >
-              Disable
-            </button>
+            {setButtonComponent}
+            {disableButtonComponent}
           </div>
         </div>
       );

@@ -1,5 +1,5 @@
 //  PACKAGES
-import * as t from "./actionTypes";
+import t from "./actionTypes";
 import merge from "deepmerge";
 
 const initialState = {
@@ -8,7 +8,7 @@ const initialState = {
   systemUpdateAvailable: false,
   coreDeps: [],
   staticIp: null,
-  staticIpInput: '',
+  staticIpInput: ""
 };
 
 export default function(state = initialState, action) {

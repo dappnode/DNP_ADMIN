@@ -16,20 +16,21 @@ function getDefaultEnvs(pkg) {
   return defaultEnvs;
 }
 
-function getEnvs(pkg, state) {
+function getEnvs(_pkg, _state) {
+  const pkg = { ..._pkg };
+  const state = { ..._state };
   const defaultEnvs = getDefaultEnvs(pkg);
   const defaultEnvsNames = Object.keys(defaultEnvs);
-  const _state = Object.assign({}, state);
   // Verify that the current state contains only this package's envs
-  for (const env of Object.getOwnPropertyNames(_state)) {
+  for (const env of Object.getOwnPropertyNames(state)) {
     if (!defaultEnvsNames.includes(env)) {
-      delete _state[env];
+      delete state[env];
     }
   }
   return {
     ...defaultEnvs,
     ...getCurrentEnvs(pkg),
-    ..._state
+    ...state
   };
 }
 

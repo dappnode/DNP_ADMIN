@@ -1,7 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-// Modules
-import chains from "chains";
 // Items
 import navbar from "navbar";
 // styles
@@ -44,13 +42,13 @@ export default class Home extends React.Component {
               className="btn dappnode-background-color btn-lg"
               href={SURVEY_LINK}
               role="button"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               Fill survey
             </a>
           </p>
         </div>
-
-        <chains.components.ChainStatusLog />
 
         <div className="row mt-4">{items}</div>
       </div>

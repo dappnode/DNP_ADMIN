@@ -26,8 +26,7 @@ import { isIpfsHash } from "./utils";
 // this.state.packageInfo[this.state.targetPackageName]
 
 // #### EXTERNAL SELECTORS
-export const session = state => state.session;
-export const connectionOpen = state => session(state) && session(state).isOpen;
+export const connectionOpen = state => state.session && state.session.isOpen;
 export const directory = state => state.directory;
 export const installedPackages = state => state.installedPackages || [];
 export const isSyncing = state => state.isSyncing;
@@ -82,6 +81,10 @@ export const getDirectory = state => {
   return _directory;
 };
 
+export const directoryLoaded = state => {
+  return Boolean(Object.keys(directory(state)).length);
+};
+
 export const getFilteredDirectory = state => {
   const allPackages = Object.values(getDirectory(state)).reverse();
   const selectedPackages = allPackages
@@ -99,20 +102,13 @@ export const getFilteredDirectory = state => {
     // Filter by type
     .filter(pkg => {
       const types = selectedTypes(state);
-      if (types.length === 0) return true;
+      if (Object.keys(types).length === 0) return true;
       // Prevent the app from crashing with defective packages
       return (
-        pkg &&
-        pkg.manifest &&
-        pkg.manifest.type &&
-        types.includes(pkg.manifest.type)
+        pkg && pkg.manifest && pkg.manifest.type && types[pkg.manifest.type]
       );
     });
-  if (selectedPackages.length) {
-    return selectedPackages;
-  } else {
-    return allPackages;
-  }
+  return selectedPackages;
 };
 
 export const getFilteredDirectoryNonCores = state =>
