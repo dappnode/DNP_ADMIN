@@ -22,16 +22,6 @@ class SystemInterface extends React.Component {
 
     let id = pkg.name;
 
-    // Merge current envs with default envs
-    const envs = pkg.envs || {};
-    const defaultEnvs = ((pkg.manifest || {}).image || {}).environment || [];
-    defaultEnvs.forEach(env => {
-      if (!envs[env]) envs[env] = "";
-    });
-
-    // let packageProperties = Object.getOwnPropertyNames(pkg)
-    // remove(packageProperties, ['id', 'isDNP', 'running', 'shortName'])
-
     return (
       <div>
         <div className="section-title">
