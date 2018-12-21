@@ -5,9 +5,7 @@ import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
 import { push } from "connected-react-router";
 import { NAME } from "../constants";
-import { shortName } from "utils/format";
-import { confirmAlert } from "react-confirm-alert"; // Import
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import confirmRemove from "./confirmRemove";
 // Components
 import Details from "./PackageViews/Details";
 import Logs from "./PackageViews/Logs";
@@ -17,28 +15,6 @@ import Controls from "./PackageViews/Controls";
 import parsePorts from "utils/parsePorts";
 
 class PackageInterface extends React.Component {
-  constructor(props) {
-    super(props);
-    this.removePackageConfirm = this.removePackageConfirm.bind(this);
-  }
-
-  removePackageConfirm(pkg, deleteVolumes) {
-    confirmAlert({
-      title: "Removing " + shortName(pkg.name),
-      message: "Are you sure?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => this.props.removePackage(pkg, deleteVolumes)
-        },
-        {
-          label: "No",
-          onClick: () => {}
-        }
-      ]
-    });
-  }
-
   render() {
     const pkg = this.props.pkg;
     if (!pkg) {
@@ -77,8 +53,7 @@ class PackageInterface extends React.Component {
           togglePackage={() => this.props.togglePackage(id)}
           restartPackage={() => this.props.restartPackage(id)}
           restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
-          removePackage={() => this.removePackageConfirm(pkg, false)}
-          removePackageAndData={() => this.removePackageConfirm(pkg, true)}
+          removePackage={() => confirmRemove(pkg, this.props.removePackage)}
         />
       </div>
     );

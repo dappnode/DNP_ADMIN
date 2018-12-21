@@ -6,37 +6,14 @@ import { shortName } from "utils/format";
 import { colors } from "utils/format";
 import { connect } from "react-redux";
 import * as action from "../actions";
-import { confirmAlert } from "react-confirm-alert"; // Import
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import confirmRemove from "./confirmRemove";
 // utils
 import parsePorts from "utils/parsePorts";
 
 class PackageRowView extends React.Component {
-  constructor(props) {
-    super(props);
-    this.removePackageConfirm = this.removePackageConfirm.bind(this);
-  }
-
   static propTypes = {
     moduleName: PropTypes.string.isRequired
   };
-
-  removePackageConfirm(pkg) {
-    confirmAlert({
-      title: "Removing " + shortName(pkg.name),
-      message: "Are you sure?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => this.props.removePackage(pkg)
-        },
-        {
-          label: "No",
-          onClick: () => {}
-        }
-      ]
-    });
-  }
 
   render() {
     let pkg = this.props.pkg || {};
@@ -86,7 +63,7 @@ class PackageRowView extends React.Component {
                   className="btn btn-outline-danger"
                   type="button"
                   style={{ width, paddingLeft: "0px", paddingRight: "0px" }}
-                  onClick={() => this.removePackageConfirm(this.props.pkg)}
+                  onClick={() => confirmRemove(pkg, this.props.removePackage)}
                 >
                   Remove
                 </button>
@@ -103,8 +80,8 @@ const mapStateToProps = createStructuredSelector({});
 
 const mapDispatchToProps = dispatch => {
   return {
-    removePackage: pkg => {
-      dispatch(action.removePackage({ id: pkg.name, deleteVolumes: false }));
+    removePackage: (pkg, deleteVolumes) => {
+      dispatch(action.removePackage({ id: pkg.name, deleteVolumes }));
       const ports = parsePorts(pkg.manifest || {});
       if (ports.length) dispatch(action.closePorts(ports));
     }
