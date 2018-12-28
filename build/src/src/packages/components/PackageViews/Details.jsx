@@ -1,5 +1,5 @@
 import React from "react";
-
+import newTabProps from "utils/newTabProps";
 export default class PackageDetails extends React.Component {
   render() {
     // function getLinksArray(manifest) {
@@ -40,6 +40,7 @@ export default class PackageDetails extends React.Component {
       links = [];
     }
 
+    // PORTS
     // pkg.ports = [{IP: "0.0.0.0", PrivatePort: 30304, PublicPort: 32770, Type: "tcp"}, ...]
     // pkg.portsToClose = [{number: 32771, type: "TCP"}, ...]
     const ports = (pkg.ports || []).map(portObj => {
@@ -50,6 +51,27 @@ export default class PackageDetails extends React.Component {
       );
       return { ...portObj, locked };
     });
+
+    // VOLUMES
+    // pkg.volumes = [
+    //   { type: "bind",
+    //     path: "/etc/hostname" },
+    //   { type: "volume",
+    //     name: "dncore_ethchaindnpdappnodeeth_data",
+    //     path: "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
+    //     links: "1",
+    //     size: "45.13GB"}
+    // ]
+    const volumes = (pkg.volumes || [])
+      // Order volumes before bind mounts
+      .sort(v1 => (v1.type === "volume" ? -1 : 1))
+      // Display style:
+      // - dncore_vpndnpdappnodeeth_data: 866B
+      // - /etc/hostname: - (bind)
+      .map(volume => ({
+        name: volume.name || volume.path || "unknown",
+        size: volume.size || (volume.type === "bind" ? "- (bind)" : "unkown")
+      }));
 
     return (
       <div className="mb-4">
@@ -72,12 +94,9 @@ export default class PackageDetails extends React.Component {
                 <span>no volumes</span>
               ) : (
                 <ul>
-                  {(pkg.volumes || []).map((volume, i) => (
-                    <li key={i}>
-                      <span style={{ opacity: 0.5 }}>
-                        {volume.name || "unnamed"}:
-                      </span>{" "}
-                      {volume.path}
+                  {volumes.map(({ name, size }) => (
+                    <li key={name}>
+                      <span style={{ opacity: 0.5 }}>{name}:</span> {size}
                     </li>
                   ))}
                 </ul>
@@ -89,17 +108,11 @@ export default class PackageDetails extends React.Component {
                 <span>no links</span>
               ) : (
                 <ul>
-                  {(links || []).map((link, i) => (
-                    <li key={i}>
-                      <span style={{ opacity: 0.5 }}>
-                        {link.name || "unnamed"}:
-                      </span>{" "}
-                      <a
-                        href={link.url}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        {link.url}
+                  {(links || []).map(({ name, url }) => (
+                    <li key={name}>
+                      <span style={{ opacity: 0.5 }}>{name || "unnamed"}:</span>{" "}
+                      <a href={url} {...newTabProps}>
+                        {url}
                       </a>
                     </li>
                   ))}
