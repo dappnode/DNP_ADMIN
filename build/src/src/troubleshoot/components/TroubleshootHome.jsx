@@ -9,7 +9,6 @@ import marked from "marked";
 import Github from "Icons/Github";
 // Styles
 import "./troubleshoot.css";
-import { select } from "redux-saga/effects";
 
 class PackagesList extends React.Component {
   componentWillMount() {

@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import newTabProps from "utils/newTabProps";
 // Items
 import navbar from "navbar";
 // styles
@@ -42,8 +43,7 @@ export default class Home extends React.Component {
               className="btn dappnode-background-color btn-lg"
               href={SURVEY_LINK}
               role="button"
-              rel="noopener noreferrer"
-              target="_blank"
+              {...newTabProps}
             >
               Fill survey
             </a>

@@ -1,4 +1,5 @@
 import React from "react";
+import newTabProps from "utils/newTabProps";
 
 const PACKAGE_SURVEY_LINK = "https://goo.gl/forms/EjVTHu6UBWBk60Z62";
 
@@ -18,8 +19,7 @@ function NoPackageFound(props) {
         <a
           className="btn dappnode-pill"
           href={PACKAGE_SURVEY_LINK}
-          rel="noopener noreferrer"
-          target="_blank"
+          {...newTabProps}
           style={{
             backgroundColor: "#ffffff00",
             width: "max-content",
