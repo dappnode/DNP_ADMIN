@@ -72,10 +72,18 @@ class DashboardView extends React.Component {
         return {
           color: statusToColor(status),
           icon: statusToIcon(status),
-          id,
+          id: id.includes("usage") ? id : `${id} usage`,
           msg: text.includes("%") ? text : `${text}%`
         };
       });
+
+    const dappnodeVolumes = this.props.dappnodeVolumes || [];
+    const dappnodeVolumesArray = dappnodeVolumes.map(volume => ({
+      color: statusToColor(1),
+      icon: statusToIcon(1),
+      id: volume.name,
+      msg: volume.size
+    }));
 
     function getStatusCard(array = []) {
       return (
@@ -109,7 +117,7 @@ class DashboardView extends React.Component {
         <div className="section-subtitle">Chains</div>
         {getStatusCard(chainDataArray)}
         <div className="section-subtitle">DAppNode stats</div>
-        {getStatusCard(dappnodeStatsArray)}
+        {getStatusCard([...dappnodeStatsArray, ...dappnodeVolumesArray])}
       </div>
     );
   }
@@ -118,7 +126,8 @@ class DashboardView extends React.Component {
 const mapStateToProps = createStructuredSelector({
   status: status.selectors.getAll,
   chainData: selectors.chainData,
-  dappnodeStats: selectors.dappnodeStats
+  dappnodeStats: selectors.dappnodeStats,
+  dappnodeVolumes: selectors.dappnodeVolumes
 });
 
 const mapDispatchToProps = dispatch => {

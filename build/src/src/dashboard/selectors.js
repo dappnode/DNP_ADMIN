@@ -23,7 +23,27 @@ import { NAME } from "./constants";
 // #### EXTERNAL SELECTORS
 export const connectionOpen = state => state.session && state.session.isOpen;
 export const chainData = state => state.chainData;
+export const getInstalledPackages = state => state.installedPackages;
 
 // #### INTERNAL SELECTORS
 export const local = state => state[NAME];
 export const dappnodeStats = state => local(state).dappnodeStats;
+// ethchain.dnp.dappnode.eth > dncore_ethchaindnpdappnodeeth_data
+// ipfs.dnp.dappnode.eth > dncore_ipfsdnpdappnodeeth_data
+export const dappnodeVolumes = state => {
+  return getInstalledPackages(state)
+    .filter(
+      dnp =>
+        dnp.name === "ethchain.dnp.dappnode.eth" ||
+        dnp.name === "ipfs.dnp.dappnode.eth"
+    )
+    .map(dnp => {
+      const dataVolume = ((dnp || {}).volumes || []).find(volume =>
+        (volume.name || "").endsWith("_data")
+      );
+      return {
+        name: `${dnp.shortName} size`,
+        size: (dataVolume || {}).size
+      };
+    });
+};
