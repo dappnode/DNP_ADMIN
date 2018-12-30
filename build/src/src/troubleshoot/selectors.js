@@ -38,6 +38,7 @@ export const issueBody = state => {
   const info = local(state).info;
   // Construct issueUrl from the available info
   let body = `*Before filing a new issue, please **provide the following information**.*`;
+
   // Append core versions
   if (info.packageList) {
     // dnp = {
@@ -49,13 +50,15 @@ export const issueBody = state => {
       .map(dnp => `- **${dnp.name}**: ${dnp.version}`);
     body += `\n\n## Current versions\n${msgVersions.join("\n")}`;
   }
+
   // Append system info
-  if (info.diskUsage) {
-    // info.diskUsage = "85%"
-    let systemInfo = [];
-    systemInfo.push(`- **${"disk usage"}**: ${info.diskUsage}`);
+  if (Object.keys(info.systemInfo || {}).length) {
+    const systemInfo = Object.values(info.systemInfo || {}).map(
+      item => `- **${item.name}**: ${(item.result || item.error || "").trim()}`
+    );
     body += `\n\n## System info\n${systemInfo.join("\n")}`;
   }
+
   return body;
 };
 export const issueUrl = state => {

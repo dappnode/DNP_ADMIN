@@ -368,3 +368,19 @@ export const notificationsRemove = (kwargs = {}) =>
     event: "notificationsRemove.dappmanager.dnp.dappnode.eth",
     kwargs: assertKwargs(kwargs, ["ids"])
   });
+
+// diagnose CALL DOCUMENTATION:
+// > kwargs: { }
+// > result: diagnose =
+//   {
+//     dockerVersion: {
+//       name: 'docker version',
+//       result: 'Docker version 18.06.1-ce, build e68fc7a' <or>
+//       error: 'sh: docker: not found'
+//     },
+//     ...
+//   }
+export const diagnose = (kwargs = {}) =>
+  wrapCall({
+    event: "diagnose.dappmanager.dnp.dappnode.eth"
+  });

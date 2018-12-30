@@ -1,5 +1,6 @@
 //  PACKAGES
 import t from "./actionTypes";
+import merge from "deepmerge";
 
 const initialState = {
   issueUrl: "https://github.com/dappnode/DNP_ADMIN/issues/new",
@@ -15,13 +16,11 @@ export default function(state = initialState, action) {
         issueUrl: action.issueUrl
       };
     case t.UPDATE_INFO:
-      return {
-        ...state,
+      return merge(state, {
         info: {
-          ...state.info,
           [action.topic]: action.info
         }
-      };
+      });
     case t.UPDATE_DIAGNOSE:
       return {
         ...state,
