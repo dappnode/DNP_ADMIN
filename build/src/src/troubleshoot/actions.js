@@ -21,3 +21,11 @@ export const updateInfo = (topic, info) => ({
   topic,
   info
 });
+
+export const updateSystemInfo = (subTopic, info) => ({
+  type: t.UPDATE_INFO,
+  topic: "systemInfo",
+  info: {
+    [subTopic]: info
+  }
+});

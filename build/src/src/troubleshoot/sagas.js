@@ -100,16 +100,20 @@ export function* fetchInfo() {
   ]);
 }
 
+function capitalize(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export function* diagnoseCallDappmanager() {
   console.log("calling diagnose");
   try {
     const res = yield call(APIcall.diagnose);
-    console.log("res", res);
     if (!res.success)
       throw Error("Unsuccessful reponse to diagnose: " + res.message);
     for (const itemId of Object.keys(res.result)) {
       const item = res.result[itemId];
-      yield put(a.updateInfo(itemId, item));
+      item.name = capitalize(item.name);
+      yield put(a.updateSystemInfo(itemId, item));
     }
   } catch (e) {
     console.error(`Error calling dappmanager's diagnose`, e);
@@ -132,7 +136,12 @@ export function* fetchDiskUsage() {
     const res = yield call(APIcall.getStats);
     if (!res.success || (res.success && !res.result))
       throw Error("Unsuccessful reponse to getStats: " + res.message);
-    yield put(a.updateInfo("diskUsage", res.result.disk));
+    yield put(
+      a.updateSystemInfo("diskUsage", {
+        name: "Disk usage",
+        result: res.result.disk
+      })
+    );
   } catch (e) {
     console.error("Error fetching installed packages", e);
   }
