@@ -6,7 +6,7 @@ import { shortName } from "utils/format";
 import { colors } from "utils/format";
 import { connect } from "react-redux";
 import * as action from "../actions";
-import confirmRemove from "./confirmRemove";
+import confirmPackageRemove from "./confirmPackageRemove";
 // utils
 import parsePorts from "utils/parsePorts";
 
@@ -63,7 +63,9 @@ class PackageRowView extends React.Component {
                   className="btn btn-outline-danger"
                   type="button"
                   style={{ width, paddingLeft: "0px", paddingRight: "0px" }}
-                  onClick={() => confirmRemove(pkg, this.props.removePackage)}
+                  onClick={() =>
+                    confirmPackageRemove(pkg, this.props.removePackage)
+                  }
                 >
                   Remove
                 </button>
