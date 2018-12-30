@@ -7,11 +7,11 @@ function shortNameCapitalized(name = "") {
   return _name.charAt(0).toUpperCase() + _name.slice(1);
 }
 
-export default function confirmRemove(pkg, removePackage) {
+export default function confirmPackageRemove(pkg, removePackageAction) {
   const name = shortNameCapitalized(pkg.name);
   confirmAlert({
     title: `Removing ${name}`,
-    message: `This action cannot be undone. If you do NOT want to keep ${name}'s data remove it permanently with the "Remove DNP + data" option.`,
+    message: `This action cannot be undone. If you do NOT want to keep ${name}'s data, remove it permanently clicking the "Remove DNP + data" option.`,
     buttons: [
       {
         label: "Cancel",
@@ -19,11 +19,11 @@ export default function confirmRemove(pkg, removePackage) {
       },
       {
         label: "Remove",
-        onClick: () => removePackage(pkg, false)
+        onClick: () => removePackageAction(pkg, false)
       },
       {
         label: "Remove DNP + data",
-        onClick: () => removePackage(pkg, true)
+        onClick: () => removePackageAction(pkg, true)
       }
     ]
   });

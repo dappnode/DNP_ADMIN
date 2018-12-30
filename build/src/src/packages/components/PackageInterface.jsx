@@ -5,7 +5,8 @@ import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
 import { push } from "connected-react-router";
 import { NAME } from "../constants";
-import confirmRemove from "./confirmRemove";
+import confirmPackageRemove from "./confirmPackageRemove";
+import confirmVolumeRemove from "./confirmVolumeRemove";
 // Components
 import Details from "./PackageViews/Details";
 import Logs from "./PackageViews/Logs";
@@ -52,8 +53,12 @@ class PackageInterface extends React.Component {
           state={pkg.state}
           togglePackage={() => this.props.togglePackage(id)}
           restartPackage={() => this.props.restartPackage(id)}
-          restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
-          removePackage={() => confirmRemove(pkg, this.props.removePackage)}
+          restartPackageVolumes={() =>
+            confirmVolumeRemove(id, this.props.restartPackageVolumes)
+          }
+          removePackage={() =>
+            confirmPackageRemove(pkg, this.props.removePackage)
+          }
         />
       </div>
     );

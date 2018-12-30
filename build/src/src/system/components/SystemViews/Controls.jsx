@@ -9,7 +9,7 @@ export default class PackageControls extends React.Component {
           "Restarting a package will interrupt the service during 1-10s but preserve its data",
         action: this.props.restartPackage,
         availableForCore: true,
-        type: "danger"
+        type: "secondary"
       },
       {
         name: "Remove volumes",
