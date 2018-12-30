@@ -66,8 +66,9 @@ export function* getUserActionLogs() {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: getUserActionLogs
-};
+const watchers = [
+  //
+  ["CONNECTION_OPEN", getUserActionLogs]
+];
 
 export default rootWatcher(watchers);

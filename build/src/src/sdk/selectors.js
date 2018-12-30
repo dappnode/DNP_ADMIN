@@ -18,38 +18,12 @@ import { NAME } from "./constants";
 
 // From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
 
-// Utils
-
-// this.state.packageInfo[this.state.targetPackageName]
-
 // #### EXTERNAL
-
-const packages = state => state.installedPackages;
 
 // #### INTERNAL
 
 const local = state => state[NAME];
-const logs = state => local(state).logs;
-const pathname = state => state.router.location.pathname || "";
-const id = state => pathname(state).split(NAME + "/")[1] || "";
-export const fetching = state => local(state).fetching || false;
-export const hasFetched = state => local(state).hasFetched || false;
-
-// Package lists
-
-export const getPackages = packages;
-export const getCorePackages = state => packages(state).filter(p => p.isCORE);
-export const getDnpPackages = state => packages(state).filter(p => p.isDNP);
-
-// Package logs
-
-export const getLogs = state => logs(state)[id(state)];
-
-// Selected package
-
-export const getId = id;
-export const getPackage = state =>
-  packages(state).find(p => p.name === id(state)) || {};
-
-export const getPackageId = state => getPackage(state).name || "";
-export const getPackageIsCORE = state => getPackage(state).isCORE || false;
+export const registries = state => local(state).registries;
+export const repoName = state => local(state).repoName;
+export const query = state => local(state).query;
+export const queryResult = state => local(state).queryResult;

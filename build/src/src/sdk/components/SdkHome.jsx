@@ -1,40 +1,41 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import Publish from "Icons/Publish";
 import { NAME } from "../constants";
 import { Link } from "react-router-dom";
 import newTabProps from "utils/newTabProps";
 
-const sdkItems = [
-  { name: "Publish", href: "publish", icon: Publish },
-  { name: "Publish", href: "publish", icon: Publish }
-];
-
 const SDK_GUIDE_LINK =
   "https://github.com/dappnode/DAppNodeSDK/wiki/DAppNode-SDK-tutorial";
+
+const subRoutes = [
+  {
+    title: "Publish DNPs",
+    subtitle: `To an Aragon's APM registry`,
+    route: "publish"
+  },
+  {
+    title: "Explore repos",
+    subtitle: `Of Aragon's APM registries`,
+    route: "explore"
+  }
+];
+
+const itemsTop = [
+  {
+    id: "H1",
+    header: "Header 1",
+    body: "Body 1"
+  },
+  {
+    id: "H2",
+    header: "Header 2",
+    body: "Body 2"
+  }
+];
 
 export default class SdkHome extends React.Component {
   render() {
     const margin = "5px";
     const padding = "0.7rem";
-
-    const items = sdkItems.map((item, i) => {
-      return (
-        <div key={i} className="col">
-          <NavLink className="nav-link" to={`/${NAME}/${item.href}`}>
-            <button
-              type="button"
-              className="btn btn-outline-dark btn-lg btn-block"
-            >
-              <div className="text-center" style={{ opacity: 0.6 }}>
-                <item.icon scale={2.5} />
-              </div>
-              <div style={{ fontSize: "16px" }}>{item.name}</div>
-            </button>
-          </NavLink>
-        </div>
-      );
-    });
 
     return (
       <React.Fragment>
@@ -61,7 +62,7 @@ export default class SdkHome extends React.Component {
                   </a>
                 </p>
                 <div
-                  class="alert alert-secondary"
+                  className="alert alert-secondary"
                   role="alert"
                   style={{ backgroundColor: "#f1f1f3" }}
                 >
@@ -91,32 +92,33 @@ export default class SdkHome extends React.Component {
         </div>
 
         <div className="section-subtitle">What can I the SDK do?</div>
-        <div className="card mb-3">
-          <div className="card-body" style={{ padding }}>
-            <div className="row">
-              <div className="col-sm" style={{ margin, overflow: "hidden" }}>
-                <h5 className="card-title" style={{ marginBottom: "3px" }}>
-                  Publish DNPs
-                </h5>
-                <div className="card-text">
-                  <span style={{ opacity: "0.5" }}>
-                    To Aragon's APM registry
-                  </span>
+        {subRoutes.map(({ title, subtitle, route }) => (
+          <div key={route} className="card mb-3">
+            <div className="card-body" style={{ padding }}>
+              <div className="row">
+                <div className="col-sm" style={{ margin, overflow: "hidden" }}>
+                  <h5 className="card-title" style={{ marginBottom: "3px" }}>
+                    {title}
+                  </h5>
+                  <div className="card-text">
+                    <span style={{ opacity: "0.5" }}>{subtitle}</span>
+                  </div>
                 </div>
-              </div>
-              <div className="col-sm pkg-row-text" style={{ margin }}>
-                <div className="btn-group float-right" role="group">
-                  <Link
-                    className="btn btn-outline-secondary float-right"
-                    to={`/${NAME}/${"publish"}`}
-                  >
-                    Publish
-                  </Link>
+                <div className="col-sm pkg-row-text" style={{ margin }}>
+                  <div className="btn-group float-right" role="group">
+                    <Link
+                      className="btn btn-outline-secondary float-right"
+                      to={`/${NAME}/${route}`}
+                      style={{ textTransform: "capitalize" }}
+                    >
+                      {route}
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        ))}
       </React.Fragment>
     );
   }

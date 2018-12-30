@@ -3,19 +3,20 @@ import { Route } from "react-router-dom";
 import { NAME } from "../constants";
 // Components
 import Publish from "./Publish";
+import Explore from "./Explore";
 import SdkHome from "./SdkHome";
 // Modules
 import status from "status";
+import "./sdk.css";
 
 export default class InstallerRoot extends React.Component {
   render() {
-    // The second route uses regex. :id has to match ipfs/QmZ4faa..
-    // so it uses the regex parameter + to any character when id's length > 0
     return (
       <div>
         <status.components.DependenciesAlert deps={["mainnet"]} />
         <Route exact path={"/" + NAME} component={SdkHome} />
-        <Route path={"/" + NAME + "/publish"} component={Publish} />
+        <Route path={"/" + NAME + "/publish/:urlQuery?"} component={Publish} />
+        <Route path={"/" + NAME + "/explore"} component={Explore} />
       </div>
     );
   }

@@ -11,11 +11,11 @@ import generateActionTypes from "utils/generateActionTypes";
  * This utility eases the addition of new actionTypes, and ensures a common format
  */
 export default generateActionTypes(NAME, [
-  "CALL",
-  "LOG_PACKAGE",
-  "LIST_PACKAGES",
-  "UPDATE_FETCHING",
-  "UPDATE_LOG",
-  "UPDATE_PACKAGES",
-  "HAS_FETCHED_PACKAGES"
+  "UPDATE_REGISTRY",
+  "UPDATE_REPO",
+  "FETCH_REGISTRY",
+  "VALIDATE_REPO_NAME",
+  "UPDATE_REPO_NAME",
+  "UPDATE_QUERY",
+  "UPDATE_QUERY_RESULT"
 ]);

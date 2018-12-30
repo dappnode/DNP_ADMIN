@@ -330,15 +330,15 @@ function* onConnectionOpen(action) {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: onConnectionOpen,
-  [t.UPDATE_DEFAULT_ENVS]: updateDefaultEnvs,
-  [t.FETCH_PACKAGE_DATA]: fetchPackageData,
-  [t.FETCH_PACKAGE_REQUEST]: fetchPackageRequest,
-  [t.INSTALL]: install,
-  [t.UPDATE_ENV]: updateEnvs,
-  [t.MANAGE_PORTS]: managePorts,
-  [t.DISK_SPACE_AVAILABLE]: diskSpaceAvailable
-};
+const watchers = [
+  ["CONNECTION_OPEN", onConnectionOpen],
+  [t.UPDATE_DEFAULT_ENVS, updateDefaultEnvs],
+  [t.FETCH_PACKAGE_DATA, fetchPackageData],
+  [t.FETCH_PACKAGE_REQUEST, fetchPackageRequest],
+  [t.INSTALL, install],
+  [t.UPDATE_ENV, updateEnvs],
+  [t.MANAGE_PORTS, managePorts],
+  [t.DISK_SPACE_AVAILABLE, diskSpaceAvailable]
+];
 
 export default rootWatcher(watchers);

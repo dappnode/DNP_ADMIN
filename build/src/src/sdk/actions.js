@@ -1,81 +1,53 @@
 // INSTALLER
 import t from "./actionTypes";
-import { shortName } from "utils/format";
-import installer from "installer";
 
 // Used in package root
 
-export const updatePackages = packages => ({
-  type: "UPDATE_INSTALLED_PACKAGES",
-  packages
+export const updateRegistryFetching = (registryEns, fetching) => ({
+  type: t.UPDATE_REGISTRY,
+  registryEns,
+  data: { fetching }
 });
 
-export const listPackages = () => ({
-  type: t.LIST_PACKAGES
+export const updateRegistry = (registryEns, data) => ({
+  type: t.UPDATE_REGISTRY,
+  registryEns,
+  data
 });
 
-// Used in package interface / logs
-// #### TODO: refactor to sagas
-
-export const updateLog = (logs, id) => ({
-  type: t.UPDATE_LOG,
-  logs,
-  id
+export const updateRepo = (registryEns, repoName, data) => ({
+  type: t.UPDATE_REPO,
+  registryEns,
+  repoName,
+  data
 });
 
-export const logPackage = kwargs => ({
-  type: t.LOG_PACKAGE,
-  kwargs
+export const validateRepoName = repoName => ({
+  type: t.VALIDATE_REPO_NAME,
+  repoName
 });
 
-// Used in package interface / envs
-
-export const updatePackageEnv = kwargs => ({
-  type: t.CALL,
-  method: "updatePackageEnv",
-  message:
-    "Updating " + kwargs.id + " envs: " + JSON.stringify(kwargs.envs) + "...",
-  kwargs
+export const updateRepoName = (repoName, data) => ({
+  type: t.UPDATE_REPO_NAME,
+  repoName,
+  data
 });
 
-// Used in package interface / controls
-
-export const togglePackage = kwargs => ({
-  type: t.CALL,
-  method: "togglePackage",
-  message: "Toggling " + shortName(kwargs.id) + "...",
-  kwargs
+export const updateQuery = (id, value) => ({
+  type: t.UPDATE_QUERY,
+  id,
+  value
 });
 
-export const restartPackage = kwargs => ({
-  type: t.CALL,
-  method: "restartPackage",
-  message: "Restarting " + shortName(kwargs.id) + "...",
-  kwargs
+export const updateQueryResult = (id, data) => ({
+  type: t.UPDATE_QUERY_RESULT,
+  id,
+  data
 });
 
-export const restartPackageVolumes = kwargs => ({
-  type: t.CALL,
-  method: "restartPackageVolumes",
-  message: "Restarting " + shortName(kwargs.id) + " volumes...",
-  kwargs
-});
-
-export const removePackage = kwargs => ({
-  type: t.CALL,
-  method: "removePackage",
-  message:
-    "Removing package " +
-    shortName(kwargs.id) +
-    (kwargs.deleteVolumes ? " and volumes" : "") +
-    "...",
-  kwargs
-});
-
-export const closePorts = ports => ({
-  type: installer.actionTypes.MANAGE_PORTS,
-  action: "close",
-  ports
+export const fetchRegistry = registryEns => ({
+  type: t.FETCH_REGISTRY,
+  registryEns
 });
 
 // #### After removing a package, uninstallChain

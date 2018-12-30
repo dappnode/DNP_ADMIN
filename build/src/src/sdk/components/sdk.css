@@ -1,0 +1,11 @@
+details {
+  padding: 0.5em 0.5em 0;
+}
+
+.new-line {
+  white-space: pre;
+}
+
+.alert {
+  word-break: normal !important;
+}

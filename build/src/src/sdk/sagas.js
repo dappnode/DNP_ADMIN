@@ -1,76 +1,96 @@
-import { call, put } from "redux-saga/effects";
+import { call, put, all } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
-import * as APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
-import Toast from "components/Toast";
-import PubSub from "eventBus";
+
+import getRegistry from "./sagaUtils/getRegistry";
+import getRepo from "./sagaUtils/getRepo";
+import resolveEns from "./sagaUtils/resolveEns";
+
+// diagnoseEthchain();
+
+// getRegistry("dnp.dappnode.eth");
 
 /***************************** Subroutines ************************************/
 
-export function* listPackages() {
-  try {
-    yield put({ type: t.UPDATE_FETCHING, fetching: true });
-    const res = yield call(APIcall.listPackages);
-    yield put({ type: t.UPDATE_FETCHING, fetching: false });
-    if (res.success) {
-      yield put(a.updatePackages(res.result));
-      yield put({ type: t.HAS_FETCHED_PACKAGES });
-    } else {
-      new Toast(res);
-    }
-
-    // listPackages CALL DOCUMENTATION:
-    // > kwargs: {}
-    // > result: [{
-    //     id: '927623894...', (string)
-    //     isDNP: true, (boolean)
-    //     created: <Date string>,
-    //     image: <Image Name>, (string)
-    //     name: otpweb.dnp.dappnode.eth, (string)
-    //     shortName: otpweb, (string)
-    //     version: '0.0.4', (string)
-    //     ports: <list of ports>, (string)
-    //     state: 'exited', (string)
-    //     running: true, (boolean)
-    //     ...
-    //     envs: <Env variables> (object)
-    //   },
-    //   ...]
-  } catch (error) {
-    console.error("Error fetching directory: ", error);
-  }
+function getRegistryFromRepo(repoName) {
+  return repoName
+    .split(".")
+    .slice(1)
+    .join(".");
 }
 
-function* callApi({ method, kwargs, message }) {
-  try {
-    const pendingToast = new Toast({ message, pending: true });
-    const res = yield call(APIcall[method], kwargs);
-    pendingToast.resolve(res);
-  } catch (error) {
-    console.error("Error on " + method + ": ", error);
-  }
+// Check if the registry and repo exist
+async function resolveRepoName(repoName) {
+  const registryName = getRegistryFromRepo(repoName);
+  const [repoAddress, registryAddress] = await Promise.all(
+    [repoName, registryName].map(resolveEns)
+  );
+  return { repoAddress, registryAddress };
 }
 
-function* logPackage({ kwargs }) {
-  const { id } = kwargs;
+async function generatePublishTx({
+  ensName,
+  manifestIpfsPath,
+  version,
+  developerAddress
+}) {}
+
+function* validateRepoName({ repoName }) {
   try {
-    const res = yield call(APIcall.logPackage, kwargs);
-    if (res.success) {
-      const { logs } = res.result || {};
-      if (!logs) {
-        yield put(a.updateLog("Error, logs missing", id));
-      } else if (logs === "") {
-        yield put(a.updateLog("Received empty logs", id));
-      } else {
-        yield put(a.updateLog(logs, id));
-      }
-    } else {
-      yield put(a.updateLog("Error logging package: \n" + res.message, id));
-      PubSub.publish("LOG_ERROR");
-    }
+    const { repoAddress, registryAddress } = yield call(
+      resolveRepoName,
+      repoName
+    );
+    yield put(a.updateRepoName(repoName, { repoAddress, registryAddress }));
   } catch (e) {
-    console.error("Error getting package logs:", e);
+    console.error(`Error validating repoName "${repoName}": ${e.stack}`);
+  }
+}
+
+function* fetchRegistry({ registryEns }) {
+  try {
+    if (!registryEns) throw Error("registryEns must be defined");
+    yield put(
+      a.updateRegistry(registryEns, { name: registryEns, fetching: true })
+    );
+    const registryAddress = yield call(resolveEns, registryEns);
+    yield put(a.updateRegistry(registryEns, { address: registryAddress }));
+    const repos = yield call(getRegistry, registryAddress);
+    yield put(a.updateRegistry(registryEns, { repos, fetching: false }));
+    yield all(
+      Object.values(repos).map(repo =>
+        call(function*() {
+          yield put(a.updateRepo(registryEns, repo.name, { fetching: true }));
+          const repoData = yield call(getRepo, repo);
+          yield put(
+            a.updateRepo(registryEns, repo.name, {
+              ...repoData,
+              fetching: false
+            })
+          );
+        })
+      )
+    );
+  } catch (e) {
+    console.error(`Error fetching registry "${registryEns}": ${e.stack}`);
+  }
+}
+
+function* onUpdateQuery({ id, value }) {
+  try {
+    if (id === "dnpName") {
+      const { repoAddress, registryAddress } = yield call(
+        resolveRepoName,
+        value
+      );
+      yield put(
+        a.updateQueryResult(id, { value, repoAddress, registryAddress })
+      );
+    }
+    console.log(id, value);
+  } catch (e) {
+    console.error(`Error on update query for ${id} = ${value}: ${e.stack}`);
   }
 }
 
@@ -78,10 +98,10 @@ function* logPackage({ kwargs }) {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: listPackages,
-  [t.CALL]: callApi,
-  [t.LOG_PACKAGE]: logPackage
-};
+const watchers = [
+  [t.FETCH_REGISTRY, fetchRegistry],
+  [t.VALIDATE_REPO_NAME, validateRepoName],
+  [t.UPDATE_QUERY, onUpdateQuery, { throttle: 1000 }]
+];
 
 export default rootWatcher(watchers);
