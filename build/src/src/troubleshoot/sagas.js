@@ -93,7 +93,27 @@ export function* runDiagnoses() {
 
 export function* fetchInfo() {
   yield call(assertConnectionOpen);
-  yield all([call(fetchPackages), call(fetchDiskUsage)]);
+  yield all([
+    call(fetchPackages),
+    call(fetchDiskUsage),
+    call(diagnoseCallDappmanager)
+  ]);
+}
+
+export function* diagnoseCallDappmanager() {
+  console.log("calling diagnose");
+  try {
+    const res = yield call(APIcall.diagnose);
+    console.log("res", res);
+    if (!res.success)
+      throw Error("Unsuccessful reponse to diagnose: " + res.message);
+    for (const itemId of Object.keys(res.result)) {
+      const item = res.result[itemId];
+      yield put(a.updateInfo(itemId, item));
+    }
+  } catch (e) {
+    console.error(`Error calling dappmanager's diagnose`, e);
+  }
 }
 
 export function* fetchPackages() {

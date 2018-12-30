@@ -50,10 +50,26 @@ export const issueBody = state => {
     body += `\n\n## Current versions\n${msgVersions.join("\n")}`;
   }
   // Append system info
+  let systemInfo = [];
   if (info.diskUsage) {
     // info.diskUsage = "85%"
-    let systemInfo = [];
     systemInfo.push(`- **${"disk usage"}**: ${info.diskUsage}`);
+  }
+  if (info.dockerVersion) {
+    systemInfo.push(
+      `- **${info.dockerVersion.name}**: ${(
+        info.dockerVersion.result || info.dockerVersion.error
+      ).trim()}`
+    );
+  }
+  if (info.dockerComposeVersion) {
+    systemInfo.push(
+      `- **${info.dockerComposeVersion.name}**: ${(
+        info.dockerComposeVersion.result || info.dockerComposeVersion.error
+      ).trim()}`
+    );
+  }
+  if (systemInfo.length) {
     body += `\n\n## System info\n${systemInfo.join("\n")}`;
   }
   return body;
