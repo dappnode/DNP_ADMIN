@@ -5,7 +5,7 @@ import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
 import { NAME } from "../constants";
 import { Link } from "react-router-dom";
-import { parseUrlQuery, stringifyUrlQuery } from "utils/urlQuery";
+import { parseUrlQuery } from "utils/urlQuery";
 import metamaskIcon from "img/metamask-white.png";
 import newTabProps from "utils/newTabProps";
 // packages
@@ -37,7 +37,10 @@ class Publish extends React.Component {
     if (urlQuery) {
       try {
         const params = parseUrlQuery(urlQuery);
-        console.log("urlQuery", urlQuery, "params", params);
+        console.log(
+          "A prefilled link was found for the SDK Publish, params:",
+          params
+        );
         Object.keys(paramMapping).forEach(key => {
           if (params[key])
             this.props.updateQuery(paramMapping[key], params[key]);

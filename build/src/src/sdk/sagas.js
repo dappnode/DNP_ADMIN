@@ -20,7 +20,7 @@ import assertConnectionOpen from "utils/assertConnectionOpen";
 
 function* connect(action) {
   try {
-    console.log("Connecting");
+    console.log("Connecting to metamask...");
     const web3 = yield call(connectToMetamask);
     const networkId = yield call(web3.eth.net.getId);
     const accounts = yield call(web3.eth.getAccounts);
@@ -38,7 +38,6 @@ function* connect(action) {
         yield take(t.PUBLISH);
         const query = yield select(s.getQuery);
         const repoInfo = yield select(s.getQueryResultRepoInfo);
-        console.log({ query, repoInfo });
         const txHash = yield call(executePublishTx, web3, {
           ...query,
           ...repoInfo
@@ -170,7 +169,6 @@ const inputHanlders = {
       yield call(assertConnectionOpen);
       const res = yield call(APIcall.fetchPackageData, { id: value });
       if (res.success && res.result && res.result.manifest) {
-        console.log("res.result", res.result);
         const manifest = (res.result || {}).manifest;
         yield put(a.updateQueryResult("manifest", { hash: value, manifest }));
       } else {

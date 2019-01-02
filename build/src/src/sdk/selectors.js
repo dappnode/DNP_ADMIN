@@ -234,7 +234,6 @@ function getManifestHashInput(state) {
 // =============
 
 export function getButtonInput(state) {
-  const dnpName = getQuery(state).dnpName;
   const repoInfo = getQueryResultRepoInfo(state);
   const metamaskInfo = getQueryResultMetamaskInfo(state);
   const allowedAddress = getQueryResultAllowedAddress(state);
@@ -263,8 +262,8 @@ export function getButtonInput(state) {
     allowedAddress &&
     repoInfo.repoAddress &&
     userAddress &&
-    repoInfo.repoAddress === allowedAddress.repoAddress &&
-    userAddress === allowedAddress.userAddress
+    toLc(repoInfo.repoAddress) === toLc(allowedAddress.repoAddress) &&
+    toLc(userAddress) === toLc(allowedAddress.userAddress)
   ) {
     if (allowedAddress.isAllowed) {
       success.push(`Selected address ${userAddress} is allowed to publish`);
@@ -310,6 +309,11 @@ export function getTransactionPreview(state) {
 }
 
 // UTILS
+
+// To lowercase safe
+function toLc(s) {
+  return s && typeof s === "string" ? s.toLowerCase() : s;
+}
 
 function cleanArrays(obj) {
   for (const key of Object.keys(obj)) {
