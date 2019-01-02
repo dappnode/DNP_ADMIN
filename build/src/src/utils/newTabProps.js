@@ -5,6 +5,6 @@
 // It converts:
 //   <a href={url} rel="noopener noreferrer" target="_blank">
 // Into:
-//   <a href={url} ...newTab>
+//   <a href={url} {...newTabProps}>
 
 export default { rel: "noopener noreferrer", target: "_blank" };

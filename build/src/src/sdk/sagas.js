@@ -1,17 +1,67 @@
-import { call, put, all } from "redux-saga/effects";
+import { call, put, all, select, take } from "redux-saga/effects";
+import { delay } from "redux-saga";
 import rootWatcher from "utils/rootWatcher";
 import t from "./actionTypes";
 import * as a from "./actions";
+import * as s from "./selectors";
 
 import getRegistry from "./sagaUtils/getRegistry";
 import getRepo from "./sagaUtils/getRepo";
 import resolveEns from "./sagaUtils/resolveEns";
-
-// diagnoseEthchain();
+import apm from "./sagaUtils/apm";
+import connectToMetamask from "./sagaUtils/connectToMetamask";
+import executePublishTx from "./sagaUtils/executePublishTx";
+import * as APIcall from "API/rpcMethods";
+import assertConnectionOpen from "utils/assertConnectionOpen";
 
 // getRegistry("dnp.dappnode.eth");
 
 /***************************** Subroutines ************************************/
+
+function* connect(action) {
+  try {
+    console.log("Connecting");
+    const web3 = yield call(connectToMetamask);
+    const networkId = yield call(web3.eth.net.getId);
+    const accounts = yield call(web3.eth.getAccounts);
+    const userAddress = accounts[0];
+    yield put(
+      a.updateQueryResult("metamaskInfo", {
+        userAddress,
+        networkId,
+        connected: true
+      })
+    );
+    yield put(a.updateQuery("userAccount", userAddress));
+    while (true) {
+      try {
+        yield take(t.PUBLISH);
+        const query = yield select(s.getQuery);
+        const repoInfo = yield select(s.getQueryResultRepoInfo);
+        console.log({ query, repoInfo });
+        const txHash = yield call(executePublishTx, web3, {
+          ...query,
+          ...repoInfo
+        });
+        a.updateQueryResult("call", {
+          type: "success",
+          message: `Tx successfully executed. Tx hash: ${txHash}`
+        });
+      } catch (e) {
+        console.error(`Error executing transaction: ${e.stack}`);
+        yield put(
+          a.updateQueryResult("call", {
+            type: "error",
+            message: `Error executing transaction: ${e.message}`
+          })
+        );
+      }
+      yield call(delay, 500);
+    }
+  } catch (e) {
+    console.error("Error on connect");
+  }
+}
 
 function getRegistryFromRepo(repoName) {
   return repoName
@@ -29,24 +79,12 @@ async function resolveRepoName(repoName) {
   return { repoAddress, registryAddress };
 }
 
-async function generatePublishTx({
-  ensName,
-  manifestIpfsPath,
-  version,
-  developerAddress
-}) {}
-
-function* validateRepoName({ repoName }) {
-  try {
-    const { repoAddress, registryAddress } = yield call(
-      resolveRepoName,
-      repoName
-    );
-    yield put(a.updateRepoName(repoName, { repoAddress, registryAddress }));
-  } catch (e) {
-    console.error(`Error validating repoName "${repoName}": ${e.stack}`);
-  }
-}
+// async function generatePublishTx({
+//   ensName,
+//   manifestIpfsPath,
+//   version,
+//   developerAddress
+// }) {}
 
 function* fetchRegistry({ registryEns }) {
   try {
@@ -77,22 +115,87 @@ function* fetchRegistry({ registryEns }) {
   }
 }
 
-function* onUpdateQuery({ id, value }) {
-  try {
-    if (id === "dnpName") {
+const inputHanlders = {
+  dnpName: function* onUpdateQueryDnpName({ id, value }) {
+    try {
       const { repoAddress, registryAddress } = yield call(
         resolveRepoName,
         value
       );
       yield put(
-        a.updateQueryResult(id, { value, repoAddress, registryAddress })
+        a.updateQueryResult("repoInfo", { value, repoAddress, registryAddress })
       );
+      if (repoAddress) {
+        const latestVersion = yield call(apm.getLatestVersion, repoAddress);
+        yield put(a.updateQueryResult("repoInfo", { latestVersion }));
+      } else if (registryAddress) {
+        yield put(a.updateQueryResult("repoInfo", { latestVersion: "0.0.0" }));
+      }
+      const userAddress = (window.ethereum || {}).selectedAddress;
+      if (repoAddress && userAddress) {
+        const isAllowed = yield call(apm.isAllowed, repoAddress, userAddress);
+        yield put(
+          a.updateQueryResult("allowedAddress", {
+            userAddress,
+            repoAddress,
+            isAllowed
+          })
+        );
+      }
+    } catch (e) {
+      console.error(`Error on update query for ${id} = ${value}: ${e.stack}`);
     }
-    console.log(id, value);
+  },
+  userAddress: function* onUpdateQueryUserAddress({ id, value }) {
+    try {
+      const repoInfo = yield select(s.getQueryResultRepoInfo);
+      const repoAddress = (repoInfo || {}).repoAddress;
+      const userAddress = value;
+      if (repoAddress && userAddress) {
+        const isAllowed = yield call(apm.isAllowed, repoAddress, userAddress);
+        yield put(
+          a.updateQueryResult("allowedAddress", {
+            userAddress,
+            repoAddress,
+            isAllowed
+          })
+        );
+      }
+    } catch (e) {
+      console.error(`Error on update query for ${id} = ${value}: ${e.stack}`);
+    }
+  },
+  manifestIpfsHash: function* onUpdateQueryManifestIpfsHash({ id, value }) {
+    try {
+      yield call(assertConnectionOpen);
+      const res = yield call(APIcall.fetchPackageData, { id: value });
+      if (res.success && res.result && res.result.manifest) {
+        console.log("res.result", res.result);
+        const manifest = (res.result || {}).manifest;
+        yield put(a.updateQueryResult("manifest", { hash: value, manifest }));
+      } else {
+        throw Error(
+          `Error fetching manifest for publish form verification: ${
+            res.message
+          }`
+        );
+      }
+    } catch (e) {
+      console.error(`Error on update query for ${id} = ${value}: ${e.stack}`);
+    }
+  }
+};
+
+const getId = id => `${t.UPDATE_QUERY}_${id}`;
+function* onUpdateQuery({ id, value }) {
+  try {
+    yield put({ type: getId(id), id, value });
   } catch (e) {
     console.error(`Error on update query for ${id} = ${value}: ${e.stack}`);
   }
 }
+
+// Update query dedicated throttling PER ID
 
 /******************************* Watchers *************************************/
 
@@ -100,8 +203,13 @@ function* onUpdateQuery({ id, value }) {
 // takeEvery(actionType, watchers[actionType])
 const watchers = [
   [t.FETCH_REGISTRY, fetchRegistry],
-  [t.VALIDATE_REPO_NAME, validateRepoName],
-  [t.UPDATE_QUERY, onUpdateQuery, { throttle: 1000 }]
+  [t.UPDATE_QUERY, onUpdateQuery],
+  ...Object.keys(inputHanlders).map(id => [
+    getId(id),
+    inputHanlders[id],
+    { throttle: 1000 }
+  ]),
+  [t.CONNECT, connect]
 ];
 
 export default rootWatcher(watchers);

@@ -10,6 +10,7 @@ import { shortName } from "utils/format";
 import isSyncing from "utils/isSyncing";
 import { idToUrl, isIpfsHash } from "./utils";
 import uniqArray from "utils/uniqArray";
+import assertConnectionOpen from "utils/assertConnectionOpen";
 
 /***************************** Subroutines ************************************/
 
@@ -191,10 +192,7 @@ export function* fetchDirectory() {
 export function* fetchPackageRequest({ id }) {
   try {
     // If connection is not open yet, wait for it to open.
-    const connectionOpen = yield select(s.connectionOpen);
-    if (!connectionOpen) {
-      yield take("CONNECTION_OPEN");
-    }
+    yield call(assertConnectionOpen);
 
     // If chain is not synced yet, cancel request.
     if (id && !id.includes("ipfs/")) {
@@ -255,10 +253,7 @@ export function* fetchPackageRequest({ id }) {
 export function* fetchPackageData({ id }) {
   try {
     // If connection is not open yet, wait for it to open.
-    const connectionOpen = yield select(s.connectionOpen);
-    if (!connectionOpen) {
-      yield take("CONNECTION_OPEN");
-    }
+    yield call(assertConnectionOpen);
     const res = yield call(APIcall.fetchPackageData, { id });
     // Abort on error
     if (!res.success) {
@@ -297,10 +292,7 @@ export function* fetchPackageData({ id }) {
 function* diskSpaceAvailable({ path }) {
   try {
     // If connection is not open yet, wait for it to open.
-    const connectionOpen = yield select(s.connectionOpen);
-    if (!connectionOpen) {
-      yield take("CONNECTION_OPEN");
-    }
+    yield call(assertConnectionOpen);
     const res = yield call(APIcall.diskSpaceAvailable, { path });
     // Abort on error
     if (!res.success) {

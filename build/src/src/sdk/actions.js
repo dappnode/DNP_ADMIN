@@ -50,4 +50,18 @@ export const fetchRegistry = registryEns => ({
   registryEns
 });
 
+export const connect = () => ({
+  type: t.CONNECT
+});
+
+export const publish = () => ({
+  type: t.PUBLISH
+});
+
+export const updateButtonMessage = message => ({
+  type: t.UPDATE_UI_MESSAGE,
+  uiId: "publishButton",
+  message
+});
+
 // #### After removing a package, uninstallChain
