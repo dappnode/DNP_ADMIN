@@ -17,6 +17,8 @@ services:
     ports:
       - "80:80"
       - "8080:8080"
+    volumes:
+      - ./cred:/usr/www/openvpn/cred
     networks:
       network:
         ipv4_address: 172.33.1.9

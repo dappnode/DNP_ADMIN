@@ -1,10 +1,36 @@
+.dappnode-pill {
+  cursor: pointer;
+  text-decoration: none;
+  text-transform: uppercase;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  line-height: 1.5;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
+  -webkit-appearance: button;
+  padding: 3px 19px !important;
+  border-radius: 50px !important;
+  color: white;
+  border: 0px solid #2fbcb2 !important;
+  background-color: #2fbcb2;
+}
+.dappnode-pill:hover {
+  color: white;
+  border: 0px solid #218a82;
+  background-color: #218a82;
+}
+
 .App {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+.logo {
+  max-width: 200px;
 }
 
 .App-header {
@@ -20,13 +46,4 @@
 
 .App-link {
   color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

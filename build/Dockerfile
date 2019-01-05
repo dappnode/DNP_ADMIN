@@ -26,7 +26,7 @@ FROM nginx:1.12-alpine
 RUN mkdir -p /usr/www/adminui && mkdir -p /usr/www/openvpn
 COPY --from=build-deps-adminui /usr/src/app/build /usr/www/adminui
 COPY --from=build-deps-openvpn /usr/src/app/build /usr/www/openvpn
-COPY nginx.conf .
+COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-c", "/etc/nginx/nginx.conf", "-g", "daemon off;"]

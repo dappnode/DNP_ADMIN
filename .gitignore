@@ -3,6 +3,7 @@ build/src*/node_modules
 
 # testing
 build/src*/coverage
+cred
 
 # production
 build/src*/build
