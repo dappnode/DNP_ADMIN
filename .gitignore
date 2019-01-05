@@ -1,7 +1,22 @@
-build/src/dist/
-build/src/node_modules/
-build/src/build/
+# dependencies
+build/src*/node_modules
+
+# testing
+build/src*/coverage
+
+# production
+build/src*/build
+build/src*/build_*
+build/src*/dist
+
+# misc
 .DS_Store
-build_*
-.gitignore
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+build/src*/npm-debug.log*
+build/src*/yarn-debug.log*
+build/src*/yarn-error.log*
 uploader

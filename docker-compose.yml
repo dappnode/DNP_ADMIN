@@ -14,6 +14,9 @@ services:
     container_name: DAppNodeCore-admin.dnp.dappnode.eth
     restart: always
     dns: 172.33.1.2
+    ports:
+      - "80:80"
+      - "8080:8080"
     networks:
       network:
         ipv4_address: 172.33.1.9
