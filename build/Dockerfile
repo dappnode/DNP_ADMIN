@@ -23,10 +23,15 @@ COPY src_openvpn .
 RUN yarn run build
 
 FROM nginx:1.12-alpine
-RUN mkdir -p /usr/www/adminui && mkdir -p /usr/www/openvpn
+RUN mkdir -p /usr/www/adminui && mkdir -p /usr/www/openvpn && mkdir -p /usr/www/openvpn/cred
 COPY --from=build-deps-adminui /usr/src/app/build /usr/www/adminui
 COPY --from=build-deps-openvpn /usr/src/app/build /usr/www/openvpn
 COPY nginx.conf /etc/nginx/nginx.conf
+
+#### FOR TESTING DEMO PURPOSES
+COPY test-cred-encrypted /usr/www/openvpn/cred/9eX3660PxxcwzpqP
+#### END
+
 EXPOSE 80
 EXPOSE 8080
 CMD ["nginx", "-c", "/etc/nginx/nginx.conf", "-g", "daemon off;"]

@@ -10,8 +10,8 @@ import errorLogo from "./img/error-min.png";
 import loadingLogo from "./img/dappNodeAnimation.gif";
 import "./App.css";
 
-// const baseUrl = window.location.origin;
-const baseUrl = "http://localhost:8080";
+const baseUrl = window.location.origin;
+// const baseUrl = "http://localhost:8080";
 const type = "application/x-openvpn-profile";
 
 window.encryptWithRandomKey = encryptWithRandomKey;
