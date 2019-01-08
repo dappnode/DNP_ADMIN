@@ -30,6 +30,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 #### FOR TESTING DEMO PURPOSES
 COPY test-cred-encrypted /usr/www/openvpn/cred/9eX3660PxxcwzpqP
+# Use: http://<IP>:8080/#9eX3660PxxcwzpqP&CTNtXGIw1ODN2nJAfd8BRQTnQ7zumCQlQ08CEkivf/8=
 #### END
 
 EXPOSE 80

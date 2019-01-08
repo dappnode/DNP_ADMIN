@@ -1,12 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import { MemoryRouter as Router } from "react-router-dom";
+import App from "./App";
+import Header from "./Header";
+import registerServiceWorker from "./registerServiceWorker";
+// Load css in order
+import "bootstrap/dist/css/bootstrap.min.css"; // Include bootstrap's css
+import "bootstrap/dist/js/bootstrap.min.js"; // Include bootstrap's js
+import "./index.css"; // Additional modifying rules
 
-ReactDOM.render(<App />, document.getElementById('root'));
+function Layout(props) {
+  return (
+    <Router>
+      <div className="App">
+        <Header />
+        <App />
+      </div>
+    </Router>
+  );
+}
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDOM.render(<Layout />, document.getElementById("root"));
+registerServiceWorker();

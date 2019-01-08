@@ -1,6 +1,6 @@
 {
-    "name": "DAppNode",
-    "short_name": "DAppNode",
+    "name": "DAppNode Dweb template",
+    "short_name": "DAppNode Dweb",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
