@@ -7,7 +7,7 @@ RUN yarn install
 # copy the contents of the app
 COPY src .
 # build for production
-RUN yarn run build
+RUN npm run build
 
 FROM nginx:1.12-alpine
 COPY --from=build-deps /usr/src/app/build /usr/share/nginx/html
