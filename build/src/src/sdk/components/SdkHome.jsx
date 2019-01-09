@@ -12,11 +12,11 @@ const subRoutes = [
     subtitle: `To an Aragon's APM registry`,
     route: "publish"
   },
-  {
-    title: "Explore repos",
-    subtitle: `Of Aragon's APM registries`,
-    route: "explore"
-  }
+  // {
+  //   title: "Explore repos",
+  //   subtitle: `Of Aragon's APM registries`,
+  //   route: "explore"
+  // }
 ];
 
 const itemsTop = [
