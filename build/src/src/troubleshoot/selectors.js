@@ -1,6 +1,5 @@
 // PACKAGES
 import { NAME } from "./constants";
-import urlencode from "urlencode";
 
 const repo = "DNP_ADMIN";
 const username = "dappnode";
@@ -65,7 +64,7 @@ export const issueUrl = state => {
   // Construct issueUrl
 
   // eslint-disable-next-line
-  const issueUrl = `${baseUrl(username, repo)}?title=${urlencode(title)}&body=${urlencode(body)}`;
+  const issueUrl = `${baseUrl(username, repo)}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
   return issueUrl;
 };
 export const issueUrlRaw = state => {

@@ -1,5 +1,4 @@
 import pipe from "utils/pipe";
-import urlencode from "urlencode";
 
 const objToParams = obj =>
   Object.keys(obj)
