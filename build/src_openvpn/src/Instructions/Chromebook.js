@@ -12,7 +12,6 @@ const Chromebook = () => (
     >
       INSTALL
     </a>
-    <hr className="my-4" />
   </div>
 );
 

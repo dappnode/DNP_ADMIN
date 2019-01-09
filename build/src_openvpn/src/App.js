@@ -3,6 +3,7 @@ import { Route, NavLink as Link } from "react-router-dom";
 // General components
 import HiddenRedirector from "./HiddenRedirector";
 // Platform dedicated components
+import Instructions from "./Instructions/Instructions";
 import MacOS from "./Instructions/MacOS";
 import Windows from "./Instructions/Windows";
 import Android from "./Instructions/Android";
@@ -33,37 +34,69 @@ const options = [
     name: "MacOS",
     route: "macos",
     component: MacOS,
-    icon: FaApple
+    icon: FaApple,
+    client: {
+      name: "Tunnelblick",
+      banner:
+        "https://tunnelblick.net/images/using-tunnelblick-dmg-2010-10-16.png",
+      url: "https://tunnelblick.net/"
+    }
   },
   {
     name: "iOS",
     route: "ios",
     component: iOS,
-    icon: FaMobile
+    icon: FaMobile,
+    client: {
+      name: "OpenVPN Connect",
+      banner:
+        "https://help.endian.com/hc/article_attachments/360011891853/IMG_6552.jpg",
+      url: "https://itunes.apple.com/us/app/openvpn-connect/id590379981"
+    }
   },
   {
     name: "Windows",
     route: "windows",
     component: Windows,
-    icon: FaWindows
+    icon: FaWindows,
+    client: {
+      name: "OpenVPN (community installer)",
+      banner: "https://openvpn.net/wp-content/uploads/openvpn.jpg",
+      url: "https://openvpn.net/community-downloads/"
+    }
   },
   {
     name: "Android",
     route: "android",
     component: Android,
-    icon: FaAndroid
+    icon: FaAndroid,
+    client: {
+      name: "OpenVPN for Android",
+      banner: "http://www.earthvpn.com/images/2013-08-26-13-46-27.png",
+      url: "https://play.google.com/store/apps/details?id=de.blinkt.openvpn"
+    }
   },
   {
     name: "Linux",
     route: "linux",
     component: Linux,
-    icon: FaLinux
+    icon: FaLinux,
+    client: {
+      name: "?",
+      banner: "",
+      url: "?"
+    }
   },
   {
     name: "Chromebook",
     route: "chromebook",
     component: Chromebook,
-    icon: FaChrome
+    icon: FaChrome,
+    client: {
+      name: "OpenVPN for Android",
+      banner: "",
+      url: "https://play.google.com/store/apps/details?id=de.blinkt.openvpn"
+    }
   }
 ];
 
@@ -114,7 +147,6 @@ export default class App extends Component {
 
   render() {
     const { file, error, loading } = this.state;
-    console.log({ file, error, loading });
 
     // <item.icon />
 
@@ -122,11 +154,21 @@ export default class App extends Component {
       return (
         <React.Fragment>
           <div className="container">
+            <h2 className="mt-5">Set up your DAppNode OpenVPN connection</h2>
+            <p className="jumotron-subtitle">
+              Download the .ovpn file provided by your DAppNode administrator
+              and import it to your client. You can follow the guides below on
+              how to import an .opvn file.
+            </p>
             <div className="text-center">
-              <img src={okLogo} className="main-logo" alt="ok" />
-              <h6 className="main-text">Successfully decoded file</h6>
-            </div>
-            <div className="text-center mt-3">
+              <h6 className="main-text mt-4">
+                <img
+                  src={okLogo}
+                  className="main-logo"
+                  alt="ok"
+                  style={{ height: "18px", margin: "0px 7px 0px 0px" }}
+                />Successfully decrypted .ovpn file
+              </h6>
               <button
                 className="btn btn-primary dappnode-background-color"
                 href={window.URL.createObjectURL(new Blob([file], { type }))}
@@ -169,7 +211,7 @@ export default class App extends Component {
                 <Route
                   key={option.route}
                   path={"/" + option.route}
-                  component={option.component}
+                  render={props => <Instructions {...props} {...option} />}
                 />
               ))}
               <hr className="my-4" />
@@ -182,7 +224,7 @@ export default class App extends Component {
 
     if (error) {
       return (
-        <div className="container text-center">
+        <div className="container text-center mt-5">
           <img src={errorLogo} className="main-logo" alt="logo" />
           <h6 className="main-text">{error}</h6>
         </div>
@@ -191,7 +233,7 @@ export default class App extends Component {
 
     if (loading) {
       return (
-        <div className="container text-center">
+        <div className="container text-center mt-5">
           <img src={loadingLogo} className="main-logo" alt="logo" />
           <h6 className="main-text">Loading</h6>
         </div>
@@ -199,7 +241,7 @@ export default class App extends Component {
     }
 
     return (
-      <div className="container text-center">
+      <div className="container text-center mt-5">
         <img src={logo} className="main-logo" alt="logo" />
         <h6 className="main-text">¯\_(ツ)_/¯</h6>
       </div>

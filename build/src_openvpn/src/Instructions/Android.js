@@ -12,7 +12,6 @@ const Android = () => (
     >
       INSTALL
     </a>
-    <hr className="my-4" />
   </div>
 );
 
