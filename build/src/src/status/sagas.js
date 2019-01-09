@@ -126,9 +126,9 @@ function* onConnectionClose({ reason, details = {} }) {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: onConnectionOpen,
-  CONNECTION_CLOSE: onConnectionClose
-};
+const watchers = [
+  ["CONNECTION_OPEN", onConnectionOpen],
+  ["CONNECTION_CLOSE", onConnectionClose]
+];
 
 export default rootWatcher(watchers);

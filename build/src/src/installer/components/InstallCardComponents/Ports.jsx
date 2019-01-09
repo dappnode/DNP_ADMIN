@@ -1,5 +1,5 @@
 import React from "react";
-import TableInput from "./TableInput";
+import TableInput from "components/TableInput";
 
 function parsePort(port) {
   // HOST:CONTAINER/type, return [HOST, CONTAINER/type]

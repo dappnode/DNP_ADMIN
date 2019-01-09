@@ -78,10 +78,10 @@ function* logPackage({ kwargs }) {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: listPackages,
-  [t.CALL]: callApi,
-  [t.LOG_PACKAGE]: logPackage
-};
+const watchers = [
+  ["CONNECTION_OPEN", listPackages],
+  [t.CALL, callApi],
+  [t.LOG_PACKAGE, logPackage]
+];
 
 export default rootWatcher(watchers);

@@ -22,8 +22,9 @@ function* getDappnodeStats() {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  [t.GET_DAPPNODE_STATS]: getDappnodeStats
-};
+const watchers = [
+  //
+  [t.GET_DAPPNODE_STATS, getDappnodeStats]
+];
 
 export default rootWatcher(watchers);

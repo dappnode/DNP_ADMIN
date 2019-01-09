@@ -151,8 +151,9 @@ export function* fetchDiskUsage() {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  [t.DIAGNOSE]: runDiagnoses
-};
+const watchers = [
+  //
+  [t.DIAGNOSE, runDiagnoses]
+];
 
 export default rootWatcher(watchers);
