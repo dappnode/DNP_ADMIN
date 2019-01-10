@@ -142,13 +142,15 @@ class Publish extends React.Component {
                       href={`${ipfsGateway}${manifestHash}`}
                       {...newTabProps}
                     >
-                      Open
+                      Open manifest
                     </a>
                     <Link
                       style={{ color: "inherit", textDecoration: "inherit" }}
                       to={`/${installer.constants.NAME}/ipfs:${manifestHash}`}
                     >
-                      <button className="dappnode-btn-outline">Install</button>
+                      <button className="dappnode-btn-outline">
+                        Install DNP
+                      </button>
                     </Link>
                   </div>
                 </div>
