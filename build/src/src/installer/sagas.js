@@ -76,6 +76,8 @@ function getDefaultEnvs(manifest) {
   return defaultEnvs;
 }
 
+// Will set the default envs for a given package
+// ONLY IF IT'S NOT INSTALLED
 export function* updateDefaultEnvs({ id }) {
   try {
     const res = yield call(APIcall.fetchPackageData, { id });
@@ -94,6 +96,17 @@ export function* updateDefaultEnvs({ id }) {
     if (!manifest) {
       throw Error("Missing manifest for updateDefaultEnvs: ", { id, res });
     }
+
+    // Omit if the package is already installed
+    const packageName = manifest.name
+    const installedPackages = yield select(state => state.installedPackages)
+    const isInstalled = installedPackages.find(p => p.name === packageName)
+    if (isInstalled) {
+      console.log(`Omitting updateDefaultEnvs for ${id} as DNP ${packageName} is already installed`)
+      return
+    }
+
+    // Compute the default envs
     const envs = getDefaultEnvs(manifest);
     yield call(updateEnvs, { id, envs });
   } catch (e) {
