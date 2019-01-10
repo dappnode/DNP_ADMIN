@@ -17,7 +17,7 @@ function NoPackageFound(props) {
       </div>
       <div className="row justify-content-center mb-5">
         <a
-          className="btn dappnode-pill"
+          className="dappnode-pill"
           href={PACKAGE_SURVEY_LINK}
           {...newTabProps}
           style={{

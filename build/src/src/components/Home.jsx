@@ -40,7 +40,7 @@ export default class Home extends React.Component {
           </p>
           <p className="lead">
             <a
-              className="btn dappnode-background-color btn-lg"
+              className="dappnode-btn"
               href={SURVEY_LINK}
               role="button"
               {...newTabProps}
