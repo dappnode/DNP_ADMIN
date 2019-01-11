@@ -20,7 +20,7 @@ function NoPackagesYet(props) {
           to={"/" + installer.constants.NAME}
         >
           <button
-            className="btn dappnode-pill"
+            className="dappnode-pill"
             style={{
               backgroundColor: "#ffffff00",
               width: "max-content",

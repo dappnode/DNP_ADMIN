@@ -9,6 +9,7 @@ import activity from "./activity";
 import navbar from "./navbar";
 import dashboard from "./dashboard";
 import troubleshoot from "./troubleshoot";
+import sdk from "./sdk";
 
 const modules = [
   devices,
@@ -19,7 +20,8 @@ const modules = [
   activity,
   navbar,
   dashboard,
-  troubleshoot
+  troubleshoot,
+  sdk
 ];
 
 // notice how we now only export the rootSaga

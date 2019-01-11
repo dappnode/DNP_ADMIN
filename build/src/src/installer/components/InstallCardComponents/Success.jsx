@@ -23,9 +23,7 @@ export default class Success extends React.Component {
               style={{ color: "inherit", textDecoration: "inherit" }}
               to={"/" + packages.constants.NAME + "/" + id}
             >
-              <button className="btn dappnode-background-color">
-                GO TO PACKAGE
-              </button>
+              <button className="dappnode-btn">GO TO PACKAGE</button>
             </Link>
           </div>
         </div>

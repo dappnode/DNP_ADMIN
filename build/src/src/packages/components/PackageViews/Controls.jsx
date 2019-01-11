@@ -21,7 +21,7 @@ export default class PackageControls extends React.Component {
           "Restarting a package will interrupt the service during 1-10s but preserve its data",
         action: this.props.restartPackage,
         availableForCore: true,
-        type: "danger"
+        type: "secondary"
       },
       {
         name: "Remove volumes",
@@ -33,17 +33,8 @@ export default class PackageControls extends React.Component {
       },
       {
         name: "Remove ",
-        text:
-          "Deletes a package permanently. All data not stored in volumes will be lost.",
+        text: "Deletes a package permanently.",
         action: this.props.removePackage,
-        availableForCore: false,
-        type: "danger"
-      },
-      {
-        name: "Remove + data",
-        text:
-          "Deletes a package and all its data permanently. Data stored in volumes will be also deleted",
-        action: this.props.removePackageAndData,
         availableForCore: false,
         type: "danger"
       }

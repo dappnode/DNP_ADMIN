@@ -1,5 +1,5 @@
 import React from "react";
-import TableInput from "./TableInput";
+import TableInput from "components/TableInput";
 
 export default class Envs extends React.Component {
   render() {

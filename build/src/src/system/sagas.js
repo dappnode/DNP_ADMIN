@@ -233,12 +233,12 @@ function* onConnectionOpen(action) {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: onConnectionOpen,
-  [t.CALL]: callApi,
-  [t.LOG_PACKAGE]: logPackage,
-  [t.UPDATE_CORE]: updateCore,
-  [t.SET_STATIC_IP]: setStaticIp
-};
+const watchers = [
+  ["CONNECTION_OPEN", onConnectionOpen],
+  [t.CALL, callApi],
+  [t.LOG_PACKAGE, logPackage],
+  [t.UPDATE_CORE, updateCore],
+  [t.SET_STATIC_IP, setStaticIp]
+];
 
 export default rootWatcher(watchers);

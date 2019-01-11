@@ -42,16 +42,3 @@
   position: relative;
   top: 6px;
 }
-
-/* MOVE THIS TO A GLOBAL CSS */
-
-.dappnode-background-color-outline {
-  color: #2fbcb2;
-  border: 1px solid #2fbcb2 !important;
-  background-color: #ffffff00;
-}
-.dappnode-background-color-outline:hover {
-  color: #218a82;
-  border: 1px solid #218a82 !important;
-  background-color: #ffffff00;
-}
