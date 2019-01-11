@@ -12,6 +12,7 @@ build/src*/build_*
 build/src/build/
 build/src*/dist
 build/src/dist/
+build_*/
 
 # misc
 .DS_Store
