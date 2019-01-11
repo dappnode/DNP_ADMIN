@@ -3,6 +3,7 @@ import * as selector from "../selectors";
 import { connect } from "react-redux";
 import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
+import confirmVolumeRemove from "packages/components/confirmVolumeRemove";
 // Components
 import Controls from "./SystemViews/Controls";
 // Packages
@@ -42,7 +43,9 @@ class SystemInterface extends React.Component {
         <Controls
           state={pkg.state}
           restartPackage={() => this.props.restartPackage(id)}
-          restartPackageVolumes={() => this.props.restartPackageVolumes(id)}
+          restartPackageVolumes={() =>
+            confirmVolumeRemove(id, this.props.restartPackageVolumes)
+          }
         />
       </div>
     );

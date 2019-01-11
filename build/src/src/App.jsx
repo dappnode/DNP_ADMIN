@@ -16,6 +16,7 @@ import packages from "./packages";
 import system from "./system";
 import navbar from "./navbar";
 import troubleshoot from "./troubleshoot";
+import sdk from "./sdk";
 
 // Redux
 import { ToastContainer } from "react-toastify";
@@ -27,7 +28,8 @@ const modules = [
   packages,
   system,
   activity,
-  troubleshoot
+  troubleshoot,
+  sdk
 ];
 
 export default class App extends React.Component {
@@ -44,14 +46,17 @@ export default class App extends React.Component {
           <div className="container-fluid app-content">
             <ErrorBoundary>
               <Notifications />
+              {/* Home, exact path home */}
               <Route exact path="/" component={Home} />
-              {modules.map((_module, i) => (
-                <Route
-                  key={i}
-                  path={"/" + _module.constants.NAME}
-                  component={_module.component}
-                />
-              ))}
+              {/* Create a route for each module */}
+              {modules.map(_module => {
+                const RootComponent = _module.component;
+                const id = _module.constants.NAME;
+                return (
+                  <Route key={id} path={`/${id}`} component={RootComponent} />
+                );
+              })}
+              {/* Dedicated routes for non-module components */}
               <Route path={"/nonadmin"} component={NonAdmin} />
             </ErrorBoundary>
           </div>

@@ -79,7 +79,7 @@ class Card extends React.Component {
                     {fromIpfs ? ipfsBadge : keywords}
                   </div>
                   <button
-                    className="btn dappnode-pill"
+                    className="dappnode-pill"
                     type="submit"
                     style={{ textTransform: "uppercase", marginTop: "12px" }}
                     disabled={disable}

@@ -37,10 +37,10 @@ function* callApi({ method, kwargs, message }) {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: fetchDevices,
-  FETCH_DEVICES: fetchDevices,
-  [t.CALL]: callApi
-};
+const watchers = [
+  ["CONNECTION_OPEN", fetchDevices],
+  ["FETCH_DEVICES", fetchDevices],
+  [t.CALL, callApi]
+];
 
 export default rootWatcher(watchers);

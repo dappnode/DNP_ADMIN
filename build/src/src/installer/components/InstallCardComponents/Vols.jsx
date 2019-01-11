@@ -1,5 +1,5 @@
 import React from "react";
-import TableInput from "./TableInput";
+import TableInput from "components/TableInput";
 
 function parseVol(vol) {
   // HOST:CONTAINER:accessMode, return [HOST, CONTAINER:accessMode]

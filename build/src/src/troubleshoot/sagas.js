@@ -93,7 +93,31 @@ export function* runDiagnoses() {
 
 export function* fetchInfo() {
   yield call(assertConnectionOpen);
-  yield all([call(fetchPackages), call(fetchDiskUsage)]);
+  yield all([
+    call(fetchPackages),
+    call(fetchDiskUsage),
+    call(diagnoseCallDappmanager)
+  ]);
+}
+
+function capitalize(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function* diagnoseCallDappmanager() {
+  console.log("calling diagnose");
+  try {
+    const res = yield call(APIcall.diagnose);
+    if (!res.success)
+      throw Error("Unsuccessful reponse to diagnose: " + res.message);
+    for (const itemId of Object.keys(res.result)) {
+      const item = res.result[itemId];
+      item.name = capitalize(item.name);
+      yield put(a.updateSystemInfo(itemId, item));
+    }
+  } catch (e) {
+    console.error(`Error calling dappmanager's diagnose`, e);
+  }
 }
 
 export function* fetchPackages() {
@@ -112,7 +136,12 @@ export function* fetchDiskUsage() {
     const res = yield call(APIcall.getStats);
     if (!res.success || (res.success && !res.result))
       throw Error("Unsuccessful reponse to getStats: " + res.message);
-    yield put(a.updateInfo("diskUsage", res.result.disk));
+    yield put(
+      a.updateSystemInfo("diskUsage", {
+        name: "Disk usage",
+        result: res.result.disk
+      })
+    );
   } catch (e) {
     console.error("Error fetching installed packages", e);
   }
@@ -122,8 +151,9 @@ export function* fetchDiskUsage() {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  [t.DIAGNOSE]: runDiagnoses
-};
+const watchers = [
+  //
+  [t.DIAGNOSE, runDiagnoses]
+];
 
 export default rootWatcher(watchers);

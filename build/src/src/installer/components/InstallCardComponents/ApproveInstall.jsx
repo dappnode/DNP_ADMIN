@@ -195,13 +195,11 @@ class ApproveInstallView extends React.Component {
               style={{ color: "inherit", textDecoration: "inherit" }}
               to={"/" + packages.constants.NAME + "/" + this.props.id}
             >
-              <button className="btn dappnode-background-color">
-                GO TO PACKAGE
-              </button>
+              <button className="dappnode-btn">GO TO PACKAGE</button>
             </Link>
           ) : (
             <button
-              className="btn dappnode-background-color"
+              className="dappnode-btn"
               onClick={this.approveInstall}
               disabled={!installAvailable}
             >

@@ -4,6 +4,7 @@ import Devices from "Icons/Devices";
 import Folder from "Icons/Folder";
 import NewFolder from "Icons/NewFolder";
 import Settings from "Icons/Settings";
+import Build from "Icons/Build";
 
 // NAVBAR
 // This will be used later in the root reducer and selectors
@@ -39,5 +40,10 @@ export const navbarItems = [
     name: "System",
     href: "/system",
     icon: Settings
+  },
+  {
+    name: "Sdk",
+    href: "/sdk",
+    icon: Build
   }
 ];

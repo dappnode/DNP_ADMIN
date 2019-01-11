@@ -43,10 +43,10 @@ function* removeDappmanagerNotifications() {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: fetchVpnParams,
-  FETCH_DAPPNODE_PARAMS: fetchVpnParams,
-  [t.VIEWED_NOTIFICATIONS]: removeDappmanagerNotifications
-};
+const watchers = [
+  ["CONNECTION_OPEN", fetchVpnParams],
+  ["FETCH_DAPPNODE_PARAMS", fetchVpnParams],
+  [t.VIEWED_NOTIFICATIONS, removeDappmanagerNotifications]
+];
 
 export default rootWatcher(watchers);
