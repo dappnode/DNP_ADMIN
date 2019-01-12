@@ -60,16 +60,17 @@ export default class NavbarTopDropdownMessages extends React.Component {
 
     // Compute the color of the circle next to the icon
     let globalType = "light"; // Light is a white circle
-    let messageTypes = this.props.messages
+    const messageTypes = this.props.messages
       .filter(message => !message.viewed)
       .map(message => message.type || "");
     if (messageTypes.includes("danger")) globalType = "danger";
     else if (messageTypes.includes("warning")) globalType = "warning";
     else if (messageTypes.includes("success")) globalType = "success";
 
-    let listItems = this.props.messages.map((message, i) => {
-      let type = message.type || "default";
-      let rightText = message.rightText || "";
+    const listItems = this.props.messages.map((message, i) => {
+      const type = message.type || "default";
+      const rightText = message.rightText || "";
+      const progress = message.progress || 0;
       return (
         <div key={i}>
           <div className="dropdown-divider" />
@@ -80,7 +81,7 @@ export default class NavbarTopDropdownMessages extends React.Component {
             <span className="small float-right text-muted">{rightText}</span>
             <div className="dropdown-message small">{message.body}</div>
 
-            {message.progress ? (
+            {progress ? (
               <div className="dropdown-message small">
                 <div
                   className="progress"
@@ -91,7 +92,7 @@ export default class NavbarTopDropdownMessages extends React.Component {
                     margin: 0
                   }}
                 >
-                  {progressBar(Math.round(100 * message.progress))}
+                  {progressBar(Math.floor(100 * progress))}
                 </div>
                 <div
                   className="text-center"
@@ -100,7 +101,7 @@ export default class NavbarTopDropdownMessages extends React.Component {
                     bottom: "14px"
                   }}
                 >
-                  {`${Math.round(100 * message.progress)} %`}
+                  {`${Number.parseFloat(100 * progress).toFixed(2)} %`}
                 </div>
               </div>
             ) : null}
