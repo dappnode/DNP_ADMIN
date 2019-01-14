@@ -9,49 +9,49 @@
 export default {
   // installPackage
   // > kwargs: { id }
-  // > result: {}
+  // > result: -
   installPackage: {
       manadatoryKwargs: ["id"]
   },
 
   // installPackageSafe
   // > kwargs: { id }
-  // > result: {}
+  // > result: -
   installPackageSafe: {
       manadatoryKwargs: ["id"]
   },
 
   // removePackage:
   // > kwargs: { id, deleteVolumes }
-  // > result: {}
+  // > result: -
   removePackage: {
     manadatoryKwargs: ["id", "deleteVolumes"]
   },
 
   // togglePackage:
   // > kwargs: { id, timeout }
-  // > result: {}
+  // > result: -
   togglePackage: {
     manadatoryKwargs: ["id"]
   },
 
   // restartPackage:
   // > kwargs: { id }
-  // > result: {}
+  // > result: -
   restartPackage: {
     manadatoryKwargs: ["id"]
   },
 
   // restartPackageVolumes:
   // > kwargs: { id, deleteVolumes }
-  // > result: {}
+  // > result: -
   restartPackageVolumes: {
     manadatoryKwargs: ["id"]
   },
 
   // updatePackageEnv:
   // > kwargs: { id, envs, restart, isCORE }
-  // > result: {}
+  // > result: -
   updatePackageEnv: {
     manadatoryKwargs: ["id", "envs", "restart"]
   },
@@ -65,7 +65,7 @@ export default {
 
   // managePorts:
   // > kwargs: { ports, logId }
-  // > result: {}
+  // > result: -
   managePorts: {
     manadatoryKwargs: ["ports", "action"]
   },
@@ -162,7 +162,7 @@ export default {
 
   // requestChainData:
   // > kwargs: {}
-  // > result: {}
+  // > result: -
   requestChainData: {},
 
   // notificationsGet:
@@ -182,7 +182,7 @@ export default {
   // notificationsRemove:
   // > kwargs: { ids }
   //   ids = [ "notification-id1", "notification-id2" ]
-  // > result: {}
+  // > result: -
   notificationsRemove: {
     manadatoryKwargs: ["ids"]
   },
