@@ -7,8 +7,6 @@ import "./adminBadge.css";
 
 new ClipboardJS(".btn");
 
-const ADMIN_STATIC_IP_PREFIX = "172.33.10.";
-
 class Row extends React.Component {
   removeDevice(id) {
     confirmAlert({
@@ -29,10 +27,7 @@ class Row extends React.Component {
 
   render() {
     const device = this.props.device;
-    const url = device.url || "";
-    const id = device.name || device.id || "";
-    const ip = device.ip || "";
-    const isAdmin = device.admin || device.ip.includes(ADMIN_STATIC_IP_PREFIX);
+    const { id, url, isAdmin, ip } = device;
 
     const margin = "5px";
     const padding = "0.7rem";

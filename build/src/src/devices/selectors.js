@@ -24,7 +24,19 @@ function stringsEqual(s1, s2) {
 
 export const local = state => state[NAME];
 
-export const getDevices = state => Object.values(local(state).devices);
+const ADMIN_STATIC_IP_PREFIX = "172.33.10.";
+
+// Make devices backwards compatible
+export const getDevices = state => Object.values(local(state).devices).map(device => ({
+  ...device,
+  id: "id" in device ? device.id : device.name,
+  url: "url" in device ? device.url : device.otp,
+  isAdmin: "admin" in device 
+    ? device.admin 
+    : "ip" in device 
+      ? device.ip.includes(ADMIN_STATIC_IP_PREFIX) 
+      : false
+}));
 export const getFetching = state => local(state).fetching;
 
 export const getDevicesWithoutGuest = state => 

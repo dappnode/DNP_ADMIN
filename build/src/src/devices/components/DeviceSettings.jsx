@@ -9,8 +9,8 @@ import { guestsName, guestsIpRange } from "../constants";
 
 class DevicesSettings extends React.Component {
   render() {
-    const id = this.props.match.params.id;
-    const device = this.props.deviceList.find(device => device.name === id);
+    const idUrl = this.props.match.params.id;
+    const device = this.props.deviceList.find(d => d.id === idUrl) || {};
 
     const margin = "5px";
     const padding = "0.7rem";
@@ -19,13 +19,9 @@ class DevicesSettings extends React.Component {
     //   renderAs="svg"
     //   style={{ width: "100%", height: "100%" }}
     // />
-    const name = (device || {}).name || "Device not found";
-    const url = (device || {}).url || "";
-    const ip = (device || {}).ip || "";
-    const isAdmin = ip.startsWith("172.33.10.");
-
-    const ipField = device
-      ? name === guestsName
+    const { id, url, isAdmin, ip } = device;
+    const ipField = id
+      ? id === guestsName
         ? guestsIpRange
         : ip
       : "Go back to the device list";
@@ -34,13 +30,13 @@ class DevicesSettings extends React.Component {
       <div>
         <div className="section-title">
           <span style={{ opacity: 0.3, fontWeight: 300 }}>Devices </span>
-          {name}
+          {id || "Device not found"}
         </div>
         <div className="card mb-3" id={id}>
           <div className="card-body" style={{ padding }}>
             <div>
               <div className="float-left" style={{ margin, width: "200px" }}>
-                <h5 className="card-title">{name}</h5>
+                <h5 className="card-title">{id}</h5>
                 <p className="card-text">
                   {ipField && <span className="ipBadge">{ipField}</span>}
                   {isAdmin && <span className="adminBadge">ADMIN</span>}
@@ -62,13 +58,13 @@ class DevicesSettings extends React.Component {
             </div>
 
             <div style={{ maxWidth: "400px", margin }}>
-              {device ? (
+              {url && (
                 <QRCode
                   value={url}
                   renderAs="svg"
                   style={{ width: "100%", height: "100%" }}
                 />
-              ) : null}
+              )}
             </div>
           </div>
         </div>
