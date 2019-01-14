@@ -15,6 +15,6 @@ export default generateActionTypes(NAME, [
   "REMOVE",
   "TOGGLE_ADMIN",
   "UPDATE",
-  "FETCH_DEVICES",
+  "LIST_DEVICES",
   "UPDATE_FETCHING"
 ]);

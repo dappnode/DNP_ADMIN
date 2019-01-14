@@ -11,7 +11,7 @@ import resolveEns from "./sagaUtils/resolveEns";
 import apm from "./sagaUtils/apm";
 import connectToMetamask from "./sagaUtils/connectToMetamask";
 import executePublishTx from "./sagaUtils/executePublishTx";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import assertConnectionOpen from "utils/assertConnectionOpen";
 
 // getRegistry("dnp.dappnode.eth");

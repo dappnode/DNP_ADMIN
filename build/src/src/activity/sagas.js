@@ -1,7 +1,7 @@
 // DASHBOARD
 import { call, put } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 
 /***************************** Subroutines ************************************/
