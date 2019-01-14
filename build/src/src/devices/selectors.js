@@ -1,5 +1,10 @@
 import { NAME, guestsName } from "./constants";
 
+function stringsEqual(s1, s2) {
+  if (!s1 || !s2) return false
+  return String(s1).toLowerCase() === String(s2).toLowerCase()
+}
+
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
 // are always present.
@@ -19,14 +24,11 @@ import { NAME, guestsName } from "./constants";
 
 export const local = state => state[NAME];
 
-export const getDevices = state => local(state).devices;
+export const getDevices = state => Object.values(local(state).devices);
 export const getFetching = state => local(state).fetching;
 
-export const getDevicesWithoutGuest = state =>
-  getDevices(state).filter(
-    u => (u.name || "").toLowerCase() !== guestsName.toLowerCase()
-  );
+export const getDevicesWithoutGuest = state => 
+  getDevices(state).filter(d => !stringsEqual(d.name, guestsName));
+  
 export const getGuestUsersDevice = state =>
-  getDevices(state).find(
-    u => (u.name || "").toLowerCase() === guestsName.toLowerCase()
-  );
+  getDevices(state).find(d => stringsEqual(d.name, guestsName));

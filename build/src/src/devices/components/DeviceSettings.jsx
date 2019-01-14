@@ -19,16 +19,16 @@ class DevicesSettings extends React.Component {
     //   renderAs="svg"
     //   style={{ width: "100%", height: "100%" }}
     // />
-    const name = device ? device.name : "Device not found";
-    const url = device ? device.otp || "" : null;
-    let ip = device ? device.ip || "" : "Go back to the device list";
-    const badge = ip.startsWith("172.33.10.") ? (
-      <span className="adminBadge">ADMIN</span>
-    ) : null;
+    const name = (device || {}).name || "Device not found";
+    const url = (device || {}).url || "";
+    const ip = (device || {}).ip || "";
+    const isAdmin = ip.startsWith("172.33.10.");
 
-    if (name === guestsName) {
-      ip = guestsIpRange;
-    }
+    const ipField = device
+      ? name === guestsName
+        ? guestsIpRange
+        : ip
+      : "Go back to the device list";
 
     return (
       <div>
@@ -42,8 +42,8 @@ class DevicesSettings extends React.Component {
               <div className="float-left" style={{ margin, width: "200px" }}>
                 <h5 className="card-title">{name}</h5>
                 <p className="card-text">
-                  {ip}
-                  {badge}
+                  {ipField && <span className="ipBadge">{ipField}</span>}
+                  {isAdmin && <span className="adminBadge">ADMIN</span>}
                 </p>
               </div>
               <div>

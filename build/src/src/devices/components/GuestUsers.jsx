@@ -35,7 +35,7 @@ export default class GuestUsers extends React.Component {
       ip: guestsIpRange
     };
 
-    let url = device.otp || "";
+    let url = device.url || "";
     let id = device.name || "";
     let ip = device.ip || "";
 
