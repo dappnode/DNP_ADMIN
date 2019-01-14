@@ -1,7 +1,7 @@
 import { put, call } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import assertConnectionOpen from "utils/assertConnectionOpen";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import * as a from "./actions";
 import t from "./actionTypes";
 
