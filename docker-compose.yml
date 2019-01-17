@@ -7,12 +7,17 @@ networks:
                 -
                     subnet: 172.33.0.0/16
 services:
-    admin.dnp.dappnode.eth:
-        build: ./build
-        image: 'admin.dnp.dappnode.eth:0.1.16'
-        container_name: DAppNodeCore-admin.dnp.dappnode.eth
-        restart: always
-        dns: 172.33.1.2
-        networks:
-            network:
-                ipv4_address: 172.33.1.9
+  admin.dnp.dappnode.eth:
+    build: ./build
+    image: admin.dnp.dappnode.eth:0.1.14
+    container_name: DAppNodeCore-admin.dnp.dappnode.eth
+    restart: always
+    dns: 172.33.1.2
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - ./cred:/usr/www/openvpn/cred
+    networks:
+      network:
+        ipv4_address: 172.33.1.9
