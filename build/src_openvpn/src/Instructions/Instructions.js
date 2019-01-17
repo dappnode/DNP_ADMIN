@@ -16,6 +16,15 @@ const Instructions = ({ name, client = {} }) => (
       />
     </p>
 
+    <div className="mt-3">
+      <a
+        className="btn btn-primary dappnode-background-color"
+        href={client.url}
+      >
+        INSTALL
+      </a>
+    </div>
+
     <div>
       <img
         src={client.banner}
@@ -25,15 +34,6 @@ const Instructions = ({ name, client = {} }) => (
           margin: "15px 0px"
         }}
       />
-    </div>
-
-    <div>
-      <a
-        className="btn btn-primary dappnode-background-color"
-        href={client.url}
-      >
-        INSTALL
-      </a>
     </div>
   </div>
 );
