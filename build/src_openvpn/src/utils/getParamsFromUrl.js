@@ -1,12 +1,19 @@
+// Expected format
+// http://origin/id#key
+// - id: is an alphanumeric identifier
+// - key: base64 encoded string
+// 
+// http://origin/7e00cfadbe61f2ed#mc5pGQQ4VbbuWJDayJD0kXsElAUddmUktJYUYSDNaDE=
+
 export default function getParamsFromUrl() {
-  const href = window.location.href;
-  if (!href.includes("#") || !href.includes("&")) {
-    throw Error("Invalid url, no # & characters found");
-  }
-  const hash = href.split("#")[1];
-  const [id, key] = hash.split("&");
-  if (!id || !key) {
-    throw Error("Invalid url, no id or key params found");
-  }
+  const id = clean(window.location.pathname)
+  const key = clean(window.location.hash)
+  if (!id) throw Error('No valid id provided. Url must be http://origin/id#key')
+  if (!key) throw Error('No valid key provided. Url must be http://origin/id#key')
   return { key, id };
+}
+
+function clean(s) {
+  if (!s) return s
+  return s.trim().replace('/', '').replace('#', '')
 }
