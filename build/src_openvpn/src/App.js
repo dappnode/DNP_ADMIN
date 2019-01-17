@@ -29,6 +29,12 @@ import {
   FaChrome
 } from "react-icons/lib/fa";
 
+// Recommended clients
+// MacOS -> Tunnelblick https://tunnelblick.net/
+// iOS -> OpenVPN Connect https://itunes.apple.com/us/app/openvpn-connect/id590379981?mt=8
+// Windows -> OpenVPN (community installer) https://openvpn.net/community-downloads/
+// Android -> OpenVPN for Android (?) https://play.google.com/store/apps/details?id=de.blinkt.openvpn&hl=en
+
 const options = [
   {
     name: "MacOS",
@@ -99,12 +105,6 @@ const options = [
     }
   }
 ];
-
-// Recommended clients
-// MacOS -> Tunnelblick https://tunnelblick.net/
-// iOS -> OpenVPN Connect https://itunes.apple.com/us/app/openvpn-connect/id590379981?mt=8
-// Windows -> OpenVPN (community installer) https://openvpn.net/community-downloads/
-// Android -> OpenVPN for Android (?) https://play.google.com/store/apps/details?id=de.blinkt.openvpn&hl=en
 
 const baseUrl = window.location.origin;
 const type = "application/x-openvpn-profile";

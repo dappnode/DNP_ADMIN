@@ -2,7 +2,7 @@ FROM node as build-deps-adminui
 WORKDIR /usr/src/app
 # ensuring both package.json AND package-lock.json are copied
 COPY src/package*.json ./
-COPY src/yarn.lock ./
+COPY src/*lock* ./
 # install dependencies
 RUN yarn install --production
 # copy the contents of the app
@@ -14,7 +14,7 @@ FROM node as build-deps-openvpn
 WORKDIR /usr/src/app
 # ensuring both package.json AND package-lock.json are copied
 COPY src_openvpn/package*.json ./
-COPY src_openvpn/yarn.lock ./
+COPY src_openvpn/*lock* ./
 # install dependencies
 RUN yarn install --production
 # copy the contents of the app
