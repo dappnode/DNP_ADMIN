@@ -1,6 +1,6 @@
 import { call, put, fork } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
 import semver from "semver";
@@ -195,7 +195,7 @@ function* setStaticIp({ staticIp }) {
     const res = yield call(APIcall.setStaticIp, { staticIp });
     pendingToast.resolve(res);
     yield put({ type: "FETCH_DAPPNODE_PARAMS" });
-    yield put({ type: "FETCH_DEVICES" });
+    yield put({ type: "LIST_DEVICES" });
     yield put({
       type: navbar.actionTypes.PUSH_NOTIFICATION,
       notification: {
@@ -214,7 +214,7 @@ function* setStaticIp({ staticIp }) {
 
 function* getStaticIp() {
   try {
-    const res = yield call(APIcall.getVpnParams);
+    const res = yield call(APIcall.getParams);
     const { staticIp } = (res || {}).result || {};
     yield put(a.updateStaticIp(staticIp));
     yield put(a.updateStaticIpInput(staticIp));
@@ -233,12 +233,12 @@ function* onConnectionOpen(action) {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: onConnectionOpen,
-  [t.CALL]: callApi,
-  [t.LOG_PACKAGE]: logPackage,
-  [t.UPDATE_CORE]: updateCore,
-  [t.SET_STATIC_IP]: setStaticIp
-};
+const watchers = [
+  ["CONNECTION_OPEN", onConnectionOpen],
+  [t.CALL, callApi],
+  [t.LOG_PACKAGE, logPackage],
+  [t.UPDATE_CORE, updateCore],
+  [t.SET_STATIC_IP, setStaticIp]
+];
 
 export default rootWatcher(watchers);

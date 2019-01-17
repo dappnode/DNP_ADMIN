@@ -1,6 +1,6 @@
 import { call, put } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
 import Toast from "components/Toast";
@@ -78,10 +78,10 @@ function* logPackage({ kwargs }) {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: listPackages,
-  [t.CALL]: callApi,
-  [t.LOG_PACKAGE]: logPackage
-};
+const watchers = [
+  ["CONNECTION_OPEN", listPackages],
+  [t.CALL, callApi],
+  [t.LOG_PACKAGE, logPackage]
+];
 
 export default rootWatcher(watchers);

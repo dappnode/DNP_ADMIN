@@ -1,7 +1,7 @@
 import { call, all, fork, put, take, race, select } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import assertConnectionOpen from "utils/assertConnectionOpen";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
 import diagnoses from "./diagnoses";
@@ -151,8 +151,9 @@ export function* fetchDiskUsage() {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  [t.DIAGNOSE]: runDiagnoses
-};
+const watchers = [
+  //
+  [t.DIAGNOSE, runDiagnoses]
+];
 
 export default rootWatcher(watchers);

@@ -1,15 +1,29 @@
 import { call, put } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import Toast from "components/Toast";
 
 /***************************** Subroutines ************************************/
 
-export function* fetchDevices() {
+export function* getDeviceCredentials({id}) {
+  try {
+    const res = yield call(APIcall.getDeviceCredentials, {id});
+    // const res = {success: true, result: {url: 'asda'}}
+    if (res.success) {
+      yield put({ type: t.UPDATE_DEVICE, id, data: res.result });
+    } else {
+      new Toast(res);
+    }
+  } catch (e) {
+    console.error("Error listing devices: ", e);
+  }
+}
+
+export function* listDevices() {
   try {
     yield put({ type: t.UPDATE_FETCHING, fetching: true });
-    const res = yield call(APIcall.fetchDevices);
+    const res = yield call(APIcall.listDevices);
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
 
     if (res.success) {
@@ -30,17 +44,18 @@ function* callApi({ method, kwargs, message }) {
   } catch (error) {
     console.error("Error on " + method + ": ", error);
   }
-  yield call(fetchDevices);
+  yield call(listDevices);
 }
 
 /******************************* Watchers *************************************/
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: fetchDevices,
-  FETCH_DEVICES: fetchDevices,
-  [t.CALL]: callApi
-};
+const watchers = [
+  ["CONNECTION_OPEN", listDevices],
+  [t.GET_DEVICE_CREDENTIALS, getDeviceCredentials],
+  ["LIST_DEVICES", listDevices],
+  [t.CALL, callApi]
+];
 
 export default rootWatcher(watchers);

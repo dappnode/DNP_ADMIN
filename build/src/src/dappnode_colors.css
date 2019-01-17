@@ -1,0 +1,120 @@
+/* DAppNode colored round button */
+
+.dappnode-pill {
+  color: white;
+  background-color: #2fbcb2;
+  font-weight: 500;
+  width: 92px;
+  padding: 3px 8px !important;
+  border-radius: 50px !important;
+  /* Borrowed from bootstrap v4 btn class */
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-transition: color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  -o-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
+}
+.dappnode-pill:hover {
+  color: white;
+  background-color: #218a82;
+}
+.dappnode-pill:disabled {
+  color: white;
+  background-color: #868e8e;
+}
+
+/* DAppNode colored normal button */
+
+.dappnode-btn {
+  color: white;
+  border: 0px solid #2fbcb2 !important;
+  background-color: #2fbcb2;
+  /* Borrowed from bootstrap v4 btn class */
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  -webkit-text-decoration-skip: objects;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-transition: color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  -o-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
+}
+.dappnode-btn:hover {
+  color: white;
+  border: 0px solid #218a82;
+  background-color: #218a82;
+  text-decoration: none;
+  -webkit-text-decoration-skip: objects;
+}
+.dappnode-btn:disabled {
+  color: white;
+  border: 0px solid #9cc7c4;
+  background-color: #9cc7c4;
+}
+
+.dappnode-btn-outline {
+  color: #2fbcb2;
+  border: 1px solid #2fbcb2 !important;
+  background-color: transparent;
+  /* Borrowed from bootstrap v4 btn class */
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  -webkit-text-decoration-skip: objects;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-transition: color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  -o-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
+}
+.dappnode-btn-outline:hover {
+  color: #218a82;
+  border: 0px solid #218a82;
+  text-decoration: none;
+  -webkit-text-decoration-skip: objects;
+}
+.dappnode-btn-outline:disabled {
+  color: #9cc7c4;
+  border: 0px solid #9cc7c4;
+}

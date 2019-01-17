@@ -1,6 +1,6 @@
 import { call, put, select, take, fork } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
 import * as s from "./selectors";
@@ -10,12 +10,13 @@ import { shortName } from "utils/format";
 import isSyncing from "utils/isSyncing";
 import { idToUrl, isIpfsHash } from "./utils";
 import uniqArray from "utils/uniqArray";
+import assertConnectionOpen from "utils/assertConnectionOpen";
 
 /***************************** Subroutines ************************************/
 
 export function* shouldOpenPorts() {
   try {
-    const res = yield call(APIcall.getStatusUpnp);
+    const res = yield call(APIcall.statusUPnP);
     if (res.success) {
       yield put({
         type: t.SHOULD_OPEN_PORTS,
@@ -75,6 +76,8 @@ function getDefaultEnvs(manifest) {
   return defaultEnvs;
 }
 
+// Will set the default envs for a given package
+// ONLY IF IT'S NOT INSTALLED
 export function* updateDefaultEnvs({ id }) {
   try {
     const res = yield call(APIcall.fetchPackageData, { id });
@@ -93,6 +96,17 @@ export function* updateDefaultEnvs({ id }) {
     if (!manifest) {
       throw Error("Missing manifest for updateDefaultEnvs: ", { id, res });
     }
+
+    // Omit if the package is already installed
+    const packageName = manifest.name
+    const installedPackages = yield select(state => state.installedPackages)
+    const isInstalled = installedPackages.find(p => p.name === packageName)
+    if (isInstalled) {
+      console.log(`Omitting updateDefaultEnvs for ${id} as DNP ${packageName} is already installed`)
+      return
+    }
+
+    // Compute the default envs
     const envs = getDefaultEnvs(manifest);
     yield call(updateEnvs, { id, envs });
   } catch (e) {
@@ -191,10 +205,7 @@ export function* fetchDirectory() {
 export function* fetchPackageRequest({ id }) {
   try {
     // If connection is not open yet, wait for it to open.
-    const connectionOpen = yield select(s.connectionOpen);
-    if (!connectionOpen) {
-      yield take("CONNECTION_OPEN");
-    }
+    yield call(assertConnectionOpen);
 
     // If chain is not synced yet, cancel request.
     if (id && !id.includes("ipfs/")) {
@@ -255,10 +266,7 @@ export function* fetchPackageRequest({ id }) {
 export function* fetchPackageData({ id }) {
   try {
     // If connection is not open yet, wait for it to open.
-    const connectionOpen = yield select(s.connectionOpen);
-    if (!connectionOpen) {
-      yield take("CONNECTION_OPEN");
-    }
+    yield call(assertConnectionOpen);
     const res = yield call(APIcall.fetchPackageData, { id });
     // Abort on error
     if (!res.success) {
@@ -297,10 +305,7 @@ export function* fetchPackageData({ id }) {
 function* diskSpaceAvailable({ path }) {
   try {
     // If connection is not open yet, wait for it to open.
-    const connectionOpen = yield select(s.connectionOpen);
-    if (!connectionOpen) {
-      yield take("CONNECTION_OPEN");
-    }
+    yield call(assertConnectionOpen);
     const res = yield call(APIcall.diskSpaceAvailable, { path });
     // Abort on error
     if (!res.success) {
@@ -330,15 +335,15 @@ function* onConnectionOpen(action) {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: onConnectionOpen,
-  [t.UPDATE_DEFAULT_ENVS]: updateDefaultEnvs,
-  [t.FETCH_PACKAGE_DATA]: fetchPackageData,
-  [t.FETCH_PACKAGE_REQUEST]: fetchPackageRequest,
-  [t.INSTALL]: install,
-  [t.UPDATE_ENV]: updateEnvs,
-  [t.MANAGE_PORTS]: managePorts,
-  [t.DISK_SPACE_AVAILABLE]: diskSpaceAvailable
-};
+const watchers = [
+  ["CONNECTION_OPEN", onConnectionOpen],
+  [t.UPDATE_DEFAULT_ENVS, updateDefaultEnvs],
+  [t.FETCH_PACKAGE_DATA, fetchPackageData],
+  [t.FETCH_PACKAGE_REQUEST, fetchPackageRequest],
+  [t.INSTALL, install],
+  [t.UPDATE_ENV, updateEnvs],
+  [t.MANAGE_PORTS, managePorts],
+  [t.DISK_SPACE_AVAILABLE, diskSpaceAvailable]
+];
 
 export default rootWatcher(watchers);

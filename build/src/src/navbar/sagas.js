@@ -1,13 +1,13 @@
 import { put, call, select } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import * as a from "./actions";
 import t from "./actionTypes";
 import * as selector from "./selectors";
 
 function* fetchVpnParams() {
   try {
-    const res = yield call(APIcall.getVpnParams);
+    const res = yield call(APIcall.getParams);
     if (res.success) {
       const result = res.result || {};
       yield put(
@@ -43,10 +43,10 @@ function* removeDappmanagerNotifications() {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = {
-  CONNECTION_OPEN: fetchVpnParams,
-  FETCH_DAPPNODE_PARAMS: fetchVpnParams,
-  [t.VIEWED_NOTIFICATIONS]: removeDappmanagerNotifications
-};
+const watchers = [
+  ["CONNECTION_OPEN", fetchVpnParams],
+  ["FETCH_DAPPNODE_PARAMS", fetchVpnParams],
+  [t.VIEWED_NOTIFICATIONS, removeDappmanagerNotifications]
+];
 
 export default rootWatcher(watchers);

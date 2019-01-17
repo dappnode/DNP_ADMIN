@@ -8,7 +8,7 @@ RUN yarn install --production
 # copy the contents of the app
 COPY src .
 # build for production
-RUN yarn run build
+RUN npm run build
 
 FROM node as build-deps-openvpn
 WORKDIR /usr/src/app

@@ -26,39 +26,6 @@
   opacity: 0.5;
 }
 
-.dappnode-pill {
-  color: white;
-  background-color: #2fbcb2;
-  font-weight: 500;
-  width: 92px;
-  padding: 3px 8px !important;
-  border-radius: 50px !important;
-}
-.dappnode-pill:hover {
-  color: white;
-  background-color: #218a82;
-}
-.dappnode-pill:disabled {
-  color: white;
-  background-color: #868e8e;
-}
-
-.dappnode-background-color {
-  color: white;
-  border: 0px solid #2fbcb2 !important;
-  background-color: #2fbcb2;
-}
-.dappnode-background-color:hover {
-  color: white;
-  border: 0px solid #218a82;
-  background-color: #218a82;
-}
-.dappnode-background-color:disabled {
-  color: white;
-  border: 0px solid #9cc7c4;
-  background-color: #9cc7c4;
-}
-
 .card-max-width {
   max-width: 18rem;
 }

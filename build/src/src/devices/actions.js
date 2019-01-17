@@ -36,7 +36,12 @@ export const resetGuestUsersPassword = () => ({
   kwargs: {}
 });
 
-export const fetchDevices = id => ({
-  type: t.FETCH_DEVICES,
+export const getDeviceCredentials = id => ({
+  type: t.GET_DEVICE_CREDENTIALS,
+  id
+})
+
+export const listDevices = id => ({
+  type: t.LIST_DEVICES,
   id
 });

@@ -1,5 +1,5 @@
 import store from "../store";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import navbar from "navbar";
 import Toast from "components/Toast";
 
@@ -30,7 +30,7 @@ export default function initialCalls(session) {
 
 async function initialFetchDevices() {
   store.dispatch(updateFetching("devices", true));
-  const res = await APIcall.fetchDevices();
+  const res = await APIcall.listDevices();
   store.dispatch(updateFetching("devices", false));
   if (res.success) {
     console.log("Initial devices", res.result);
