@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Route, NavLink as Link } from "react-router-dom";
+import saveAs from 'file-saver';
 // General components
 import HiddenRedirector from "./HiddenRedirector";
 // Platform dedicated components
@@ -28,6 +29,8 @@ import {
   FaLinux,
   FaChrome
 } from "react-icons/lib/fa";
+
+window.saveAs = saveAs
 
 // Recommended clients
 // MacOS -> Tunnelblick https://tunnelblick.net/
@@ -107,7 +110,8 @@ const options = [
 ];
 
 const baseUrl = window.location.origin;
-const type = "application/x-openvpn-profile";
+const ovpnType = "application/x-openvpn-profile";
+const filename = "sample.ovpn"
 
 export default class App extends Component {
   constructor(props) {
@@ -147,6 +151,7 @@ export default class App extends Component {
 
   render() {
     const { file, error, loading } = this.state;
+    const blob = new Blob([file], {type: ovpnType});
 
     // <item.icon />
 
@@ -171,8 +176,7 @@ export default class App extends Component {
               </h6>
               <button
                 className="btn btn-primary dappnode-background-color"
-                href={window.URL.createObjectURL(new Blob([file], { type }))}
-                download="sample.ovpn"
+                onClick={saveAs.bind(this, blob, filename)}
               >
                 Download
               </button>
