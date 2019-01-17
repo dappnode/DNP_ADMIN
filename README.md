@@ -13,8 +13,7 @@
 DAppNode tool responsible for providing the admin UI of DAppNode.
 
 It is an AragonApp whose repo is deployed at this address: [0xee66c4765696c922078e8670aa9e6d4f6ffcc455
-](https://etherscan.io/address/0xee66c4765696c922078e8670aa9e6d4f6ffcc455
-) and whose ENS address is: [admin.dnp.dappnode.eth](https://etherscan.io/enslookup?q=admin.dnp.dappnode.eth)
+](https://etherscan.io/address/0xee66c4765696c922078e8670aa9e6d4f6ffcc455) and whose ENS address is: [admin.dnp.dappnode.eth](https://etherscan.io/enslookup?q=admin.dnp.dappnode.eth)
 
 ## Usage
 
@@ -28,16 +27,16 @@ These instructions will get you a copy of the project up and running on your loc
 
 - git
 
-   Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) commandline tool.
+  Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) commandline tool.
 
 - docker
 
-   Install [docker](https://docs.docker.com/engine/installation). The community edition (docker-ce) will work. In Linux make sure you grant permissions to the current user to use docker by adding current user to docker group, `sudo usermod -aG docker $USER`. Once you update the users group, exit from the current terminal and open a new one to make effect.
+  Install [docker](https://docs.docker.com/engine/installation). The community edition (docker-ce) will work. In Linux make sure you grant permissions to the current user to use docker by adding current user to docker group, `sudo usermod -aG docker $USER`. Once you update the users group, exit from the current terminal and open a new one to make effect.
 
 - docker-compose
 
-   Install [docker-compose](https://docs.docker.com/compose/install)
-   
+  Install [docker-compose](https://docs.docker.com/compose/install)
+
 **Note**: Make sure you can run `git`, `docker ps`, `docker-compose` without any issue and without sudo command.
 
 ### Building
@@ -48,35 +47,42 @@ $ git clone https://github.com/dappnode/DNP_ADMIN.git
 
 ```
 $ docker-compose build
-or 
-$ docker build --rm -f build/Dockerfile -t dnp_admin:dev build 
+or
+$ docker build --rm -f build/Dockerfile -t admin.dnp.dappnode.eth:dev build
 ```
 
 ### Running
 
 #### Start
+
 ```
 $ docker-compose up -d
 ```
+
 #### Stop
+
 ```
 $ docker-compose down
 ```
+
 #### Status
+
 ```
 $ docker-compose ps
 ```
+
 #### Logs
+
 ```
 $ docker-compose logs -f
 ```
 
 ## Generating a tar.xz image
 
-[xz](https://tukaani.org/xz/) is required 
+[xz](https://tukaani.org/xz/) is required
 
 ```
-$ docker save dnp_admin:dev | xz -e9vT0 > dnp_admin.tar.xz
+$ docker save admin.dnp.dappnode.eth:dev | xz -e9vT0 > admin.dnp.dappnode.eth_x.y.z.tar.xz
 ```
 
 You can download the latest tar.xz version from here [releases](https://github.com/dappnode/DNP_ADMIN/releases).
@@ -84,7 +90,7 @@ You can download the latest tar.xz version from here [releases](https://github.c
 ### Loading a Docker image
 
 ```
-$docker load -i dnp_admin.tar.xz
+$docker load -i admin.dnp.dappnode.eth_x.y.z.tar.xz
 ```
 
 ## Contributing
@@ -97,8 +103,8 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **DAppLion** - [dapplion](https://github.com/dapplion)
-* **Eduardo Antuña Díez** - [eduadiez](https://github.com/eduadiez)
+- **DAppLion** - [dapplion](https://github.com/dapplion)
+- **Eduardo Antuña Díez** - [eduadiez](https://github.com/eduadiez)
 
 See also the list of [contributors](https://github.com/dappnode/DNP_ADMIN/contributors) who participated in this project.
 
