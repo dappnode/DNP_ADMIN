@@ -5,7 +5,7 @@ node_modules/
 # testing
 build/src/coverage
 build/src*/coverage
-cred/
+# cred/
 
 # production
 build/src/build
