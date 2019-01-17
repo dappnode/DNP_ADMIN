@@ -25,8 +25,9 @@ jobs:
         # This is a dockerized application, the node app is in /build/src
         - cd ./build/src
         - yarn
-      before_script:
-        - npm run lint
+      # running npm run build includes linting
+      # before_script:
+      #   - npm run lint
       script:
         # Run the in-app tests
         - npm test
@@ -40,7 +41,7 @@ jobs:
       services:
         - docker
       script:
-        - docker-compose -f "$(find . -maxdepth 1 -name "docker-compose*")" build
+        - docker-compose build
 
     # Deploy stage
     # - code below is common between DAppNode packages
