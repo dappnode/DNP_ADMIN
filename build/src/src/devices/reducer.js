@@ -21,7 +21,7 @@ export default function(state = initialState, action) {
           const id = getDeviceId(d)
           if (!id) console.warn('Calling UPDATE_DEVICES reducer without a device id')
           return {...obj, [id]: merge(state.devices[id] || {}, d)}
-        })
+        }, {})
       }
     case t.UPDATE_DEVICE:
       if (!action.id) console.warn('Calling UPDATE_DEVICE reducer without a device id')
