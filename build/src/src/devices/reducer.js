@@ -1,6 +1,7 @@
 // DEVICES
 import t from "./actionTypes";
 import arrayToObj from "utils/arrayToObj";
+import {getDeviceId} from "./utils"
 import merge from "deepmerge";
 
 const initialState = {
@@ -16,11 +17,14 @@ export default function(state = initialState, action) {
       // This allows devices to be removed, if the new array does not contain them
       return {
         ...state,
-        devices: action.devices.reduce((obj, d) => ({
-          ...obj, [d.name]: merge(state.devices[d.name] || {}, d)
-        }), {})
+        devices: action.devices.reduce((obj, d) => {
+          const id = getDeviceId(d)
+          if (!id) console.warn('Calling UPDATE_DEVICES reducer without a device id')
+          return {...obj, [id]: merge(state.devices[id] || {}, d)}
+        })
       }
     case t.UPDATE_DEVICE:
+      if (!action.id) console.warn('Calling UPDATE_DEVICE reducer without a device id')
       if (!state.devices[action.id]) return state
       return merge(state, {
         devices: {

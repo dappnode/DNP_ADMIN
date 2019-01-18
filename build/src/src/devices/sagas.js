@@ -8,8 +8,8 @@ import Toast from "components/Toast";
 
 export function* getDeviceCredentials({id}) {
   try {
+    if (!id) throw Error('id must be defined in getDeviceCredentials')
     const res = yield call(APIcall.getDeviceCredentials, {id});
-    // const res = {success: true, result: {url: 'asda'}}
     if (res.success) {
       yield put({ type: t.UPDATE_DEVICE, id, data: res.result });
     } else {

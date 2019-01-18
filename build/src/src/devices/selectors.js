@@ -1,4 +1,5 @@
 import { NAME, guestsName } from "./constants";
+import {getDeviceId} from "./utils"
 
 function stringsEqual(s1, s2) {
   if (!s1 || !s2) return false
@@ -29,7 +30,7 @@ const ADMIN_STATIC_IP_PREFIX = "172.33.10.";
 // Make devices backwards compatible
 export const getDevices = state => Object.values(local(state).devices).map(device => ({
   ...device,
-  id: "id" in device ? device.id : device.name,
+  id: getDeviceId(device),
   url: "url" in device ? device.url : device.otp,
   isAdmin: "admin" in device 
     ? device.admin 
@@ -40,7 +41,7 @@ export const getDevices = state => Object.values(local(state).devices).map(devic
 export const getFetching = state => local(state).fetching;
 
 export const getDevicesWithoutGuest = state => 
-  getDevices(state).filter(d => !stringsEqual(d.name, guestsName));
+  getDevices(state).filter(d => !stringsEqual(getDeviceId(d), guestsName));
   
 export const getGuestUsersDevice = state =>
-  getDevices(state).find(d => stringsEqual(d.name, guestsName));
+  getDevices(state).find(d => stringsEqual(getDeviceId(d), guestsName));
