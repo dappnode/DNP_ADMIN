@@ -9,6 +9,8 @@ import GuestUsers from "./GuestUsers";
 import Loading from "components/Loading";
 import navbar from "navbar";
 
+const enableGuestUsers = false
+
 class DevicesView extends React.Component {
   constructor() {
     super();
@@ -72,7 +74,7 @@ class DevicesView extends React.Component {
               getDeviceCredentials={this.props.getDeviceCredentials}
             />
 
-            {this.props.deviceList.length ? (
+            {enableGuestUsers && this.props.deviceList.length ? (
               <GuestUsers
                 guestUsersDevice={this.props.guestUsersDevice}
                 toggleGuestUsers={this.props.toggleGuestUsers}
