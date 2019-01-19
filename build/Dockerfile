@@ -21,6 +21,7 @@ RUN yarn install --production
 COPY src_openvpn .
 # build for production
 RUN yarn run build
+RUN node injectToHtml
 
 FROM nginx:1.12-alpine
 RUN mkdir -p /usr/www/adminui && mkdir -p /usr/www/openvpn && mkdir -p /usr/www/openvpn/cred
