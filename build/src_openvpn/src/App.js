@@ -126,7 +126,7 @@ export default class App extends Component {
       // 1. Get params from url
       this.setState({ loading: true });
       const { key, id } = getParamsFromUrl();
-      const url = `${baseUrl}/cred/${id}`;
+      const url = `${baseUrl}/cred/${id}?id=${id}`;
 
       // 2. Fetch file from server
       const res = await fetch(url);
