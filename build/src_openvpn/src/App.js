@@ -21,14 +21,12 @@ import errorLogo from "./img/error.png";
 import okLogo from "./img/ok.png";
 import logo from "./img/logo.png";
 // Icons
-import {
-  FaWindows,
-  FaApple,
-  FaMobile,
-  FaAndroid,
-  FaLinux,
-  FaChrome
-} from "react-icons/lib/fa";
+import FaAndroid from './icons/FaAndroid'
+import FaApple from './icons/FaApple'
+import FaChrome from './icons/FaChrome'
+import FaLinux from './icons/FaLinux'
+import FaMobile from './icons/FaMobile'
+import FaWindows from './icons/FaWindows'
 
 window.saveAs = saveAs
 

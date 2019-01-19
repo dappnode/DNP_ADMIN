@@ -6,7 +6,6 @@ import Header from "./Header";
 import registerServiceWorker from "./registerServiceWorker";
 // Load css in order
 import "bootstrap/dist/css/bootstrap.min.css"; // Include bootstrap's css
-import "bootstrap/dist/js/bootstrap.min.js"; // Include bootstrap's js
 import "./index.css"; // Additional modifying rules
 
 function Layout(props) {

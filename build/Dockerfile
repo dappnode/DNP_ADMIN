@@ -28,6 +28,10 @@ COPY --from=build-deps-adminui /usr/src/app/build /usr/www/adminui
 COPY --from=build-deps-openvpn /usr/src/app/build /usr/www/openvpn
 COPY nginx.conf /etc/nginx/nginx.conf
 
+######## TEST TEST TEST #########
+# RUN mv /usr/www/openvpn/index.html /usr/www/openvpn/7e00cfadbe61f2ed
+######## TEST TEST TEST #########
+
 EXPOSE 80
 EXPOSE 8080
 CMD ["nginx", "-c", "/etc/nginx/nginx.conf", "-g", "daemon off;"]
