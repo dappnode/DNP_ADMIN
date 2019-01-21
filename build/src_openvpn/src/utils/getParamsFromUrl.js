@@ -13,7 +13,10 @@ export default function getParamsFromUrl() {
   const key = clean(window.location.hash)
   if (!id) throw Error('No valid id provided. Url must be '+urlTemplate)
   if (!key) throw Error('No valid key provided. Url must be '+urlTemplate)
-  return { key, id };
+  return { 
+    key: decodeURIComponent(key), 
+    id: decodeURIComponent(id)
+  };
 }
 
 function clean(s) {
