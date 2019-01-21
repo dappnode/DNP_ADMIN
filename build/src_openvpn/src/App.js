@@ -16,7 +16,6 @@ import getParamsFromUrl from "./utils/getParamsFromUrl";
 import isBase64 from "./utils/isBase64";
 import decrypt from "./utils/decrypt";
 // Logos
-import loadingLogo from "./img/loading.gif";
 import errorLogo from "./img/error.png";
 import okLogo from "./img/ok.png";
 import logo from "./img/logo.png";
@@ -236,7 +235,7 @@ export default class App extends Component {
     if (loading) {
       return (
         <div className="container text-center mt-5">
-          <img src={loadingLogo} className="main-logo" alt="logo" />
+          <img src={logo} className="main-logo" alt="logo" />
           <h6 className="main-text">Loading</h6>
         </div>
       );
