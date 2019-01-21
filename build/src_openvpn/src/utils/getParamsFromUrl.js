@@ -1,5 +1,5 @@
 // Expected format
-// http://origin/id#key
+// http://origin/?id=<id>#<key>
 // - id: is an alphanumeric identifier
 // - key: base64 encoded string
 // 

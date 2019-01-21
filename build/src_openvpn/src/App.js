@@ -135,7 +135,7 @@ export default class App extends Component {
 
       // 3. Decrypt
       if (!isBase64(encryptedFile))
-        throw Error(`Incorrect ID or wrong file format. url: ${url} encryptedFile: ${(encryptedFile || '').substring(0, 50)}...\n`);
+        throw Error(`Incorrect ID or wrong file format (no-base64). url: ${url} encryptedFile: ${(encryptedFile || '').substring(0, 50)}...\n`);
       const file = decrypt(encryptedFile, key);
       this.setState({ loading: false, file });
     } catch (err) {
