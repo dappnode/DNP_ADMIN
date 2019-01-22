@@ -11,25 +11,12 @@ const subRoutes = [
     title: "Publish DNPs",
     subtitle: `To an Aragon's APM registry`,
     route: "publish"
-  },
+  }
   // {
   //   title: "Explore repos",
   //   subtitle: `Of Aragon's APM registries`,
   //   route: "explore"
   // }
-];
-
-const itemsTop = [
-  {
-    id: "H1",
-    header: "Header 1",
-    body: "Body 1"
-  },
-  {
-    id: "H2",
-    header: "Header 2",
-    body: "Body 2"
-  }
 ];
 
 export default class SdkHome extends React.Component {

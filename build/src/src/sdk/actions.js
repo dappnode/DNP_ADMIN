@@ -50,8 +50,8 @@ export const fetchRegistry = registryEns => ({
   registryEns
 });
 
-export const connect = () => ({
-  type: t.CONNECT
+export const connectMetamask = () => ({
+  type: t.CONNECT_METAMASK
 });
 
 export const publish = () => ({

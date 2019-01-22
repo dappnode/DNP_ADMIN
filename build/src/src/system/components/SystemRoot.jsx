@@ -2,7 +2,6 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import * as action from "../actions";
 import { NAME } from "../constants";
 // Components
 import SystemList from "./SystemList";
