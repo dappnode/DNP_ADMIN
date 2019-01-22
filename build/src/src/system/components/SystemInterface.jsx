@@ -1,7 +1,7 @@
 import React from "react";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import { logPackage, restartPackage, restartPackageVolumes } from "../actions";
 import { createStructuredSelector } from "reselect";
 import confirmVolumeRemove from "packages/components/confirmVolumeRemove";
 // Components
@@ -61,18 +61,11 @@ const mapStateToProps = createStructuredSelector({
   logs: selector.getLogs
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    logPackage: (id, options) => {
-      dispatch(action.logPackage({ id, options }));
-    },
-    restartPackage: id => {
-      dispatch(action.restartPackage({ id }));
-    },
-    restartPackageVolumes: id => {
-      dispatch(action.restartPackageVolumes({ id }));
-    }
-  };
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = {
+  logPackage,
+  restartPackage,
+  restartPackageVolumes
 };
 
 export default connect(

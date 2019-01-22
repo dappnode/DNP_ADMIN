@@ -51,8 +51,8 @@ class PackageInterface extends React.Component {
 
         <Controls
           state={pkg.state}
-          togglePackage={() => this.props.togglePackage(id)}
-          restartPackage={() => this.props.restartPackage(id)}
+          togglePackage={this.props.togglePackage.bind(this, id)}
+          restartPackage={this.props.restartPackage.bind(this, id)}
           restartPackageVolumes={() =>
             confirmVolumeRemove(id, this.props.restartPackageVolumes)
           }

@@ -46,9 +46,7 @@ const mapStateToProps = createStructuredSelector({
   }
 });
 
-const mapDispatchToProps = () => {
-  return {};
-};
+const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,

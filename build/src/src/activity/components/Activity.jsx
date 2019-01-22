@@ -50,13 +50,7 @@ const mapStateToProps = createStructuredSelector({
   userActionLogs: selectors.getUserActionLogs
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    // init: () => {
-    //   dispatch(action.init());
-    // }
-  };
-};
+const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,

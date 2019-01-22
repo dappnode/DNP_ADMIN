@@ -1,7 +1,7 @@
 import React from "react";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import { fetchPackageRequest, fetchPackageData } from "../actions";
 import { createStructuredSelector } from "reselect";
 import * as utils from "../utils";
 import PropTypes from "prop-types";
@@ -130,15 +130,10 @@ const mapStateToProps = createStructuredSelector({
   progressLogs: selector.progressLogs
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchPackageRequest: id => {
-      dispatch(action.fetchPackageRequest(id));
-    },
-    fetchPackageData: id => {
-      dispatch(action.fetchPackageData(id));
-    }
-  };
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = {
+  fetchPackageRequest,
+  fetchPackageData
 };
 
 export default connect(

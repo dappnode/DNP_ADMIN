@@ -1,7 +1,7 @@
 import React from "react";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import { validateRepoName, updateQuery, connect, publish } from "../actions";
 import { createStructuredSelector } from "reselect";
 import { NAME } from "../constants";
 import { Link } from "react-router-dom";
@@ -233,21 +233,12 @@ const mapStateToProps = createStructuredSelector({
   txPreview: selector.getTransactionPreview
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    validateRepoName: repoName => {
-      dispatch(action.validateRepoName(repoName));
-    },
-    updateQuery: (id, value) => {
-      dispatch(action.updateQuery(id, value));
-    },
-    connect: () => {
-      dispatch(action.connect());
-    },
-    publish: () => {
-      dispatch(action.publish());
-    }
-  };
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = {
+  validateRepoName,
+  updateQuery,
+  connect,
+  publish
 };
 
 export default connect(

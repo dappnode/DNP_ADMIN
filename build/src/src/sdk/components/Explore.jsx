@@ -1,12 +1,10 @@
 import React from "react";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import { fetchRegistry } from "../actions";
 import { createStructuredSelector } from "reselect";
 import { NAME } from "../constants";
-import { Link } from "react-router-dom";
 import LoadingDots from "components/LoadingDots";
-import { colors } from "utils/format";
 
 const padding = "0.7rem";
 
@@ -104,13 +102,8 @@ const mapStateToProps = createStructuredSelector({
   registries: selector.registries
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchRegistry: registryEns => {
-      dispatch(action.fetchRegistry(registryEns));
-    }
-  };
-};
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = { fetchRegistry };
 
 export default connect(
   mapStateToProps,
