@@ -18,7 +18,7 @@ export default generateActionTypes(NAME, [
   "UPDATE_REPO_NAME",
   "UPDATE_QUERY",
   "UPDATE_QUERY_RESULT",
-  "CONNECT",
+  "CONNECT_METAMASK",
   "PUBLISH",
   "UPDATE_UI_MESSAGE"
 ]);

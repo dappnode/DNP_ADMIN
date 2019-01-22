@@ -18,7 +18,7 @@ import assertConnectionOpen from "utils/assertConnectionOpen";
 
 /***************************** Subroutines ************************************/
 
-function* connect(action) {
+function* connectMetamask() {
   try {
     console.log("Connecting to metamask...");
     const web3 = yield call(connectToMetamask);
@@ -207,7 +207,7 @@ const watchers = [
     inputHanlders[id],
     { throttle: 1000 }
   ]),
-  [t.CONNECT, connect]
+  [t.CONNECT_METAMASK, connectMetamask]
 ];
 
 export default rootWatcher(watchers);

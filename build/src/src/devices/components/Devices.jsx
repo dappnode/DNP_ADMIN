@@ -13,7 +13,6 @@ import * as selector from "../selectors";
 import DeviceList from "./DeviceList";
 import GuestUsers from "./GuestUsers";
 import Loading from "components/Loading";
-import navbar from "navbar";
 
 class DevicesView extends React.Component {
   constructor() {

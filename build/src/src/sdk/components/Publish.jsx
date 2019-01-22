@@ -1,7 +1,12 @@
 import React from "react";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
-import { validateRepoName, updateQuery, connect, publish } from "../actions";
+import {
+  validateRepoName,
+  updateQuery,
+  connectMetamask,
+  publish
+} from "../actions";
 import { createStructuredSelector } from "reselect";
 import { NAME } from "../constants";
 import { Link } from "react-router-dom";
@@ -194,7 +199,7 @@ class Publish extends React.Component {
                   ) : (
                     <button
                       className="dappnode-btn"
-                      onClick={this.props.connect}
+                      onClick={this.props.connectMetamask}
                     >
                       <img src={metamaskIcon} alt="" className="metamaskIcon" />{" "}
                       Connect
@@ -237,7 +242,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = {
   validateRepoName,
   updateQuery,
-  connect,
+  connectMetamask,
   publish
 };
 
