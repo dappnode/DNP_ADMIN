@@ -3,7 +3,7 @@ import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import * as selector from "../selectors";
-import * as action from "../actions";
+import { viewedNotifications } from "../actions";
 import $ from "jquery";
 // Icons
 import Link from "Icons/Link";
@@ -87,13 +87,8 @@ const mapStateToProps = createStructuredSelector({
   notifications: selector.getNotifications
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    viewedNotifications: () => {
-      dispatch(action.viewedNotifications());
-    }
-  };
-};
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = { viewedNotifications };
 
 const NavbarTop = connect(
   mapStateToProps,

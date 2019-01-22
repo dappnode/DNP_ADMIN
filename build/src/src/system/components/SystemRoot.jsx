@@ -27,13 +27,7 @@ class System extends React.Component {
 
 const mapStateToProps = createStructuredSelector({});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchPackages: () => {
-      dispatch(action.listPackages());
-    }
-  };
-};
+const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,

@@ -25,9 +25,7 @@ class Packages extends React.Component {
 
 const mapStateToProps = createStructuredSelector({});
 
-const mapDispatchToProps = dispatch => {
-  return {};
-};
+const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,

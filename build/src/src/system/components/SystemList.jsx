@@ -2,7 +2,7 @@ import React from "react";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import { updateCore } from "../actions";
 import { NAME } from "../constants";
 // Components
 import SystemRow from "./SystemRow";
@@ -73,13 +73,8 @@ const mapStateToProps = createStructuredSelector({
   fetching: selector.fetching
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    updateCore: () => {
-      dispatch(action.updateCore());
-    }
-  };
-};
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = { updateCore };
 
 export default connect(
   mapStateToProps,

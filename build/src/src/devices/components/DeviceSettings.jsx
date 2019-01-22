@@ -81,9 +81,7 @@ const mapStateToProps = createStructuredSelector({
   deviceList: selector.getDevices
 });
 
-const mapDispatchToProps = dispatch => {
-  return {};
-};
+const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,
