@@ -15,6 +15,7 @@ import Chromebook from "./Instructions/Chromebook";
 import getParamsFromUrl from "./utils/getParamsFromUrl";
 import isBase64 from "./utils/isBase64";
 import decrypt from "./utils/decrypt";
+import getServerName from "./utils/getServerName";
 // Logos
 import errorLogo from "./img/error.png";
 import okLogo from "./img/ok.png";
@@ -108,7 +109,7 @@ const options = [
 
 const baseUrl = window.location.origin;
 const ovpnType = "application/x-openvpn-profile";
-const filename = "sample.ovpn"
+const fileExtension = "ovpn"
 
 export default class App extends Component {
   constructor(props) {
@@ -124,7 +125,7 @@ export default class App extends Component {
     try {
       // 1. Get params from url
       this.setState({ loading: true });
-      const { key, id } = getParamsFromUrl();
+      const { key, id, name } = getParamsFromUrl();
       const url = `${baseUrl}/cred/${id}?id=${id}`;
 
       // 2. Fetch file from server
@@ -136,7 +137,7 @@ export default class App extends Component {
       if (!isBase64(encryptedFile))
         throw Error(`Incorrect ID or wrong file format (no-base64). url: ${url} encryptedFile: ${(encryptedFile || '').substring(0, 50)}...\n`);
       const file = decrypt(encryptedFile, key);
-      this.setState({ loading: false, file });
+      this.setState({ loading: false, file, name });
     } catch (err) {
       this.setState({
         loading: false,
@@ -147,8 +148,9 @@ export default class App extends Component {
   }
 
   render() {
-    const { file, error, loading } = this.state;
+    const { file, name, error, loading } = this.state;
     const blob = new Blob([file], {type: ovpnType});
+    const filename = `${getServerName(name)}.${fileExtension}`
 
     // <item.icon />
 

@@ -8,15 +8,20 @@
 const urlTemplate = 'http://origin/?id=<id>#<key>'
 
 export default function getParamsFromUrl() {
-  const idArg = clean(window.location.search).split('&').find(arg => arg.startsWith('id='))
-  const id = (idArg || '').split('id=')[1]
-  const key = clean(window.location.hash)
+  const urlParams = parseUrlParams(clean(window.location.search))
+  const {id, name} = urlParams
+  const key = decodeURIComponent(clean(window.location.hash))
   if (!id) throw Error('No valid id provided. Url must be '+urlTemplate)
   if (!key) throw Error('No valid key provided. Url must be '+urlTemplate)
-  return { 
-    key: decodeURIComponent(key), 
-    id: decodeURIComponent(id)
-  };
+  return { key, id, name };
+}
+
+function parseUrlParams(str) {
+  var obj = {}; 
+  str.replace(/([^=&]+)=([^&]*)/g, function(m, key, value) {
+    obj[decodeURIComponent(key)] = decodeURIComponent(value);
+  });
+  return obj
 }
 
 function clean(s) {
