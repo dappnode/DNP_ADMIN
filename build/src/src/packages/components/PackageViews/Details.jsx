@@ -79,6 +79,10 @@ export default class PackageDetails extends React.Component {
         <div className="card mb-4">
           <div className="card-body">
             <div>
+              <strong>Description: </strong>
+              {(pkg.manifest || {}).description || "No description"}
+            </div>
+            <div>
               <strong>Version: </strong>
               {pkg.version + " " + (pkg.origin || "")}
             </div>
