@@ -1,4 +1,4 @@
-import { call, put, select, fork } from "redux-saga/effects";
+import { call, put, select, fork, all } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
@@ -98,12 +98,14 @@ export function* updateDefaultEnvs({ id }) {
     }
 
     // Omit if the package is already installed
-    const packageName = manifest.name
-    const installedPackages = yield select(state => state.installedPackages)
-    const isInstalled = installedPackages.find(p => p.name === packageName)
+    const packageName = manifest.name;
+    const installedPackages = yield select(state => state.installedPackages);
+    const isInstalled = installedPackages.find(p => p.name === packageName);
     if (isInstalled) {
-      console.log(`Omitting updateDefaultEnvs for ${id} as DNP ${packageName} is already installed`)
-      return
+      console.log(
+        `Omitting updateDefaultEnvs for ${id} as DNP ${packageName} is already installed`
+      );
+      return;
     }
 
     // Compute the default envs
@@ -255,9 +257,23 @@ export function* fetchPackageRequest({ id }) {
         pkgs: { [id]: { requestResult: res.result } }
       });
     } else {
-      console.error("Error resolving dependencies of " + id, res.message);
-      return;
+      return console.error(
+        "Error resolving dependencies of " + id,
+        res.message
+      );
     }
+
+    // Fetch package data of the dependencies
+    const dnps = (res.result || {}).success || {};
+    delete dnps[name]; // Ignore requested package
+    // fetchPackageData will automatically update the store
+    yield all(
+      Object.keys(dnps).map(depName =>
+        call(fetchPackageData, {
+          id: `${depName}@${dnps[depName]}`
+        })
+      )
+    );
   } catch (error) {
     console.error("Error getting package data: ", error);
   }
@@ -302,30 +318,6 @@ export function* fetchPackageData({ id }) {
   }
 }
 
-function* diskSpaceAvailable({ path }) {
-  try {
-    // If connection is not open yet, wait for it to open.
-    yield call(assertConnectionOpen);
-    const res = yield call(APIcall.diskSpaceAvailable, { path });
-    // Abort on error
-    if (!res.success) {
-      console.error("Disk space available returned error: ", res.message);
-    }
-
-    const { exists, totalSize, availableSize } = res.result;
-    yield put({
-      type: t.UPDATE_DISK_SPACE_AVAILABLE,
-      status: exists ? `${availableSize} / ${totalSize}` : `non-existent`,
-      path
-    });
-  } catch (error) {
-    console.error(
-      "Error getting disk space available of " + path + ": ",
-      error
-    );
-  }
-}
-
 function* onConnectionOpen(action) {
   yield fork(fetchDirectory, action);
   yield fork(shouldOpenPorts, action);
@@ -342,8 +334,7 @@ const watchers = [
   [t.FETCH_PACKAGE_REQUEST, fetchPackageRequest],
   [t.INSTALL, install],
   [t.UPDATE_ENV, updateEnvs],
-  [t.MANAGE_PORTS, managePorts],
-  [t.DISK_SPACE_AVAILABLE, diskSpaceAvailable]
+  [t.MANAGE_PORTS, managePorts]
 ];
 
 export default rootWatcher(watchers);

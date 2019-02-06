@@ -141,19 +141,11 @@ class ApproveInstallView extends React.Component {
     const userSetPorts = {
       [name]: this.state.userSetPorts
     };
+    const userSetEnvs = {};
 
     // Fire install call
-    const isCORE = manifest.type === "dncore";
     const options = this.state.options;
-    this.props.install({
-      id,
-      envs,
-      isCORE,
-      userSetVols,
-      userSetPorts,
-      ports,
-      options
-    });
+    this.props.install({ id, userSetEnvs, userSetVols, userSetPorts, options });
     // Fire call to set dependency envs
     if (manifest && manifest.dependencies) {
       for (const depName of Object.keys(manifest.dependencies)) {
@@ -169,7 +161,7 @@ class ApproveInstallView extends React.Component {
 
   render() {
     const manifest = this.props.manifest || {};
-    const envs = getEnvs(manifest, this.state.envs);
+    // const envs = getEnvs(manifest, this.state.envs);
     const manifestVols = (manifest.image || {}).volumes || [];
     const manifestPorts = (manifest.image || {}).ports || [];
 
@@ -241,12 +233,11 @@ class ApproveInstallView extends React.Component {
           request={this.props.request || {}}
           installedPackages={this.props.installedPackages}
         />
-        <Envs envs={envs} handleEnvChange={this.handleEnvChange} />
+        <Envs />
         <Vols
           manifestVols={manifestVols}
           userSetVols={this.state.userSetVols}
           handleVolChange={this.handleVolChange}
-          diskSpaceAvailable={this.props.diskSpaceAvailable}
         />
         <Ports
           manifestPorts={manifestPorts}
@@ -260,31 +251,12 @@ class ApproveInstallView extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  diskSpaceAvailable: selector.diskSpaceAvailable,
   installedPackages: selector.installedPackages
 });
 
-const mapDispatchToProps = dispatch => ({
-  install: ({
-    id,
-    envs,
-    isCORE,
-    userSetVols,
-    userSetPorts,
-    ports,
-    options
-  }) => {
-    dispatch(action.install({ id, userSetVols, userSetPorts, options }));
-    dispatch(action.updateEnv({ id, envs, isCORE }));
-    dispatch(action.openPorts(ports));
-  },
-  getDiskSpaceAvailable: ({ path }) => {
-    dispatch(action.diskSpaceAvailable({ path }));
-  },
-  updateDefaultEnvs: ({ id }) => {
-    dispatch(action.updateDefaultEnvs({ id }));
-  }
-});
+const mapDispatchToProps = {
+  install: action.install
+};
 
 export default connect(
   mapStateToProps,

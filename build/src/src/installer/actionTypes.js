@@ -11,6 +11,12 @@ import generateActionTypes from "utils/generateActionTypes";
  * This utility eases the addition of new actionTypes, and ensures a common format
  */
 export default generateActionTypes(NAME, [
+  "UPDATE_QUERY_ID",
+  // User set
+  "UPDATE_USERSET_ENVS",
+  "UPDATE_USERSET_PORTS",
+  "UPDATE_USERSET_VOLS",
+  // Others
   "INSTALL",
   "UPDATE_ENV",
   "UPDATE_DEFAULT_ENVS",
