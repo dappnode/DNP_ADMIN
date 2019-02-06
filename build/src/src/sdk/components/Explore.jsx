@@ -74,8 +74,8 @@ class Explore extends React.Component {
                           {versions.map(
                             ({ version, date, sender, contentUri }) => (
                               <li key={version}>
-                                <strong>{version}:</strong> published at: {date},
-                                by {sender}:{" "}
+                                <strong>{version}:</strong> published at: {date}
+                                , by {sender}:{" "}
                                 <span style={{ opacity: 0.4 }}>
                                   {contentUri}
                                 </span>

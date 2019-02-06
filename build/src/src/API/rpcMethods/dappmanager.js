@@ -1,7 +1,7 @@
-// DAPPMANAGER WAMP RPC METHODS 
+// DAPPMANAGER WAMP RPC METHODS
 // This file describes the available RPC methods of the DAPPMANAGER module
 // It serves as documentation and as a mechanism to quickly add new calls
-// 
+//
 // Each key of this object is the last subdomain of the entire event:
 //   event = "installPackage.dappmanager.dnp.dappnode.eth"
 //   Object key = "installPackage"
@@ -11,14 +11,14 @@ export default {
   // > kwargs: { id }
   // > result: {}
   installPackage: {
-      manadatoryKwargs: ["id"]
+    manadatoryKwargs: ["id"]
   },
 
   // installPackageSafe
   // > kwargs: { id }
   // > result: {}
   installPackageSafe: {
-      manadatoryKwargs: ["id"]
+    manadatoryKwargs: ["id"]
   },
 
   // removePackage:
@@ -199,5 +199,4 @@ export default {
   //     ...
   //   }
   diagnose: {}
-}
-
+};
