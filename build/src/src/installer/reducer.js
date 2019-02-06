@@ -3,6 +3,7 @@ import t from "./actionTypes";
 import merge from "deepmerge";
 
 const initialState = {
+  queryId: null,
   fetching: false,
   directory: [],
   selectedTypes: {},
@@ -10,7 +11,9 @@ const initialState = {
   isInstalling: {},
   progressLogs: {},
   shouldOpenPorts: false,
-  diskSpaceAvailable: {}
+  userSetEnvs: {},
+  userSetPorts: {},
+  userSetVols: {}
 };
 
 export default function(state = initialState, action) {
@@ -50,12 +53,36 @@ export default function(state = initialState, action) {
         ...state,
         progressLogs
       };
-    case t.UPDATE_DISK_SPACE_AVAILABLE:
+    case t.UPDATE_QUERY_ID:
       return merge(state, {
-        diskSpaceAvailable: {
-          [action.path]: action.status
+        queryId: action.id
+      });
+    // User set
+    case t.UPDATE_USERSET_ENVS:
+      return merge(state, {
+        userSetEnvs: {
+          [action.dnpName]: {
+            [action.envName]: action.value
+          }
         }
       });
+    case t.UPDATE_USERSET_PORTS:
+      return merge(state, {
+        userSetEnvs: {
+          [action.dnpName]: {
+            [action.envName]: action.envValue
+          }
+        }
+      });
+    case t.UPDATE_USERSET_VOLS:
+      return merge(state, {
+        userSetEnvs: {
+          [action.dnpName]: {
+            [action.envName]: action.envValue
+          }
+        }
+      });
+    // #### Default case
     default:
       return state;
   }

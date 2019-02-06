@@ -60,7 +60,30 @@ export const openPorts = ports => ({
   ports
 });
 
-export const diskSpaceAvailable = ({ path }) => ({
-  type: t.DISK_SPACE_AVAILABLE,
-  path
+// Package install query dependant
+
+export const updateQueryId = id => ({
+  type: t.UPDATE_QUERY_ID,
+  id
+});
+
+export const updateUserSetEnvs = ({ dnpName, envName, value }) => ({
+  type: t.UPDATE_USERSET_ENVS,
+  dnpName,
+  envName,
+  value
+});
+
+export const updateUserSetPorts = ({ dnpName, envName, envValue }) => ({
+  type: t.UPDATE_USERSET_PORTS,
+  dnpName,
+  envName,
+  envValue
+});
+
+export const updateUserSetVols = ({ dnpName, envName, envValue }) => ({
+  type: t.UPDATE_USERSET_VOLS,
+  dnpName,
+  envName,
+  envValue
 });

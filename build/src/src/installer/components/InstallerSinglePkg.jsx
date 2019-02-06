@@ -1,7 +1,11 @@
 import React from "react";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
-import { fetchPackageRequest, fetchPackageData } from "../actions";
+import {
+  fetchPackageRequest,
+  fetchPackageData,
+  updateQueryId
+} from "../actions";
 import { createStructuredSelector } from "reselect";
 import * as utils from "../utils";
 import PropTypes from "prop-types";
@@ -32,6 +36,7 @@ class InstallerInterfaceView extends React.Component {
 
   componentWillMount() {
     const id = utils.urlToId(this.props.match.params.id);
+    this.props.updateQueryId(id);
     this.props.fetchPackageRequest(id);
     this.props.fetchPackageData(id);
   }
@@ -132,6 +137,7 @@ const mapStateToProps = createStructuredSelector({
 
 // Uses bindActionCreators to wrap action creators with dispatch
 const mapDispatchToProps = {
+  updateQueryId,
   fetchPackageRequest,
   fetchPackageData
 };

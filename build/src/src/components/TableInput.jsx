@@ -8,7 +8,10 @@ const showLocker = false;
 export default function(props) {
   if (props.lock) {
     return (
-      <div className="form-row mb-3 input-group">
+      <div
+        className="form-row mb-3 input-group"
+        style={{ marginLeft: 0, marginRight: 0 }}
+      >
         {showLocker ? (
           <div className="input-group-prepend">
             <span
@@ -38,7 +41,10 @@ export default function(props) {
     );
   } else {
     return (
-      <div className="form-row mb-3 input-group">
+      <div
+        className="form-row mb-3 input-group"
+        style={{ marginLeft: 0, marginRight: 0 }}
+      >
         <input
           type="text"
           className="form-control"
