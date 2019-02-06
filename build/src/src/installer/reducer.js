@@ -11,6 +11,7 @@ const initialState = {
   isInstalling: {},
   progressLogs: {},
   shouldOpenPorts: false,
+  showAdvancedSettings: false,
   userSetEnvs: {},
   userSetPorts: {},
   userSetVols: {}
@@ -62,26 +63,38 @@ export default function(state = initialState, action) {
       return merge(state, {
         userSetEnvs: {
           [action.dnpName]: {
-            [action.envName]: action.value
+            [action.key]: action.value
           }
         }
       });
     case t.UPDATE_USERSET_PORTS:
       return merge(state, {
-        userSetEnvs: {
+        userSetPorts: {
           [action.dnpName]: {
-            [action.envName]: action.envValue
+            [action.key]: action.value
           }
         }
       });
     case t.UPDATE_USERSET_VOLS:
       return merge(state, {
-        userSetEnvs: {
+        userSetVols: {
           [action.dnpName]: {
-            [action.envName]: action.envValue
+            [action.key]: action.value
           }
         }
       });
+    case t.SET_SHOW_ADVANCED_SETTINGS:
+      return merge(state, {
+        showAdvancedSettings: action.value
+      });
+    case t.CLEAR_USERSET:
+      return {
+        ...state,
+        userSetEnvs: {},
+        userSetPorts: {},
+        userSetVols: {},
+        showAdvancedSettings: false
+      };
     // #### Default case
     default:
       return state;

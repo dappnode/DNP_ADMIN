@@ -68,8 +68,8 @@ class Ports extends React.Component {
                           //     : containerPort,
                           //   port
                           this.props.updateUserSetPorts({
-                            host: e.target.value,
-                            containerAndType,
+                            value: e.target.value,
+                            key: containerAndType,
                             dnpName
                           });
                         }}

@@ -233,29 +233,36 @@ class ApproveInstallView extends React.Component {
           request={this.props.request || {}}
           installedPackages={this.props.installedPackages}
         />
-        <Envs />
-        <Vols
-          manifestVols={manifestVols}
-          userSetVols={this.state.userSetVols}
-          handleVolChange={this.handleVolChange}
-        />
-        <Ports
-          manifestPorts={manifestPorts}
-          userSetPorts={this.state.userSetPorts}
-          handlePortChange={this.handlePortChange}
-        />
+
         <SpecialPermissions />
+
+        {this.props.showAdvancedSettings ? (
+          <React.Fragment>
+            <Envs />
+            <Vols />
+            <Ports />
+          </React.Fragment>
+        ) : (
+          <button
+            className="btn btn-outline-secondary mt-2 mb-5"
+            onClick={this.props.setShowAdvancedSettings.bind(this, true)}
+          >
+            Show advanced settings
+          </button>
+        )}
       </React.Fragment>
     );
   }
 }
 
 const mapStateToProps = createStructuredSelector({
-  installedPackages: selector.installedPackages
+  installedPackages: selector.installedPackages,
+  showAdvancedSettings: selector.getShowAdvancedSettings
 });
 
 const mapDispatchToProps = {
-  install: action.install
+  install: action.install,
+  setShowAdvancedSettings: action.setShowAdvancedSettings
 };
 
 export default connect(

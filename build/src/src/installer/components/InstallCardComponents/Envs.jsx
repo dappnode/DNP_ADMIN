@@ -71,7 +71,7 @@ class Envs extends React.Component {
                         onChange={e => {
                           this.props.updateUserSetEnvs({
                             value: e.target.value,
-                            envName,
+                            key: envName,
                             dnpName
                           });
                         }}

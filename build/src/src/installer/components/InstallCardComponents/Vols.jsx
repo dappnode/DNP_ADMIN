@@ -57,8 +57,8 @@ class Vols extends React.Component {
                         onChange={e => {
                           // newVol: `${e.target.value}:${containerPath}`,
                           this.props.updateUserSetVols({
-                            host: e.target.value,
-                            containerAndAccessmode,
+                            value: e.target.value,
+                            key: containerAndAccessmode,
                             dnpName
                           });
                         }}

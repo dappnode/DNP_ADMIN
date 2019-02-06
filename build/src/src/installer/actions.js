@@ -67,23 +67,32 @@ export const updateQueryId = id => ({
   id
 });
 
-export const updateUserSetEnvs = ({ dnpName, envName, value }) => ({
+export const updateUserSetEnvs = ({ dnpName, key, value }) => ({
   type: t.UPDATE_USERSET_ENVS,
   dnpName,
-  envName,
+  key,
   value
 });
 
-export const updateUserSetPorts = ({ dnpName, envName, envValue }) => ({
+export const updateUserSetPorts = ({ dnpName, key, value }) => ({
   type: t.UPDATE_USERSET_PORTS,
   dnpName,
-  envName,
-  envValue
+  key,
+  value
 });
 
-export const updateUserSetVols = ({ dnpName, envName, envValue }) => ({
+export const updateUserSetVols = ({ dnpName, key, value }) => ({
   type: t.UPDATE_USERSET_VOLS,
   dnpName,
-  envName,
-  envValue
+  key,
+  value
+});
+
+export const setShowAdvancedSettings = value => ({
+  type: t.SET_SHOW_ADVANCED_SETTINGS,
+  value
+});
+
+export const clearUserSet = () => ({
+  type: t.CLEAR_USERSET
 });
