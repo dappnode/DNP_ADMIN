@@ -5,31 +5,32 @@ import dappmanager from "./dappmanager";
 import vpn from "./vpn";
 
 const dnps = {
-    dappmanager,
-    vpn
-}
+  dappmanager,
+  vpn
+};
 
 // Converts a RPC description
 //   installPackage: {
 //     manadatoryKwargs: ["id"]
 //   },
-// 
+//
 // Into a the following wrapped call
 //   export const installPackage = (kwargs = {}) =>
 //     wrapCall({
 //       event: "installPackage.dappmanager.dnp.dappnode.eth",
 //       kwargs: assertKwargs(kwargs, ["id"])
 //     });
-const exportModules = {}
+const exportModules = {};
 Object.keys(dnps).forEach(dnpId => {
-    Object.keys(dnps[dnpId]).forEach(eventId => {
-        const rpcCall = dnps[dnpId][eventId]
-        exportModules[eventId] = (kwargs = {}) => wrapCall({
-          event: `${eventId}.${dnpId}.dnp.dappnode.eth`,
-          kwargs: assertKwargs(kwargs, rpcCall.manadatoryKwargs)
-        });
-    })
-})
+  Object.keys(dnps[dnpId]).forEach(eventId => {
+    const rpcCall = dnps[dnpId][eventId];
+    exportModules[eventId] = (kwargs = {}) =>
+      wrapCall({
+        event: `${eventId}.${dnpId}.dnp.dappnode.eth`,
+        kwargs: assertKwargs(kwargs, rpcCall.manadatoryKwargs)
+      });
+  });
+});
 
 /* Utils */
 
@@ -66,4 +67,4 @@ async function wrapCall({ event, args = [], kwargs = {} }) {
   }
 }
 
-export default exportModules
+export default exportModules;
