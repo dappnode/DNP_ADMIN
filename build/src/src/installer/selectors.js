@@ -43,6 +43,8 @@ export const isInstalling = state => local(state).isInstalling;
 export const fetching = state => local(state).fetching || false;
 export const shouldOpenPorts = state => local(state).shouldOpenPorts;
 export const progressLogs = state => local(state).progressLogs;
+export const getShowAdvancedSettings = state =>
+  local(state).showAdvancedSettings;
 
 const filterCompleted = todos => todos.filter(t => t.completed);
 const filterActive = todos => todos.filter(t => !t.completed);
@@ -66,6 +68,13 @@ export const getQueryId = state => {
 export const getQueryDnp = state => {
   const id = getQueryId(state);
   return directory(state)[id];
+};
+export const getQueryDnpDeps = state => {
+  // Packages that are part of the dependency tree but are already updated
+  // will not appear in the success object
+  const { success, alreadyUpdated } =
+    (getQueryDnp(state) || {}).requestResult || {};
+  return merge(alreadyUpdated || {}, success || {});
 };
 export const getQueryDnpName = state => {
   return (getQueryDnp(state) || {}).name;
@@ -99,6 +108,14 @@ function getInstalledDnpEnvs(state, dnpName) {
   return getInstalledDnp(state, dnpName).envs || {};
 }
 
+function getDnpFromDirectory(state, dnpName, dnpVersion) {
+  return (
+    directory(state)[`${dnpName}@${dnpVersion}`] ||
+    directory(state)[dnpName] ||
+    {}
+  );
+}
+
 // Envs for the current query. Should merge envs object from
 // 1. User set
 // 2. Previously set if already installed (on updates)
@@ -114,11 +131,11 @@ export const getEnvs = state => {
     getInstalledDnpEnvs(state, queryDnp.name)
   );
   // Append the ENVs of the dependencies
-  const dnps = (queryDnp.requestResult || {}).success || {};
+  const dnps = getQueryDnpDeps(state);
   Object.keys(dnps)
     .filter(depName => depName !== queryDnp.name)
     .forEach(depName => {
-      const depDnp = directory(state)[`${depName}@${dnps[depName]}`] || {};
+      const depDnp = getDnpFromDirectory(state, depName, dnps[depName]);
       defaultEnvs[depName] = merge(
         parseManifestEnvs(depDnp.manifest),
         getInstalledDnpEnvs(state, depName)
@@ -162,16 +179,16 @@ export const getPorts = state => {
   defaultEnvs[queryDnp.name] = parseManifestPorts(queryDnp.manifest);
 
   // Append the ENVs of the dependencies
-  const dnps = (queryDnp.requestResult || {}).success || {};
+  const dnps = getQueryDnpDeps(state);
   Object.keys(dnps)
     .filter(depName => depName !== queryDnp.name)
     .forEach(depName => {
-      const depDnp = directory(state)[`${depName}@${dnps[depName]}`] || {};
+      const depDnp = getDnpFromDirectory(state, depName, dnps[depName]);
       defaultEnvs[depName] = parseManifestPorts(depDnp.manifest);
     });
 
   // Merge default envs and the ones set by the user
-  return merge(defaultEnvs, local(state).userSetEnvs);
+  return merge(defaultEnvs, local(state).userSetPorts);
 };
 
 /**
@@ -203,16 +220,16 @@ export const getVols = state => {
   defaultEnvs[queryDnp.name] = parseManifestVols(queryDnp.manifest);
 
   // Append the ENVs of the dependencies
-  const dnps = (queryDnp.requestResult || {}).success || {};
+  const dnps = getQueryDnpDeps(state);
   Object.keys(dnps)
     .filter(depName => depName !== queryDnp.name)
     .forEach(depName => {
-      const depDnp = directory(state)[`${depName}@${dnps[depName]}`] || {};
+      const depDnp = getDnpFromDirectory(state, depName, dnps[depName]);
       defaultEnvs[depName] = parseManifestVols(depDnp.manifest);
     });
 
   // Merge default envs and the ones set by the user
-  return merge(defaultEnvs, local(state).userSetEnvs);
+  return merge(defaultEnvs, local(state).userSetVols);
 };
 
 /**
@@ -306,36 +323,6 @@ export const getFilteredDirectoryNonCores = state =>
       );
     }
   });
-
-// Selected package, for installation modal
-
-export const selectedPackage = state =>
-  packages(state)[selectedPackageId(state)] || {};
-
-export const selectedPackageName = state => selectedPackage(state).name || "";
-
-export const selectedPackageIsCORE = state => selectedPackage(state).name || "";
-
-export const selectedPackageManifest = state =>
-  selectedPackage(state).manifest || {};
-
-export const selectedPackageVersions = state =>
-  selectedPackage(state).versions || [];
-
-export const selectedPackageVersionsNames = state =>
-  selectedPackageVersions(state).map(v => v.version);
-
-export const selectedPackageInstallTag = state => {
-  if (isIpfsHash(selectedPackageId(state))) return "Install";
-  let { tag } = getTags(selectedPackage(state));
-  return tag;
-};
-
-export const manifestModal = state => {
-  if (selectedPackageVersions(state).length > 0) {
-    return selectedPackageVersions(state)[0].manifest;
-  } else return {};
-};
 
 // Selected types, for the filter
 

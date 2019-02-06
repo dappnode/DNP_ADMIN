@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import {
   fetchPackageRequest,
   fetchPackageData,
-  updateQueryId
+  updateQueryId,
+  clearUserSet
 } from "../actions";
 import { createStructuredSelector } from "reselect";
 import * as utils from "../utils";
@@ -36,6 +37,7 @@ class InstallerInterfaceView extends React.Component {
 
   componentWillMount() {
     const id = utils.urlToId(this.props.match.params.id);
+    this.props.clearUserSet();
     this.props.updateQueryId(id);
     this.props.fetchPackageRequest(id);
     this.props.fetchPackageData(id);
@@ -137,6 +139,7 @@ const mapStateToProps = createStructuredSelector({
 
 // Uses bindActionCreators to wrap action creators with dispatch
 const mapDispatchToProps = {
+  clearUserSet,
   updateQueryId,
   fetchPackageRequest,
   fetchPackageData
