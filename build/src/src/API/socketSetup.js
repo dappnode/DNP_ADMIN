@@ -31,11 +31,14 @@ export function initApi() {
     async function pingPackages() {
       for (const packageName of ["dappmanager", "vpn"]) {
         const connected = await pingPackage(session, packageName);
-        store.dispatch({
-          type: "UPDATE_PACKAGE_STATUS",
-          packageName,
-          connected
-        });
+        // Prevent spam: only dispatch action when the status of the package changes
+        if (store.getState().packageStatus[packageName] !== connected) {
+          store.dispatch({
+            type: "UPDATE_PACKAGE_STATUS",
+            packageName,
+            connected
+          });
+        }
       }
     }
     const pingInterval = setInterval(() => {
