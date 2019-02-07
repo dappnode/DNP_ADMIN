@@ -71,7 +71,7 @@ export default function(state = initialState, action) {
       return merge(state, {
         userSetPorts: {
           [action.dnpName]: {
-            [action.key]: action.value
+            [action.id]: action.values
           }
         }
       });
@@ -79,7 +79,7 @@ export default function(state = initialState, action) {
       return merge(state, {
         userSetVols: {
           [action.dnpName]: {
-            [action.key]: action.value
+            [action.id]: action.values
           }
         }
       });

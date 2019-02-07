@@ -23,6 +23,19 @@ class Vols extends React.Component {
       return null;
     }
 
+    // vols =
+    // "bitcoin.dnp.dappnode.eth": {
+    //   "/usr/src/config:/data/.chain/config:ro": {
+    //     host: "/usr/src/config",
+    //     container: "/data/.chain/config",
+    //     accessMode: "ro"
+    //   },
+    //   "bitcoin_data:/data/.chain/var": {
+    //     container: "/data/.chain/var",
+    //     host: "bitcoin_data"
+    //   }
+    // }
+
     return (
       <React.Fragment>
         <div className="section-subtitle">Volumes</div>
@@ -47,18 +60,18 @@ class Vols extends React.Component {
                 </div>
 
                 {/* PSEUDO-TABLE */}
-                {Object.keys(_vols[dnpName]).map(containerAndAccessmode => (
-                  <div className="row" key={containerAndAccessmode}>
+                {Object.keys(_vols[dnpName]).map(id => (
+                  <div className="row" key={id}>
                     <div className="col" style={{ paddingRight: "7.5px" }}>
                       <TableInput
                         lock={this.props.isInstalled[dnpName]}
                         placeholder={"enter volume path..."}
-                        value={_vols[dnpName][containerAndAccessmode] || ""}
+                        value={_vols[dnpName][id].host || ""}
                         onChange={e => {
-                          // newVol: `${e.target.value}:${containerPath}`,
                           this.props.updateUserSetVols({
-                            value: e.target.value,
-                            key: containerAndAccessmode,
+                            ..._vols[dnpName][id],
+                            host: e.target.value,
+                            id,
                             dnpName
                           });
                         }}
@@ -66,7 +79,14 @@ class Vols extends React.Component {
                     </div>
 
                     <div className="col" style={{ paddingLeft: "7.5px" }}>
-                      <TableInput lock={true} value={containerAndAccessmode} />
+                      <TableInput
+                        lock={true}
+                        value={`${_vols[dnpName][id].container}${
+                          _vols[dnpName][id].accessMode
+                            ? `:${_vols[dnpName][id].accessMode}`
+                            : ""
+                        }`}
+                      />
                     </div>
                   </div>
                 ))}

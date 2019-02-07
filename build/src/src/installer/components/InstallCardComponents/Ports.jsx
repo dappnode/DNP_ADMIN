@@ -6,13 +6,6 @@ import * as selector from "../../selectors";
 import TableInput from "components/TableInput";
 import capitalize from "utils/capitalize";
 
-function parsePort(port) {
-  // HOST:CONTAINER/type, return [HOST, CONTAINER/type]
-  if (port.includes(":")) return port.split(/:(.+)/);
-  // CONTAINER/type, return [null, CONTAINER/type]
-  else return [null, port];
-}
-
 class Ports extends React.Component {
   render() {
     const { ports } = this.props;
@@ -29,6 +22,19 @@ class Ports extends React.Component {
     if (!Object.keys(_ports).length) {
       return null;
     }
+
+    // ports =
+    // "bitcoin.dnp.dappnode.eth": {
+    //   "30303:30303/udp": {
+    //     host: "30304",
+    //     container: "30303",
+    //     type: "udp"
+    //   },
+    //   "8333:8333": {
+    //     host: "8444"
+    //     container: "8333"
+    //   }
+    // }
 
     return (
       <React.Fragment>
@@ -54,22 +60,18 @@ class Ports extends React.Component {
                 </div>
 
                 {/* PSEUDO-TABLE */}
-                {Object.keys(_ports[dnpName]).map(containerAndType => (
-                  <div className="row" key={containerAndType}>
+                {Object.keys(_ports[dnpName]).map(id => (
+                  <div className="row" key={id}>
                     <div className="col" style={{ paddingRight: "7.5px" }}>
                       <TableInput
                         lock={this.props.isInstalled[dnpName]}
                         placeholder={"ephemeral port (32768-65535)"}
-                        // host = _ports[dnpName][containerAndType]
-                        value={_ports[dnpName][containerAndType] || ""}
+                        value={_ports[dnpName][id].host || ""}
                         onChange={e => {
-                          // newPort: newHostPort.length
-                          //     ? `${e.target.value}:${containerPort}`
-                          //     : containerPort,
-                          //   port
                           this.props.updateUserSetPorts({
-                            value: e.target.value,
-                            key: containerAndType,
+                            ..._ports[dnpName][id],
+                            host: e.target.value,
+                            id,
                             dnpName
                           });
                         }}
@@ -77,7 +79,14 @@ class Ports extends React.Component {
                     </div>
 
                     <div className="col" style={{ paddingLeft: "7.5px" }}>
-                      <TableInput lock={true} value={containerAndType} />
+                      <TableInput
+                        lock={true}
+                        value={`${_ports[dnpName][id].container}${
+                          _ports[dnpName][id].type
+                            ? `/${_ports[dnpName][id].type}`
+                            : ""
+                        }`}
+                      />
                     </div>
                   </div>
                 ))}

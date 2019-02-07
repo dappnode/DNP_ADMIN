@@ -2,8 +2,7 @@ import { createSelector } from "reselect";
 import fp from "lodash/fp";
 import merge from "deepmerge";
 import { NAME } from "./constants";
-import getTags from "utils/getTags";
-import { isIpfsHash, urlToId } from "./utils";
+import { urlToId } from "./utils";
 
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
@@ -34,7 +33,6 @@ export const isSyncing = state => state.isSyncing;
 
 // #### INTERNAL SELECTORS
 const local = state => state[NAME];
-const packages = state => local(state).packages;
 export const packageData = state => local(state).packageData;
 export const selectedPackageId = state => local(state).selectedPackageId;
 const selectedTypes = state => local(state).selectedTypes;
@@ -43,6 +41,9 @@ export const isInstalling = state => local(state).isInstalling;
 export const fetching = state => local(state).fetching || false;
 export const shouldOpenPorts = state => local(state).shouldOpenPorts;
 export const progressLogs = state => local(state).progressLogs;
+export const getUserSetEnvs = state => local(state).userSetEnvs;
+export const getUserSetPorts = state => local(state).userSetPorts;
+export const getUserSetVols = state => local(state).userSetVols;
 export const getShowAdvancedSettings = state =>
   local(state).showAdvancedSettings;
 
@@ -123,6 +124,7 @@ function getDnpFromDirectory(state, dnpName, dnpVersion) {
 export const getEnvs = state => {
   // First get the query DNP, from the url
   const queryDnp = getQueryDnp(state);
+  if (!queryDnp) return {};
   const defaultEnvs = {};
 
   // Prioritize ENVs set at the installation before the default ones on the manifest
@@ -136,14 +138,19 @@ export const getEnvs = state => {
     .filter(depName => depName !== queryDnp.name)
     .forEach(depName => {
       const depDnp = getDnpFromDirectory(state, depName, dnps[depName]);
-      defaultEnvs[depName] = merge(
-        parseManifestEnvs(depDnp.manifest),
-        getInstalledDnpEnvs(state, depName)
-      );
+      const manifestEnvs = parseManifestEnvs(depDnp.manifest);
+      const alreadySetEnvs = getInstalledDnpEnvs(state, depName);
+      // Don't append empty objects to the envs object
+      if (
+        Object.keys(manifestEnvs).length ||
+        Object.keys(alreadySetEnvs).length
+      ) {
+        defaultEnvs[depName] = merge(manifestEnvs, alreadySetEnvs);
+      }
     });
 
   // Merge default envs and the ones set by the user
-  return merge(defaultEnvs, local(state).userSetEnvs);
+  return merge(defaultEnvs, getUserSetEnvs(state));
 };
 
 /**
@@ -158,14 +165,11 @@ export const getEnvs = state => {
 function parseManifestPorts(manifest = {}) {
   const portsArray = (manifest.image || {}).ports || [];
   return portsArray.reduce((obj, port) => {
-    if (port.includes(":")) {
-      // HOST:CONTAINER/type, return [HOST, CONTAINER/type]
-      const [host, containerAndType] = port.split(/:(.+)/);
-      obj[containerAndType] = host;
-    } else {
-      // CONTAINER/type, return [null, CONTAINER/type]
-      obj[port] = "";
-    }
+    // HOST:CONTAINER/type, return [HOST, CONTAINER/type]
+    // CONTAINER/type, return [null, CONTAINER/type]
+    const [portMapping, type] = port.split("/");
+    const [host, container] = portMapping.split(":");
+    obj[port] = { host, container, type };
     return obj;
   }, {});
 }
@@ -188,7 +192,7 @@ export const getPorts = state => {
     });
 
   // Merge default envs and the ones set by the user
-  return merge(defaultEnvs, local(state).userSetPorts);
+  return merge(defaultEnvs, getUserSetPorts(state));
 };
 
 /**
@@ -204,9 +208,8 @@ function parseManifestVols(manifest = {}) {
   // HOST:CONTAINER:accessMode, return [HOST, CONTAINER:accessMode]
   const volsArray = (manifest.image || {}).volumes || [];
   return volsArray.reduce((obj, vol) => {
-    // regex to split by first occurrence of ":"
-    const [host, containerAndAccessmode] = vol.split(/:(.+)/);
-    obj[containerAndAccessmode] = host;
+    const [host, container, accessMode] = vol.split(":");
+    obj[vol] = { host, container, ...(accessMode ? { accessMode } : {}) };
     return obj;
   }, {});
 }
@@ -229,7 +232,56 @@ export const getVols = state => {
     });
 
   // Merge default envs and the ones set by the user
-  return merge(defaultEnvs, local(state).userSetVols);
+  return merge(defaultEnvs, getUserSetVols(state));
+};
+
+/**
+ * Convert "30303:30303/udp": {
+ *   host: "new_path",
+ *   container: "/root/.local",
+ *   type: "udp"
+ * }
+ * To "old_path:/root/.local": "new_path:/root/.local"
+ */
+export const getUserSetPortsStringified = state => {
+  // HOST:CONTAINER/type, return [HOST, CONTAINER/type]
+  // CONTAINER/type, return [null, CONTAINER/type]
+  const userSetPorts = getUserSetPorts(state);
+  const userSetPortsParsed = {};
+  for (const dnpName of Object.keys(userSetPorts)) {
+    userSetPortsParsed[dnpName] = {};
+    for (const id of Object.keys(userSetPorts[dnpName])) {
+      const { host, container, type } = userSetPorts[dnpName][id];
+      const portMapping = host ? `${host}:${container}` : container;
+      userSetPortsParsed[dnpName][id] = type
+        ? `${portMapping}/${type}`
+        : portMapping;
+    }
+  }
+  return userSetPortsParsed;
+};
+
+/**
+ * Convert "old_path:/root/.local": {
+ *   host: "new_path",
+ *   container: "/root/.local"
+ *   accessMode: "ro"
+ * }
+ * To "old_path:/root/.local:ro": "new_path:/root/.local:ro"
+ */
+export const getUserSetVolsStringified = state => {
+  const userSetVols = getUserSetVols(state);
+  const userSetVolsParsed = {};
+  for (const dnpName of Object.keys(userSetVols)) {
+    userSetVolsParsed[dnpName] = {};
+    for (const id of Object.keys(userSetVols[dnpName])) {
+      const { host, container, accessMode } = userSetVols[dnpName][id];
+      userSetVolsParsed[dnpName][id] = [host, container, accessMode]
+        .filter(x => x)
+        .join(":");
+    }
+  }
+  return userSetVolsParsed;
 };
 
 /**

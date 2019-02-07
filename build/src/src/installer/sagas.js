@@ -30,7 +30,7 @@ export function* shouldOpenPorts() {
   }
 }
 
-export function* install({ id, userSetVols, userSetPorts, options }) {
+export function* install({ id, options }) {
   try {
     // Load necessary info
     const isInstalling = yield select(s.isInstalling);
@@ -50,13 +50,36 @@ export function* install({ id, userSetVols, userSetPorts, options }) {
       msg: "Fetching dependencies...",
       pkgName: id.split("@")[0]
     });
+
+    // Prepare call data
+    // ##### The by package notation is a forward compatibility
+    // ##### to suppport setting dependencies' port / vol
+    //  userSetEnvs = {
+    //    "kovan.dnp.dappnode.eth": {
+    //      "ENV_NAME": "VALUE1"
+    //    }, ... }
+    //  userSetVols = "kovan.dnp.dappnode.eth": {
+    //      "old_path:/root/.local": "new_path:/root/.local"
+    //    }, ... }
+    //  userSetPorts = {
+    //    "kovan.dnp.dappnode.eth": {
+    //      "30303": "31313:30303",
+    //      "30303/udp": "31313:30303/udp"
+    //    }, ... }
+    const userSetEnvs = yield select(s.getUserSetEnvs);
+    const userSetPorts = yield select(s.getUserSetPortsStringified);
+    const userSetVols = yield select(s.getUserSetVolsStringified);
+
+    // Fire call
     const res = yield call(APIcall.installPackage, {
       id,
+      userSetEnvs,
       userSetVols,
       userSetPorts,
       logId,
       options
     });
+
     // Remove package from blacklist
     yield put({ type: t.CLEAR_PROGRESS_LOG, logId });
     pendingToast.resolve(res);
