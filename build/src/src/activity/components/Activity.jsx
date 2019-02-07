@@ -36,7 +36,7 @@ class ActivityView extends React.Component {
         >
           Download all logs
         </button>
-        <a id="downloadAnchorElem" style={{ display: "none" }}>
+        <a id="downloadAnchorElem" style={{ display: "none" }} href="/">
           Download Anchor
         </a>
         <ActivityList userActionLogs={this.props.userActionLogs} />
