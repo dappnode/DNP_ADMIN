@@ -74,7 +74,7 @@ export default class NavbarTopDropdownMessages extends React.Component {
       return (
         <div key={i}>
           <div className="dropdown-divider" />
-          <a className="dropdown-item">
+          <button className="dropdown-item">
             <span className={"text-" + type}>
               <strong>{message.title}</strong>
             </span>
@@ -105,7 +105,7 @@ export default class NavbarTopDropdownMessages extends React.Component {
                 </div>
               </div>
             ) : null}
-          </a>
+          </button>
         </div>
       );
     });
