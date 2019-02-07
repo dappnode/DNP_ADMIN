@@ -105,7 +105,7 @@ export function* updateDefaultEnvs({ id }) {
   try {
     const res = yield call(APIcall.fetchPackageData, { id });
     if (!res.success) {
-      if (res.message.includes("Resolver could not found a match")) {
+      if (res.message.includes("Resolver could not")) {
         console.error("No match found for " + id);
       } else {
         console.error(
@@ -309,7 +309,7 @@ export function* fetchPackageData({ id }) {
     const res = yield call(APIcall.fetchPackageData, { id });
     // Abort on error
     if (!res.success) {
-      if (res.message.includes("Resolver could not found a match")) {
+      if (res.message.includes("Resolver could not")) {
         console.error("No match found for " + id);
       } else {
         console.error("Error fetching package data: ", res.message);
