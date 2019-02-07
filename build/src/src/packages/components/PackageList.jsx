@@ -7,28 +7,30 @@ import { NAME } from "../constants";
 import PackageRow from "./PackageRow";
 import Loading from "components/Loading";
 import NoPackagesYet from "./NoPackagesYet";
+import UpdatePackages from "./UpdatePackages";
 // Styles
 import "./packages.css";
 
 class PackagesList extends React.Component {
   render() {
     const dnpPackages = this.props.dnpPackages || [];
-    let content;
-    if (this.props.fetching && !dnpPackages.length) {
-      content = <Loading msg="Loading installed packages..." />;
-    } else if (this.props.hasFetched && !dnpPackages.length) {
-      content = <NoPackagesYet />;
-    } else {
-      content = (this.props.dnpPackages || []).map((pkg, i) => (
-        <PackageRow key={i} pkg={pkg} moduleName={NAME} />
-      ));
-    }
     return (
       <React.Fragment>
         <div className="section-title" style={{ textTransform: "capitalize" }}>
           {NAME}
         </div>
-        {content}
+
+        <UpdatePackages />
+
+        {this.props.fetching && !dnpPackages.length ? (
+          <Loading msg="Loading installed packages..." />
+        ) : this.props.hasFetched && !dnpPackages.length ? (
+          <NoPackagesYet />
+        ) : (
+          (this.props.dnpPackages || []).map((pkg, i) => (
+            <PackageRow key={i} pkg={pkg} moduleName={NAME} />
+          ))
+        )}
       </React.Fragment>
     );
   }
@@ -37,7 +39,6 @@ class PackagesList extends React.Component {
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  corePackages: selector.getCorePackages,
   dnpPackages: selector.getDnpPackages,
   fetching: selector.fetching,
   hasFetched: selector.hasFetched

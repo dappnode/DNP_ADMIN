@@ -1,23 +1,45 @@
-import { call, put } from "redux-saga/effects";
+import { call, put, select } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
+import * as s from "./selectors";
 import Toast from "components/Toast";
 import PubSub from "eventBus";
+import installer from "installer";
 
 /***************************** Subroutines ************************************/
+
+export function* updateDnps() {
+  try {
+    const dnps = yield select(s.getDnpsToBeUpgraded);
+    // dnps = [ { currentVersion: "0.1.12",
+    //     lastVersion: "0.1.13",
+    //     name: "ethchain.dnp.dappnode.eth" }, ... ]
+    for (const { name } of dnps) {
+      yield put(installer.actions.install({ id: name }));
+    }
+  } catch (e) {
+    console.error("Error on update dnps: ", e);
+  }
+}
 
 export function* listPackages() {
   try {
     yield put({ type: t.UPDATE_FETCHING, fetching: true });
     const res = yield call(APIcall.listPackages);
     yield put({ type: t.UPDATE_FETCHING, fetching: false });
-    if (res.success) {
-      yield put(a.updatePackages(res.result));
-      yield put({ type: t.HAS_FETCHED_PACKAGES });
-    } else {
-      new Toast(res);
+    // Abort on failure
+    if (!res.success) {
+      return new Toast(res);
+    }
+    // Update redux store
+    yield put(a.updatePackages(res.result));
+    yield put({ type: t.HAS_FETCHED_PACKAGES });
+
+    // fetchLatestVersions
+    for (const dnp of res.result.filter(dnp => dnp.isDNP)) {
+      yield put(installer.actions.fetchPackageData(dnp.name));
     }
 
     // listPackages CALL DOCUMENTATION:
@@ -81,7 +103,8 @@ function* logPackage({ kwargs }) {
 const watchers = [
   ["CONNECTION_OPEN", listPackages],
   [t.CALL, callApi],
-  [t.LOG_PACKAGE, logPackage]
+  [t.LOG_PACKAGE, logPackage],
+  [t.UPDATE_DNPS, updateDnps, { throttle: 1000 }]
 ];
 
 export default rootWatcher(watchers);

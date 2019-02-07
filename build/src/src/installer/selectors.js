@@ -37,7 +37,6 @@ export const packageData = state => local(state).packageData;
 export const selectedPackageId = state => local(state).selectedPackageId;
 const selectedTypes = state => local(state).selectedTypes;
 const inputValue = state => local(state).input;
-export const isInstalling = state => local(state).isInstalling;
 export const fetching = state => local(state).fetching || false;
 export const shouldOpenPorts = state => local(state).shouldOpenPorts;
 export const progressLogs = state => local(state).progressLogs;
@@ -52,6 +51,14 @@ const filterActive = todos => todos.filter(t => !t.completed);
 
 export const getAll = state => state[NAME];
 
+// Compute if a package is Installing
+export const isInstalling = (state, dnpName) => {
+  const _progressLogs = progressLogs(state);
+  for (const progressLog of Object.values(_progressLogs)) {
+    if (Object.keys(progressLog).includes(dnpName)) return true;
+  }
+};
+
 // Generate an object to test if a DNP is installed
 export const getIsInstalled = state =>
   installedPackages(state).reduce((obj, dnp) => {
@@ -63,7 +70,9 @@ export const getIsInstalled = state =>
 // /#/installer/ipfs:QmaokAG8ECxpbLp4bqE6A3tBXsATZS7aN8RPd3DsE1haKz
 export const getQueryId = state => {
   const pathname = state.router.location.pathname;
-  const urlId = pathname.includes(`${NAME}/`) && pathname.split(`${NAME}/`)[1];
+  const urlId = pathname.includes(`${NAME}/`)
+    ? pathname.split(`${NAME}/`)[1]
+    : "";
   return urlToId(urlId);
 };
 export const getQueryDnp = state => {

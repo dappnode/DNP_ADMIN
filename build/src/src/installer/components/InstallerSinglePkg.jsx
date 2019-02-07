@@ -20,10 +20,8 @@ import ApproveInstall from "./InstallCardComponents/ApproveInstall";
 import Success from "./InstallCardComponents/Success";
 
 function findProgressLog(pkgName, progressLogs) {
-  for (const logId of Object.keys(progressLogs)) {
-    if (Object.keys(progressLogs[logId]).includes(pkgName)) {
-      return progressLogs[logId];
-    }
+  for (const progressLog of Object.values(progressLogs)) {
+    if (Object.keys(progressLog).includes(pkgName)) return progressLog;
   }
 }
 

@@ -78,4 +78,12 @@ export const closePorts = ports => ({
   ports
 });
 
-// #### After removing a package, uninstallChain
+// Batch update of DNPs
+
+export const updateDnps = () => ({
+  type: t.UPDATE_DNPS
+});
+
+export const fetchLatestVersions = () => ({
+  type: t.FETCH_LATEST_VERSIONS
+});

@@ -43,8 +43,8 @@ export default class UpdateSystem extends React.Component {
                 <div className="col-4">Current version</div>
                 <div className="col-4">Requested version</div>
               </div>
-              {coreDeps.map((dep, i) => (
-                <div key={i} className="row">
+              {coreDeps.map(dep => (
+                <div key={dep.name} className="row">
                   <div className="col-4 text-truncate">{dep.name}</div>
                   <div className="col-4 text-truncate">
                     {dep.from || "not installed"}
@@ -70,7 +70,6 @@ export default class UpdateSystem extends React.Component {
             </div>
           </div>
         </div>
-        <div className="section-subtitle">Packages</div>
       </React.Fragment>
     );
   }

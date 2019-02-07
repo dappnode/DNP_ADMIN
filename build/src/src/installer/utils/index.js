@@ -38,7 +38,7 @@ export function isEmpty(obj) {
   return true;
 }
 
-export function idToUrl(id) {
+export function idToUrl(id = "") {
   // First determine if it contains an ipfs hash
   if (
     (id.startsWith("ipfs/") || id.startsWith("/ipfs/")) &&
@@ -50,7 +50,7 @@ export function idToUrl(id) {
   }
 }
 
-export function urlToId(url) {
+export function urlToId(url = "") {
   // Clean url
   url = url.split("@")[0];
   // First determine if it contains an ipfs hash

@@ -8,7 +8,6 @@ const initialState = {
   directory: [],
   selectedTypes: {},
   input: "",
-  isInstalling: {},
   progressLogs: {},
   shouldOpenPorts: false,
   showAdvancedSettings: false,

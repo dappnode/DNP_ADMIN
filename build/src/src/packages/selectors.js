@@ -1,5 +1,6 @@
 // PACKAGES
 import { NAME } from "./constants";
+import semver from "semver";
 
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
@@ -25,6 +26,7 @@ import { NAME } from "./constants";
 // #### EXTERNAL
 
 const packages = state => state.installedPackages;
+const getDirectory = state => state.directory;
 
 // #### INTERNAL
 
@@ -53,3 +55,48 @@ export const getPackage = state =>
 
 export const getPackageId = state => getPackage(state).name || "";
 export const getPackageIsCORE = state => getPackage(state).isCORE || false;
+
+// Find packages that need to be upgraded
+
+export const getDnpsToBeUpgraded = state => {
+  const directory = getDirectory(state);
+  // directory = {
+  //   "admin.dnp.dappnode.eth": {
+  //     manifest: {
+  //       type: "dncore",
+  //       version: "0.1.13"
+  //     },
+  //     name: "admin.dnp.dappnode.eth",
+  //   },
+  //   ...
+  // };
+
+  const dnps = getDnpPackages(state);
+  // dnps = [
+  //   {
+  //     isCORE: true,
+  //     isDNP: false,
+  //     name: "dappmanager.dnp.dappnode.eth",
+  //     version: "0.1.14"
+  //   },
+  //   ...
+  // ];
+  const dnpsToBeUpgraded = [];
+  dnps.forEach(dnp => {
+    const name = dnp.name;
+    const currentVersion = dnp.version;
+    const lastVersion = ((directory[name] || {}).manifest || {}).version;
+    if (
+      semver.valid(lastVersion) &&
+      semver.valid(currentVersion) &&
+      semver.gt(lastVersion, currentVersion)
+    ) {
+      dnpsToBeUpgraded.push({
+        name,
+        currentVersion,
+        lastVersion
+      });
+    }
+  });
+  return dnpsToBeUpgraded;
+};

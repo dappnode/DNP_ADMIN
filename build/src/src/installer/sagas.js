@@ -32,11 +32,12 @@ export function* shouldOpenPorts() {
 
 export function* install({ id, options }) {
   try {
-    // Load necessary info
-    const isInstalling = yield select(s.isInstalling);
+    if (!id) throw Error("id is not defined");
+    const dnpName = id.split("@")[0];
+
     // Prevent double installations, 1. check if the package is in the blacklist
-    if (isInstalling[id]) {
-      return console.error(id + " IS ALREADY INSTALLING");
+    if (yield select(s.isInstalling, dnpName)) {
+      return console.error(`${id} is already installing`);
     }
     const logId = uuidv4();
     const pendingToast = new Toast({
@@ -48,7 +49,7 @@ export function* install({ id, options }) {
       type: "installer/PROGRESS_LOG",
       logId,
       msg: "Fetching dependencies...",
-      pkgName: id.split("@")[0]
+      pkgName: dnpName
     });
 
     // Prepare call data
@@ -66,16 +67,21 @@ export function* install({ id, options }) {
     //      "30303": "31313:30303",
     //      "30303/udp": "31313:30303/udp"
     //    }, ... }
-    const userSetEnvs = yield select(s.getUserSetEnvs);
-    const userSetPorts = yield select(s.getUserSetPortsStringified);
-    const userSetVols = yield select(s.getUserSetVolsStringified);
+
+    // Ignore userSet values if the current query is not relevant to this installation request = id
+    let userSetEnvs, userSetPorts, userSetVols;
+    if ((id || "").includes(yield select(s.getQueryDnpName))) {
+      userSetEnvs = yield select(s.getUserSetEnvs);
+      userSetPorts = yield select(s.getUserSetPortsStringified);
+      userSetVols = yield select(s.getUserSetVolsStringified);
+    }
 
     // Fire call
     const res = yield call(APIcall.installPackage, {
       id,
       userSetEnvs,
-      userSetVols,
       userSetPorts,
+      userSetVols,
       logId,
       options
     });
