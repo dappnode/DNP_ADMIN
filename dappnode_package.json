@@ -16,12 +16,7 @@
   "contributors": [
     "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
   ],
-  "keywords": [
-    "DAppNodeCore",
-    "DAPP",
-    "ui",
-    "admin"
-  ],
+  "keywords": ["DAppNodeCore", "DAPP", "ui", "admin"],
   "homepage": {
     "adminui": "http://my.admin.dnp.dappnode.eth",
     "homepage": "https://github.com/dappnode/DNP_ETHCHAIN#readme"
