@@ -78,7 +78,7 @@ export default class SdkHome extends React.Component {
           </div>
         </div>
 
-        <div className="section-subtitle">What can I the SDK do?</div>
+        <div className="section-subtitle">What can the SDK do?</div>
         {subRoutes.map(({ title, subtitle, route }) => (
           <div key={route} className="card mb-3">
             <div className="card-body" style={{ padding }}>
