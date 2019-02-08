@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
@@ -16,6 +17,10 @@ import NavbarTopDropdownMessages from "./NavbarTopDropdownMessages";
 import "./popover.css";
 
 class NavbarTopView extends React.Component {
+  static propTypes = {
+    chainData: PropTypes.array.isRequired
+  };
+
   componentDidMount() {
     $(() => {
       $('[data-toggle="popover"]').popover({

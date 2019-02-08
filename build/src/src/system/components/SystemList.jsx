@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
@@ -22,6 +23,10 @@ function findProgressLog(pkgName, progressLogs) {
 }
 
 class SystemList extends React.Component {
+  static propTypes = {
+    corePackages: PropTypes.array
+  };
+
   render() {
     const progressLog = findProgressLog(
       "core.dnp.dappnode.eth",

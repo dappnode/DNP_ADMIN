@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
 import {
@@ -37,6 +38,10 @@ const paramMapping = {
 };
 
 class Publish extends React.Component {
+  static propTypes = {
+    formFields: PropTypes.array.isRequired
+  };
+
   componentDidMount() {
     const urlQuery = this.props.match.params.urlQuery;
     if (urlQuery) {

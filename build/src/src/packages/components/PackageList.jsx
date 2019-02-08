@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
@@ -11,6 +12,10 @@ import NoPackagesYet from "./NoPackagesYet";
 import "./packages.css";
 
 class PackagesList extends React.Component {
+  static propTypes = {
+    dnpPackages: PropTypes.array.isRequired
+  };
+
   render() {
     const dnpPackages = this.props.dnpPackages || [];
     let content;

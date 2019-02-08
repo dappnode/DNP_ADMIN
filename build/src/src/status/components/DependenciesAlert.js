@@ -1,9 +1,15 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getItems } from "../selectors";
 import { createStructuredSelector } from "reselect";
 
 class DependenciesAlert extends React.Component {
+  static propTypes = {
+    deps: PropTypes.array.isRequired,
+    items: PropTypes.array
+  };
+
   render() {
     let items = this.props.items || [{}];
     const alerts = this.props.deps
