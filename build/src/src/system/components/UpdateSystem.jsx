@@ -1,6 +1,11 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default class UpdateSystem extends React.Component {
+  static propTypes = {
+    coreDeps: PropTypes.array.isRequired
+  };
+
   render() {
     const margin = "5px";
     const padding = "0.7rem";

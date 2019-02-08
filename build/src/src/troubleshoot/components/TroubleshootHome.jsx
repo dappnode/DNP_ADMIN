@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import { diagnose } from "../actions";
@@ -11,6 +12,10 @@ import Github from "Icons/Github";
 import "./troubleshoot.css";
 
 class PackagesList extends React.Component {
+  static propTypes = {
+    diagnoses: PropTypes.array.isRequired
+  };
+
   componentWillMount() {
     this.props.diagnose();
   }
@@ -42,9 +47,7 @@ class PackagesList extends React.Component {
                   </div>
                   {ok ? null : (
                     <ul>
-                      {solution.map((item, j) => (
-                        <li key={j}>{item}</li>
-                      ))}
+                      {solution.map((item, j) => <li key={j}>{item}</li>)}
                     </ul>
                   )}
                 </div>

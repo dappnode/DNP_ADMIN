@@ -43,6 +43,14 @@ export default class PackageDetails extends React.Component {
     // PORTS
     // pkg.ports = [{IP: "0.0.0.0", PrivatePort: 30304, PublicPort: 32770, Type: "tcp"}, ...]
     // pkg.portsToClose = [{number: 32771, type: "TCP"}, ...]
+    if (pkg.ports && !Array.isArray(pkg.ports)) {
+      console.error("pkg.ports must be an array ", pkg.ports);
+      pkg.ports = [];
+    }
+    if (pkg.portsToClose && !Array.isArray(pkg.portsToClose)) {
+      console.error("pkg.portsToClose must be an array ", pkg.portsToClose);
+      pkg.portsToClose = [];
+    }
     const ports = (pkg.ports || []).map(portObj => {
       const locked = Boolean(
         (pkg.portsToClose || []).find(
@@ -62,6 +70,10 @@ export default class PackageDetails extends React.Component {
     //     links: "1",
     //     size: "45.13GB"}
     // ]
+    if (pkg.volumes && !Array.isArray(pkg.volumes)) {
+      console.error("pkg.volumes must be an array ", pkg.volumes);
+      pkg.volumes = [];
+    }
     const volumes = (pkg.volumes || [])
       // Order volumes before bind mounts
       .sort(v1 => (v1.type === "volume" ? -1 : 1))

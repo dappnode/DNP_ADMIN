@@ -28,9 +28,9 @@ export const updateLog = (logs, id) => ({
   id
 });
 
-export const logPackage = kwargs => ({
+export const logPackage = (id, options) => ({
   type: t.LOG_PACKAGE,
-  kwargs
+  kwargs: { id, options }
 });
 
 // Used in package interface / envs
@@ -45,18 +45,18 @@ export const updatePackageEnv = kwargs => ({
 
 // Used in package interface / controls
 
-export const restartPackage = kwargs => ({
+export const restartPackage = id => ({
   type: t.CALL,
   method: "restartPackage",
-  message: "Restarting " + shortName(kwargs.id) + "...",
-  kwargs
+  message: "Restarting " + shortName(id) + "...",
+  kwargs: { id }
 });
 
-export const restartPackageVolumes = kwargs => ({
+export const restartPackageVolumes = id => ({
   type: t.CALL,
   method: "restartPackageVolumes",
-  message: "Restarting " + shortName(kwargs.id) + " volumes...",
-  kwargs
+  message: "Restarting " + shortName(id) + " volumes...",
+  kwargs: { id }
 });
 
 export const setStaticIp = staticIp => ({
