@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 // Icons
 import Circle from "Icons/Circle";
 
@@ -42,6 +43,10 @@ function progressBar(percent) {
   return <div className="determinate" style={{ width: percent + "%" }} />;
 }
 export default class NavbarTopDropdownMessages extends React.Component {
+  static propTypes = {
+    messages: PropTypes.array.isRequired
+  };
+
   componentDidMount() {
     if (this.props.onClick)
       document

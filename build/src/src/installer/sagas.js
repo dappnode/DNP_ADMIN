@@ -169,6 +169,7 @@ export function* updateEnvs({ id, envs, isCORE, restart }) {
  */
 export function* managePorts({ action, ports = [] }) {
   try {
+    if (!Array.isArray(ports)) throw Error("ports must be an array");
     // Remove duplicates
     ports = uniqArray(ports);
     // Only open ports if necessary
