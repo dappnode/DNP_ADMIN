@@ -64,4 +64,8 @@ export const updateButtonMessage = message => ({
   message
 });
 
-// #### After removing a package, uninstallChain
+export const updateGenericError = message => ({
+  type: t.UPDATE_QUERY_RESULT,
+  id: "genericError",
+  data: message
+});

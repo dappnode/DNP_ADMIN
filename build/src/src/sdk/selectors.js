@@ -34,6 +34,9 @@ export const queryResult = state => local(state).queryResult;
 export const getQuery = state => local(state).query;
 export const getQueryResult = state => local(state).queryResult;
 
+export const getGenericError = state =>
+  (getQueryResult(state) || {})["genericError"];
+
 export const getShowManifestButtons = state => {
   const manifestHashInput = getManifestHashInput(state);
   const manifestIpfsHash = getQuery(state).manifestIpfsHash;
