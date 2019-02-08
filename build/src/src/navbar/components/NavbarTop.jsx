@@ -12,11 +12,15 @@ import Bell from "Icons/Bell";
 import troubleshoot from "troubleshoot";
 // Components
 import NavbarTopDropdownMessages from "./NavbarTopDropdownMessages";
+// Extra popover css
+import "./popover.css";
 
 class NavbarTopView extends React.Component {
   componentDidMount() {
     $(() => {
-      $('[data-toggle="popover"]').popover();
+      $('[data-toggle="popover"]').popover({
+        container: "body"
+      });
     });
   }
 
@@ -38,6 +42,7 @@ class NavbarTopView extends React.Component {
       <ul className="navbar-nav ml-auto">
         <li className="nav-item nav-item-infoText">
           <span
+            role="button"
             data-container="body"
             data-toggle="popover"
             data-placement="bottom"
