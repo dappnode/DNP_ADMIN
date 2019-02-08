@@ -9,7 +9,7 @@ import GuestUsers from "./GuestUsers";
 import Loading from "components/Loading";
 import navbar from "navbar";
 
-const enableGuestUsers = false
+const enableGuestUsers = false;
 
 class DevicesView extends React.Component {
   constructor() {
@@ -70,6 +70,7 @@ class DevicesView extends React.Component {
             <DeviceList
               deviceList={this.props.deviceList}
               removeDevice={this.props.removeDevice}
+              resetDevice={this.props.resetDevice}
               toggleAdmin={this.props.toggleAdmin}
               getDeviceCredentials={this.props.getDeviceCredentials}
             />
@@ -103,6 +104,9 @@ const mapDispatchToProps = dispatch => {
     },
     removeDevice: id => {
       dispatch(action.removeDevice(id));
+    },
+    resetDevice: id => {
+      dispatch(action.resetDevice(id));
     },
     toggleAdmin: id => {
       dispatch(action.toggleAdmin(id));

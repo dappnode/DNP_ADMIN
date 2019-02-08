@@ -25,6 +25,24 @@ class Row extends React.Component {
     });
   }
 
+  resetDevice(id) {
+    confirmAlert({
+      title: "Reseting " + id + " device",
+      message:
+        "All profiles and links pointing to this device will no longer be valid. Are you sure?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => this.props.resetDevice(id)
+        },
+        {
+          label: "No",
+          onClick: () => {}
+        }
+      ]
+    });
+  }
+
   render() {
     const device = this.props.device;
     const { id, url, isAdmin, ip } = device;
@@ -37,7 +55,10 @@ class Row extends React.Component {
       <div className="card mb-3" id={id}>
         <div className="card-body" style={{ padding }}>
           <div>
-            <div className="float-left" style={{ margin, width: "170px" }}>
+            <div
+              className="float-left"
+              style={{ margin, width: "200px", height: "60px" }}
+            >
               <h5 className="card-title">{id}</h5>
               <p className="card-text">
                 {ip && <span className="ipBadge">{ip}</span>}
@@ -55,7 +76,6 @@ class Row extends React.Component {
                   type="button"
                   style={{ width }}
                   disabled={isAdmin}
-                  id={id}
                   onClick={this.removeDevice.bind(this, id)}
                 >
                   Remove
@@ -83,6 +103,16 @@ class Row extends React.Component {
                     onClick={() => this.props.getDeviceCredentials(id)}
                   >
                     Get link
+                  </button>
+                )}
+                {!url && (
+                  <button
+                    className="btn btn-outline-danger"
+                    type="button"
+                    style={{ width }}
+                    onClick={this.resetDevice.bind(this, id)}
+                  >
+                    Reset
                   </button>
                 )}
                 {url && (
@@ -131,6 +161,7 @@ export default class DeviceList extends React.Component {
             key={i}
             device={device}
             removeDevice={this.props.removeDevice}
+            resetDevice={this.props.resetDevice}
             toggleAdmin={this.props.toggleAdmin}
             getDeviceCredentials={this.props.getDeviceCredentials}
           />
