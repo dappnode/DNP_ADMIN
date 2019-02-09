@@ -1,5 +1,6 @@
 // PACKAGES
 import { NAME } from "./constants";
+import { createSelector } from "reselect";
 
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
@@ -28,34 +29,9 @@ const packages = state => state.installedPackages;
 // #### INTERNAL
 
 const local = state => state[NAME];
-const logs = state => local(state).logs;
+
 export const systemUpdateAvailable = state =>
   local(state).systemUpdateAvailable;
 export const coreDeps = state => local(state).coreDeps;
-const pathname = state => state.router.location.pathname || "";
-const id = state => pathname(state).split(NAME + "/")[1] || "";
-export const fetching = state => local(state).fetching || false;
 export const staticIp = state => local(state).staticIp;
 export const staticIpInput = state => local(state).staticIpInput;
-
-// Package lists
-
-export const getPackages = packages;
-export const getCorePackages = state =>
-  packages(state)
-    .filter(p => p.isCORE)
-    .filter(p => !p.name.includes("core.dnp"));
-export const getDnpPackages = state => packages(state).filter(p => p.isDNP);
-
-// Package logs
-
-export const getLogs = state => logs(state)[id(state)];
-
-// Selected package
-
-export const getId = id;
-export const getPackage = state =>
-  packages(state).find(p => p.name === id(state)) || {};
-
-export const getPackageId = state => getPackage(state).name || "";
-export const getPackageIsCORE = state => getPackage(state).isCORE || false;

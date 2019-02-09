@@ -3,6 +3,22 @@
   --dappnode-color: #2fbcb2;
 }
 
+/* Table styles to have light gray separators.
+   Visible at /packages/:id, controls panel
+ */
+
+.table td {
+  border-top: 0 !important;
+}
+.table tr {
+  border-bottom: 1px solid #dee2e6;
+}
+.table tr:last-child {
+  border-bottom: 0 !important;
+}
+
+/* Big sections headers, i.e. *Packages* kovan.dnp.dappnode.eth */
+
 .section-title {
   border-bottom: 1px solid #dee2e6;
   margin-bottom: 24px;
@@ -11,6 +27,12 @@
   font-weight: 400;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.section-title .pre-title {
+  opacity: 0.3;
+  font-weight: 300;
+  text-transform: "capitalize";
 }
 
 .section-subtitle {
@@ -32,6 +54,7 @@
 }
 
 /* Space out card sub groups except last element */
+
 .card-subgroup {
   border-bottom: 1px solid #dfdfdf;
   margin-bottom: 8px;

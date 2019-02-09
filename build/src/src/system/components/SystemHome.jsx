@@ -1,18 +1,19 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
 import { updateCore } from "../actions";
 import { NAME } from "../constants";
+// Modules
+import packages from "packages";
+import installer from "installer";
 // Components
-import SystemRow from "./SystemRow";
 import UpdateSystem from "./UpdateSystem";
 import StaticIp from "./StaticIp";
-import installer from "installer";
-import Loading from "components/Loading";
 // Styles
 import "packages/components/packages.css";
+
+const PackageList = packages.components.PackageList;
 
 function findProgressLog(pkgName, progressLogs) {
   for (const logId of Object.keys(progressLogs)) {
@@ -22,11 +23,7 @@ function findProgressLog(pkgName, progressLogs) {
   }
 }
 
-class SystemList extends React.Component {
-  static propTypes = {
-    corePackages: PropTypes.array
-  };
-
+class SystemHome extends React.Component {
   render() {
     const progressLog = findProgressLog(
       "core.dnp.dappnode.eth",
@@ -57,13 +54,8 @@ class SystemList extends React.Component {
           updateStaticIp={this.props.updateStaticIp}
         />
 
-        {this.props.fetching && (this.props.corePackages || []).length === 0 ? (
-          <Loading msg="Loading core packages..." />
-        ) : (
-          (this.props.corePackages || []).map((pkg, i) => (
-            <SystemRow key={i} pkg={pkg} moduleName={NAME} />
-          ))
-        )}
+        <div className="section-subtitle">Packages</div>
+        <PackageList moduleName={NAME} coreDnps={true} />
       </React.Fragment>
     );
   }
@@ -72,10 +64,8 @@ class SystemList extends React.Component {
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  corePackages: selector.getCorePackages,
   coreDeps: selector.coreDeps,
-  progressLogs: installer.selectors.progressLogs,
-  fetching: selector.fetching
+  progressLogs: installer.selectors.progressLogs
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch
@@ -84,4 +74,4 @@ const mapDispatchToProps = { updateCore };
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SystemList);
+)(SystemHome);
