@@ -2,98 +2,65 @@ import React from "react";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
 import * as action from "../actions";
-import { createStructuredSelector } from "reselect";
 import { push } from "connected-react-router";
 import { NAME } from "../constants";
-import confirmPackageRemove from "./confirmPackageRemove";
-import confirmVolumeRemove from "./confirmVolumeRemove";
 // Components
 import Details from "./PackageViews/Details";
 import Logs from "./PackageViews/Logs";
 import Envs from "./PackageViews/Envs";
 import Controls from "./PackageViews/Controls";
+import Loading from "components/Loading";
+import Error from "components/Error";
+import NoPackagesYet from "./NoPackagesYet";
 // utils
 import parsePorts from "utils/parsePorts";
 
 class PackageInterface extends React.Component {
   render() {
-    const pkg = this.props.pkg;
-    if (!pkg) {
-      return (
-        <div className="alert" role="alert">
-          Loading {this.props.id} ... (if this take too long, package may be
-          missing or misspelled)
-        </div>
-      );
-    }
-
-    const id = pkg.name;
-
-    // let packageProperties = Object.getOwnPropertyNames(_package)
-    // remove(packageProperties, ['id', 'isDNP', 'running', 'shortName'])
+    const dnp = this.props.dnp;
 
     return (
-      <div>
+      <React.Fragment>
         <div className="section-title">
-          <span style={{ opacity: 0.3, fontWeight: 300 }}>Packages </span>
-          {id}
+          <span className="pre-title">{NAME} </span>
+          {this.props.match.params.id}
         </div>
-
-        <Details pkg={pkg} />
-
-        <Logs
-          id={id}
-          logs={this.props.logs}
-          logPackage={options => this.props.logPackage(id, options)}
-        />
-
-        <Envs id={id} pkg={pkg} />
-
-        <Controls
-          state={pkg.state}
-          togglePackage={this.props.togglePackage.bind(this, id)}
-          restartPackage={this.props.restartPackage.bind(this, id)}
-          restartPackageVolumes={() =>
-            confirmVolumeRemove(id, this.props.restartPackageVolumes)
-          }
-          removePackage={() =>
-            confirmPackageRemove(pkg, this.props.removePackage)
-          }
-        />
-      </div>
+        {dnp ? (
+          <React.Fragment>
+            <Details dnp={dnp} />
+            <Logs dnp={dnp} />
+            <Envs dnp={dnp} />
+            <Controls dnp={dnp} />
+          </React.Fragment>
+        ) : this.props.fetching ? (
+          <Loading msg="Loading installed packages..." />
+        ) : this.props.hasFetched ? (
+          <NoPackagesYet />
+        ) : (
+          <Error msg="Broken connection or unknown state" />
+        )}
+      </React.Fragment>
     );
   }
 }
 
 // Container
+// createSelector(a, b, c, (ax, bx, cx) => ({a: ax, b: bx: c: cx})
+// =
+// createStructuredSelector({a, b, c})
 
-const mapStateToProps = createStructuredSelector({
-  pkg: selector.getPackage,
-  packageList: selector.getPackages,
-  logs: selector.getLogs
-});
-
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    logPackage: (id, options) => {
-      dispatch(action.logPackage({ id, options }));
-    },
-    togglePackage: id => {
-      dispatch(action.togglePackage({ id }));
-    },
-    restartPackage: id => {
-      dispatch(action.restartPackage({ id }));
-    },
-    restartPackageVolumes: id => {
-      dispatch(action.restartPackageVolumes({ id }));
-    },
-    removePackage: (pkg, deleteVolumes) => {
-      dispatch(action.removePackage({ id: pkg.name, deleteVolumes }));
-      const ports = parsePorts(pkg.manifest || {});
-      if (ports.length) dispatch(action.closePorts(ports));
-      dispatch(push("/" + NAME));
-    }
+    fetching: selector.fetching(state),
+    dnp: selector.getDnp(state, ownProps.match.params.id)
   };
+};
+
+const mapDispatchToProps = {
+  togglePackage: action.togglePackage,
+  restartPackage: action.restartPackage,
+  restartPackageVolumes: action.restartPackageVolumes,
+  removePackage: action.removePackage
 };
 
 export default connect(

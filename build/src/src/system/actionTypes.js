@@ -12,10 +12,8 @@ import generateActionTypes from "utils/generateActionTypes";
  */
 export default generateActionTypes(NAME, [
   "CALL",
-  "LOG_PACKAGE",
   "LIST_PACKAGES",
   "UPDATE_FETCHING",
-  "UPDATE_LOG",
   "UPDATE_PACKAGES",
   // Core stuff
   "CORE_DEPS",

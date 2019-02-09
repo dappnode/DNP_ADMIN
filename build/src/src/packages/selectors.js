@@ -1,5 +1,6 @@
 // PACKAGES
 import { NAME } from "./constants";
+import { createSelector } from "reselect";
 
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
@@ -24,32 +25,50 @@ import { NAME } from "./constants";
 
 // #### EXTERNAL
 
-const packages = state => state.installedPackages;
+export const getPackages = createSelector(
+  state => state.installedPackages,
+  _packages => _packages
+);
+const getUrlId = createSelector(
+  state => state.router.location.pathname,
+  pathname => (pathname || "").split(NAME + "/")[1] || ""
+);
 
 // #### INTERNAL
+const getLocalState = createSelector(
+  state => state[NAME],
+  localState => localState
+);
+const getLogs = createSelector(
+  getLocalState,
+  localState => localState.logs
+);
 
-const local = state => state[NAME];
-const logs = state => local(state).logs;
-const pathname = state => state.router.location.pathname || "";
-const id = state => pathname(state).split(NAME + "/")[1] || "";
-export const fetching = state => local(state).fetching || false;
-export const hasFetched = state => local(state).hasFetched || false;
+export const fetching = createSelector(
+  getLocalState,
+  localState => localState.fetching || false
+);
+export const hasFetched = createSelector(
+  getLocalState,
+  localState => localState.hasFetched || false
+);
 
 // Package lists
-
-export const getPackages = packages;
-export const getCorePackages = state => packages(state).filter(p => p.isCORE);
-export const getDnpPackages = state => packages(state).filter(p => p.isDNP);
+export const getCorePackages = createSelector(
+  [getPackages],
+  _packages => _packages.filter(p => p.isCORE)
+);
+export const getDnpPackages = createSelector(
+  [getPackages],
+  _packages => _packages.filter(p => p.isDNP)
+);
+export const getDnp = createSelector(
+  [(_, id) => id, getPackages],
+  (id, dnps) => dnps.find(dnp => dnp.name === id)
+);
 
 // Package logs
-
-export const getLogs = state => logs(state)[id(state)];
-
-// Selected package
-
-export const getId = id;
-export const getPackage = state =>
-  packages(state).find(p => p.name === id(state)) || {};
-
-export const getPackageId = state => getPackage(state).name || "";
-export const getPackageIsCORE = state => getPackage(state).isCORE || false;
+export const getDnpLogs = createSelector(
+  [(_, id) => id, getLogs],
+  (id, logs) => logs[id]
+);

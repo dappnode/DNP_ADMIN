@@ -52,10 +52,12 @@ function* callApi({ method, kwargs, message }) {
   }
 }
 
-function* logPackage({ kwargs }) {
-  const { id } = kwargs;
+function* logPackage({ id, options }) {
   try {
-    const res = yield call(APIcall.logPackage, kwargs);
+    if (!id) throw Error("id must be defined");
+    if (!options || typeof options !== "object")
+      throw Error("options must be defined and type object");
+    const res = yield call(APIcall.logPackage, { id, options });
     if (res.success) {
       const { logs } = res.result || {};
       if (!logs) {

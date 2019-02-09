@@ -95,52 +95,54 @@ class Publish extends React.Component {
           <div className="card-body">
             <form>
               {/* Main rows of the form */}
-              {this.props.formFields.filter(({ hide }) => !hide).map(item => {
-                return (
-                  <div className="form-group row" key={item.id}>
-                    <label
-                      htmlFor={`form-${item.id}`}
-                      className="col-sm-2 col-form-label"
-                    >
-                      {item.name}
-                    </label>
-                    <div className="col-sm-10">
-                      <input
-                        className={`form-control ${getInputClass(item)}`}
-                        placeholder={item.placeholder}
-                        value={(this.props.query || {})[item.id] || ""}
-                        onChange={e =>
-                          this.props.updateQuery(item.id, e.target.value)
-                        }
-                      />
-                      {!item.loading && item.success ? (
-                        <div className="valid-feedback">
-                          {item.success.map((line, i) => (
-                            <span key={i}>
-                              {line}
-                              <br />
-                            </span>
-                          ))}
-                        </div>
-                      ) : null}
-                      {!item.loading && item.error ? (
-                        <div className="invalid-feedback">
-                          {item.error.map((line, i) => (
-                            <span key={i}>
-                              {line}
-                              <br />
-                            </span>
-                          ))}
-                        </div>
-                      ) : null}
-                      <small className="form-text text-muted">
-                        {item.loading ? "Loading... " : ""}
-                        {item.help}
-                      </small>
+              {this.props.formFields
+                .filter(({ hide }) => !hide)
+                .map(item => {
+                  return (
+                    <div className="form-group row" key={item.id}>
+                      <label
+                        htmlFor={`form-${item.id}`}
+                        className="col-sm-2 col-form-label"
+                      >
+                        {item.name}
+                      </label>
+                      <div className="col-sm-10">
+                        <input
+                          className={`form-control ${getInputClass(item)}`}
+                          placeholder={item.placeholder}
+                          value={(this.props.query || {})[item.id] || ""}
+                          onChange={e =>
+                            this.props.updateQuery(item.id, e.target.value)
+                          }
+                        />
+                        {!item.loading && item.success ? (
+                          <div className="valid-feedback">
+                            {item.success.map((line, i) => (
+                              <span key={i}>
+                                {line}
+                                <br />
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                        {!item.loading && item.error ? (
+                          <div className="invalid-feedback">
+                            {item.error.map((line, i) => (
+                              <span key={i}>
+                                {line}
+                                <br />
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                        <small className="form-text text-muted">
+                          {item.loading ? "Loading... " : ""}
+                          {item.help}
+                        </small>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
 
               {/* Extra buttons to test manifest */}
               {showManifestButtons ? (

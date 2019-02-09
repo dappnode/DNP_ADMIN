@@ -12,17 +12,17 @@ export default class PackageDetails extends React.Component {
     //   }));
     // }
 
-    // let manifest = pkg.manifest || {};
+    // let manifest = dnp.manifest || {};
     // const links = getLinksArray(manifest).map((e, i) => (
     //   <a className="package-link" key={i} href={e.link}>
     //     {e.name}{" "}
     //   </a>
     // ));
 
-    const pkg = this.props.pkg || {};
+    const dnp = this.props.dnp || {};
 
     // In the manifest, homepage = {userui: "http://some.link"}
-    const linksObj = (pkg.manifest || {}).homepage || {};
+    const linksObj = (dnp.manifest || {}).homepage || {};
     let links;
     if (typeof linksObj === "object") {
       links = Object.keys(linksObj).map(name => ({
@@ -41,19 +41,19 @@ export default class PackageDetails extends React.Component {
     }
 
     // PORTS
-    // pkg.ports = [{IP: "0.0.0.0", PrivatePort: 30304, PublicPort: 32770, Type: "tcp"}, ...]
-    // pkg.portsToClose = [{number: 32771, type: "TCP"}, ...]
-    if (pkg.ports && !Array.isArray(pkg.ports)) {
-      console.error("pkg.ports must be an array ", pkg.ports);
-      pkg.ports = [];
+    // dnp.ports = [{IP: "0.0.0.0", PrivatePort: 30304, PublicPort: 32770, Type: "tcp"}, ...]
+    // dnp.portsToClose = [{number: 32771, type: "TCP"}, ...]
+    if (dnp.ports && !Array.isArray(dnp.ports)) {
+      console.error("dnp.ports must be an array ", dnp.ports);
+      dnp.ports = [];
     }
-    if (pkg.portsToClose && !Array.isArray(pkg.portsToClose)) {
-      console.error("pkg.portsToClose must be an array ", pkg.portsToClose);
-      pkg.portsToClose = [];
+    if (dnp.portsToClose && !Array.isArray(dnp.portsToClose)) {
+      console.error("dnp.portsToClose must be an array ", dnp.portsToClose);
+      dnp.portsToClose = [];
     }
-    const ports = (pkg.ports || []).map(portObj => {
+    const ports = (dnp.ports || []).map(portObj => {
       const locked = Boolean(
-        (pkg.portsToClose || []).find(
+        (dnp.portsToClose || []).find(
           _portObj => String(_portObj.number) === String(portObj.PublicPort)
         )
       );
@@ -61,7 +61,7 @@ export default class PackageDetails extends React.Component {
     });
 
     // VOLUMES
-    // pkg.volumes = [
+    // dnp.volumes = [
     //   { type: "bind",
     //     path: "/etc/hostname" },
     //   { type: "volume",
@@ -70,11 +70,11 @@ export default class PackageDetails extends React.Component {
     //     links: "1",
     //     size: "45.13GB"}
     // ]
-    if (pkg.volumes && !Array.isArray(pkg.volumes)) {
-      console.error("pkg.volumes must be an array ", pkg.volumes);
-      pkg.volumes = [];
+    if (dnp.volumes && !Array.isArray(dnp.volumes)) {
+      console.error("dnp.volumes must be an array ", dnp.volumes);
+      dnp.volumes = [];
     }
-    const volumes = (pkg.volumes || [])
+    const volumes = (dnp.volumes || [])
       // Order volumes before bind mounts
       .sort(v1 => (v1.type === "volume" ? -1 : 1))
       // Display style:
@@ -82,7 +82,7 @@ export default class PackageDetails extends React.Component {
       // - /etc/hostname: - (bind)
       .map(volume => ({
         name: volume.name || volume.path || "unknown",
-        size: volume.size || (volume.type === "bind" ? "- (bind)" : "unkown")
+        size: volume.size || (volume.type === "bind" ? "(bind)" : "unknown")
       }));
 
     return (
@@ -92,21 +92,21 @@ export default class PackageDetails extends React.Component {
           <div className="card-body">
             <div>
               <strong>Description: </strong>
-              {(pkg.manifest || {}).description || "No description"}
+              {(dnp.manifest || {}).description || "No description"}
             </div>
             <div>
               <strong>Version: </strong>
-              {pkg.version + " " + (pkg.origin || "")}
+              {dnp.version + " " + (dnp.origin || "")}
             </div>
             <div>
               <strong>Use link: </strong>
-              {pkg.name ? (
-                <a href={"http://my." + pkg.name}>{"my." + pkg.name}</a>
+              {dnp.name ? (
+                <a href={"http://my." + dnp.name}>{"my." + dnp.name}</a>
               ) : null}
             </div>
             <div>
               <strong>Volumes: </strong>
-              {!(pkg.volumes || []).length ? (
+              {!(dnp.volumes || []).length ? (
                 <span>no volumes</span>
               ) : (
                 <ul>

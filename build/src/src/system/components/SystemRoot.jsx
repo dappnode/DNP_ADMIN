@@ -4,8 +4,8 @@ import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { NAME } from "../constants";
 // Components
-import SystemList from "./SystemList";
-import SystemInterface from "./SystemInterface";
+import SystemHome from "./SystemHome";
+import packages from "packages";
 // Modules
 import status from "status";
 // Logic
@@ -15,8 +15,11 @@ class System extends React.Component {
     return (
       <div>
         <status.components.DependenciesAlert deps={["wamp", "dappmanager"]} />
-        <Route exact path={"/" + NAME} component={SystemList} />
-        <Route path={"/" + NAME + "/:id"} component={SystemInterface} />
+        <Route exact path={"/" + NAME} component={SystemHome} />
+        <Route
+          path={"/" + NAME + "/:id"}
+          component={packages.components.PackageInterface}
+        />
       </div>
     );
   }

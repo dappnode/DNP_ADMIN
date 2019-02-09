@@ -1,4 +1,8 @@
 import React from "react";
+import PropTypes from "prop-types";
+import * as selector from "../../selectors";
+import { connect } from "react-redux";
+import * as action from "../../actions";
 import PubSub from "eventBus";
 
 import Terminal from "./Terminal";
@@ -9,7 +13,7 @@ const terminalID = "terminal";
 
 let token;
 
-export default class DisplayLogs extends React.Component {
+class DisplayLogs extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -19,12 +23,13 @@ export default class DisplayLogs extends React.Component {
       lines: 200,
       handle: 0
     };
-    this.change = this.change.bind(this);
-    this.toggleTimestamps = this.toggleTimestamps.bind(this);
     this.toggleAutoRefresh = this.toggleAutoRefresh.bind(this);
-    this.changeLines = this.changeLines.bind(this);
     this.logPackage = this.logPackage.bind(this);
   }
+
+  static propTypes = {
+    dnp: PropTypes.object.isRequired
+  };
 
   componentDidMount() {
     this.handle = setInterval(this.logPackage, refreshInterval);
@@ -41,7 +46,7 @@ export default class DisplayLogs extends React.Component {
   }
 
   logPackage() {
-    this.props.logPackage({
+    this.props.logPackage(this.props.dnp.name, {
       timestamps: this.state.timestamps,
       tail: this.state.lines
     });
@@ -62,11 +67,11 @@ export default class DisplayLogs extends React.Component {
     this.setState({ timestamps: !this.state.timestamps });
   };
 
-  change = target => e => {
-    this.setState({ [target]: e.target.value });
+  updateSearch = e => {
+    this.setState({ search: e.target.value });
   };
 
-  changeLines = e => {
+  updateLines = e => {
     const n = e.target.value;
     if (!isNaN(parseInt(n, 10)) && isFinite(n) && parseInt(n, 10) > 0) {
       this.setState({ lines: parseInt(n, 10) });
@@ -114,7 +119,7 @@ export default class DisplayLogs extends React.Component {
                   className="switch"
                   id="switch-ts"
                   checked={this.state.timestamps}
-                  onChange={this.toggleTimestamps}
+                  onChange={this.toggleTimestamps.bind(this)}
                 />
                 <label htmlFor="switch-ts">Display timestamps</label>
               </span>
@@ -142,7 +147,7 @@ export default class DisplayLogs extends React.Component {
                 className="form-control"
                 placeholder="Number of lines to display..."
                 value={this.state.lines}
-                onChange={this.changeLines}
+                onChange={this.updateLines.bind(this)}
               />
             </div>
             <div className="input-group mb-3">
@@ -154,7 +159,7 @@ export default class DisplayLogs extends React.Component {
                 className="form-control"
                 placeholder="Filter..."
                 value={this.state.search}
-                onChange={this.change("search")}
+                onChange={this.updateSearch.bind(this)}
               />
             </div>
             <Terminal text={logsFiltered} terminalID={terminalID} />
@@ -164,3 +169,18 @@ export default class DisplayLogs extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    logs: selector.getDnpLogs(state, ownProps.dnp.name)
+  };
+};
+
+const mapDispatchToProps = {
+  logPackage: action.logPackage
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DisplayLogs);

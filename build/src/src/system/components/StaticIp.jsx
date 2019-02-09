@@ -122,7 +122,6 @@ class StaticIpView extends React.Component {
             </div>
           </div>
         </div>
-        <div className="section-subtitle">Packages</div>
       </React.Fragment>
     );
   }
@@ -135,15 +134,9 @@ const mapStateToProps = createStructuredSelector({
   staticIpInput: selector.staticIpInput
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    setStaticIp: staticIp => {
-      dispatch(action.setStaticIp(staticIp));
-    },
-    updateStaticIpInput: staticIpInput => {
-      dispatch(action.updateStaticIpInput(staticIpInput));
-    }
-  };
+const mapDispatchToProps = {
+  setStaticIp: action.setStaticIp,
+  updateStaticIpInput: action.updateStaticIpInput
 };
 
 export default connect(
