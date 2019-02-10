@@ -118,3 +118,37 @@
   color: #9cc7c4;
   border: 0px solid #9cc7c4;
 }
+
+/* DAppNode pill grey */
+
+.dappnode-pill-gray {
+  color: #c2c1c1;
+  background-color: transparent;
+  border: 1px solid #c2c1c1;
+  width: max-content;
+  padding: 3px 8px !important;
+  border-radius: 50px !important;
+  /* Borrowed from bootstrap v4 btn class */
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-transform: capitalize;
+  -webkit-transition: color 0.15s ease-in-out, color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  -o-transition: color 0.15s ease-in-out, color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
+}
+.dappnode-pill-gray:hover {
+  color: #797979;
+  border-color: #797979;
+}
