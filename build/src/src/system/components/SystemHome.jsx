@@ -1,8 +1,7 @@
 import React from "react";
 import { createStructuredSelector } from "reselect";
-import * as selector from "../selectors";
+import * as s from "../selectors";
 import { connect } from "react-redux";
-import { updateCore } from "../actions";
 import { NAME } from "../constants";
 // Modules
 import packages from "packages";
@@ -15,61 +14,34 @@ import "packages/components/packages.css";
 
 const PackageList = packages.components.PackageList;
 
-function findProgressLog(pkgName, progressLogs) {
-  for (const logId of Object.keys(progressLogs)) {
-    if (Object.keys(progressLogs[logId]).includes(pkgName)) {
-      return progressLogs[logId];
-    }
-  }
-}
+const SystemHome = ({ coreProgressLogs }) => (
+  <React.Fragment>
+    <div className="section-title capitalize">{NAME}</div>
 
-class SystemHome extends React.Component {
-  render() {
-    const progressLog = findProgressLog(
-      "core.dnp.dappnode.eth",
-      this.props.progressLogs
-    );
+    {coreProgressLogs ? (
+      <installer.components.ProgressLog
+        progressLog={coreProgressLogs}
+        subtitle={"Updating DAppNode..."}
+      />
+    ) : null}
 
-    return (
-      <React.Fragment>
-        <div className="section-title" style={{ textTransform: "capitalize" }}>
-          {NAME}
-        </div>
+    <UpdateSystem />
 
-        {progressLog ? (
-          <installer.components.ProgressLog
-            progressLog={progressLog}
-            subtitle={"Updating DAppNode..."}
-          />
-        ) : null}
+    <StaticIp />
 
-        <UpdateSystem
-          coreDeps={this.props.coreDeps}
-          updateCore={this.props.updateCore}
-        />
-
-        <StaticIp
-          staticIp={this.props.staticIp}
-          setStaticIp={this.props.setStaticIp}
-          updateStaticIp={this.props.updateStaticIp}
-        />
-
-        <div className="section-subtitle">Packages</div>
-        <PackageList moduleName={NAME} coreDnps={true} />
-      </React.Fragment>
-    );
-  }
-}
+    <div className="section-subtitle">Packages</div>
+    <PackageList moduleName={NAME} coreDnps={true} />
+  </React.Fragment>
+);
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  coreDeps: selector.coreDeps,
-  progressLogs: installer.selectors.progressLogs
+  coreProgressLogs: s.getCoreProgressLog
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch
-const mapDispatchToProps = { updateCore };
+const mapDispatchToProps = null;
 
 export default connect(
   mapStateToProps,

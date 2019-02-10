@@ -1,6 +1,5 @@
 //  PACKAGES
 import t from "./actionTypes";
-import merge from "deepmerge";
 
 const initialState = {
   systemUpdateAvailable: false,

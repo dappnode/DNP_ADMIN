@@ -1,11 +1,6 @@
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
-import { shortName } from "utils/format";
-
-function shortNameCapitalized(name = "") {
-  const _name = shortName(name);
-  return _name.charAt(0).toUpperCase() + _name.slice(1);
-}
+import { shortNameCapitalized } from "utils/format";
 
 export default function confirmPackageRemove(id, removePackageAction) {
   confirmAlert({

@@ -1,67 +1,65 @@
 import React from "react";
-import * as selector from "../selectors";
 import { connect } from "react-redux";
-import * as action from "../actions";
-import { push } from "connected-react-router";
-import { NAME } from "../constants";
+import * as s from "../selectors";
+import { createStructuredSelector } from "reselect";
+import PropTypes from "prop-types";
 // Components
 import Details from "./PackageViews/Details";
 import Logs from "./PackageViews/Logs";
 import Envs from "./PackageViews/Envs";
 import Controls from "./PackageViews/Controls";
 import Loading from "components/Loading";
-import Error from "components/Error";
 import NoPackagesYet from "./NoPackagesYet";
-// utils
-import parsePorts from "utils/parsePorts";
+import NoDnpInstalled from "./NoDnpInstalled";
 
-class PackageInterface extends React.Component {
-  render() {
-    const dnp = this.props.dnp;
-
-    return (
+const PackageInterface = ({
+  dnp,
+  id,
+  moduleName,
+  fetching,
+  areThereDnps,
+  hasFetched
+}) => (
+  <React.Fragment>
+    <div className="section-title">
+      <span className="pre-title">{moduleName} </span>
+      {id}
+    </div>
+    {dnp ? (
       <React.Fragment>
-        <div className="section-title">
-          <span className="pre-title">{NAME} </span>
-          {this.props.match.params.id}
-        </div>
-        {dnp ? (
-          <React.Fragment>
-            <Details dnp={dnp} />
-            <Logs dnp={dnp} />
-            <Envs dnp={dnp} />
-            <Controls dnp={dnp} />
-          </React.Fragment>
-        ) : this.props.fetching ? (
-          <Loading msg="Loading installed packages..." />
-        ) : this.props.hasFetched ? (
-          <NoPackagesYet />
-        ) : (
-          <Error msg="Broken connection or unknown state" />
-        )}
+        <Details dnp={dnp} />
+        <Logs dnp={dnp} />
+        <Envs dnp={dnp} />
+        <Controls dnp={dnp} />
       </React.Fragment>
-    );
-  }
-}
+    ) : fetching ? (
+      <Loading msg="Loading installed packages..." />
+    ) : areThereDnps ? (
+      <NoDnpInstalled id={id} moduleName={moduleName} />
+    ) : hasFetched ? (
+      <NoPackagesYet />
+    ) : null}
+  </React.Fragment>
+);
+
+PackageInterface.propTypes = {
+  dnp: PropTypes.object,
+  id: PropTypes.string,
+  moduleName: PropTypes.string.isRequired
+};
 
 // Container
-// createSelector(a, b, c, (ax, bx, cx) => ({a: ax, b: bx: c: cx})
-// =
-// createStructuredSelector({a, b, c})
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    fetching: selector.fetching(state),
-    dnp: selector.getDnp(state, ownProps.match.params.id)
-  };
-};
+const mapStateToProps = createStructuredSelector({
+  dnp: s.getDnp,
+  // id and moduleName are parsed from the url at the selector (with the router state)
+  id: s.getUrlId,
+  moduleName: s.getModuleName,
+  fetching: s.fetching,
+  areThereDnps: s.areThereDnps
+});
 
-const mapDispatchToProps = {
-  togglePackage: action.togglePackage,
-  restartPackage: action.restartPackage,
-  restartPackageVolumes: action.restartPackageVolumes,
-  removePackage: action.removePackage
-};
+const mapDispatchToProps = null;
 
 export default connect(
   mapStateToProps,
