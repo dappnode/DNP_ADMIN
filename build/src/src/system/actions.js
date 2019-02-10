@@ -9,11 +9,6 @@ export const updateCore = () => ({
 
 // Used in package root
 
-export const updatePackages = packages => ({
-  type: "UPDATE_INSTALLED_PACKAGES",
-  packages
-});
-
 export const listPackages = () => ({
   type: t.LIST_PACKAGES
 });
