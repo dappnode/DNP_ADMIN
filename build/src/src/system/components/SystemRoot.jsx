@@ -8,7 +8,8 @@ import SystemHome from "./SystemHome";
 import packages from "packages";
 // Modules
 import status from "status";
-// Logic
+
+const PackageInterface = packages.components.PackageInterface;
 
 class System extends React.Component {
   render() {
@@ -18,7 +19,7 @@ class System extends React.Component {
         <Route exact path={"/" + NAME} component={SystemHome} />
         <Route
           path={"/" + NAME + "/:id"}
-          component={packages.components.PackageInterface}
+          render={props => <PackageInterface {...props} moduleName={NAME} />}
         />
       </div>
     );

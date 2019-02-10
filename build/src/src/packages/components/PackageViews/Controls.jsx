@@ -1,8 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import * as action from "../../actions";
-import { push } from "connected-react-router";
-import { NAME } from "../../constants";
 // Confirm UI
 import confirmRemovePackage from "../confirmRemovePackage";
 import { confirmAlert } from "react-confirm-alert"; // Import js

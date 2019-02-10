@@ -19,6 +19,10 @@
 
 /* Big sections headers, i.e. *Packages* kovan.dnp.dappnode.eth */
 
+.capitalize {
+  text-transform: capitalize;
+}
+
 .section-title {
   border-bottom: 1px solid #dee2e6;
   margin-bottom: 24px;

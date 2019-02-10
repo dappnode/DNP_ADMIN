@@ -49,6 +49,7 @@ class InstallerInterfaceView extends React.Component {
     const pkg = this.props.directory[id];
     const headerName = ((pkg || {}).manifest || {}).name || id;
     const connectionOpen = this.props.connectionOpen;
+    console.log({ url, id, pkg });
 
     const header = (
       <div className="section-title">
