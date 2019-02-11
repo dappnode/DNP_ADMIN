@@ -27,6 +27,8 @@ function findProgressLog(pkgName, progressLogs) {
   }
 }
 
+const parsePathname = pathname => (pathname || "").split("/").filter(e => e);
+
 class InstallerInterfaceView extends React.Component {
   static propTypes = {
     fetching: PropTypes.bool.isRequired,
@@ -36,7 +38,7 @@ class InstallerInterfaceView extends React.Component {
   };
 
   componentWillMount() {
-    const id = utils.urlToId(this.props.match.params.id);
+    const id = utils.urlToId(parsePathname(this.props.match.url)[1] || "");
     this.props.clearUserSet();
     this.props.updateQueryId(id);
     this.props.fetchPackageRequest(id);
@@ -44,12 +46,10 @@ class InstallerInterfaceView extends React.Component {
   }
 
   render() {
-    const url = this.props.match.params.id;
-    const id = utils.urlToId(url);
+    const id = utils.urlToId(parsePathname(this.props.match.url)[1] || "");
     const pkg = this.props.directory[id];
     const headerName = ((pkg || {}).manifest || {}).name || id;
     const connectionOpen = this.props.connectionOpen;
-    console.log({ url, id, pkg });
 
     const header = (
       <div className="section-title">
