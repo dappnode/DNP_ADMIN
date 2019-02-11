@@ -3,7 +3,7 @@ WORKDIR /usr/src/app
 # ensuring both package.json AND package-lock.json are copied
 COPY src/package*.json ./
 # install dependencies
-RUN yarn install
+RUN yarn install --production
 # copy the contents of the app
 COPY src .
 # build for production
