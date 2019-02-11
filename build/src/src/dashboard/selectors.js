@@ -1,49 +1,50 @@
 // DASHBOARD
 import { NAME } from "./constants";
-
-// Selectors provide a way to query data from the module state.
-// While they are not normally named as such in a Redux project, they
-// are always present.
-
-// The first argument of connect is a selector in that it selects
-// values out of the state atom, and returns an object representing a
-// component’s props.
-
-// I would urge that common selectors by placed in the selectors.js
-// file so they can not only be reused within the module, but
-// potentially be used by other modules in the application.
-
-// I highly recommend that you check out reselect as it provides a
-// way to build composable selectors that are automatically memoized.
-
-// From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
-
-// Utils
+import { createSelector } from "reselect";
 
 // #### EXTERNAL SELECTORS
-export const connectionOpen = state => state.session && state.session.isOpen;
-export const chainData = state => state.chainData;
-export const getInstalledPackages = state => state.installedPackages;
+export const getPackages = createSelector(
+  state => state.installedPackages,
+  _packages => _packages
+);
+
+export const connectionOpen = createSelector(
+  state => state.session && state.session.isOpen,
+  _connectionOpen => _connectionOpen
+);
+export const chainData = createSelector(
+  state => state.chainData,
+  _chainData => _chainData
+);
 
 // #### INTERNAL SELECTORS
-export const local = state => state[NAME];
-export const dappnodeStats = state => local(state).dappnodeStats;
+const getLocal = createSelector(
+  state => state[NAME],
+  local => local
+);
+export const dappnodeStats = createSelector(
+  getLocal,
+  local => local.dappnodeStats
+);
+
 // ethchain.dnp.dappnode.eth > dncore_ethchaindnpdappnodeeth_data
 // ipfs.dnp.dappnode.eth > dncore_ipfsdnpdappnodeeth_data
-export const dappnodeVolumes = state => {
-  return getInstalledPackages(state)
-    .filter(
-      dnp =>
-        dnp.name === "ethchain.dnp.dappnode.eth" ||
-        dnp.name === "ipfs.dnp.dappnode.eth"
-    )
-    .map(dnp => {
-      const dataVolume = ((dnp || {}).volumes || []).find(volume =>
-        (volume.name || "").endsWith("_data")
-      );
-      return {
-        name: `${dnp.shortName} size`,
-        size: (dataVolume || {}).size
-      };
-    });
-};
+export const dappnodeVolumes = createSelector(
+  getPackages,
+  dnps =>
+    dnps
+      .filter(
+        dnp =>
+          dnp.name === "ethchain.dnp.dappnode.eth" ||
+          dnp.name === "ipfs.dnp.dappnode.eth"
+      )
+      .map(dnp => {
+        const dataVolume = ((dnp || {}).volumes || []).find(volume =>
+          (volume.name || "").endsWith("_data")
+        );
+        return {
+          name: `${dnp.shortName} size`,
+          size: (dataVolume || {}).size
+        };
+      })
+);

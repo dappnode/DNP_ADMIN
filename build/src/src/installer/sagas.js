@@ -33,7 +33,7 @@ export function* shouldOpenPorts() {
 export function* install({ id, options }) {
   try {
     // Load necessary info
-    const isInstalling = yield select(s.isInstalling);
+    const isInstalling = yield select(s.getIsInstalling);
     // Prevent double installations, 1. check if the package is in the blacklist
     if (isInstalling[id]) {
       return console.error(id + " IS ALREADY INSTALLING");
@@ -173,7 +173,7 @@ export function* managePorts({ action, ports = [] }) {
     // Remove duplicates
     ports = uniqArray(ports);
     // Only open ports if necessary
-    const shouldOpenPorts = yield select(s.shouldOpenPorts);
+    const shouldOpenPorts = yield select(s.getShouldOpenPorts);
     if (shouldOpenPorts && ports.length > 0) {
       const pendingToast = new Toast({
         message: `${action} ports ${ports

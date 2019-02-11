@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as action from "../actions";
 import { createStructuredSelector } from "reselect";
-import * as selector from "../selectors";
+import * as s from "../selectors";
 import * as utils from "../utils";
 import { NAME } from "../constants";
 import { push } from "connected-react-router";
@@ -75,12 +75,12 @@ class InstallerView extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  directory: selector.getFilteredDirectoryNonCores,
-  directoryLoaded: selector.directoryLoaded,
-  selectedTypes: selector.getSelectedTypes,
-  inputValue: selector.getInput,
-  fetching: selector.fetching,
-  isSyncing: selector.isSyncing
+  directory: s.getFilteredDirectoryNonCores,
+  directoryLoaded: s.getIsDirectoryLoaded,
+  selectedTypes: s.getSelectedTypes,
+  inputValue: s.getInputValue,
+  fetching: s.getFetching,
+  isSyncing: s.getIsSyncing
 });
 
 const mapDispatchToProps = dispatch => {

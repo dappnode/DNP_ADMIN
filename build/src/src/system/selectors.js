@@ -29,7 +29,7 @@ export const staticIpInput = createSelector(
 
 // Find progressLog of the core DNP
 export const getCoreProgressLog = createSelector(
-  installer.selectors.progressLogs,
+  installer.selectors.getProgressLogs,
   progressLogs => {
     const coreDnpName = "core.dnp.dappnode.eth";
     for (const logId of Object.keys(progressLogs)) {

@@ -4,8 +4,6 @@ import { createStructuredSelector } from "reselect";
 import * as selectors from "../selectors";
 import ActivityList from "./ActivityList";
 
-import status from "status";
-
 import "./activity.css";
 
 class ActivityView extends React.Component {
@@ -46,7 +44,6 @@ class ActivityView extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  status: status.selectors.getAll,
   userActionLogs: selectors.getUserActionLogs
 });
 

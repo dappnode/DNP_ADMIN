@@ -149,7 +149,7 @@ class ApproveInstallView extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  installedPackages: selector.installedPackages,
+  installedPackages: selector.getInstalledPackages,
   showAdvancedSettings: selector.getShowAdvancedSettings
 });
 

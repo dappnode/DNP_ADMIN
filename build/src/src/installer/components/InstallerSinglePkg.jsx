@@ -1,5 +1,5 @@
 import React from "react";
-import * as selector from "../selectors";
+import * as s from "../selectors";
 import { connect } from "react-redux";
 import {
   fetchPackageRequest,
@@ -19,24 +19,17 @@ import ProgressLog from "./InstallCardComponents/ProgressLog";
 import ApproveInstall from "./InstallCardComponents/ApproveInstall";
 import Success from "./InstallCardComponents/Success";
 
-function findProgressLog(pkgName, progressLogs) {
-  for (const logId of Object.keys(progressLogs)) {
-    if (Object.keys(progressLogs[logId]).includes(pkgName)) {
-      return progressLogs[logId];
-    }
-  }
-}
+let renders = 0;
 
 class InstallerInterfaceView extends React.Component {
   static propTypes = {
     fetching: PropTypes.bool.isRequired,
-    directory: PropTypes.object.isRequired,
     connectionOpen: PropTypes.bool, // is null on init
-    progressLogs: PropTypes.object.isRequired
+    progressLogs: PropTypes.object
   };
 
   componentWillMount() {
-    const id = utils.urlToId(this.props.match.params.id);
+    const id = this.props.id;
     this.props.clearUserSet();
     this.props.updateQueryId(id);
     this.props.fetchPackageRequest(id);
@@ -44,12 +37,11 @@ class InstallerInterfaceView extends React.Component {
   }
 
   render() {
-    const url = this.props.match.params.id;
-    const id = utils.urlToId(url);
-    const pkg = this.props.directory[id];
+    const id = this.props.id;
+    const pkg = this.props.dnp;
     const headerName = ((pkg || {}).manifest || {}).name || id;
     const connectionOpen = this.props.connectionOpen;
-    console.log({ url, id, pkg });
+    console.log({ renders: renders++ });
 
     const header = (
       <div className="section-title">
@@ -86,8 +78,7 @@ class InstallerInterfaceView extends React.Component {
     }
 
     const manifest = pkg.manifest || {};
-    const pkgName = manifest.name;
-    const progressLog = findProgressLog(pkgName, this.props.progressLogs);
+    const progressLog = this.props.progressLogs;
 
     if (progressLog) {
       // If there is an installation in progress, show it.
@@ -132,10 +123,11 @@ class InstallerInterfaceView extends React.Component {
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  fetching: selector.fetching,
-  directory: selector.getDirectory,
-  connectionOpen: selector.connectionOpen,
-  progressLogs: selector.progressLogs
+  id: s.getQueryId,
+  dnp: s.getQueryDnp,
+  progressLogs: s.getQueryProgressLogs,
+  fetching: s.getFetching,
+  connectionOpen: s.getConnectionOpen
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch

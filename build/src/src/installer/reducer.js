@@ -7,7 +7,7 @@ const initialState = {
   fetching: false,
   directory: [],
   selectedTypes: {},
-  input: "",
+  searchInput: "",
   isInstalling: {},
   progressLogs: {},
   shouldOpenPorts: false,
@@ -30,7 +30,7 @@ export default function(state = initialState, action) {
       });
     case t.UPDATE_INPUT:
       return merge(state, {
-        input: action.payload
+        searchInput: action.payload
       });
     case t.SHOULD_OPEN_PORTS:
       return merge(state, {
