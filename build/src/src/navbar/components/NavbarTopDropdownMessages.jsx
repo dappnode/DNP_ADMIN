@@ -76,6 +76,9 @@ export default class NavbarTopDropdownMessages extends React.Component {
     else if (messageTypes.includes("warning")) globalType = "warning";
     else if (messageTypes.includes("success")) globalType = "success";
 
+    // A message type can be "", ignore it
+    const messagesAvailable = Boolean(messageTypes.filter(e => e).length);
+
     const listItems = this.props.messages.map((message, i) => {
       const type = message.type || "default";
       const rightText = message.rightText || "";
@@ -118,10 +121,6 @@ export default class NavbarTopDropdownMessages extends React.Component {
         </div>
       );
     });
-
-    const messagesAvailable = this.props.messages.filter(
-      message => !message.viewed
-    ).length;
 
     return (
       <li
