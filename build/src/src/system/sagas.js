@@ -23,11 +23,29 @@ function isEmpty(obj) {
   return !Boolean(Object.getOwnPropertyNames(obj).length);
 }
 
+function* putMainnetIsStillSyncing() {
+  try {
+    yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
+    yield put({
+      type: navbar.actionTypes.PUSH_NOTIFICATION,
+      notification: {
+        id: "mainnetStillSyncing",
+        type: "warning",
+        title: "System update available",
+        body:
+          "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
+      }
+    });
+  } catch (e) {
+    console.error(`Error putting mainnet is still syncing: ${e.stack}`);
+  }
+}
+
 export function* checkCoreUpdate() {
   try {
     // If chain is not synced yet, cancel request.
     if (yield call(isSyncing)) {
-      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
+      return yield call(putMainnetIsStillSyncing);
     }
 
     const packagesRes = yield call(APIcall.listPackages);
@@ -40,7 +58,7 @@ export function* checkCoreUpdate() {
       coreDataRes.message &&
       coreDataRes.message.includes("Mainnet is still syncing")
     ) {
-      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
+      return yield call(putMainnetIsStillSyncing);
     }
     // Abort on error
     if (
@@ -88,10 +106,18 @@ export function* checkCoreUpdate() {
       coreDeps: coreDepsToInstall
     });
 
-    yield put({
-      type: t.SYSTEM_UPDATE_AVAILABLE,
-      systemUpdateAvailable: Boolean(coreDepsToInstall.length)
-    });
+    if (coreDepsToInstall.length) {
+      yield put({
+        type: navbar.actionTypes.PUSH_NOTIFICATION,
+        notification: {
+          id: "systemUpdateAvailable",
+          type: "danger",
+          title: "System update available",
+          body:
+            "DAppNode System Update Available. Go to the System tab to review and approve the update."
+        }
+      });
+    }
   } catch (error) {
     console.error("Error fetching directory: ", error);
   }
