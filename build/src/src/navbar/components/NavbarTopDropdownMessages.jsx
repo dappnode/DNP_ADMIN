@@ -2,12 +2,16 @@ import React from "react";
 import PropTypes from "prop-types";
 // Icons
 import Circle from "Icons/Circle";
+// css
+import "./notifications.css";
 
 class DropdownIcon extends React.Component {
   render() {
     return (
       <span
-        className="nav-link dropdown-toggle"
+        className={`nav-link dropdown-toggle ${
+          this.props.highlight ? "atention-grab" : ""
+        }`}
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
@@ -114,6 +118,11 @@ export default class NavbarTopDropdownMessages extends React.Component {
         </div>
       );
     });
+
+    const messagesAvailable = this.props.messages.filter(
+      message => !message.viewed
+    ).length;
+
     return (
       <li
         className="nav-item dropdown"
@@ -128,6 +137,7 @@ export default class NavbarTopDropdownMessages extends React.Component {
           name={this.props.name}
           icon={this.props.icon}
           id={"notification-button-" + this.props.name}
+          highlight={this.props.moreVisible && messagesAvailable}
         />
         <div
           className="dropdown-menu dropdown-menu-right scrollable-menu"
