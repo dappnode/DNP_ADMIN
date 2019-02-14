@@ -1,12 +1,6 @@
 # Installer module
 
-## TEMP
-
-packages: {},
-packageData: {},
-
-t.UPDATE_PACKAGE
-t.UPDATE_PACKAGE_DATA
+Performs and handles new DNP installations. DNPs can be installed using their ENS domain or the IPFS hash of their manifest. Lists available DNPs for installation which have been preselected by the DAppNode team and listed in a directory smart contract. The admin can install unlisted DNPs using the provided search bar. Communicates with the DNP_DAPPMANAGER through WAMP.
 
 ## Data fetches
 
