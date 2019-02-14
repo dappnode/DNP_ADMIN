@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import Details from "./PackageViews/Details";
 import Logs from "./PackageViews/Logs";
 import Envs from "./PackageViews/Envs";
+import FileManager from "./PackageViews/FileManager";
 import Controls from "./PackageViews/Controls";
 import Loading from "components/Loading";
 import NoPackagesYet from "./NoPackagesYet";
@@ -30,6 +31,7 @@ const PackageInterface = ({
         <Details dnp={dnp} />
         <Logs dnp={dnp} />
         <Envs dnp={dnp} />
+        <FileManager dnp={dnp} />
         <Controls dnp={dnp} />
       </React.Fragment>
     ) : fetching ? (
