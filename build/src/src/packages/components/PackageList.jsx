@@ -1,8 +1,8 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
-import * as selector from "../selectors";
+import * as s from "../selectors";
 import { connect } from "react-redux";
-import { NAME } from "../constants";
 // Components
 import PackageRow from "./PackageRow";
 import Loading from "components/Loading";
@@ -10,37 +10,44 @@ import NoPackagesYet from "./NoPackagesYet";
 // Styles
 import "./packages.css";
 
-class PackagesList extends React.Component {
-  render() {
-    const dnpPackages = this.props.dnpPackages || [];
-    let content;
-    if (this.props.fetching && !dnpPackages.length) {
-      content = <Loading msg="Loading installed packages..." />;
-    } else if (this.props.hasFetched && !dnpPackages.length) {
-      content = <NoPackagesYet />;
-    } else {
-      content = (this.props.dnpPackages || []).map((pkg, i) => (
-        <PackageRow key={i} pkg={pkg} moduleName={NAME} />
-      ));
-    }
+const xnor = (a, b) => Boolean(a) === Boolean(b);
+
+const PackagesList = ({
+  dnps = [],
+  moduleName,
+  fetching,
+  hasFetched,
+  coreDnps
+}) => {
+  if (fetching && !dnps.length) {
+    return <Loading msg="Loading installed packages..." />;
+  } else if (hasFetched && !dnps.length) {
+    return <NoPackagesYet />;
+  } else {
     return (
-      <React.Fragment>
-        <div className="section-title" style={{ textTransform: "capitalize" }}>
-          {NAME}
-        </div>
-        {content}
-      </React.Fragment>
+      (dnps || [])
+        // XNOR operator, if coreDnps = true show only cores. If coreDnps = false, hide them
+        .filter(dnp => xnor(coreDnps, dnp.isCore || dnp.isCORE))
+        .map((dnp, i) => (
+          <PackageRow key={i} dnp={dnp} moduleName={moduleName} />
+        ))
     );
   }
-}
+};
+
+PackagesList.propTypes = {
+  dnps: PropTypes.array.isRequired,
+  moduleName: PropTypes.string.isRequired,
+  fetching: PropTypes.bool.isRequired,
+  hasFetched: PropTypes.bool.isRequired
+};
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  corePackages: selector.getCorePackages,
-  dnpPackages: selector.getDnpPackages,
-  fetching: selector.fetching,
-  hasFetched: selector.hasFetched
+  dnps: s.getPackages,
+  fetching: s.fetching,
+  hasFetched: s.hasFetched
 });
 
 const mapDispatchToProps = {};

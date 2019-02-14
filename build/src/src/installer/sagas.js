@@ -1,6 +1,6 @@
-import { call, put, select, take, fork } from "redux-saga/effects";
+import { call, put, select, fork, all } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
 import * as s from "./selectors";
@@ -16,7 +16,7 @@ import assertConnectionOpen from "utils/assertConnectionOpen";
 
 export function* shouldOpenPorts() {
   try {
-    const res = yield call(APIcall.getStatusUpnp);
+    const res = yield call(APIcall.statusUPnP);
     if (res.success) {
       yield put({
         type: t.SHOULD_OPEN_PORTS,
@@ -30,7 +30,7 @@ export function* shouldOpenPorts() {
   }
 }
 
-export function* install({ id, userSetVols, userSetPorts, options }) {
+export function* install({ id, options }) {
   try {
     // Load necessary info
     const isInstalling = yield select(s.isInstalling);
@@ -50,13 +50,36 @@ export function* install({ id, userSetVols, userSetPorts, options }) {
       msg: "Fetching dependencies...",
       pkgName: id.split("@")[0]
     });
+
+    // Prepare call data
+    // ##### The by package notation is a forward compatibility
+    // ##### to suppport setting dependencies' port / vol
+    //  userSetEnvs = {
+    //    "kovan.dnp.dappnode.eth": {
+    //      "ENV_NAME": "VALUE1"
+    //    }, ... }
+    //  userSetVols = "kovan.dnp.dappnode.eth": {
+    //      "old_path:/root/.local": "new_path:/root/.local"
+    //    }, ... }
+    //  userSetPorts = {
+    //    "kovan.dnp.dappnode.eth": {
+    //      "30303": "31313:30303",
+    //      "30303/udp": "31313:30303/udp"
+    //    }, ... }
+    const userSetEnvs = yield select(s.getUserSetEnvs);
+    const userSetPorts = yield select(s.getUserSetPortsStringified);
+    const userSetVols = yield select(s.getUserSetVolsStringified);
+
+    // Fire call
     const res = yield call(APIcall.installPackage, {
       id,
+      userSetEnvs,
       userSetVols,
       userSetPorts,
       logId,
       options
     });
+
     // Remove package from blacklist
     yield put({ type: t.CLEAR_PROGRESS_LOG, logId });
     pendingToast.resolve(res);
@@ -82,7 +105,7 @@ export function* updateDefaultEnvs({ id }) {
   try {
     const res = yield call(APIcall.fetchPackageData, { id });
     if (!res.success) {
-      if (res.message.includes("Resolver could not found a match")) {
+      if (res.message.includes("Resolver could not")) {
         console.error("No match found for " + id);
       } else {
         console.error(
@@ -98,12 +121,14 @@ export function* updateDefaultEnvs({ id }) {
     }
 
     // Omit if the package is already installed
-    const packageName = manifest.name
-    const installedPackages = yield select(state => state.installedPackages)
-    const isInstalled = installedPackages.find(p => p.name === packageName)
+    const packageName = manifest.name;
+    const installedPackages = yield select(state => state.installedPackages);
+    const isInstalled = installedPackages.find(p => p.name === packageName);
     if (isInstalled) {
-      console.log(`Omitting updateDefaultEnvs for ${id} as DNP ${packageName} is already installed`)
-      return
+      console.log(
+        `Omitting updateDefaultEnvs for ${id} as DNP ${packageName} is already installed`
+      );
+      return;
     }
 
     // Compute the default envs
@@ -144,6 +169,7 @@ export function* updateEnvs({ id, envs, isCORE, restart }) {
  */
 export function* managePorts({ action, ports = [] }) {
   try {
+    if (!Array.isArray(ports)) throw Error("ports must be an array");
     // Remove duplicates
     ports = uniqArray(ports);
     // Only open ports if necessary
@@ -255,9 +281,23 @@ export function* fetchPackageRequest({ id }) {
         pkgs: { [id]: { requestResult: res.result } }
       });
     } else {
-      console.error("Error resolving dependencies of " + id, res.message);
-      return;
+      return console.error(
+        "Error resolving dependencies of " + id,
+        res.message
+      );
     }
+
+    // Fetch package data of the dependencies
+    const dnps = (res.result || {}).success || {};
+    delete dnps[name]; // Ignore requested package
+    // fetchPackageData will automatically update the store
+    yield all(
+      Object.keys(dnps).map(depName =>
+        call(fetchPackageData, {
+          id: `${depName}@${dnps[depName]}`
+        })
+      )
+    );
   } catch (error) {
     console.error("Error getting package data: ", error);
   }
@@ -270,7 +310,7 @@ export function* fetchPackageData({ id }) {
     const res = yield call(APIcall.fetchPackageData, { id });
     // Abort on error
     if (!res.success) {
-      if (res.message.includes("Resolver could not found a match")) {
+      if (res.message.includes("Resolver could not")) {
         console.error("No match found for " + id);
       } else {
         console.error("Error fetching package data: ", res.message);
@@ -302,30 +342,6 @@ export function* fetchPackageData({ id }) {
   }
 }
 
-function* diskSpaceAvailable({ path }) {
-  try {
-    // If connection is not open yet, wait for it to open.
-    yield call(assertConnectionOpen);
-    const res = yield call(APIcall.diskSpaceAvailable, { path });
-    // Abort on error
-    if (!res.success) {
-      console.error("Disk space available returned error: ", res.message);
-    }
-
-    const { exists, totalSize, availableSize } = res.result;
-    yield put({
-      type: t.UPDATE_DISK_SPACE_AVAILABLE,
-      status: exists ? `${availableSize} / ${totalSize}` : `non-existent`,
-      path
-    });
-  } catch (error) {
-    console.error(
-      "Error getting disk space available of " + path + ": ",
-      error
-    );
-  }
-}
-
 function* onConnectionOpen(action) {
   yield fork(fetchDirectory, action);
   yield fork(shouldOpenPorts, action);
@@ -342,8 +358,7 @@ const watchers = [
   [t.FETCH_PACKAGE_REQUEST, fetchPackageRequest],
   [t.INSTALL, install],
   [t.UPDATE_ENV, updateEnvs],
-  [t.MANAGE_PORTS, managePorts],
-  [t.DISK_SPACE_AVAILABLE, diskSpaceAvailable]
+  [t.MANAGE_PORTS, managePorts]
 ];
 
 export default rootWatcher(watchers);

@@ -1,8 +1,8 @@
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 
 export default async () => {
   try {
-    const res = await APIcall.getStatusUpnp();
+    const res = await APIcall.statusUPnP();
     if (res.success && res.result) {
       if (res.result.openPorts && !res.result.upnpAvailable) {
         return {

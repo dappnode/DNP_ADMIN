@@ -1,93 +1,81 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { createStructuredSelector } from "reselect";
 import { Link } from "react-router-dom";
 import { shortName } from "utils/format";
 import { colors } from "utils/format";
 import { connect } from "react-redux";
 import * as action from "../actions";
-import confirmPackageRemove from "./confirmPackageRemove";
-// utils
-import parsePorts from "utils/parsePorts";
+import confirmRemovePackage from "./confirmRemovePackage";
 
-class PackageRowView extends React.Component {
-  static propTypes = {
-    moduleName: PropTypes.string.isRequired
-  };
+const margin = "5px";
+const padding = "0.7rem";
+const width = "85px";
 
-  render() {
-    let pkg = this.props.pkg || {};
-    let id = pkg.name;
-    let state = pkg.state;
-
-    let stateColor;
-    if (state === "running") stateColor = colors.success;
-    else if (state === "exited") stateColor = colors.error;
-    else stateColor = colors.default;
-
-    const margin = "5px";
-    const padding = "0.7rem";
-    const width = "85px";
-
-    return (
-      <div className="card mb-3" id={id}>
-        <div className="card-body" style={{ padding }}>
-          <div className="row">
-            <div className="col-sm" style={{ margin, overflow: "hidden" }}>
-              <h5 className="card-title" style={{ marginBottom: "3px" }}>
-                {shortName(this.props.pkg.name)}
-              </h5>
-              <div className="card-text">
-                <span style={{ opacity: "0.5" }}>
-                  {"version " + pkg.version}
-                  {pkg.origin ? " (ipfs)" : ""}
-                </span>
-                <span
-                  className="stateBadge"
-                  style={{ backgroundColor: stateColor }}
-                >
-                  {state}
-                </span>
-              </div>
-            </div>
-            <div className="col-sm pkg-row-text" style={{ margin }}>
-              <div className="btn-group float-right" role="group">
-                <Link
-                  className="btn btn-outline-secondary float-right"
-                  style={{ width }}
-                  to={"/" + this.props.moduleName + "/" + pkg.name}
-                >
-                  Open
-                </Link>
-                <button
-                  className="btn btn-outline-danger"
-                  type="button"
-                  style={{ width, paddingLeft: "0px", paddingRight: "0px" }}
-                  onClick={() =>
-                    confirmPackageRemove(pkg, this.props.removePackage)
-                  }
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
+const PackageRowView = ({ dnp = {}, removePackage, moduleName }) => (
+  <div className="card mb-3">
+    <div className="card-body" style={{ padding }}>
+      <div className="row">
+        <div className="col-sm" style={{ margin, overflow: "hidden" }}>
+          <h5 className="card-title" style={{ marginBottom: "3px" }}>
+            {shortName(dnp.name)}
+          </h5>
+          <div className="card-text">
+            <span style={{ opacity: "0.5" }}>
+              {"version " + dnp.version}
+              {dnp.origin ? " (ipfs)" : ""}
+            </span>
+            <span
+              className="stateBadge"
+              style={{
+                backgroundColor:
+                  dnp.state === "running"
+                    ? colors.success
+                    : dnp.state === "exited"
+                    ? colors.error
+                    : colors.default
+              }}
+            >
+              {dnp.state}
+            </span>
+          </div>
+        </div>
+        <div className="col-sm pkg-row-text" style={{ margin }}>
+          <div className="btn-group float-right" role="group">
+            <Link
+              className="btn btn-outline-secondary float-right"
+              style={{ width }}
+              to={`/${moduleName}/${dnp.name}`}
+            >
+              Open
+            </Link>
+            {!(dnp.isCore || dnp.isCORE) && (
+              <button
+                className="btn btn-outline-danger"
+                type="button"
+                style={{ width, paddingLeft: "0px", paddingRight: "0px" }}
+                onClick={() => confirmRemovePackage(dnp.name, removePackage)}
+              >
+                Remove
+              </button>
+            )}
           </div>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  </div>
+);
 
-const mapStateToProps = createStructuredSelector({});
+PackageRowView.propTypes = {
+  dnp: PropTypes.object.isRequired,
+  moduleName: PropTypes.string.isRequired
+};
 
-const mapDispatchToProps = dispatch => {
-  return {
-    removePackage: (pkg, deleteVolumes) => {
-      dispatch(action.removePackage({ id: pkg.name, deleteVolumes }));
-      const ports = parsePorts(pkg.manifest || {});
-      if (ports.length) dispatch(action.closePorts(ports));
-    }
-  };
+// Container
+
+const mapStateToProps = null;
+
+const mapDispatchToProps = {
+  removePackage: action.removePackage
 };
 
 export default connect(

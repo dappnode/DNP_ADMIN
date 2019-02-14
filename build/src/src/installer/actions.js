@@ -60,7 +60,63 @@ export const openPorts = ports => ({
   ports
 });
 
-export const diskSpaceAvailable = ({ path }) => ({
-  type: t.DISK_SPACE_AVAILABLE,
-  path
+// Package install query dependant
+
+export const updateQueryId = id => ({
+  type: t.UPDATE_QUERY_ID,
+  id
+});
+
+export const updateUserSetEnvs = ({ dnpName, key, value }) => ({
+  type: t.UPDATE_USERSET_ENVS,
+  dnpName,
+  key,
+  value
+});
+
+// "bitcoin.dnp.dappnode.eth": {
+//   "30303:30303/udp": {
+//     host: "30304",
+//     container: "30303",
+//     type: "udp"
+//   }
+// }
+export const updateUserSetPorts = ({ dnpName, id, host, container, type }) => ({
+  type: t.UPDATE_USERSET_PORTS,
+  dnpName,
+  id,
+  values: { host, container, type }
+});
+
+// "bitcoin.dnp.dappnode.eth": {
+//   "/usr/src/config:/data/.chain/config:ro": {
+//     host: "/usr/src/config",
+//     container: "/data/.chain/config",
+//     accessMode: "ro"
+//   },
+//   "bitcoin_data:/data/.chain/var": {
+//     container: "/data/.chain/var",
+//     host: "bitcoin_data"
+//   }
+// }
+export const updateUserSetVols = ({
+  dnpName,
+  id,
+  host,
+  container,
+  accessMode
+}) => ({
+  type: t.UPDATE_USERSET_VOLS,
+  dnpName,
+  id,
+  values: { host, container, ...(accessMode ? { accessMode } : {}) }
+});
+
+export const setShowAdvancedSettings = value => ({
+  type: t.SET_SHOW_ADVANCED_SETTINGS,
+  value
+});
+
+export const clearUserSet = () => ({
+  type: t.CLEAR_USERSET
 });

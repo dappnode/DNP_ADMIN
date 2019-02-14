@@ -1,6 +1,11 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default class Activity extends React.Component {
+  static propTypes = {
+    userActionLogs: PropTypes.array.isRequired
+  };
+
   render() {
     function parseLevel(level) {
       if (level === "error") return "danger";

@@ -1,9 +1,10 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import * as selector from "../selectors";
-import * as action from "../actions";
+import { viewedNotifications } from "../actions";
 import $ from "jquery";
 // Icons
 import Link from "Icons/Link";
@@ -12,11 +13,19 @@ import Bell from "Icons/Bell";
 import troubleshoot from "troubleshoot";
 // Components
 import NavbarTopDropdownMessages from "./NavbarTopDropdownMessages";
+// Extra popover css
+import "./popover.css";
 
 class NavbarTopView extends React.Component {
+  static propTypes = {
+    chainData: PropTypes.array.isRequired
+  };
+
   componentDidMount() {
     $(() => {
-      $('[data-toggle="popover"]').popover();
+      $('[data-toggle="popover"]').popover({
+        container: "body"
+      });
     });
   }
 
@@ -38,6 +47,7 @@ class NavbarTopView extends React.Component {
       <ul className="navbar-nav ml-auto">
         <li className="nav-item nav-item-infoText">
           <span
+            role="button"
             data-container="body"
             data-toggle="popover"
             data-placement="bottom"
@@ -87,13 +97,8 @@ const mapStateToProps = createStructuredSelector({
   notifications: selector.getNotifications
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    viewedNotifications: () => {
-      dispatch(action.viewedNotifications());
-    }
-  };
-};
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = { viewedNotifications };
 
 const NavbarTop = connect(
   mapStateToProps,

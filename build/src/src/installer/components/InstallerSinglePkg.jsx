@@ -1,7 +1,12 @@
 import React from "react";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import {
+  fetchPackageRequest,
+  fetchPackageData,
+  updateQueryId,
+  clearUserSet
+} from "../actions";
 import { createStructuredSelector } from "reselect";
 import * as utils from "../utils";
 import PropTypes from "prop-types";
@@ -22,6 +27,8 @@ function findProgressLog(pkgName, progressLogs) {
   }
 }
 
+const parsePathname = pathname => (pathname || "").split("/").filter(e => e);
+
 class InstallerInterfaceView extends React.Component {
   static propTypes = {
     fetching: PropTypes.bool.isRequired,
@@ -31,14 +38,15 @@ class InstallerInterfaceView extends React.Component {
   };
 
   componentWillMount() {
-    const id = utils.urlToId(this.props.match.params.id);
+    const id = utils.urlToId(parsePathname(this.props.match.url)[1] || "");
+    this.props.clearUserSet();
+    this.props.updateQueryId(id);
     this.props.fetchPackageRequest(id);
     this.props.fetchPackageData(id);
   }
 
   render() {
-    const url = this.props.match.params.id;
-    const id = utils.urlToId(url);
+    const id = utils.urlToId(parsePathname(this.props.match.url)[1] || "");
     const pkg = this.props.directory[id];
     const headerName = ((pkg || {}).manifest || {}).name || id;
     const connectionOpen = this.props.connectionOpen;
@@ -130,15 +138,12 @@ const mapStateToProps = createStructuredSelector({
   progressLogs: selector.progressLogs
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchPackageRequest: id => {
-      dispatch(action.fetchPackageRequest(id));
-    },
-    fetchPackageData: id => {
-      dispatch(action.fetchPackageData(id));
-    }
-  };
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = {
+  clearUserSet,
+  updateQueryId,
+  fetchPackageRequest,
+  fetchPackageData
 };
 
 export default connect(

@@ -1,6 +1,6 @@
 import { call, put, fork } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
 import semver from "semver";
@@ -11,49 +11,6 @@ import isSyncing from "utils/isSyncing";
 import navbar from "navbar";
 
 /***************************** Subroutines ************************************/
-
-export function* listPackages() {
-  try {
-    yield put({ type: t.UPDATE_FETCHING, fetching: true });
-    const res = yield call(APIcall.listPackages);
-    yield put({ type: t.UPDATE_FETCHING, fetching: false });
-    if (res.success) {
-      yield put(a.updatePackages(res.result));
-    } else {
-      new Toast(res);
-    }
-
-    // listPackages CALL DOCUMENTATION:
-    // > kwargs: {}
-    // > result: [{
-    //     id: '927623894...', (string)
-    //     isDNP: true, (boolean)
-    //     created: <Date string>,
-    //     image: <Image Name>, (string)
-    //     name: otpweb.dnp.dappnode.eth, (string)
-    //     shortName: otpweb, (string)
-    //     version: '0.0.4', (string)
-    //     ports: <list of ports>, (string)
-    //     state: 'exited', (string)
-    //     running: true, (boolean)
-    //     ...
-    //     envs: <Env variables> (object)
-    //   },
-    //   ...]
-  } catch (error) {
-    console.error("Error fetching directory: ", error);
-  }
-}
-
-function* callApi({ method, kwargs, message }) {
-  try {
-    const pendingToast = new Toast({ message, pending: true });
-    const res = yield call(APIcall[method], kwargs);
-    pendingToast.resolve(res);
-  } catch (error) {
-    console.error("Error on " + method + ": ", error);
-  }
-}
 
 function shouldUpdate(v1, v2) {
   // currentVersion, newVersion
@@ -142,47 +99,30 @@ export function* checkCoreUpdate() {
 
 let updatingCore = false;
 function* updateCore() {
-  // Prevent double installations
-  if (updatingCore) {
-    return console.error("DAPPNODE CORE IS ALREADY UPDATING");
-  }
-  const logId = uuidv4();
-  const pendingToast = new Toast({
-    message: "Updating DAppNode core...",
-    pending: true
-  });
-  // blacklist the current package
-  updatingCore = true;
-  const res = yield call(APIcall.installPackageSafe, {
-    id: "core.dnp.dappnode.eth",
-    logId
-  });
-  yield put({ type: installer.actionTypes.CLEAR_PROGRESS_LOG, logId });
-  // Remove package from blacklist
-  updatingCore = false;
-  pendingToast.resolve(res);
-
-  yield call(checkCoreUpdate);
-}
-
-function* logPackage({ kwargs }) {
-  const { id } = kwargs;
   try {
-    const res = yield call(APIcall.logPackage, kwargs);
-    if (res.success) {
-      const { logs } = res.result || {};
-      if (!logs) {
-        yield put(a.updateLog("Error, logs missing", id));
-      } else if (logs === "") {
-        yield put(a.updateLog("Received empty logs", id));
-      } else {
-        yield put(a.updateLog(logs, id));
-      }
-    } else {
-      yield put(a.updateLog("Error logging package: \n" + res.message, id));
+    // Prevent double installations
+    if (updatingCore) {
+      return console.error("DAPPNODE CORE IS ALREADY UPDATING");
     }
+    const logId = uuidv4();
+    const pendingToast = new Toast({
+      message: "Updating DAppNode core...",
+      pending: true
+    });
+    // blacklist the current package
+    updatingCore = true;
+    const res = yield call(APIcall.installPackageSafe, {
+      id: "core.dnp.dappnode.eth",
+      logId
+    });
+    yield put({ type: installer.actionTypes.CLEAR_PROGRESS_LOG, logId });
+    // Remove package from blacklist
+    updatingCore = false;
+    pendingToast.resolve(res);
+
+    yield call(checkCoreUpdate);
   } catch (e) {
-    console.error("Error getting package logs:", e);
+    console.error(`Error updating core: ${e.stack}`);
   }
 }
 
@@ -195,7 +135,7 @@ function* setStaticIp({ staticIp }) {
     const res = yield call(APIcall.setStaticIp, { staticIp });
     pendingToast.resolve(res);
     yield put({ type: "FETCH_DAPPNODE_PARAMS" });
-    yield put({ type: "FETCH_DEVICES" });
+    yield put({ type: "LIST_DEVICES" });
     yield put({
       type: navbar.actionTypes.PUSH_NOTIFICATION,
       notification: {
@@ -214,7 +154,7 @@ function* setStaticIp({ staticIp }) {
 
 function* getStaticIp() {
   try {
-    const res = yield call(APIcall.getVpnParams);
+    const res = yield call(APIcall.getParams);
     const { staticIp } = (res || {}).result || {};
     yield put(a.updateStaticIp(staticIp));
     yield put(a.updateStaticIpInput(staticIp));
@@ -225,7 +165,6 @@ function* getStaticIp() {
 
 function* onConnectionOpen(action) {
   yield fork(checkCoreUpdate, action);
-  yield fork(listPackages, action);
   yield fork(getStaticIp, action);
 }
 
@@ -235,8 +174,6 @@ function* onConnectionOpen(action) {
 // takeEvery(actionType, watchers[actionType])
 const watchers = [
   ["CONNECTION_OPEN", onConnectionOpen],
-  [t.CALL, callApi],
-  [t.LOG_PACKAGE, logPackage],
   [t.UPDATE_CORE, updateCore],
   [t.SET_STATIC_IP, setStaticIp]
 ];

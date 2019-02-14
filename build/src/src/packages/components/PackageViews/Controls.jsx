@@ -1,17 +1,47 @@
 import React from "react";
+import { connect } from "react-redux";
+import * as action from "../../actions";
+// Confirm UI
+import confirmRemovePackage from "../confirmRemovePackage";
+import { confirmAlert } from "react-confirm-alert"; // Import js
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { shortName } from "utils/format";
 
-export default class PackageControls extends React.Component {
+function shortNameCapitalized(name = "") {
+  const _name = shortName(name);
+  return _name.charAt(0).toUpperCase() + _name.slice(1);
+}
+
+class PackageControls extends React.Component {
+  confirmRemovePackageVolumes() {
+    const dnp = this.props.dnp;
+    confirmAlert({
+      title: `Removing ${shortNameCapitalized(dnp.name)} data`,
+      message: `This action cannot be undone. If this DNP is a blockchain, it will lose all the chain data and start syncing from scratch.`,
+      buttons: [
+        {
+          label: "Cancel",
+          onClick: () => {}
+        },
+        {
+          label: "Remove volumes",
+          onClick: () => this.props.restartPackageVolumes(dnp.name)
+        }
+      ]
+    });
+  }
+
   render() {
-    let state = this.props.state;
-    let toggleButtonTag = "";
-    if (state === "running") toggleButtonTag = "Pause";
-    if (state === "exited") toggleButtonTag = "Start";
+    const dnp = this.props.dnp;
+    const state = (dnp.state || "").toLowerCase();
+    const toggleButtonTag =
+      state === "running" ? "Pause" : state === "exited" ? "Start" : "";
 
     const actions = [
       {
         name: toggleButtonTag || "Toggle",
         text: "Toggle the state of the package from running to paused",
-        action: this.props.togglePackage,
+        action: this.props.togglePackage.bind(this, dnp.name),
         availableForCore: false,
         type: "secondary"
       },
@@ -19,54 +49,34 @@ export default class PackageControls extends React.Component {
         name: "Restart",
         text:
           "Restarting a package will interrupt the service during 1-10s but preserve its data",
-        action: this.props.restartPackage,
+        action: this.props.restartPackage.bind(this, dnp.name),
         availableForCore: true,
         type: "secondary"
       },
       {
         name: "Remove volumes",
-        text:
-          "Deleting this package volumes is a permanent action and all data will be lost. In the case of the ethchain core package, resyncing may take a few days",
-        action: this.props.restartPackageVolumes,
+        text: `Deleting package volumes is a permanent action and all data will be lost. 
+          ${
+            dnp.name === "ethchain.dnp.dappnode.eth"
+              ? " WARNING! The mainnet chain will have to resync and may take a few days."
+              : ""
+          }`,
+        action: this.confirmRemovePackageVolumes.bind(this, dnp.name),
         availableForCore: true,
         type: "danger"
       },
       {
         name: "Remove ",
         text: "Deletes a package permanently.",
-        action: this.props.removePackage,
+        action: confirmRemovePackage.bind(
+          this,
+          dnp.name,
+          this.props.removePackage.bind(this)
+        ),
         availableForCore: false,
         type: "danger"
       }
     ];
-
-    const rows = actions
-      .filter(action => action.availableForCore || !this.props.isCORE)
-      .map((action, i) => {
-        // Remove the top border from the first row only
-        const style = i ? {} : { borderTop: "none", paddingTop: 0 };
-        return (
-          <tr key={i}>
-            <td style={{ ...style, paddingLeft: 0 }}>
-              <strong>{action.name}</strong>
-              <br />
-              {action.text}
-            </td>
-            <td style={{ ...style, textAlign: "right", paddingRight: 0 }}>
-              <button
-                type="button"
-                className={
-                  "btn btn-outline-" + action.type + " tableAction-button"
-                }
-                style={{ width: "100px", whiteSpace: "normal" }}
-                onClick={action.action}
-              >
-                {action.name}
-              </button>
-            </td>
-          </tr>
-        );
-      });
 
     // Table style -> Removes the space below the table, only for tables in cards
     return (
@@ -78,7 +88,36 @@ export default class PackageControls extends React.Component {
               className="table table-responsive"
               style={{ marginBottom: "0" }}
             >
-              <tbody>{rows}</tbody>
+              <tbody>
+                {actions
+                  .filter(
+                    action =>
+                      action.availableForCore || !(dnp.isCore || dnp.isCORE)
+                  )
+                  .map(action => (
+                    <tr key={action.name} className="inter-border">
+                      <td style={{ paddingLeft: 0 }}>
+                        <strong>{action.name}</strong>
+                        <br />
+                        {action.text}
+                      </td>
+                      <td style={{ textAlign: "right", paddingRight: 0 }}>
+                        <button
+                          type="button"
+                          className={
+                            "btn btn-outline-" +
+                            action.type +
+                            " tableAction-button"
+                          }
+                          style={{ width: "100px", whiteSpace: "normal" }}
+                          onClick={action.action}
+                        >
+                          {action.name}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
             </table>
           </div>
         </div>
@@ -86,3 +125,17 @@ export default class PackageControls extends React.Component {
     );
   }
 }
+
+const mapStateToProps = null;
+
+const mapDispatchToProps = {
+  togglePackage: action.togglePackage,
+  restartPackage: action.restartPackage,
+  restartPackageVolumes: action.restartPackageVolumes,
+  removePackage: action.removePackage
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PackageControls);

@@ -1,7 +1,7 @@
 import { call, put, all, fork } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import { updateStatus } from "./actions";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import checkWampPackage from "./utils/checkWampPackage";
 import { push } from "connected-react-router";
 
@@ -21,7 +21,7 @@ const tags = {
 
 function* getStatusUpnp() {
   try {
-    const res = yield call(APIcall.getStatusUpnp);
+    const res = yield call(APIcall.statusUPnP);
     if (res.success) {
       const result = res.result;
       let status = result.openPorts && !result.upnpAvailable ? 0 : 1;
@@ -45,7 +45,7 @@ function* getStatusUpnp() {
 
 function* getStatusExternalIp() {
   try {
-    const res = yield call(APIcall.getStatusExternalIp);
+    const res = yield call(APIcall.statusExternalIp);
     if (res.success) {
       // Determine if user will have to open ports
       const result = res.result || {};

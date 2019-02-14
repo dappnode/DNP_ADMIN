@@ -1,8 +1,8 @@
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 
 export default async () => {
   try {
-    const res = await APIcall.getStatusExternalIp();
+    const res = await APIcall.statusExternalIp();
     if (res.success && res.result) {
       if (res.result.externalIpResolves) {
         return {
