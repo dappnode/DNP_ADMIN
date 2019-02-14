@@ -2,11 +2,11 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import $ from "jquery";
 // Images
-import LogoWide from "img/logo-wide.png";
-import EfgLogo from "img/logos/efg-logo-only.png";
-import AragonLogo from "img/logos/aragon.png";
-import GivethLogo from "img/logos/giveth.png";
-import EcfLogo from "img/logos/ecf.png";
+import LogoWide from "img/dappnode-logo-wide-min.png";
+import EfgLogo from "img/logos/efg-logo-only-min.png";
+import AragonLogo from "img/logos/aragon-min.png";
+import GivethLogo from "img/logos/giveth-min.png";
+import EcfLogo from "img/logos/ecf-min.png";
 
 // items
 import { navbarItems } from "../constants";
