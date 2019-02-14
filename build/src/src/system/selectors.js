@@ -10,10 +10,6 @@ const getLocalState = createSelector(
   localState => localState
 );
 
-export const systemUpdateAvailable = createSelector(
-  getLocalState,
-  localState => localState.systemUpdateAvailable
-);
 export const coreDeps = createSelector(
   getLocalState,
   localState => localState.coreDeps
