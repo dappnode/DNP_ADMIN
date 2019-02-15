@@ -8,7 +8,7 @@ import { ConnectedRouter } from "connected-react-router";
 import history from "./history";
 import store from "./store";
 import App from "./App";
-import { initApi } from "API/socketSetup";
+import api from "API";
 
 // Init css
 import "react-toastify/dist/ReactToastify.css";
@@ -28,7 +28,7 @@ window.Tether = Tether;
 window.Popper = Popper;
 
 // Start the autobahn instance
-initApi();
+api.start();
 
 render(
   <Provider store={store}>

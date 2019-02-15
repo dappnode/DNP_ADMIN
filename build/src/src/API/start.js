@@ -1,6 +1,6 @@
 import autobahn from "autobahn-browser";
 import store from "../store";
-import socketSubscriptions from "./socketSubscriptions";
+import subscriptions from "./subscriptions";
 import initialCalls from "./initialCalls";
 import pingPackage from "utils/pingPackage";
 
@@ -12,7 +12,7 @@ import pingPackage from "utils/pingPackage";
 const url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
 const realm = "dappnode_admin";
 
-export function initApi() {
+export default function start() {
   const connection = new autobahn.Connection({
     url,
     realm
@@ -21,8 +21,8 @@ export function initApi() {
   connection.onopen = session => {
     store.dispatch({ type: "CONNECTION_OPEN", session });
     console.log("CONNECTED to \nurl: " + url + " \nrealm: " + realm);
-    // Crete socket subscriptions
-    socketSubscriptions(session);
+    // Start subscriptions
+    subscriptions(session);
 
     // Execute initial calls
     initialCalls(session);
