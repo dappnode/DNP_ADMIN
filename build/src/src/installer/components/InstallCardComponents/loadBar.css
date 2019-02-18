@@ -1,7 +1,6 @@
 /* Progress Bar */
 .progress {
   position: relative;
-  height: 4px;
   display: block;
   width: 100%;
   background-color: #dae5e4;
