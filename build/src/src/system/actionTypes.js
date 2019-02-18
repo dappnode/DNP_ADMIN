@@ -14,7 +14,6 @@ export default generateActionTypes(NAME, [
   // Core update action
   "CORE_DEPS",
   "UPDATE_CORE",
-  "SYSTEM_UPDATE_AVAILABLE",
   // Static IP
   "SET_STATIC_IP",
   "UPDATE_STATIC_IP",

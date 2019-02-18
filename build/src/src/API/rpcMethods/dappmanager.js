@@ -198,5 +198,26 @@ export default {
   //     },
   //     ...
   //   }
-  diagnose: {}
+  diagnose: {},
+
+  // copyFileTo:
+  // > kwargs: {
+  //     id: "mydnp.dnp.dappnode.eth",
+  //     dataUri: "data:application/zip;base64,UEsDBBQAAAg..."
+  //     toPath: "/usr/src/app/config.json"
+  //   }
+  // > result: {}
+  copyFileTo: {
+    manadatoryKwargs: ["id", "dataUri", "toPath"]
+  },
+
+  // copyFileTo:
+  // > kwargs: {
+  //     id: "mydnp.dnp.dappnode.eth",
+  //     fromPath: "/usr/src/app/config.json"
+  //   }
+  // > result: data Uri: "data:application/zip;base64,UEsDBBQAAAg..."
+  copyFileFrom: {
+    manadatoryKwargs: ["id", "fromPath"]
+  }
 };

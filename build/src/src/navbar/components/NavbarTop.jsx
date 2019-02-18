@@ -75,6 +75,7 @@ class NavbarTopView extends React.Component {
           messages={notificationsInfo}
           icon={Bell}
           onClick={this.props.viewedNotifications}
+          moreVisible={true}
         />
         <li className="nav-item nav-item-infoText">
           <a href="https://dappnode.io/" className="nav-link">

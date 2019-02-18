@@ -1,13 +1,11 @@
 import React from "react";
 import { Route } from "react-router-dom";
-
+// Components
 import Home from "./components/Home";
 import NonAdmin from "./components/NonAdmin";
 import NonAdminRedirector from "./components/NonAdminRedirector";
-import Notifications from "./components/Notifications";
 import ErrorBoundary from "./components/ErrorBoundary";
-
-// Testing redux
+// Modules
 import dashboard from "./dashboard";
 import activity from "./activity";
 import devices from "./devices";
@@ -17,7 +15,6 @@ import system from "./system";
 import navbar from "./navbar";
 import troubleshoot from "./troubleshoot";
 import sdk from "./sdk";
-
 // Redux
 import { ToastContainer } from "react-toastify";
 
@@ -45,7 +42,6 @@ export default class App extends React.Component {
         <div className="content-wrapper dappnode-background">
           <div className="container-fluid app-content">
             <ErrorBoundary>
-              <Notifications />
               {/* Home, exact path home */}
               <Route exact path="/" component={Home} />
               {/* Create a route for each module */}

@@ -7,7 +7,7 @@ import NavbarTop from "./NavbarTop";
 // css
 import "./sb-admin-navbar.css"; // default
 import "./styles.css"; // custom additions
-import LogoWide from "img/logo-wide.png";
+import LogoWide from "img/dappnode-logo-wide-min.png";
 
 export default class Navbar extends React.Component {
   render() {
