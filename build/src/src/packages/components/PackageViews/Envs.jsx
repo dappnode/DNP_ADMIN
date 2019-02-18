@@ -49,7 +49,7 @@ class EnvVariablesView extends React.Component {
 
   updateEnvs() {
     const dnp = this.props.dnp || {};
-    this.props.updateEnvs(this.props.id, getEnvs(dnp, this.state));
+    this.props.updateEnvs(dnp.name, getEnvs(dnp, this.state));
   }
 
   render() {
@@ -104,12 +104,8 @@ class EnvVariablesView extends React.Component {
 
 const mapStateToProps = createStructuredSelector({});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    updateEnvs: (id, envs) => {
-      dispatch(action.updatePackageEnv({ id, envs, restart: true }));
-    }
-  };
+const mapDispatchToProps = {
+  updateEnvs: action.updatePackageEnv
 };
 
 export default connect(
