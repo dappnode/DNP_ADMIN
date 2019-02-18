@@ -1,6 +1,6 @@
 {
   "name": "admin.dnp.dappnode.eth",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Dappnode package responsible for providing the administrative user interface",
   "avatar": "/ipfs/QmP7rbBLMfKTHpVQwfmgrenYuuUkVw5CXDfzJSoPBiJuNj",
   "type": "dncore",
@@ -16,7 +16,12 @@
   "contributors": [
     "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
   ],
-  "keywords": ["DAppNodeCore", "DAPP", "ui", "admin"],
+  "keywords": [
+    "DAppNodeCore",
+    "DAPP",
+    "ui",
+    "admin"
+  ],
   "homepage": {
     "adminui": "http://my.admin.dnp.dappnode.eth",
     "homepage": "https://github.com/dappnode/DNP_ETHCHAIN#readme"

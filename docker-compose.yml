@@ -1,17 +1,18 @@
-version: "3.4"
+version: '3.4'
 networks:
-  network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.33.0.0/16
+    network:
+        driver: bridge
+        ipam:
+            config:
+                -
+                    subnet: 172.33.0.0/16
 services:
-  admin.dnp.dappnode.eth:
-    build: ./build
-    image: "admin.dnp.dappnode.eth:0.1.16"
-    container_name: DAppNodeCore-admin.dnp.dappnode.eth
-    restart: always
-    dns: 172.33.1.2
-    networks:
-      network:
-        ipv4_address: 172.33.1.9
+    admin.dnp.dappnode.eth:
+        build: ./build
+        image: 'admin.dnp.dappnode.eth:0.1.17'
+        container_name: DAppNodeCore-admin.dnp.dappnode.eth
+        restart: always
+        dns: 172.33.1.2
+        networks:
+            network:
+                ipv4_address: 172.33.1.9
