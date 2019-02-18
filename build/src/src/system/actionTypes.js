@@ -11,13 +11,7 @@ import generateActionTypes from "utils/generateActionTypes";
  * This utility eases the addition of new actionTypes, and ensures a common format
  */
 export default generateActionTypes(NAME, [
-  "CALL",
-  "LOG_PACKAGE",
-  "LIST_PACKAGES",
-  "UPDATE_FETCHING",
-  "UPDATE_LOG",
-  "UPDATE_PACKAGES",
-  // Core stuff
+  // Core update action
   "CORE_DEPS",
   "UPDATE_CORE",
   "SYSTEM_UPDATE_AVAILABLE",

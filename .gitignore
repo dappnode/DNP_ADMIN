@@ -1,6 +1,9 @@
 # dependencies
-build/src*/node_modules
-build/src/node_modules/
+# - ignore any node_modules folder down the tree
+node_modules/
+
+# build files
+build/src/dist/
 
 # testing
 build/src*/coverage

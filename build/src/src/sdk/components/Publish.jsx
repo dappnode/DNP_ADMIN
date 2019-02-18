@@ -1,7 +1,13 @@
 import React from "react";
+import PropTypes from "prop-types";
 import * as selector from "../selectors";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import {
+  validateRepoName,
+  updateQuery,
+  connectMetamask,
+  publish
+} from "../actions";
 import { createStructuredSelector } from "reselect";
 import { NAME } from "../constants";
 import { Link } from "react-router-dom";
@@ -32,6 +38,10 @@ const paramMapping = {
 };
 
 class Publish extends React.Component {
+  static propTypes = {
+    formFields: PropTypes.array.isRequired
+  };
+
   componentDidMount() {
     const urlQuery = this.props.match.params.urlQuery;
     if (urlQuery) {
@@ -85,52 +95,54 @@ class Publish extends React.Component {
           <div className="card-body">
             <form>
               {/* Main rows of the form */}
-              {this.props.formFields.filter(({ hide }) => !hide).map(item => {
-                return (
-                  <div className="form-group row" key={item.id}>
-                    <label
-                      htmlFor={`form-${item.id}`}
-                      className="col-sm-2 col-form-label"
-                    >
-                      {item.name}
-                    </label>
-                    <div className="col-sm-10">
-                      <input
-                        className={`form-control ${getInputClass(item)}`}
-                        placeholder={item.placeholder}
-                        value={(this.props.query || {})[item.id] || ""}
-                        onChange={e =>
-                          this.props.updateQuery(item.id, e.target.value)
-                        }
-                      />
-                      {!item.loading && item.success ? (
-                        <div className="valid-feedback">
-                          {item.success.map((line, i) => (
-                            <span key={i}>
-                              {line}
-                              <br />
-                            </span>
-                          ))}
-                        </div>
-                      ) : null}
-                      {!item.loading && item.error ? (
-                        <div className="invalid-feedback">
-                          {item.error.map((line, i) => (
-                            <span key={i}>
-                              {line}
-                              <br />
-                            </span>
-                          ))}
-                        </div>
-                      ) : null}
-                      <small className="form-text text-muted">
-                        {item.loading ? "Loading... " : ""}
-                        {item.help}
-                      </small>
+              {this.props.formFields
+                .filter(({ hide }) => !hide)
+                .map(item => {
+                  return (
+                    <div className="form-group row" key={item.id}>
+                      <label
+                        htmlFor={`form-${item.id}`}
+                        className="col-sm-2 col-form-label"
+                      >
+                        {item.name}
+                      </label>
+                      <div className="col-sm-10">
+                        <input
+                          className={`form-control ${getInputClass(item)}`}
+                          placeholder={item.placeholder}
+                          value={(this.props.query || {})[item.id] || ""}
+                          onChange={e =>
+                            this.props.updateQuery(item.id, e.target.value)
+                          }
+                        />
+                        {!item.loading && item.success ? (
+                          <div className="valid-feedback">
+                            {item.success.map((line, i) => (
+                              <span key={i}>
+                                {line}
+                                <br />
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                        {!item.loading && item.error ? (
+                          <div className="invalid-feedback">
+                            {item.error.map((line, i) => (
+                              <span key={i}>
+                                {line}
+                                <br />
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                        <small className="form-text text-muted">
+                          {item.loading ? "Loading... " : ""}
+                          {item.help}
+                        </small>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
 
               {/* Extra buttons to test manifest */}
               {showManifestButtons ? (
@@ -194,7 +206,7 @@ class Publish extends React.Component {
                   ) : (
                     <button
                       className="dappnode-btn"
-                      onClick={this.props.connect}
+                      onClick={this.props.connectMetamask}
                     >
                       <img src={metamaskIcon} alt="" className="metamaskIcon" />{" "}
                       Connect
@@ -209,6 +221,13 @@ class Publish extends React.Component {
                       {buttonInput.success.join("\n")}
                     </div>
                   ) : null}
+
+                  {/* Generic error, for example Metamask connection error */}
+                  {this.props.genericError && (
+                    <div className={`feedback-error`}>
+                      {this.props.genericError}
+                    </div>
+                  )}
                 </div>
               </div>
             </form>
@@ -230,24 +249,16 @@ const mapStateToProps = createStructuredSelector({
   buttonInput: selector.getButtonInput,
   disablePublish: selector.getDisablePublish,
   showManifestButtons: selector.getShowManifestButtons,
-  txPreview: selector.getTransactionPreview
+  txPreview: selector.getTransactionPreview,
+  genericError: selector.getGenericError
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    validateRepoName: repoName => {
-      dispatch(action.validateRepoName(repoName));
-    },
-    updateQuery: (id, value) => {
-      dispatch(action.updateQuery(id, value));
-    },
-    connect: () => {
-      dispatch(action.connect());
-    },
-    publish: () => {
-      dispatch(action.publish());
-    }
-  };
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = {
+  validateRepoName,
+  updateQuery,
+  connectMetamask,
+  publish
 };
 
 export default connect(

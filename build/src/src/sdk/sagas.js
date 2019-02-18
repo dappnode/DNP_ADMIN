@@ -11,15 +11,16 @@ import resolveEns from "./sagaUtils/resolveEns";
 import apm from "./sagaUtils/apm";
 import connectToMetamask from "./sagaUtils/connectToMetamask";
 import executePublishTx from "./sagaUtils/executePublishTx";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import assertConnectionOpen from "utils/assertConnectionOpen";
 
 // getRegistry("dnp.dappnode.eth");
 
 /***************************** Subroutines ************************************/
 
-function* connect(action) {
+function* connectMetamask() {
   try {
+    yield put(a.updateGenericError(null));
     console.log("Connecting to metamask...");
     const web3 = yield call(connectToMetamask);
     const networkId = yield call(web3.eth.net.getId);
@@ -58,7 +59,10 @@ function* connect(action) {
       yield call(delay, 500);
     }
   } catch (e) {
-    console.error("Error on connect");
+    console.error("Error connecting to metamask: ", e.stack);
+    yield put(
+      a.updateGenericError(`Error connecting to metamask: ${e.message}`)
+    );
   }
 }
 
@@ -207,7 +211,7 @@ const watchers = [
     inputHanlders[id],
     { throttle: 1000 }
   ]),
-  [t.CONNECT, connect]
+  [t.CONNECT_METAMASK, connectMetamask]
 ];
 
 export default rootWatcher(watchers);

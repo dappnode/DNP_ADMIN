@@ -23,53 +23,51 @@ export const updateLog = (logs, id) => ({
   id
 });
 
-export const logPackage = kwargs => ({
+export const logPackage = (id, options) => ({
   type: t.LOG_PACKAGE,
-  kwargs
+  id,
+  options
 });
 
 // Used in package interface / envs
 
-export const updatePackageEnv = kwargs => ({
+export const updatePackageEnv = (id, envs) => ({
   type: t.CALL,
   method: "updatePackageEnv",
-  message:
-    "Updating " + kwargs.id + " envs: " + JSON.stringify(kwargs.envs) + "...",
-  kwargs
+  message: `Updating ${id} envs: ${JSON.stringify(envs)}...`,
+  kwargs: { id, envs, restart: true }
 });
 
 // Used in package interface / controls
 
-export const togglePackage = kwargs => ({
+export const togglePackage = id => ({
   type: t.CALL,
   method: "togglePackage",
-  message: "Toggling " + shortName(kwargs.id) + "...",
-  kwargs
+  message: `Toggling ${shortName(id)}...`,
+  kwargs: { id }
 });
 
-export const restartPackage = kwargs => ({
+export const restartPackage = id => ({
   type: t.CALL,
   method: "restartPackage",
-  message: "Restarting " + shortName(kwargs.id) + "...",
-  kwargs
+  message: `Restarting ${shortName(id)}...`,
+  kwargs: { id }
 });
 
-export const restartPackageVolumes = kwargs => ({
+export const restartPackageVolumes = id => ({
   type: t.CALL,
   method: "restartPackageVolumes",
-  message: "Restarting " + shortName(kwargs.id) + " volumes...",
-  kwargs
+  message: `Restarting ${shortName(id)} volumes...`,
+  kwargs: { id }
 });
 
-export const removePackage = kwargs => ({
+export const removePackage = (id, deleteVolumes) => ({
   type: t.CALL,
   method: "removePackage",
-  message:
-    "Removing package " +
-    shortName(kwargs.id) +
-    (kwargs.deleteVolumes ? " and volumes" : "") +
-    "...",
-  kwargs
+  message: `Removing ${shortName(id)} ${
+    deleteVolumes ? " and volumes" : ""
+  }...`,
+  kwargs: { id, deleteVolumes }
 });
 
 export const closePorts = ports => ({
@@ -77,5 +75,3 @@ export const closePorts = ports => ({
   action: "close",
   ports
 });
-
-// #### After removing a package, uninstallChain

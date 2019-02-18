@@ -36,7 +36,7 @@ class ActivityView extends React.Component {
         >
           Download all logs
         </button>
-        <a id="downloadAnchorElem" style={{ display: "none" }}>
+        <a id="downloadAnchorElem" style={{ display: "none" }} href="/">
           Download Anchor
         </a>
         <ActivityList userActionLogs={this.props.userActionLogs} />
@@ -50,13 +50,7 @@ const mapStateToProps = createStructuredSelector({
   userActionLogs: selectors.getUserActionLogs
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    // init: () => {
-    //   dispatch(action.init());
-    // }
-  };
-};
+const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,

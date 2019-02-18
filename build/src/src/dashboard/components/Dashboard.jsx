@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import { getDappnodeStats } from "../actions";
 import * as selectors from "../selectors";
 import { createStructuredSelector } from "reselect";
 // modules
@@ -130,12 +130,9 @@ const mapStateToProps = createStructuredSelector({
   dappnodeVolumes: selectors.dappnodeVolumes
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getDappnodeStats: () => {
-      dispatch(action.getDappnodeStats());
-    }
-  };
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = {
+  getDappnodeStats
 };
 
 export default connect(

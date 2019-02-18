@@ -1,41 +1,19 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
-import * as action from "../actions";
 import { NAME } from "../constants";
 // Components
-import PackageList from "./PackageList";
+import PackagesHome from "./PackagesHome";
 import PackageInterface from "./PackageInterface";
 // Modules
 import status from "status";
 // Logic
 
-class Packages extends React.Component {
-  render() {
-    return (
-      <div>
-        <status.components.DependenciesAlert deps={["wamp", "dappmanager"]} />
-        <Route exact path={"/" + NAME} component={PackageList} />
-        <Route path={"/" + NAME + "/:id"} component={PackageInterface} />
-      </div>
-    );
-  }
-}
+const PackagesRoot = () => (
+  <React.Fragment>
+    <status.components.DependenciesAlert deps={["wamp", "dappmanager"]} />
+    <Route exact path={`/${NAME}`} component={PackagesHome} />
+    <Route path={`/${NAME}/:id`} component={PackageInterface} />
+  </React.Fragment>
+);
 
-// Container
-
-const mapStateToProps = createStructuredSelector({});
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchPackages: () => {
-      dispatch(action.listPackages());
-    }
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Packages);
+export default PackagesRoot;

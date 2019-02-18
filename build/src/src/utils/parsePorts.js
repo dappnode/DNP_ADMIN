@@ -12,6 +12,11 @@ function parsePorts(manifest) {
   if (Array.isArray(manifest)) portsArray = manifest;
   else portsArray = (manifest.image || {}).ports || [];
 
+  if (!Array.isArray(portsArray))
+    throw Error(
+      `manifest.image.ports must be an array: ${JSON.stringify(portsArray)}`
+    );
+
   //                host : container / type
   // portsArray = ['32323:30303/udp']
   //               container / type

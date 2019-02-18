@@ -3,6 +3,7 @@ import t from "./actionTypes";
 import merge from "deepmerge";
 
 const initialState = {
+  queryId: null,
   fetching: false,
   directory: [],
   selectedTypes: {},
@@ -10,7 +11,10 @@ const initialState = {
   isInstalling: {},
   progressLogs: {},
   shouldOpenPorts: false,
-  diskSpaceAvailable: {}
+  showAdvancedSettings: false,
+  userSetEnvs: {},
+  userSetPorts: {},
+  userSetVols: {}
 };
 
 export default function(state = initialState, action) {
@@ -50,12 +54,48 @@ export default function(state = initialState, action) {
         ...state,
         progressLogs
       };
-    case t.UPDATE_DISK_SPACE_AVAILABLE:
+    case t.UPDATE_QUERY_ID:
       return merge(state, {
-        diskSpaceAvailable: {
-          [action.path]: action.status
+        queryId: action.id
+      });
+    // User set
+    case t.UPDATE_USERSET_ENVS:
+      return merge(state, {
+        userSetEnvs: {
+          [action.dnpName]: {
+            [action.key]: action.value
+          }
         }
       });
+    case t.UPDATE_USERSET_PORTS:
+      return merge(state, {
+        userSetPorts: {
+          [action.dnpName]: {
+            [action.id]: action.values
+          }
+        }
+      });
+    case t.UPDATE_USERSET_VOLS:
+      return merge(state, {
+        userSetVols: {
+          [action.dnpName]: {
+            [action.id]: action.values
+          }
+        }
+      });
+    case t.SET_SHOW_ADVANCED_SETTINGS:
+      return merge(state, {
+        showAdvancedSettings: action.value
+      });
+    case t.CLEAR_USERSET:
+      return {
+        ...state,
+        userSetEnvs: {},
+        userSetPorts: {},
+        userSetVols: {},
+        showAdvancedSettings: false
+      };
+    // #### Default case
     default:
       return state;
   }
