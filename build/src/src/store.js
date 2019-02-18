@@ -1,5 +1,6 @@
-import { createStore, applyMiddleware, compose } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { connectRouter, routerMiddleware } from "connected-react-router";
+import { composeWithDevTools } from "redux-devtools-extension";
 import history from "./history";
 import createSagaMiddleware from "redux-saga";
 import eventBus from "eventBus";
@@ -11,31 +12,23 @@ import rootReducer from "./rootReducer";
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
-const middleware = [
+const middlewares = [
   routerMiddleware(history),
   // mount saga middleware on the Store
   sagaMiddleware
 ];
 
-// eslint-disable-next-line no-underscore-dangle
-let devTools =
-  typeof window === "object" && !window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? // In production: pass an empty function. This can prevent unexpected errors
-      a => a
-    : // In development: activate the devtools extension
-      window.__REDUX_DEVTOOLS_EXTENSION__ &&
-      window.__REDUX_DEVTOOLS_EXTENSION__();
+// Methodology from https://redux.js.org/recipes/configuring-your-store#integrating-the-devtools-extension
+// And https://github.com/zalmoxisus/redux-devtools-extension#13-use-redux-devtools-extension-package-from-npm
+const actionsBlacklist = ["UPDATE_CHAIN_DATA"];
+const composedEnhancers = composeWithDevTools({ actionsBlacklist });
 
 const store = createStore(
   connectRouter(history)(rootReducer), // new root reducer with router state
-  compose(
-    applyMiddleware(...middleware),
-    // Necessary code to activate the redux chrome debug tools
-    devTools
-  )
+  composedEnhancers(applyMiddleware(...middlewares))
 );
 
-eventBus.subscribe("ACTION", (topic, action) => {
+eventBus.subscribe("ACTION", (_, action) => {
   store.dispatch(action);
 });
 
