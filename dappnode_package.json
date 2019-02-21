@@ -8,7 +8,7 @@
     "path": "",
     "hash": "",
     "size": "",
-    "ports": ["8080:8080"],
+    "ports": ["8090:8090"],
     "restart": "always",
     "subnet": "172.33.0.0/16",
     "ipv4_address": "172.33.1.9"

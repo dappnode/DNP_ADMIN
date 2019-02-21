@@ -30,5 +30,5 @@ COPY --from=build-deps-openvpn /usr/src/app/build /usr/www/openvpn
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
-EXPOSE 8080
+EXPOSE 8090
 CMD ["nginx", "-c", "/etc/nginx/nginx.conf", "-g", "daemon off;"]
