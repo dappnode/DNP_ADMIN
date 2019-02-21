@@ -6,20 +6,6 @@ import Toast from "components/Toast";
 
 /***************************** Subroutines ************************************/
 
-export function* getDeviceCredentials({id}) {
-  try {
-    if (!id) throw Error('id must be defined in getDeviceCredentials')
-    const res = yield call(APIcall.getDeviceCredentials, {id});
-    if (res.success) {
-      yield put({ type: t.UPDATE_DEVICE, id, data: res.result });
-    } else {
-      new Toast(res);
-    }
-  } catch (e) {
-    console.error("Error listing devices: ", e);
-  }
-}
-
 export function* listDevices() {
   try {
     yield put({ type: t.UPDATE_FETCHING, fetching: true });
@@ -53,7 +39,6 @@ function* callApi({ method, kwargs, message }) {
 // takeEvery(actionType, watchers[actionType])
 const watchers = [
   ["CONNECTION_OPEN", listDevices],
-  [t.GET_DEVICE_CREDENTIALS, getDeviceCredentials],
   ["LIST_DEVICES", listDevices],
   [t.CALL, callApi]
 ];

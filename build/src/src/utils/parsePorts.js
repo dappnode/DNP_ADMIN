@@ -3,7 +3,7 @@ import uniqArray from "./uniqArray";
 /**
  * Parses ports
  * @param {Object} manifest or portsArray = ['32323:30303/udp']
- * @return {Array} ['8090 TCP', '4001 TCP']
+ * @return {Array} ['8080 UDP', '4001 TCP']
  */
 function parsePorts(manifest) {
   if (!manifest) return [];

@@ -31,11 +31,13 @@ export default class GuestUsers extends React.Component {
     const guestsUsersEnabled = Boolean(guestUsersDevice);
     const device = {
       ...(guestUsersDevice || {}),
-      id: guestsName,
+      name: guestsName,
       ip: guestsIpRange
     };
 
-    const { id, url, ip } = device;
+    let url = device.otp || "";
+    let id = device.name || "";
+    let ip = device.ip || "";
 
     const margin = "5px";
     const padding = "0.7rem";
