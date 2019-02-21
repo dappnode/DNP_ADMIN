@@ -4,7 +4,9 @@ import { connect } from "react-redux";
 import {
   addDevice,
   removeDevice,
+  resetDevice,
   toggleAdmin,
+  getDeviceCredentials,
   toggleGuestUsers,
   resetGuestUsersPassword
 } from "../actions";
@@ -13,6 +15,8 @@ import * as selector from "../selectors";
 import DeviceList from "./DeviceList";
 import GuestUsers from "./GuestUsers";
 import Loading from "components/Loading";
+
+const enableGuestUsers = false;
 
 class DevicesView extends React.Component {
   constructor() {
@@ -28,23 +32,9 @@ class DevicesView extends React.Component {
     this.props.addDevice(this.state.deviceName);
   }
 
-  removeDevice(id) {
-    this.props.removeDevice(id);
-  }
-
-  toggleAdmin(id, isAdmin) {
-    this.props.toggleAdmin(id, isAdmin);
-  }
-
   updateDeviceName(e) {
     this.setState({
       deviceName: e.target.value
-    });
-  }
-
-  updateDeviceId(e) {
-    this.setState({
-      deviceId: e.target.value
     });
   }
 
@@ -86,11 +76,13 @@ class DevicesView extends React.Component {
           <React.Fragment>
             <DeviceList
               deviceList={this.props.deviceList}
-              removeDevice={this.removeDevice.bind(this)}
-              toggleAdmin={this.toggleAdmin.bind(this)}
+              removeDevice={this.props.removeDevice}
+              resetDevice={this.props.resetDevice}
+              toggleAdmin={this.props.toggleAdmin}
+              getDeviceCredentials={this.props.getDeviceCredentials}
             />
 
-            {this.props.deviceList.length ? (
+            {enableGuestUsers && this.props.deviceList.length ? (
               <GuestUsers
                 guestUsersDevice={this.props.guestUsersDevice}
                 toggleGuestUsers={this.props.toggleGuestUsers}
@@ -115,7 +107,9 @@ const mapDispatchToProps = {
   // Ensure id contains only alphanumeric characters
   addDevice: id => addDevice(id.replace(/\W/g, "")),
   removeDevice,
+  resetDevice,
   toggleAdmin,
+  getDeviceCredentials,
   toggleGuestUsers,
   resetGuestUsersPassword
 };
