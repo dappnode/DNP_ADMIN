@@ -7,7 +7,9 @@ networks:
         - subnet: 172.33.0.0/16
 services:
   admin.dnp.dappnode.eth:
-    build: ./build
+    build:
+      context: .
+      dockerfile: ./build/Dockerfile
     image: "admin.dnp.dappnode.eth:0.1.16"
     container_name: DAppNodeCore-admin.dnp.dappnode.eth
     restart: always
