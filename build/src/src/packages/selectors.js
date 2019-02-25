@@ -50,6 +50,10 @@ export const areThereDnps = createSelector(
 );
 
 // Package lists
+export const getFilteredPackages = createSelector(
+  getPackages,
+  _packages => _packages.filter(p => p.name !== "core.dnp.dappnode.eth")
+);
 export const getCorePackages = createSelector(
   getPackages,
   _packages => _packages.filter(p => p.isCORE)
