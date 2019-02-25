@@ -29,7 +29,7 @@ const PackagesList = ({
         // XNOR operator, if coreDnps = true show only cores. If coreDnps = false, hide them
         .filter(dnp => xnor(coreDnps, dnp.isCore || dnp.isCORE))
         .map((dnp, i) => (
-          <PackageRow key={i} dnp={dnp} moduleName={moduleName} />
+          <PackageRow key={dnp.name || i} dnp={dnp} moduleName={moduleName} />
         ))
     );
   }
@@ -39,13 +39,14 @@ PackagesList.propTypes = {
   dnps: PropTypes.array.isRequired,
   moduleName: PropTypes.string.isRequired,
   fetching: PropTypes.bool.isRequired,
-  hasFetched: PropTypes.bool.isRequired
+  hasFetched: PropTypes.bool.isRequired,
+  coreDnps: PropTypes.bool
 };
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  dnps: s.getPackages,
+  dnps: s.getFilteredPackages,
   fetching: s.fetching,
   hasFetched: s.hasFetched
 });
