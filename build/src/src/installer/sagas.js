@@ -1,6 +1,6 @@
 import { call, put, select, take, fork } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
-import * as APIcall from "API/rpcMethods";
+import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
 import * as s from "./selectors";
@@ -16,7 +16,7 @@ import assertConnectionOpen from "utils/assertConnectionOpen";
 
 export function* shouldOpenPorts() {
   try {
-    const res = yield call(APIcall.getStatusUpnp);
+    const res = yield call(APIcall.statusUPnP);
     if (res.success) {
       yield put({
         type: t.SHOULD_OPEN_PORTS,

@@ -9,6 +9,8 @@ import GuestUsers from "./GuestUsers";
 import Loading from "components/Loading";
 import navbar from "navbar";
 
+const enableGuestUsers = false;
+
 class DevicesView extends React.Component {
   constructor() {
     super();
@@ -23,23 +25,9 @@ class DevicesView extends React.Component {
     this.props.addDevice(this.state.deviceName);
   }
 
-  removeDevice(id) {
-    this.props.removeDevice(id);
-  }
-
-  toggleAdmin(id, isAdmin) {
-    this.props.toggleAdmin(id, isAdmin);
-  }
-
   updateDeviceName(e) {
     this.setState({
       deviceName: e.target.value
-    });
-  }
-
-  updateDeviceId(e) {
-    this.setState({
-      deviceId: e.target.value
     });
   }
 
@@ -81,11 +69,13 @@ class DevicesView extends React.Component {
           <React.Fragment>
             <DeviceList
               deviceList={this.props.deviceList}
-              removeDevice={this.removeDevice.bind(this)}
-              toggleAdmin={this.toggleAdmin.bind(this)}
+              removeDevice={this.props.removeDevice}
+              resetDevice={this.props.resetDevice}
+              toggleAdmin={this.props.toggleAdmin}
+              getDeviceCredentials={this.props.getDeviceCredentials}
             />
 
-            {this.props.deviceList.length ? (
+            {enableGuestUsers && this.props.deviceList.length ? (
               <GuestUsers
                 guestUsersDevice={this.props.guestUsersDevice}
                 toggleGuestUsers={this.props.toggleGuestUsers}
@@ -115,8 +105,14 @@ const mapDispatchToProps = dispatch => {
     removeDevice: id => {
       dispatch(action.removeDevice(id));
     },
+    resetDevice: id => {
+      dispatch(action.resetDevice(id));
+    },
     toggleAdmin: id => {
       dispatch(action.toggleAdmin(id));
+    },
+    getDeviceCredentials: id => {
+      dispatch(action.getDeviceCredentials(id));
     },
     toggleGuestUsers: disabling => {
       if (disabling) {

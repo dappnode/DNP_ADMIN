@@ -15,6 +15,13 @@ export const removeDevice = id => ({
   kwargs: { id }
 });
 
+export const resetDevice = id => ({
+  type: t.CALL,
+  method: "resetDevice",
+  message: `Reseting ${id}...`,
+  kwargs: { id }
+});
+
 export const toggleAdmin = id => ({
   type: t.CALL,
   method: "toggleAdmin",
@@ -36,7 +43,12 @@ export const resetGuestUsersPassword = () => ({
   kwargs: {}
 });
 
-export const fetchDevices = id => ({
-  type: t.FETCH_DEVICES,
+export const getDeviceCredentials = id => ({
+  type: t.GET_DEVICE_CREDENTIALS,
+  id
+});
+
+export const listDevices = id => ({
+  type: t.LIST_DEVICES,
   id
 });
