@@ -53,6 +53,12 @@ export default function socketSubscriptions(session) {
     if (!Array.isArray(chainData)) return;
     // Rename known errors
     chainData.forEach(chain => {
+      console.log(chain);
+      // Rename chain name
+      if ((chain.name || "").toLowerCase().includes("ethchain")) {
+        chain.name = "Mainnet";
+      }
+      // Rename errors
       if ((chain.message || "").includes("ECONNREFUSED")) {
         chain.message = `DNP stopped or unreachable (connection refused)`;
       }
