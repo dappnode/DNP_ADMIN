@@ -39,13 +39,14 @@ PackagesList.propTypes = {
   dnps: PropTypes.array.isRequired,
   moduleName: PropTypes.string.isRequired,
   fetching: PropTypes.bool.isRequired,
-  hasFetched: PropTypes.bool.isRequired
+  hasFetched: PropTypes.bool.isRequired,
+  coreDnps: PropTypes.bool
 };
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  dnps: s.getPackages,
+  dnps: s.getFilteredPackages,
   fetching: s.fetching,
   hasFetched: s.hasFetched
 });
