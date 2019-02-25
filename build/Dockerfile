@@ -1,8 +1,8 @@
 FROM node as build-deps-adminui
 WORKDIR /usr/src/app
 # ensuring both package.json AND package-lock.json are copied
-COPY src/package*.json ./
-COPY src/*lock* ./
+COPY src/package.json ./
+COPY src/yarn.lock ./
 # install dependencies
 RUN yarn install --production
 # copy the contents of the app

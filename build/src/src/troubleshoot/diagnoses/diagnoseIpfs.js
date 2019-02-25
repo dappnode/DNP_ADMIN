@@ -1,37 +1,34 @@
-import IPFS from "ipfs-mini";
 import retryable from "utils/retryable";
 
 // This construction prevents ipfs from auto initialize when imported
 // If this happens tests can fail and trigger nasty effects
-const ipfsConfig = {
-  host: "my.ipfs.dnp.dappnode.eth",
-  port: 5001,
-  protocol: "http"
-};
+const host = "my.ipfs.dnp.dappnode.eth";
+const port = 5001;
+const protocol = "http";
+const hash = "QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB";
+const expectedString = "Hello and Welcome to IPFS!";
+const url = `${protocol}://${host}:${port}/api/v0/cat?arg=${hash}`;
 
 // Attempts to cat the readme file and expect it to contain 'Hello and Welcome to IPFS!'
-const checkIpfsConnection = () =>
-  new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(Error("Timeout expired")), 3 * 1000);
-    const ipfs = new IPFS(ipfsConfig);
-    ipfs.cat("QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB", (err, file) => {
-      clearTimeout(timer);
-      if (err) return reject(Error(formatIpfsError(err)));
-      if (file.includes("Hello and Welcome to IPFS!")) return resolve();
-      else return reject(Error("Error parsing file"));
-    });
-  });
+const checkIpfsConnection = async () => {
+  try {
+    const file = await fetchWithTimeout(url).then(res => res.text());
+    if (!file.includes(expectedString)) throw Error("Error parsing file");
+  } catch (e) {
+    e.message = `Error verifying IPFS: ${e.message}`;
+    throw e;
+  }
+};
 
 // Utils:
 
-function formatIpfsError(err) {
-  let errParsed = err ? (err.message ? err.message : err) : "Unknown error";
-  // Convert the error to string: object -> string, string -> string
-  errParsed = JSON.stringify(errParsed);
-  // Rename known error
-  if (errParsed.includes("[ipfs-mini] status 0:"))
-    errParsed = "Can't connect to IPFS module";
-  return errParsed;
+function fetchWithTimeout(url, options, timeout = 3000) {
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("timeout")), timeout)
+    )
+  ]);
 }
 
 export default () => {
