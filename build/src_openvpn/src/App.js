@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Route, NavLink as Link } from "react-router-dom";
-import saveAs from 'file-saver';
+// import { Route, NavLink as Link } from "react-router-dom";
+import saveAs from "file-saver";
 // General components
 import HiddenRedirector from "./HiddenRedirector";
 // Platform dedicated components
-import Instructions from "./Instructions/Instructions";
+// import Instructions from "./Instructions/Instructions";
 import MacOS from "./Instructions/MacOS";
 import Windows from "./Instructions/Windows";
 import Android from "./Instructions/Android";
@@ -21,20 +21,17 @@ import errorLogo from "./img/error.png";
 import okLogo from "./img/ok.png";
 import logo from "./img/logo.png";
 // Icons
-import FaAndroid from './icons/FaAndroid'
-import FaApple from './icons/FaApple'
-import FaChrome from './icons/FaChrome'
-import FaLinux from './icons/FaLinux'
-import FaMobile from './icons/FaMobile'
-import FaWindows from './icons/FaWindows'
+import FaAndroid from "./icons/FaAndroid";
+import FaApple from "./icons/FaApple";
+import FaChrome from "./icons/FaChrome";
+import FaLinux from "./icons/FaLinux";
+import FaMobile from "./icons/FaMobile";
+import FaWindows from "./icons/FaWindows";
 
-window.saveAs = saveAs
+window.saveAs = saveAs;
 
-// Recommended clients
-// MacOS -> Tunnelblick https://tunnelblick.net/
-// iOS -> OpenVPN Connect https://itunes.apple.com/us/app/openvpn-connect/id590379981?mt=8
-// Windows -> OpenVPN (community installer) https://openvpn.net/community-downloads/
-// Android -> OpenVPN for Android (?) https://play.google.com/store/apps/details?id=de.blinkt.openvpn&hl=en
+const instructionsBaseUrl =
+  "https://github.com/dappnode/dappnode/wiki/openvpn-client-guide";
 
 const options = [
   {
@@ -42,74 +39,48 @@ const options = [
     route: "macos",
     component: MacOS,
     icon: FaApple,
-    client: {
-      name: "Tunnelblick",
-      banner:
-        "https://tunnelblick.net/images/using-tunnelblick-dmg-2010-10-16.png",
-      url: "https://tunnelblick.net/"
-    }
+    link: `${instructionsBaseUrl}#macos`
   },
   {
     name: "iOS",
     route: "ios",
     component: iOS,
     icon: FaMobile,
-    client: {
-      name: "OpenVPN Connect",
-      banner:
-        "https://help.endian.com/hc/article_attachments/360011891853/IMG_6552.jpg",
-      url: "https://itunes.apple.com/us/app/openvpn-connect/id590379981"
-    }
+    link: `${instructionsBaseUrl}#ios`
   },
   {
     name: "Windows",
     route: "windows",
     component: Windows,
     icon: FaWindows,
-    client: {
-      name: "OpenVPN (community installer)",
-      banner: "https://openvpn.net/wp-content/uploads/openvpn.jpg",
-      url: "https://openvpn.net/community-downloads/"
-    }
+    link: `${instructionsBaseUrl}#windows`
   },
   {
     name: "Android",
     route: "android",
     component: Android,
     icon: FaAndroid,
-    client: {
-      name: "OpenVPN for Android",
-      banner: "http://www.earthvpn.com/images/2013-08-26-13-46-27.png",
-      url: "https://play.google.com/store/apps/details?id=de.blinkt.openvpn"
-    }
+    link: `${instructionsBaseUrl}#android`
   },
   {
     name: "Linux",
     route: "linux",
     component: Linux,
     icon: FaLinux,
-    client: {
-      name: "?",
-      banner: "",
-      url: "?"
-    }
+    link: `${instructionsBaseUrl}#linux`
   },
   {
     name: "Chromebook",
     route: "chromebook",
     component: Chromebook,
     icon: FaChrome,
-    client: {
-      name: "OpenVPN for Android",
-      banner: "",
-      url: "https://play.google.com/store/apps/details?id=de.blinkt.openvpn"
-    }
+    link: `${instructionsBaseUrl}#android`
   }
 ];
 
 const baseUrl = window.location.origin;
 const ovpnType = "application/x-openvpn-profile";
-const fileExtension = "ovpn"
+const fileExtension = "ovpn";
 
 export default class App extends Component {
   constructor(props) {
@@ -125,17 +96,32 @@ export default class App extends Component {
     try {
       // 1. Get params from url
       this.setState({ loading: true });
-      const { key, id, name } = getParamsFromUrl();
+      const { key, id, name, dev } = getParamsFromUrl();
       const url = `${baseUrl}/cred/${id}?id=${id}`;
+
+      // Dev param to be able to work on the UI
+      if (dev) {
+        if (dev === "loading") this.setState({ loading: true });
+        if (dev === "success") this.setState({ loading: false, file: "file" });
+        if (dev === "error") this.setState({ loading: false, error: "error" });
+        return console.warn(`dev parameter set, dev: ${dev}`);
+      }
 
       // 2. Fetch file from server
       const res = await fetch(url);
-      if (!res.ok) throw Error(res.statusText);
+      if (res.status === 404)
+        throw Error("Link expired, contact your DAppNode administrator");
+      if (!res.ok)
+        throw Error(`Error fetching your credentials file: ${res.statusText}`);
       const encryptedFile = await res.text();
 
       // 3. Decrypt
       if (!isBase64(encryptedFile))
-        throw Error(`Incorrect ID or wrong file format (no-base64). url: ${url} encryptedFile: ${(encryptedFile || '').substring(0, 50)}...\n`);
+        throw Error(
+          `Incorrect ID or wrong file format (no-base64). url: ${url} encryptedFile: ${(
+            encryptedFile || ""
+          ).substring(0, 100)}...\n`
+        );
       const file = decrypt(encryptedFile, key);
       this.setState({ loading: false, file, name });
     } catch (err) {
@@ -149,10 +135,17 @@ export default class App extends Component {
 
   render() {
     const { file, name, error, loading } = this.state;
-    const blob = new Blob([file], {type: ovpnType});
-    const filename = `${getServerName(name)}.${fileExtension}`
+    const blob = new Blob([file], { type: ovpnType });
+    const filename = `${getServerName(name)}.${fileExtension}`;
 
-    // <item.icon />
+    if (error) {
+      return (
+        <div className="container text-center mt-5">
+          <img src={errorLogo} className="main-logo" alt="logo" />
+          <h6 className="main-text">{error}</h6>
+        </div>
+      );
+    }
 
     if (file) {
       return (
@@ -171,7 +164,8 @@ export default class App extends Component {
                   className="main-logo"
                   alt="ok"
                   style={{ height: "18px", margin: "0px 7px 0px 0px" }}
-                />Successfully decrypted .ovpn file
+                />
+                Successfully decrypted .ovpn file
               </h6>
               <button
                 className="btn btn-primary dappnode-background-color"
@@ -189,35 +183,22 @@ export default class App extends Component {
               <p className="jumotron-subtitle">Choose your OS below</p>
             </div>
           </div>
-          <div className="container">
-            <ul className="nav nav-tabs">
-              {options.map((option, i) => (
-                <li key={i} className="nav-item">
-                  <Link
-                    className="nav-link"
-                    activeClassName="active"
-                    activeStyle={{ backgroundColor: "#f3f5f6" }}
-                    to={{ pathname: option.route, hash: window.location.hash }}
-                    query={this.props.query}
-                  >
-                    <span className="nav-icon">
-                      <option.icon />
-                    </span>
-                    {option.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
 
-            <div className="mt-3">
-              {options.map(option => (
-                <Route
-                  key={option.route}
-                  path={"/" + option.route}
-                  render={props => <Instructions {...props} {...option} />}
-                />
+          <div className="container">
+            <div className="row instructions-row">
+              {options.map((option, i) => (
+                <div key={i} className="col-6 col-sm-6 col-md-4 col-lg-2 mt-4">
+                  <a
+                    className="instructions-link text-center nav-link"
+                    href={option.link}
+                  >
+                    <div className="nav-icon">
+                      <option.icon />
+                    </div>
+                    <div className="nav-text">{option.name}</div>
+                  </a>
+                </div>
               ))}
-              <hr className="my-4" />
             </div>
           </div>
           <HiddenRedirector />
@@ -225,20 +206,11 @@ export default class App extends Component {
       );
     }
 
-    if (error) {
-      return (
-        <div className="container text-center mt-5">
-          <img src={errorLogo} className="main-logo" alt="logo" />
-          <h6 className="main-text">{error}</h6>
-        </div>
-      );
-    }
-
     if (loading) {
       return (
         <div className="container text-center mt-5">
           <img src={logo} className="main-logo" alt="logo" />
-          <h6 className="main-text">Loading</h6>
+          <h6 className="main-text">Loading...</h6>
         </div>
       );
     }
