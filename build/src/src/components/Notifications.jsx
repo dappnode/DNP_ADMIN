@@ -1,7 +1,7 @@
 import React from "react";
-import Settings from "Icons/Settings";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
+import { Link } from "react-router-dom";
 import system from "system";
 
 class NotificationsView extends React.Component {
@@ -11,11 +11,18 @@ class NotificationsView extends React.Component {
         className="alert alert-warning alert-dismissible fade show"
         role="alert"
       >
-        <strong>DAppNode System Update Available.</strong> Go to the{" "}
-        <span>
-          <Settings />
-        </span>
-        <strong>System</strong> tab to review and approve the update
+        <Link
+          className="btn btn-warning float-right"
+          to={`/${system.constants.NAME}/${system.constants.UPDATE}`}
+        >
+          Update
+        </Link>
+        <p>
+          <strong>DAppNode system update available.</strong> Click{" "}
+          <strong>Update </strong>
+          to review and approve it
+        </p>
+
         <button
           type="button"
           className="close"
