@@ -1,9 +1,9 @@
 import diagnoseIpfs from "./diagnoseIpfs";
-import diagnoseUpnp from "./diagnoseUpnp";
-import diagnoseExternalIp from "./diagnoseExternalIp";
+import diagnoseOpenPorts from "./diagnoseOpenPorts";
+import diagnoseNatLoopback from "./diagnoseNatLoopback";
 
 export default {
   diagnoseIpfs,
-  diagnoseUpnp,
-  diagnoseExternalIp
+  diagnoseOpenPorts,
+  diagnoseNatLoopback
 };
