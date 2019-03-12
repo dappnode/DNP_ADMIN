@@ -42,12 +42,14 @@ const SystemUpdateDetails = ({ coreDeps, coreManifest, updateCore }) => {
                         <TextWithUrls text={coreChangelog} />
                       </div>
                     ) : null}
-                    <div
-                      className="alert alert-warning"
-                      style={{ margin: "12px 0 6px 0" }}
-                    >
-                      <TextWithUrls text={coreInstallWarning} />
-                    </div>
+                    {coreInstallWarning ? (
+                      <div
+                        className="alert alert-warning"
+                        style={{ margin: "12px 0 6px 0" }}
+                      >
+                        <TextWithUrls text={coreInstallWarning} />
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>
