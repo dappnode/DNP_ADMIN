@@ -27,34 +27,21 @@ body {
   color: gray;
 }
 
-.instructions-row {
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.instructions-link {
+a {
   color: #444;
-  border: 1px solid #d9dce0;
-  border-radius: 5px;
 }
-.instructions-link:hover {
+a:hover {
   color: #444;
   background-color: #f3f5f6;
   -webkit-transition: background-color 100ms linear;
   -ms-transition: background-color 100ms linear;
   transition: background-color 100ms linear;
 }
-/* .row > .instructions-link {
-  margin-right: 10px;
-}
-.row > .instructions-link:last-child {
-  margin-right: 0px;
-} */
 
 .jumbotron-area {
   padding: 35px 0px;
   background-color: #e9ecef8c;
-  margin: 35px 0px 0px 0px;
+  margin: 35px 0px;
 }
 
 .jumbotron-title {
@@ -113,15 +100,9 @@ ol li {
 }
 
 .nav-icon {
-  opacity: 0.8;
-  margin-bottom: 5px;
-  margin-top: 5px;
-}
-
-.nav-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  position: relative;
+  top: -2px;
+  margin-right: 5px;
 }
 
 .jumbotron {

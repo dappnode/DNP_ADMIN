@@ -1,55 +1,76 @@
 // PACKAGES
 import { NAME } from "./constants";
+import { createSelector } from "reselect";
 
-// Selectors provide a way to query data from the module state.
-// While they are not normally named as such in a Redux project, they
-// are always present.
-
-// The first argument of connect is a selector in that it selects
-// values out of the state atom, and returns an object representing a
-// component’s props.
-
-// I would urge that common selectors by placed in the selectors.js
-// file so they can not only be reused within the module, but
-// potentially be used by other modules in the application.
-
-// I highly recommend that you check out reselect as it provides a
-// way to build composable selectors that are automatically memoized.
-
-// From https://jaysoo.ca/2016/02/28/applying-code-organization-rules-to-concrete-redux-code/
-
-// Utils
-
-// this.state.packageInfo[this.state.targetPackageName]
+/**
+ * Parses pathname parts
+ * @param {String} pathname = '/packages/kovan.dnp.dappnode.eth'
+ * @return {Array} ['packages', 'kovan.dnp.dappnode.eth']
+ */
+const parsePathname = pathname => (pathname || "").split("/").filter(e => e);
 
 // #### EXTERNAL
 
-const packages = state => state.installedPackages;
+export const getPackages = createSelector(
+  state => state.installedPackages,
+  _packages => _packages
+);
+// pathname = /packages/kovan.dnp.dappnode.eth
+// pathname = /system/kovan.dnp.dappnode.eth
+export const getUrlId = createSelector(
+  state => state.router.location.pathname,
+  pathname => parsePathname(pathname)[1] || ""
+);
+export const getModuleName = createSelector(
+  state => state.router.location.pathname,
+  pathname => parsePathname(pathname)[0] || ""
+);
 
 // #### INTERNAL
+const getLocal = createSelector(
+  state => state[NAME],
+  local => local
+);
+const getLogs = createSelector(
+  getLocal,
+  local => local.logs
+);
 
-const local = state => state[NAME];
-const logs = state => local(state).logs;
-const pathname = state => state.router.location.pathname || "";
-const id = state => pathname(state).split(NAME + "/")[1] || "";
-export const fetching = state => local(state).fetching || false;
-export const hasFetched = state => local(state).hasFetched || false;
+export const fetching = createSelector(
+  getLocal,
+  local => local.fetching || false
+);
+export const hasFetched = createSelector(
+  getLocal,
+  local => local.hasFetched || false
+);
+export const areThereDnps = createSelector(
+  getPackages,
+  dnps => Boolean((dnps || []).length)
+);
 
 // Package lists
-
-export const getPackages = packages;
-export const getCorePackages = state => packages(state).filter(p => p.isCORE);
-export const getDnpPackages = state => packages(state).filter(p => p.isDNP);
+export const getFilteredPackages = createSelector(
+  getPackages,
+  _packages => _packages.filter(p => p.name !== "core.dnp.dappnode.eth")
+);
+export const getCorePackages = createSelector(
+  getPackages,
+  _packages => _packages.filter(p => p.isCORE)
+);
+export const getDnpPackages = createSelector(
+  getPackages,
+  _packages => _packages.filter(p => p.isDNP)
+);
+export const getDnp = createSelector(
+  getUrlId,
+  getPackages,
+  (id, dnps) => dnps.find(dnp => dnp.name === id)
+);
 
 // Package logs
-
-export const getLogs = state => logs(state)[id(state)];
-
-// Selected package
-
-export const getId = id;
-export const getPackage = state =>
-  packages(state).find(p => p.name === id(state)) || {};
-
-export const getPackageId = state => getPackage(state).name || "";
-export const getPackageIsCORE = state => getPackage(state).isCORE || false;
+export const getDnpLogs = createSelector(
+  getUrlId,
+  getLogs,
+  (id, logs) => logs[id]
+);

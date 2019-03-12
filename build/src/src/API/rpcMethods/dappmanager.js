@@ -1,7 +1,7 @@
-// DAPPMANAGER WAMP RPC METHODS 
+// DAPPMANAGER WAMP RPC METHODS
 // This file describes the available RPC methods of the DAPPMANAGER module
 // It serves as documentation and as a mechanism to quickly add new calls
-// 
+//
 // Each key of this object is the last subdomain of the entire event:
 //   event = "installPackage.dappmanager.dnp.dappnode.eth"
 //   Object key = "installPackage"
@@ -9,49 +9,49 @@
 export default {
   // installPackage
   // > kwargs: { id }
-  // > result: -
+  // > result: {}
   installPackage: {
-      manadatoryKwargs: ["id"]
+    manadatoryKwargs: ["id"]
   },
 
   // installPackageSafe
   // > kwargs: { id }
-  // > result: -
+  // > result: {}
   installPackageSafe: {
-      manadatoryKwargs: ["id"]
+    manadatoryKwargs: ["id"]
   },
 
   // removePackage:
   // > kwargs: { id, deleteVolumes }
-  // > result: -
+  // > result: {}
   removePackage: {
     manadatoryKwargs: ["id", "deleteVolumes"]
   },
 
   // togglePackage:
   // > kwargs: { id, timeout }
-  // > result: -
+  // > result: {}
   togglePackage: {
     manadatoryKwargs: ["id"]
   },
 
   // restartPackage:
   // > kwargs: { id }
-  // > result: -
+  // > result: {}
   restartPackage: {
     manadatoryKwargs: ["id"]
   },
 
   // restartPackageVolumes:
   // > kwargs: { id, deleteVolumes }
-  // > result: -
+  // > result: {}
   restartPackageVolumes: {
     manadatoryKwargs: ["id"]
   },
 
   // updatePackageEnv:
   // > kwargs: { id, envs, restart, isCORE }
-  // > result: -
+  // > result: {}
   updatePackageEnv: {
     manadatoryKwargs: ["id", "envs", "restart"]
   },
@@ -65,7 +65,7 @@ export default {
 
   // managePorts:
   // > kwargs: { ports, logId }
-  // > result: -
+  // > result: {}
   managePorts: {
     manadatoryKwargs: ["ports", "action"]
   },
@@ -162,7 +162,7 @@ export default {
 
   // requestChainData:
   // > kwargs: {}
-  // > result: -
+  // > result: {}
   requestChainData: {},
 
   // notificationsGet:
@@ -182,7 +182,7 @@ export default {
   // notificationsRemove:
   // > kwargs: { ids }
   //   ids = [ "notification-id1", "notification-id2" ]
-  // > result: -
+  // > result: {}
   notificationsRemove: {
     manadatoryKwargs: ["ids"]
   },
@@ -198,6 +198,26 @@ export default {
   //     },
   //     ...
   //   }
-  diagnose: {}
-}
+  diagnose: {},
 
+  // copyFileTo:
+  // > kwargs: {
+  //     id: "mydnp.dnp.dappnode.eth",
+  //     dataUri: "data:application/zip;base64,UEsDBBQAAAg..."
+  //     toPath: "/usr/src/app/config.json"
+  //   }
+  // > result: {}
+  copyFileTo: {
+    manadatoryKwargs: ["id", "dataUri", "toPath"]
+  },
+
+  // copyFileTo:
+  // > kwargs: {
+  //     id: "mydnp.dnp.dappnode.eth",
+  //     fromPath: "/usr/src/app/config.json"
+  //   }
+  // > result: data Uri: "data:application/zip;base64,UEsDBBQAAAg..."
+  copyFileFrom: {
+    manadatoryKwargs: ["id", "fromPath"]
+  }
+};

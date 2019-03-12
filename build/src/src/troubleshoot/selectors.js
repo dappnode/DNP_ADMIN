@@ -28,25 +28,54 @@ function baseUrl(username, repo) {
 // #### EXTERNAL
 
 export const installedPackages = state => state.installedPackages;
+export const getPackageStatus = state => state.packageStatus;
 
 // #### INTERNAL
 
 const local = state => state[NAME];
 export const diagnoses = state => local(state).diagnoses;
+export const getPackageList = state => {
+  const packageList = (local(state).info || {}).packageList || {};
+  const packageStatus = getPackageStatus(state) || {};
+  const { dappmanager, vpn } = packageStatus;
+  const admin = window.versionData;
+  return {
+    ...packageList,
+    "dappmanager.dnp.dappnode.eth": {
+      ...(packageList["dappmanager.dnp.dappnode.eth"] || {}),
+      ...(dappmanager || {})
+    },
+    "vpn.dnp.dappnode.eth": {
+      ...(packageList["vpn.dnp.dappnode.eth"] || {}),
+      ...(vpn || {})
+    },
+    "admin.dnp.dappnode.eth": {
+      ...(packageList["admin.dnp.dappnode.eth"] || {}),
+      ...(admin || {})
+    }
+  };
+};
 export const issueBody = state => {
   const info = local(state).info;
   // Construct issueUrl from the available info
   let body = `*Before filing a new issue, please **provide the following information**.*`;
 
   // Append core versions
-  if (info.packageList) {
+  const packageList = getPackageList(state);
+  if (packageList) {
     // dnp = {
     //   name: "vpn.dnp.dappnode.eth"
     //   version: "0.1.19"
     // }
-    const msgVersions = info.packageList
+    const msgVersions = Object.values(packageList)
       .filter(dnp => dnp.isCORE)
-      .map(dnp => `- **${dnp.name}**: ${dnp.version}`);
+      .map(dnp => {
+        let versionTag = dnp.version;
+        if (dnp.branch && dnp.branch !== "master")
+          versionTag += `, branch: ${dnp.branch}`;
+        if (dnp.commit) versionTag += `, commit: ${dnp.commit.slice(0, 8)}`;
+        return `- **${dnp.name}**: ${versionTag}`;
+      });
     body += `\n\n## Current versions\n${msgVersions.join("\n")}`;
   }
 
@@ -67,7 +96,9 @@ export const issueUrl = state => {
   // Construct issueUrl
 
   // eslint-disable-next-line
-  const issueUrl = `${baseUrl(username, repo)}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+  const issueUrl = `${baseUrl(username, repo)}?title=${encodeURIComponent(
+    title
+  )}&body=${encodeURIComponent(body)}`;
   return issueUrl;
 };
 export const issueUrlRaw = state => {

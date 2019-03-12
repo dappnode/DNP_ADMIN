@@ -54,7 +54,7 @@ export default class TypeFilter extends React.Component {
     } else {
       return (
         <form>
-          <a className="mr-3">Filter by type:</a>
+          <span className="mr-3">Filter by type:</span>
           {items}
         </form>
       );

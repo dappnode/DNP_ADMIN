@@ -157,7 +157,10 @@ export function* fetchPackages() {
     const res = yield call(APIcall.listPackages);
     if (!res.success)
       throw Error("Unsuccessful reponse to listPackages: " + res.message);
-    yield put(a.updateInfo("packageList", res.result));
+    const packageListObj = res.result.reduce((obj, dnp) => {
+      return { ...obj, [dnp.name]: dnp };
+    }, {});
+    yield put(a.updateInfo("packageList", packageListObj));
   } catch (e) {
     console.error("Error fetching installed packages", e);
   }

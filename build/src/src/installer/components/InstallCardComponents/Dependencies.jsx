@@ -22,6 +22,9 @@ export default class Dependencies extends React.Component {
     } else if (!request.success) {
       body = <p style={{ color: "#d50f0fd1" }}>✕ {request.message}</p>;
     } else if (request.success) {
+      const success = request.success || {};
+      const alreadyUpdated = request.alreadyUpdated || {};
+      const dnps = { ...alreadyUpdated, ...success };
       body = (
         <React.Fragment>
           <p style={{ color: "#2fbcb2" }}>
@@ -32,7 +35,7 @@ export default class Dependencies extends React.Component {
             <div className="col-4">Current version</div>
             <div className="col-4">Requested version</div>
           </div>
-          {Object.keys(request.success || {}).map((dnpName, i) => {
+          {Object.keys(dnps).map((dnpName, i) => {
             try {
               return (
                 <div key={i} className="row">

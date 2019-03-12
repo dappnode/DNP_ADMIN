@@ -3,18 +3,14 @@ import * as constants from "./constants";
 import reducer from "./reducer";
 import * as selectors from "./selectors";
 import PackagesRoot from "./components/PackagesRoot";
-import PackageRow from "./components/PackageRow";
-import Details from "./components/PackageViews/Details";
-import Logs from "./components/PackageViews/Logs";
-import Envs from "./components/PackageViews/Envs";
+import PackageInterface from "./components/PackageInterface";
+import PackageList from "./components/PackageList";
 import saga from "./sagas";
 
 const components = {
   PackagesRoot,
-  PackageRow,
-  Details,
-  Logs,
-  Envs
+  PackageList,
+  PackageInterface
 };
 
 const component = PackagesRoot;

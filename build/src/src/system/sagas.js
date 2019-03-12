@@ -12,49 +12,6 @@ import navbar from "navbar";
 
 /***************************** Subroutines ************************************/
 
-export function* listPackages() {
-  try {
-    yield put({ type: t.UPDATE_FETCHING, fetching: true });
-    const res = yield call(APIcall.listPackages);
-    yield put({ type: t.UPDATE_FETCHING, fetching: false });
-    if (res.success) {
-      yield put(a.updatePackages(res.result));
-    } else {
-      new Toast(res);
-    }
-
-    // listPackages CALL DOCUMENTATION:
-    // > kwargs: {}
-    // > result: [{
-    //     id: '927623894...', (string)
-    //     isDNP: true, (boolean)
-    //     created: <Date string>,
-    //     image: <Image Name>, (string)
-    //     name: otpweb.dnp.dappnode.eth, (string)
-    //     shortName: otpweb, (string)
-    //     version: '0.0.4', (string)
-    //     ports: <list of ports>, (string)
-    //     state: 'exited', (string)
-    //     running: true, (boolean)
-    //     ...
-    //     envs: <Env variables> (object)
-    //   },
-    //   ...]
-  } catch (error) {
-    console.error("Error fetching directory: ", error);
-  }
-}
-
-function* callApi({ method, kwargs, message }) {
-  try {
-    const pendingToast = new Toast({ message, pending: true });
-    const res = yield call(APIcall[method], kwargs);
-    pendingToast.resolve(res);
-  } catch (error) {
-    console.error("Error on " + method + ": ", error);
-  }
-}
-
 function shouldUpdate(v1, v2) {
   // currentVersion, newVersion
   v1 = semver.valid(v1) || "999.9.9";
@@ -66,11 +23,29 @@ function isEmpty(obj) {
   return !Boolean(Object.getOwnPropertyNames(obj).length);
 }
 
+function* putMainnetIsStillSyncing() {
+  try {
+    yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
+    yield put({
+      type: navbar.actionTypes.PUSH_NOTIFICATION,
+      notification: {
+        id: "mainnetStillSyncing",
+        type: "warning",
+        title: "System update available",
+        body:
+          "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
+      }
+    });
+  } catch (e) {
+    console.error(`Error putting mainnet is still syncing: ${e.stack}`);
+  }
+}
+
 export function* checkCoreUpdate() {
   try {
     // If chain is not synced yet, cancel request.
     if (yield call(isSyncing)) {
-      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
+      return yield call(putMainnetIsStillSyncing);
     }
 
     const packagesRes = yield call(APIcall.listPackages);
@@ -83,7 +58,7 @@ export function* checkCoreUpdate() {
       coreDataRes.message &&
       coreDataRes.message.includes("Mainnet is still syncing")
     ) {
-      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
+      return yield call(putMainnetIsStillSyncing);
     }
     // Abort on error
     if (
@@ -131,10 +106,18 @@ export function* checkCoreUpdate() {
       coreDeps: coreDepsToInstall
     });
 
-    yield put({
-      type: t.SYSTEM_UPDATE_AVAILABLE,
-      systemUpdateAvailable: Boolean(coreDepsToInstall.length)
-    });
+    if (coreDepsToInstall.length) {
+      yield put({
+        type: navbar.actionTypes.PUSH_NOTIFICATION,
+        notification: {
+          id: "systemUpdateAvailable",
+          type: "danger",
+          title: "System update available",
+          body:
+            "DAppNode System Update Available. Go to the System tab to review and approve the update."
+        }
+      });
+    }
   } catch (error) {
     console.error("Error fetching directory: ", error);
   }
@@ -142,47 +125,30 @@ export function* checkCoreUpdate() {
 
 let updatingCore = false;
 function* updateCore() {
-  // Prevent double installations
-  if (updatingCore) {
-    return console.error("DAPPNODE CORE IS ALREADY UPDATING");
-  }
-  const logId = uuidv4();
-  const pendingToast = new Toast({
-    message: "Updating DAppNode core...",
-    pending: true
-  });
-  // blacklist the current package
-  updatingCore = true;
-  const res = yield call(APIcall.installPackageSafe, {
-    id: "core.dnp.dappnode.eth",
-    logId
-  });
-  yield put({ type: installer.actionTypes.CLEAR_PROGRESS_LOG, logId });
-  // Remove package from blacklist
-  updatingCore = false;
-  pendingToast.resolve(res);
-
-  yield call(checkCoreUpdate);
-}
-
-function* logPackage({ kwargs }) {
-  const { id } = kwargs;
   try {
-    const res = yield call(APIcall.logPackage, kwargs);
-    if (res.success) {
-      const { logs } = res.result || {};
-      if (!logs) {
-        yield put(a.updateLog("Error, logs missing", id));
-      } else if (logs === "") {
-        yield put(a.updateLog("Received empty logs", id));
-      } else {
-        yield put(a.updateLog(logs, id));
-      }
-    } else {
-      yield put(a.updateLog("Error logging package: \n" + res.message, id));
+    // Prevent double installations
+    if (updatingCore) {
+      return console.error("DAPPNODE CORE IS ALREADY UPDATING");
     }
+    const logId = uuidv4();
+    const pendingToast = new Toast({
+      message: "Updating DAppNode core...",
+      pending: true
+    });
+    // blacklist the current package
+    updatingCore = true;
+    const res = yield call(APIcall.installPackageSafe, {
+      id: "core.dnp.dappnode.eth",
+      logId
+    });
+    yield put({ type: installer.actionTypes.CLEAR_PROGRESS_LOG, logId });
+    // Remove package from blacklist
+    updatingCore = false;
+    pendingToast.resolve(res);
+
+    yield call(checkCoreUpdate);
   } catch (e) {
-    console.error("Error getting package logs:", e);
+    console.error(`Error updating core: ${e.stack}`);
   }
 }
 
@@ -225,7 +191,6 @@ function* getStaticIp() {
 
 function* onConnectionOpen(action) {
   yield fork(checkCoreUpdate, action);
-  yield fork(listPackages, action);
   yield fork(getStaticIp, action);
 }
 
@@ -235,8 +200,6 @@ function* onConnectionOpen(action) {
 // takeEvery(actionType, watchers[actionType])
 const watchers = [
   ["CONNECTION_OPEN", onConnectionOpen],
-  [t.CALL, callApi],
-  [t.LOG_PACKAGE, logPackage],
   [t.UPDATE_CORE, updateCore],
   [t.SET_STATIC_IP, setStaticIp]
 ];

@@ -17,5 +17,7 @@ export default generateActionTypes(NAME, [
   "UPDATE_FETCHING",
   "UPDATE_LOG",
   "UPDATE_PACKAGES",
-  "HAS_FETCHED_PACKAGES"
+  "HAS_FETCHED_PACKAGES",
+  // File manager
+  "COPY_FILE_FROM"
 ]);

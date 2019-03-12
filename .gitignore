@@ -1,19 +1,21 @@
 # dependencies
-build/src*/node_modules
+# - ignore any node_modules folder down the tree
 node_modules/
 
+# build files
+build/src/dist/
+
 # testing
-build/src/coverage
 build/src*/coverage
-# cred/
+cred/
 
 # production
-build/src/build
-build/src/build_*
-build/src/dist
 build/src*/build
 build/src*/build_*
+build/src/build/
 build/src*/dist
+build/src/dist/
+build_*/
 
 # misc
 .DS_Store
@@ -22,9 +24,6 @@ build/src*/dist
 .env.test.local
 .env.production.local
 
-build/src/npm-debug.log*
-build/src/yarn-debug.log*
-build/src/yarn-error.log*
 build/src*/npm-debug.log*
 build/src*/yarn-debug.log*
 build/src*/yarn-error.log*

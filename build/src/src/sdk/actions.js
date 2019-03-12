@@ -50,8 +50,8 @@ export const fetchRegistry = registryEns => ({
   registryEns
 });
 
-export const connect = () => ({
-  type: t.CONNECT
+export const connectMetamask = () => ({
+  type: t.CONNECT_METAMASK
 });
 
 export const publish = () => ({
@@ -64,4 +64,8 @@ export const updateButtonMessage = message => ({
   message
 });
 
-// #### After removing a package, uninstallChain
+export const updateGenericError = message => ({
+  type: t.UPDATE_QUERY_RESULT,
+  id: "genericError",
+  data: message
+});

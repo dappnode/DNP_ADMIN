@@ -11,25 +11,12 @@ const subRoutes = [
     title: "Publish DNPs",
     subtitle: `To an Aragon's APM registry`,
     route: "publish"
-  },
+  }
   // {
   //   title: "Explore repos",
   //   subtitle: `Of Aragon's APM registries`,
   //   route: "explore"
   // }
-];
-
-const itemsTop = [
-  {
-    id: "H1",
-    header: "Header 1",
-    body: "Body 1"
-  },
-  {
-    id: "H2",
-    header: "Header 2",
-    body: "Body 2"
-  }
 ];
 
 export default class SdkHome extends React.Component {
@@ -91,7 +78,7 @@ export default class SdkHome extends React.Component {
           </div>
         </div>
 
-        <div className="section-subtitle">What can I the SDK do?</div>
+        <div className="section-subtitle">What can the SDK do?</div>
         {subRoutes.map(({ title, subtitle, route }) => (
           <div key={route} className="card mb-3">
             <div className="card-body" style={{ padding }}>

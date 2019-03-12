@@ -3,12 +3,12 @@ import { connect } from "react-redux";
 import * as action from "../../actions";
 import { createStructuredSelector } from "reselect";
 
-function getCurrentEnvs(pkg) {
-  return pkg.envs || {};
+function getCurrentEnvs(dnp) {
+  return dnp.envs || {};
 }
 
-function getDefaultEnvs(pkg) {
-  const envsArray = ((pkg.manifest || {}).image || {}).environment || [];
+function getDefaultEnvs(dnp) {
+  const envsArray = ((dnp.manifest || {}).image || {}).environment || [];
   const defaultEnvs = {};
   for (const row of envsArray) {
     defaultEnvs[row.split("=")[0]] = row.split("=")[1] || "";
@@ -16,10 +16,10 @@ function getDefaultEnvs(pkg) {
   return defaultEnvs;
 }
 
-function getEnvs(_pkg, _state) {
-  const pkg = { ..._pkg };
+function getEnvs(_dnp, _state) {
+  const dnp = { ..._dnp };
   const state = { ..._state };
-  const defaultEnvs = getDefaultEnvs(pkg);
+  const defaultEnvs = getDefaultEnvs(dnp);
   const defaultEnvsNames = Object.keys(defaultEnvs);
   // Verify that the current state contains only this package's envs
   for (const env of Object.getOwnPropertyNames(state)) {
@@ -29,7 +29,7 @@ function getEnvs(_pkg, _state) {
   }
   return {
     ...defaultEnvs,
-    ...getCurrentEnvs(pkg),
+    ...getCurrentEnvs(dnp),
     ...state
   };
 }
@@ -48,14 +48,14 @@ class EnvVariablesView extends React.Component {
   }
 
   updateEnvs() {
-    const pkg = this.props.pkg || {};
-    this.props.updateEnvs(this.props.id, getEnvs(pkg, this.state));
+    const dnp = this.props.dnp || {};
+    this.props.updateEnvs(dnp.name, getEnvs(dnp, this.state));
   }
 
   render() {
-    const pkg = this.props.pkg || {};
-    const envs = getEnvs(pkg, this.state);
-    // const envs = pkg.envs || {};
+    const dnp = this.props.dnp || {};
+    const envs = getEnvs(dnp, this.state);
+    // const envs = dnp.envs || {};
     if (Object.getOwnPropertyNames(envs).length === 0) {
       return null;
     }
@@ -104,12 +104,8 @@ class EnvVariablesView extends React.Component {
 
 const mapStateToProps = createStructuredSelector({});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    updateEnvs: (id, envs) => {
-      dispatch(action.updatePackageEnv({ id, envs, restart: true }));
-    }
-  };
+const mapDispatchToProps = {
+  updateEnvs: action.updatePackageEnv
 };
 
 export default connect(

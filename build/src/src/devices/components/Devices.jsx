@@ -1,15 +1,18 @@
 import React from "react";
 import status from "status";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import {
+  addDevice,
+  removeDevice,
+  toggleAdmin,
+  toggleGuestUsers,
+  resetGuestUsersPassword
+} from "../actions";
 import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import DeviceList from "./DeviceList";
 import GuestUsers from "./GuestUsers";
 import Loading from "components/Loading";
-import navbar from "navbar";
-
-const enableGuestUsers = false;
 
 class DevicesView extends React.Component {
   constructor() {
@@ -25,9 +28,23 @@ class DevicesView extends React.Component {
     this.props.addDevice(this.state.deviceName);
   }
 
+  removeDevice(id) {
+    this.props.removeDevice(id);
+  }
+
+  toggleAdmin(id, isAdmin) {
+    this.props.toggleAdmin(id, isAdmin);
+  }
+
   updateDeviceName(e) {
     this.setState({
       deviceName: e.target.value
+    });
+  }
+
+  updateDeviceId(e) {
+    this.setState({
+      deviceId: e.target.value
     });
   }
 
@@ -69,13 +86,11 @@ class DevicesView extends React.Component {
           <React.Fragment>
             <DeviceList
               deviceList={this.props.deviceList}
-              removeDevice={this.props.removeDevice}
-              resetDevice={this.props.resetDevice}
-              toggleAdmin={this.props.toggleAdmin}
-              getDeviceCredentials={this.props.getDeviceCredentials}
+              removeDevice={this.removeDevice.bind(this)}
+              toggleAdmin={this.toggleAdmin.bind(this)}
             />
 
-            {enableGuestUsers && this.props.deviceList.length ? (
+            {this.props.deviceList.length ? (
               <GuestUsers
                 guestUsersDevice={this.props.guestUsersDevice}
                 toggleGuestUsers={this.props.toggleGuestUsers}
@@ -95,44 +110,14 @@ const mapStateToProps = createStructuredSelector({
   fetching: selector.getFetching
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addDevice: id => {
-      // Ensure id contains only alphanumeric characters
-      const correctedId = id.replace(/\W/g, "");
-      dispatch(action.addDevice(correctedId));
-    },
-    removeDevice: id => {
-      dispatch(action.removeDevice(id));
-    },
-    resetDevice: id => {
-      dispatch(action.resetDevice(id));
-    },
-    toggleAdmin: id => {
-      dispatch(action.toggleAdmin(id));
-    },
-    getDeviceCredentials: id => {
-      dispatch(action.getDeviceCredentials(id));
-    },
-    toggleGuestUsers: disabling => {
-      if (disabling) {
-        dispatch({
-          type: navbar.actionTypes.PUSH_NOTIFICATION,
-          notification: {
-            id: "guestUsersDisabling",
-            type: "warning",
-            title: "Guest users access",
-            body:
-              "Note that still connected guest users will have access until they disconnect. If you need to prevent them from using this DAppNode right now, go to the system tab and reset the VPN"
-          }
-        });
-      }
-      dispatch(action.toggleGuestUsers());
-    },
-    resetGuestUsersPassword: () => {
-      dispatch(action.resetGuestUsersPassword());
-    }
-  };
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = {
+  // Ensure id contains only alphanumeric characters
+  addDevice: id => addDevice(id.replace(/\W/g, "")),
+  removeDevice,
+  toggleAdmin,
+  toggleGuestUsers,
+  resetGuestUsersPassword
 };
 
 export default connect(

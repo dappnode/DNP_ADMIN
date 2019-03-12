@@ -3,7 +3,7 @@ import uniqArray from "./uniqArray";
 /**
  * Parses ports
  * @param {Object} manifest or portsArray = ['32323:30303/udp']
- * @return {Array} ['8090 TCP', '4001 TCP']
+ * @return {Array} ['8080 UDP', '4001 TCP']
  */
 function parsePorts(manifest) {
   if (!manifest) return [];
@@ -11,6 +11,11 @@ function parsePorts(manifest) {
   // if the manifest is an Array, assume it's already the portsArray
   if (Array.isArray(manifest)) portsArray = manifest;
   else portsArray = (manifest.image || {}).ports || [];
+
+  if (!Array.isArray(portsArray))
+    throw Error(
+      `manifest.image.ports must be an array: ${JSON.stringify(portsArray)}`
+    );
 
   //                host : container / type
   // portsArray = ['32323:30303/udp']

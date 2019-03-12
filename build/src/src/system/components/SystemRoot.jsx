@@ -2,22 +2,25 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import * as action from "../actions";
 import { NAME } from "../constants";
 // Components
-import SystemList from "./SystemList";
-import SystemInterface from "./SystemInterface";
+import SystemHome from "./SystemHome";
+import packages from "packages";
 // Modules
 import status from "status";
-// Logic
+
+const PackageInterface = packages.components.PackageInterface;
 
 class System extends React.Component {
   render() {
     return (
       <div>
         <status.components.DependenciesAlert deps={["wamp", "dappmanager"]} />
-        <Route exact path={"/" + NAME} component={SystemList} />
-        <Route path={"/" + NAME + "/:id"} component={SystemInterface} />
+        <Route exact path={"/" + NAME} component={SystemHome} />
+        <Route
+          path={"/" + NAME + "/:id"}
+          render={props => <PackageInterface {...props} moduleName={NAME} />}
+        />
       </div>
     );
   }
@@ -27,13 +30,7 @@ class System extends React.Component {
 
 const mapStateToProps = createStructuredSelector({});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchPackages: () => {
-      dispatch(action.listPackages());
-    }
-  };
-};
+const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,

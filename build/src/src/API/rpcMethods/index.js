@@ -24,21 +24,34 @@ const exportModules = {};
 Object.keys(dnps).forEach(dnpId => {
   Object.keys(dnps[dnpId]).forEach(eventId => {
     const rpcCall = dnps[dnpId][eventId];
-    exportModules[eventId] = (kwargs = {}) =>
-      wrapCall({
+    exportModules[eventId] = (kwargs = {}) => {
+      if (typeof kwargs !== "object")
+        throw Error(
+          `kwargs must be of type object in eventId ${eventId}, kwargs: ${JSON.stringify(
+            kwargs
+          )}`
+        );
+      return wrapCall({
         event: `${eventId}.${dnpId}.dnp.dappnode.eth`,
         kwargs: assertKwargs(kwargs, rpcCall.manadatoryKwargs)
       });
+    };
   });
 });
 
 /* Utils */
 
-function assertKwargs(kwargs, keys = []) {
-  keys.forEach(key => {
+function assertKwargs(kwargs = {}, keys = []) {
+  if (typeof kwargs !== "object")
+    throw Error(
+      `kwargs must be of type object, kwargs: ${JSON.stringify(kwargs)}`
+    );
+  if (!Array.isArray(keys))
+    throw Error(`keys must be an array, keys: ${JSON.stringify(keys)}`);
+  for (const key of keys) {
     if (!(key in kwargs))
       throw Error("Key " + key + " missing on " + JSON.stringify(kwargs));
-  });
+  }
   return kwargs;
 }
 
