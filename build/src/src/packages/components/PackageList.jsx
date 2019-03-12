@@ -29,7 +29,7 @@ const PackagesList = ({
         // XNOR operator, if coreDnps = true show only cores. If coreDnps = false, hide them
         .filter(dnp => xnor(coreDnps, dnp.isCore || dnp.isCORE))
         .map((dnp, i) => (
-          <PackageRow key={i} dnp={dnp} moduleName={moduleName} />
+          <PackageRow key={dnp.name || i} dnp={dnp} moduleName={moduleName} />
         ))
     );
   }

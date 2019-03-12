@@ -45,7 +45,6 @@
     "gzip": "gzip -r -k build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "precommit": "pretty-quick staged",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
     "analyze": "source-map-explorer build/static/js/main.*",

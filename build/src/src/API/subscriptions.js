@@ -1,7 +1,7 @@
 import store from "../store";
 import navbar from "navbar";
 
-export default function socketSubscriptions(session) {
+export default function subscriptions(session) {
   session.subscribe(
     "logUserAction.dappmanager.dnp.dappnode.eth",
     (_, userActionLog) => {

@@ -29,7 +29,7 @@ window.Tether = Tether;
 window.Popper = Popper;
 
 // Start the autobahn instance
-initApi();
+api.start();
 
 // This process.env. vars will be substituted at build time
 // The REACT_APP_ prefix is mandatory for the substitution to work
