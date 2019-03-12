@@ -1,6 +1,6 @@
 {
   "name": "admin.dnp.dappnode.eth",
-  "version": "0.1.17",
+  "version": "0.2.0",
   "description": "Dappnode package responsible for providing the administrative user interface",
   "avatar": "/ipfs/QmP7rbBLMfKTHpVQwfmgrenYuuUkVw5CXDfzJSoPBiJuNj",
   "type": "dncore",
@@ -8,6 +8,7 @@
     "path": "",
     "hash": "",
     "size": "",
+    "ports": ["8090:8090"],
     "restart": "always",
     "subnet": "172.33.0.0/16",
     "ipv4_address": "172.33.1.9"

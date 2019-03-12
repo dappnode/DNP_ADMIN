@@ -1,2 +1,6 @@
 build/src/node_modules
 build/src/npm-debug.log
+build/src_openvpn/node_modules
+build/src_openvpn/npm-debug.log
+build/src*/node_modules
+build/src*/npm-debug.log

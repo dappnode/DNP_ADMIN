@@ -8,7 +8,7 @@ import { ConnectedRouter } from "connected-react-router";
 import history from "./history";
 import store from "./store";
 import App from "./App";
-import { initApi } from "API/socketSetup";
+import api from "./API";
 import cleanObj from "utils/cleanObj";
 
 // Init css

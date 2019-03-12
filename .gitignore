@@ -1,5 +1,6 @@
 # dependencies
 # - ignore any node_modules folder down the tree
+build/src*/node_modules
 node_modules/
 
 # build files
