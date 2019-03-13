@@ -1,17 +1,16 @@
 import React from "react";
-import "./loadBar.css";
+import ProgressBar from "react-bootstrap/ProgressBar";
+import DnpName from "components/DnpName";
 // Components
 // Logic
 
-function progressBar(msg) {
-  if (msg.includes("%")) {
-    const array = msg.split("%")[0].split(" ");
-    const num = array.slice(-1);
-    return <div className="determinate" style={{ width: num + "%" }} />;
-  } else if (msg.includes("...")) {
-    return <div className="indeterminate" />;
-  } else {
-    return <div className="success" />;
+function parsePercent(s) {
+  // Return string before the first "%" and after the last " "
+  if (s.includes("%")) {
+    return s
+      .split("%")[0]
+      .split(" ")
+      .slice(-1);
   }
 }
 
@@ -28,35 +27,29 @@ export default class ProgressLog extends React.Component {
             {Object.keys(progressLog)
               // Don't show "core.dnp.dappnode.eth" actual progress log information
               .filter(pkg => pkg !== "core.dnp.dappnode.eth")
-              .map((pkg, i) => (
-                <div key={i} className="row">
-                  <div className="col-6 text-truncate">{pkg}</div>
-                  <div
-                    className="col-6 text-truncate"
-                    style={{ height: "28px" }}
-                  >
-                    <div
-                      className="progress"
-                      style={{
-                        opacity: 0.4,
-                        position: "relative",
-                        bottom: "4px"
-                      }}
-                    >
-                      {progressBar(progressLog[pkg])}
+              .map((pkg, i) => {
+                const msg = progressLog[pkg];
+                const progressing = msg.includes("...");
+                const percent = parsePercent(progressLog[pkg]);
+                return (
+                  <div key={i} className="row">
+                    <div className="col-6 text-truncate">
+                      <DnpName dnpName={pkg} />
                     </div>
                     <div
-                      className="text-center"
-                      style={{
-                        position: "relative",
-                        bottom: "40px"
-                      }}
+                      className="col-6 text-truncate"
+                      style={{ height: "28px" }}
                     >
-                      {progressLog[pkg]}
+                      <ProgressBar
+                        now={percent || 100}
+                        animated={progressing}
+                        label={msg}
+                        variant={progressing || percent ? "" : "success"}
+                      />
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
           </div>
         </div>
       </React.Fragment>

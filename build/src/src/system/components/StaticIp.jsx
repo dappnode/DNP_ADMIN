@@ -35,6 +35,7 @@ class StaticIpView extends React.Component {
   render() {
     const margin = "5px";
     const padding = "0.7rem";
+    const width = "85px";
 
     const { staticIp, staticIpInput } = this.props;
     const ipIsValid = isIpv4(staticIpInput);
@@ -43,14 +44,20 @@ class StaticIpView extends React.Component {
     let content;
     // 1. Disabled
     if (!staticIp && !this.state.enable) {
-      content = (
-        <button
-          className="btn btn-outline-secondary"
-          type="button"
-          onClick={this.enableStaticIp.bind(this)}
-        >
-          Enable
-        </button>
+      return (
+        <div className="d-flex justify-content-between">
+          <div className="section-subtitle">Static IP</div>
+          <div>
+            <button
+              className="btn btn-outline-secondary float-right"
+              type="button"
+              onClick={this.enableStaticIp.bind(this)}
+              style={{ width }}
+            >
+              Enable
+            </button>
+          </div>
+        </div>
       );
     }
     // Declared components as varibles to avoid code duplication

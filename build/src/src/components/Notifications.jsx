@@ -1,37 +1,46 @@
 import React from "react";
-import Settings from "Icons/Settings";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
+import { Link } from "react-router-dom";
+import $ from "jquery";
 import system from "system";
 
-class NotificationsView extends React.Component {
-  render() {
-    const systemUpdateNotification = (
-      <div
-        className="alert alert-warning alert-dismissible fade show"
-        role="alert"
+const NotificationsView = ({ systemUpdateAvailable }) => {
+  const systemUpdateNotificationId = 'systemUpdateNotificationId';
+  const systemUpdateNotification = (
+    <div
+      id={systemUpdateNotificationId}
+      className="alert alert-warning alert-dismissible show"
+      role="alert"
+    >
+      <Link
+        className="btn btn-warning float-right"
+        onClick={() => $('#'+systemUpdateNotificationId).alert('close')}
+        to={`/${system.constants.NAME}/${system.constants.UPDATE}`}
       >
-        <strong>DAppNode System Update Available.</strong> Go to the{" "}
-        <span>
-          <Settings />
-        </span>
-        <strong>System</strong> tab to review and approve the update
-        <button
-          type="button"
-          className="close"
-          data-dismiss="alert"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    );
-    return (
-      <div>
-        {this.props.systemUpdateAvailable ? systemUpdateNotification : null}
-      </div>
-    );
-  }
+        Update
+      </Link>
+      <p>
+        <strong>DAppNode system update available.</strong> Click{" "}
+        <strong>Update </strong>
+        to review and approve it
+      </p>
+
+      <button
+        type="button"
+        className="close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  );
+  return (
+    <div>
+      {systemUpdateAvailable ? systemUpdateNotification : null}
+    </div>
+  );
 }
 
 const mapStateToProps = createStructuredSelector({
