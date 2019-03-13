@@ -20,7 +20,7 @@ import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./sb-admin.css";
 import "./admin_UI.css";
-import "./dappnode_colors.css"
+import "./dappnode_colors.css";
 
 // Initialize boostrap dependencies
 window.jQuery = window.$ = $;

@@ -36,7 +36,7 @@
 .section-title .pre-title {
   opacity: 0.3;
   font-weight: 300;
-  text-transform: "capitalize";
+  text-transform: capitalize;
 }
 
 .section-subtitle {
