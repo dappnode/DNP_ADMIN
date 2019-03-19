@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import $ from "jquery";
 import system from "system";
 
-const NotificationsView = ({ systemUpdateAvailable }) => {
-  const systemUpdateNotificationId = 'systemUpdateNotificationId';
+const NotificationsView = ({ systemUpdateAvailable, updatingCore }) => {
+  const systemUpdateNotificationId = "systemUpdateNotificationId";
   const systemUpdateNotification = (
     <div
       id={systemUpdateNotificationId}
@@ -15,7 +15,6 @@ const NotificationsView = ({ systemUpdateAvailable }) => {
     >
       <Link
         className="btn btn-warning float-right"
-        onClick={() => $('#'+systemUpdateNotificationId).alert('close')}
         to={`/${system.constants.NAME}/${system.constants.UPDATE}`}
       >
         Update
@@ -38,13 +37,14 @@ const NotificationsView = ({ systemUpdateAvailable }) => {
   );
   return (
     <div>
-      {systemUpdateAvailable ? systemUpdateNotification : null}
+      {systemUpdateAvailable && !updatingCore ? systemUpdateNotification : null}
     </div>
   );
-}
+};
 
 const mapStateToProps = createStructuredSelector({
-  systemUpdateAvailable: system.selectors.systemUpdateAvailable
+  systemUpdateAvailable: system.selectors.systemUpdateAvailable,
+  updatingCore: system.selectors.updatingCore
 });
 
 const mapDispatchToProps = dispatch => {

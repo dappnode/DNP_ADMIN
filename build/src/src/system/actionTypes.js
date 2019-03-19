@@ -18,5 +18,6 @@ export default generateActionTypes(NAME, [
   // Static IP
   "SET_STATIC_IP",
   "UPDATE_STATIC_IP",
-  "UPDATE_STATIC_IP_INPUT"
+  "UPDATE_STATIC_IP_INPUT",
+  "UPDATE_UPDATING_CORE"
 ]);
