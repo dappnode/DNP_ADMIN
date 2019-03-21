@@ -169,7 +169,8 @@ function parseManifestPorts(manifest = {}) {
     // CONTAINER/type, return [null, CONTAINER/type]
     const [portMapping, type] = port.split("/");
     const [host, container] = portMapping.split(":");
-    obj[port] = { host, container, type };
+    if (container) obj[port] = { host, container, type };
+    else obj[port] = { container: host, type };
     return obj;
   }, {});
 }
