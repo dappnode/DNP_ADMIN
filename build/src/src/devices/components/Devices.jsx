@@ -6,7 +6,7 @@ import { createStructuredSelector } from "reselect";
 import * as selector from "../selectors";
 import DeviceList from "./DeviceList";
 import GuestUsers from "./GuestUsers";
-import Loading from "components/Loading";
+import Loading from "components/generic/Loading";
 
 const enableGuestUsers = false;
 

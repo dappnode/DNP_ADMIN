@@ -14,7 +14,7 @@ export default class PackageDetails extends React.Component {
 
     // let manifest = dnp.manifest || {};
     // const links = getLinksArray(manifest).map((e, i) => (
-    //   <a className="package-link" key={i} href={e.link}>
+    //   <a key={i} href={e.link}>
     //     {e.name}{" "}
     //   </a>
     // ));

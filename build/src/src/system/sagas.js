@@ -4,7 +4,7 @@ import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
 import semver from "semver";
-import Toast from "components/Toast";
+import Toast from "components/toast/Toast";
 import uuidv4 from "uuid/v4";
 import installer from "installer";
 import isSyncing from "utils/isSyncing";

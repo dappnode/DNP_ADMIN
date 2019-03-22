@@ -1,7 +1,7 @@
 import store from "../store";
 import APIcall from "API/rpcMethods";
 import navbar from "navbar";
-import Toast from "components/Toast";
+import Toast from "components/toast/Toast";
 
 const updateFetching = (topic, fetching) => ({
   type: "UPDATE_FETCHING",

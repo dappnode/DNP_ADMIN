@@ -1,7 +1,7 @@
 import React from "react";
 import ClipboardJS from "clipboard";
 import PropTypes from "prop-types";
-import Loading from "components/Loading";
+import Loading from "components/generic/Loading";
 import NoPackageFound from "./NoPackageFound";
 import errorAvatar from "img/errorAvatar.png";
 import ipfsBadgeImg from "img/IPFS-badge-small.png";
@@ -54,7 +54,7 @@ class Card extends React.Component {
     // <p className="card-text">Status: {status}</p>
 
     return (
-      <div className="col-xl-4 col-md-6 col-sm-12 col-xs-12 portfolio-item mb-4 box-shadow">
+      <div className="portfolio-item box-shadow">
         <div className="card h-100 shadow card-clickable" id={pkg.id}>
           <Link
             style={{ color: "inherit", textDecoration: "inherit" }}
@@ -79,7 +79,7 @@ class Card extends React.Component {
                     {fromIpfs ? ipfsBadge : keywords}
                   </div>
                   <button
-                    className="dappnode-pill"
+                    className="btn pill btn-dappnode"
                     type="submit"
                     style={{ textTransform: "uppercase", marginTop: "12px" }}
                     disabled={disable}
@@ -121,7 +121,7 @@ export default class PackageStore extends React.Component {
     ) {
       return <NoPackageFound />;
     } else {
-      return <div className="row">{cards}</div>;
+      return <div className="dnp-cards">{cards}</div>;
     }
   }
 }

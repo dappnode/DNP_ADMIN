@@ -19,8 +19,8 @@ import Tether from "tether";
 import Popper from "popper.js";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./sb-admin.css";
-import "./admin_UI.css";
+import "./layout.css";
+import "./dappnode_styles.css";
 import "./dappnode_colors.css";
 
 // Initialize boostrap dependencies

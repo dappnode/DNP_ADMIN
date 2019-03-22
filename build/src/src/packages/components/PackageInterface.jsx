@@ -9,7 +9,7 @@ import Logs from "./PackageViews/Logs";
 import Envs from "./PackageViews/Envs";
 import FileManager from "./PackageViews/FileManager";
 import Controls from "./PackageViews/Controls";
-import Loading from "components/Loading";
+import Loading from "components/generic/Loading";
 import NoPackagesYet from "./NoPackagesYet";
 import NoDnpInstalled from "./NoDnpInstalled";
 
@@ -29,10 +29,10 @@ const PackageInterface = ({
     {dnp ? (
       <React.Fragment>
         <Details dnp={dnp} />
-        <Logs dnp={dnp} />
+        <Controls dnp={dnp} />
         <Envs dnp={dnp} />
         <FileManager dnp={dnp} />
-        <Controls dnp={dnp} />
+        <Logs dnp={dnp} />
       </React.Fragment>
     ) : fetching ? (
       <Loading msg="Loading installed packages..." />

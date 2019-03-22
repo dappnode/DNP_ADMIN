@@ -12,8 +12,8 @@ import * as utils from "../utils";
 import PropTypes from "prop-types";
 
 // Components
-import Loading from "components/Loading";
-import Error from "components/Error";
+import Loading from "components/generic/Loading";
+import Error from "components/generic/Error";
 import Details from "./InstallCardComponents/Details";
 import ProgressLog from "./InstallCardComponents/ProgressLog";
 import ApproveInstall from "./InstallCardComponents/ApproveInstall";

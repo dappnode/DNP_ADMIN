@@ -150,7 +150,7 @@ class Publish extends React.Component {
                   <div className="col-sm-2" />
                   <div className="col-sm-10">
                     <a
-                      className="dappnode-btn-outline mr-3"
+                      className="btn btn-outline-dappnode mr-3"
                       href={`${ipfsGateway}${manifestHash}`}
                       {...newTabProps}
                     >
@@ -160,7 +160,7 @@ class Publish extends React.Component {
                       style={{ color: "inherit", textDecoration: "inherit" }}
                       to={`/${installer.constants.NAME}/ipfs:${manifestHash}`}
                     >
-                      <button className="dappnode-btn-outline">
+                      <button className="btn btn-outline-dappnode">
                         Install DNP
                       </button>
                     </Link>
@@ -197,7 +197,7 @@ class Publish extends React.Component {
                 <div className="col-sm-10">
                   {buttonInput.connected ? (
                     <button
-                      className="dappnode-btn"
+                      className="btn btn-dappnode"
                       disabled={disablePublish}
                       onClick={this.props.publish}
                     >
@@ -205,7 +205,7 @@ class Publish extends React.Component {
                     </button>
                   ) : (
                     <button
-                      className="dappnode-btn"
+                      className="btn btn-dappnode"
                       onClick={this.props.connectMetamask}
                     >
                       <img src={metamaskIcon} alt="" className="metamaskIcon" />{" "}

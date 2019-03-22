@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { fetchRegistry } from "../actions";
 import { createStructuredSelector } from "reselect";
 import { NAME } from "../constants";
-import LoadingDots from "components/LoadingDots";
+import LoadingDots from "components/generic/LoadingDots";
 
 const padding = "0.7rem";
 

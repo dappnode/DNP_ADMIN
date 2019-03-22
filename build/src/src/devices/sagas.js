@@ -2,14 +2,14 @@ import { call, put } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
-import Toast from "components/Toast";
+import Toast from "components/toast/Toast";
 
 /***************************** Subroutines ************************************/
 
-export function* getDeviceCredentials({id}) {
+export function* getDeviceCredentials({ id }) {
   try {
-    if (!id) throw Error('id must be defined in getDeviceCredentials')
-    const res = yield call(APIcall.getDeviceCredentials, {id});
+    if (!id) throw Error("id must be defined in getDeviceCredentials");
+    const res = yield call(APIcall.getDeviceCredentials, { id });
     if (res.success) {
       yield put({ type: t.UPDATE_DEVICE, id, data: res.result });
     } else {

@@ -1,0 +1,25 @@
+.jumbotron {
+  background-color: white;
+  border: 1px solid var(--border-color);
+}
+
+.home-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  grid-gap: 1rem;
+}
+
+.home-links button {
+  border: var(--border-style);
+}
+
+.home-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.btn-outline-dark {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.12);
+}

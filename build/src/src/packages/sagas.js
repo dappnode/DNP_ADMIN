@@ -3,7 +3,7 @@ import rootWatcher from "utils/rootWatcher";
 import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
-import Toast from "components/Toast";
+import Toast from "components/toast/Toast";
 import PubSub from "eventBus";
 import { shortName } from "utils/format";
 import dataUriToBlob from "utils/dataUriToBlob";

@@ -107,26 +107,7 @@ export default class NavbarSide extends React.Component {
           <div
             className="nav-text text-center"
             style={{ padding: "10px 17px 0px" }}
-          >
-            <h6 style={{ opacity: 0.3, fontSize: "80%" }}>SUPPORTED BY</h6>
-            <div className="row mt-2 mb-2">
-              {fundedBy.map((item, i) => (
-                <div key={i} className="col" style={{ padding: "0px 9px" }}>
-                  <a href={item.link}>
-                    <img
-                      src={item.logo}
-                      className="img-fluid logo-funded-by"
-                      alt="logo"
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title={item.text}
-                      data-delay="300"
-                    />
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
+          />
         </li>
       </ul>
     );

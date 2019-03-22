@@ -12,26 +12,8 @@ const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
 
 export default class Home extends React.Component {
   render() {
-    const items = navbarItems.map((item, i) => {
-      return (
-        <div key={i} className="col">
-          <NavLink className="nav-link" to={item.href}>
-            <button
-              type="button"
-              className="btn btn-outline-dark btn-lg btn-block"
-            >
-              <div className="text-center" style={{ opacity: 0.6 }}>
-                <item.icon scale={2.5} />
-              </div>
-              <div style={{ fontSize: "16px" }}>{item.name}</div>
-            </button>
-          </NavLink>
-        </div>
-      );
-    });
-
     return (
-      <div className="body">
+      <div>
         <div className="jumbotron">
           <h1 className="display-4">Welcome to DAppNode</h1>
           <p className="lead">
@@ -40,7 +22,7 @@ export default class Home extends React.Component {
           </p>
           <p className="lead">
             <a
-              className="dappnode-btn"
+              className="btn btn-dappnode"
               href={SURVEY_LINK}
               role="button"
               {...newTabProps}
@@ -50,7 +32,21 @@ export default class Home extends React.Component {
           </p>
         </div>
 
-        <div className="row mt-4">{items}</div>
+        <div className="home-links">
+          {navbarItems.map(item => (
+            <NavLink to={item.href} key={item.href}>
+              <button
+                type="button"
+                className="btn btn-outline-dark btn-lg btn-block"
+              >
+                <div className="text-center" style={{ opacity: 0.6 }}>
+                  <item.icon scale={2} />
+                </div>
+                <div style={{ fontSize: "16px" }}>{item.name}</div>
+              </button>
+            </NavLink>
+          ))}
+        </div>
       </div>
     );
   }

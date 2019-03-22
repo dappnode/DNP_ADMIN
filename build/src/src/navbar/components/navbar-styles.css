@@ -1,15 +1,25 @@
-:root {
-  --border-color: #e5e5e5;
+.funded-by-text {
+  opacity: 0.3;
+  text-align: center;
 }
-
-.logo-funded-by {
+/* Controls the layout of the logos, all in one row with equal spacing */
+.funded-by-logos {
+  --spacing: 0.7rem;
+  display: grid;
+  grid-auto-columns: auto;
+  grid-auto-flow: column;
+  /* Auto-space the items only in-between, hard to achieve with flex */
+  grid-gap: var(--spacing);
+  padding: var(--spacing);
+}
+.funded-by-logo {
   opacity: 0.15;
   -webkit-transition: opacity 500ms ease;
   -moz-transition: opacity 500ms ease;
   -o-transition: opacity 500ms ease;
   transition: opacity 500ms ease;
 }
-.logo-funded-by:hover {
+.funded-by-logo:hover {
   opacity: 0.5;
 }
 

@@ -82,11 +82,14 @@ class PackagesList extends React.Component {
                   __html: marked(this.props.issueBody)
                 }}
               />
-              <a className="dappnode-btn mt-3 mr-3" href={this.props.issueUrl}>
+              <a
+                className="btn btn-dappnode mt-3 mr-3"
+                href={this.props.issueUrl}
+              >
                 Report issue
               </a>
               <a
-                className="dappnode-btn-outline mt-3"
+                className="btn btn-outline-dappnode mt-3"
                 href={this.props.issueUrlRaw}
               >
                 Report issue without providing information
