@@ -10,10 +10,6 @@ const getLocalState = createSelector(
   localState => localState
 );
 
-export const coreDeps = createSelector(
-  getLocalState,
-  localState => localState.coreDeps
-);
 export const staticIp = createSelector(
   getLocalState,
   localState => localState.staticIp
@@ -21,6 +17,18 @@ export const staticIp = createSelector(
 export const staticIpInput = createSelector(
   getLocalState,
   localState => localState.staticIpInput
+);
+export const coreDeps = createSelector(
+  getLocalState,
+  localState => localState.coreDeps
+);
+export const coreManifest = createSelector(
+  getLocalState,
+  localState => localState.coreManifest
+);
+export const systemUpdateAvailable = createSelector(
+  coreDeps,
+  _coreDeps => Boolean(_coreDeps.length)
 );
 
 // Find progressLog of the core DNP

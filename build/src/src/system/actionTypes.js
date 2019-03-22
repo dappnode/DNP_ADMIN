@@ -12,7 +12,8 @@ import generateActionTypes from "utils/generateActionTypes";
  */
 export default generateActionTypes(NAME, [
   // Core update action
-  "CORE_DEPS",
+  "UPDATE_CORE_DEPS",
+  "UPDATE_CORE_MANIFEST",
   "UPDATE_CORE",
   // Static IP
   "SET_STATIC_IP",

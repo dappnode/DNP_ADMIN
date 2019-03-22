@@ -1,4 +1,4 @@
-import { call, put, fork } from "redux-saga/effects";
+import { call, put, fork, all } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
@@ -10,6 +10,33 @@ import installer from "installer";
 import isSyncing from "utils/isSyncing";
 import navbar from "navbar";
 
+/**
+ * To modify the core id for DEV ONLY purposes, do
+ *   localStorage.setItem('DEVONLY-core-id', 'core.dnp.dappnode.eth@/ipfs/Qm5sxx...');
+ *    or
+ *   setCoreIdIpfs('/ipfs/Qm5sxx...')
+ *    or
+ *   setCoreId('core.dnp.dappnode.eth@0.1.1')
+ *    then
+ *   restoreCoreId()
+ * And refresh the page
+ */
+const coreIdLocalStorageTag = "DEVONLY-core-id";
+const coreId =
+  localStorage.getItem(coreIdLocalStorageTag) || "core.dnp.dappnode.eth";
+window.setCoreId = id => {
+  localStorage.setItem(coreIdLocalStorageTag, id);
+  return `Set core id to id ${id}`;
+};
+window.setCoreIdIpfs = hash => {
+  localStorage.setItem(coreIdLocalStorageTag, `core.dnp.dappnode.eth@${hash}`);
+  return `Set core id to IPFS hash ${hash}`;
+};
+window.restoreCoreId = () => {
+  localStorage.removeItem(coreIdLocalStorageTag);
+  return `Deleted custom DEVONLY core id setting`;
+};
+
 /***************************** Subroutines ************************************/
 
 function shouldUpdate(v1, v2) {
@@ -20,24 +47,23 @@ function shouldUpdate(v1, v2) {
 }
 
 function isEmpty(obj) {
+  if (!obj) return true;
   return !Boolean(Object.getOwnPropertyNames(obj).length);
 }
 
-function* putMainnetIsStillSyncing() {
+function* fetchManifest(id) {
   try {
-    yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
-    yield put({
-      type: navbar.actionTypes.PUSH_NOTIFICATION,
-      notification: {
-        id: "mainnetStillSyncing",
-        type: "warning",
-        title: "System update available",
-        body:
-          "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
-      }
-    });
+    const res = yield call(APIcall.fetchPackageData, { id });
+    // Check if the dappmanager says mainnet is still syncing
+    if ((res.message || "").includes("Mainnet is still syncing")) {
+      return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
+    }
+    if (!res.success || isEmpty(res.result)) {
+      throw ("Error on fetchPackageData", res.message);
+    }
+    return res.result.manifest;
   } catch (e) {
-    console.error(`Error putting mainnet is still syncing: ${e.stack}`);
+    console.error(`Error fetching manifest for ${id}, ${e.stack}`);
   }
 }
 
@@ -49,75 +75,40 @@ export function* checkCoreUpdate() {
     }
 
     const packagesRes = yield call(APIcall.listPackages);
-    const coreDataRes = yield call(APIcall.fetchPackageData, {
-      id: "core.dnp.dappnode.eth"
-    });
+    const coreManifest = yield call(fetchManifest, coreId);
 
-    // Check if the dappmanager says mainnet is still syncing
-    if (
-      coreDataRes.message &&
-      coreDataRes.message.includes("Mainnet is still syncing")
-    ) {
-      return yield call(putMainnetIsStillSyncing);
-    }
     // Abort on error
-    if (
-      !packagesRes.success ||
-      !packagesRes.result ||
-      isEmpty(packagesRes.result)
-    ) {
+    if (!packagesRes.success || isEmpty(packagesRes.result)) {
       return console.error("Error listing packages", packagesRes.message);
     }
-    if (
-      !coreDataRes.success ||
-      !coreDataRes.result ||
-      isEmpty(coreDataRes.result)
-    ) {
-      return console.error("Error getting coreData", coreDataRes.message);
+    if (!coreManifest) {
+      return console.error("Error getting core manifest");
     }
     const packages = packagesRes.result;
-    const coreData = coreDataRes.result;
-
-    const coreDeps = coreData.manifest.dependencies;
+    const coreDeps = coreManifest.dependencies;
     const coreDepsToInstall = [];
-    Object.keys(coreDeps).forEach(coreDep => {
-      const pkg = packages.find(p => p.name === coreDep);
-      if (!pkg)
-        coreDepsToInstall.push({
-          name: coreDep,
-          from: "none",
-          to: coreDeps[coreDep]
-        });
-      else {
-        const currentVersion = pkg.version;
-        const newVersion = coreDeps[coreDep];
-        if (shouldUpdate(currentVersion, newVersion)) {
-          coreDepsToInstall.push({
-            name: coreDep,
-            from: currentVersion,
-            to: newVersion
-          });
-        }
-      }
-    });
+    yield all(
+      Object.keys(coreDeps).map(coreDep =>
+        call(function*() {
+          const pkg = packages.find(p => p.name === coreDep);
+          const id = coreDep + "@" + coreDeps[coreDep];
+          //                    currentVersion, newVersion
+          if (!pkg || shouldUpdate(pkg.version, coreDeps[coreDep])) {
+            const depManifest = yield call(fetchManifest, id);
+            coreDepsToInstall.push({
+              name: coreDep,
+              from: (pkg || {}).version,
+              to: coreDeps[coreDep],
+              manifest: depManifest
+            });
+          }
+        })
+      )
+    );
 
-    yield put({
-      type: t.CORE_DEPS,
-      coreDeps: coreDepsToInstall
-    });
-
-    if (coreDepsToInstall.length) {
-      yield put({
-        type: navbar.actionTypes.PUSH_NOTIFICATION,
-        notification: {
-          id: "systemUpdateAvailable",
-          type: "danger",
-          title: "System update available",
-          body:
-            "DAppNode System Update Available. Go to the System tab to review and approve the update."
-        }
-      });
-    }
+    // Update core update info
+    yield put({ type: t.UPDATE_CORE_MANIFEST, coreManifest });
+    yield put({ type: t.UPDATE_CORE_DEPS, coreDeps: coreDepsToInstall });
   } catch (error) {
     console.error("Error fetching directory: ", error);
   }
@@ -138,14 +129,18 @@ function* updateCore() {
     // blacklist the current package
     updatingCore = true;
     const res = yield call(APIcall.installPackageSafe, {
-      id: "core.dnp.dappnode.eth",
-      logId
+      id: coreId,
+      logId,
+      ...(localStorage.getItem(coreIdLocalStorageTag)
+        ? { options: { BYPASS_CORE_RESTRICTION: true } }
+        : {})
     });
     yield put({ type: installer.actionTypes.CLEAR_PROGRESS_LOG, logId });
     // Remove package from blacklist
     updatingCore = false;
     pendingToast.resolve(res);
 
+    // Call checkCoreUpdate to compute hide the "Update" warning and buttons
     yield call(checkCoreUpdate);
   } catch (e) {
     console.error(`Error updating core: ${e.stack}`);
