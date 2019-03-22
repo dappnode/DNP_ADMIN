@@ -81,13 +81,10 @@ class PackageControls extends React.Component {
     // Table style -> Removes the space below the table, only for tables in cards
     return (
       <div className="border-bottom mb-4">
-        <div className="section-subtitle">Package controls</div>
+        <div className="section-subtitle">Controls</div>
         <div className="card mb-4">
           <div className="card-body">
-            <table
-              className="table table-responsive"
-              style={{ marginBottom: "0" }}
-            >
+            <table className="table" style={{ marginBottom: "0" }}>
               <tbody>
                 {actions
                   .filter(

@@ -13,67 +13,38 @@ const tags = {
   dapp: "dappmanager",
   vpn: "vpn",
   upnp: "upnp",
-  externalIP: "externalIP",
   ipfs: "ipfs"
 };
 
 /***************************** Subroutines ************************************/
 
-function* getStatusUpnp() {
+function* getVpnStatus() {
   try {
-    const res = yield call(APIcall.statusUPnP);
-    if (res.success) {
-      const result = res.result;
-      let status = result.openPorts && !result.upnpAvailable ? 0 : 1;
-      let msg;
-      if (result.openPorts && !result.upnpAvailable) {
-        msg =
-          "UPnP device not found, please try to activate it in your router or manually open the required ports when installing packages";
-      } else if (!result.openPorts) {
-        msg = "UPnP not necessary";
-      } else {
-        msg = "ok";
-      }
-      yield put(updateStatus({ id: tags.upnp, status, msg }));
-    } else {
-      console.error("Error fetching UPnP status" + res.message);
-    }
+    const res = yield call(APIcall.getParams);
+    // noNatLoopback: true / false,
+    // alertToOpenPorts: true / false,
+    // internalIp: 192.168.0.1,
+    const { noNatLoopback, alertToOpenPorts, internalIp } =
+      (res || {}).result || {};
+    if (alertToOpenPorts)
+      yield put(
+        updateStatus({
+          id: "alertToOpenPorts",
+          status: 0,
+          msg:
+            "Please manually open the required ports https://dappnode.github.io/DAppNodeDocs/troubleshooting/#ports-that-need-to-be-opened"
+        })
+      );
+    if (noNatLoopback)
+      yield put(
+        updateStatus({
+          id: "noNatLoopback",
+          status: 0,
+          msg: `Please check your router's NAT loopback, otherwise use the interal IP ${internalIp} when you are in the same network as your DAppNode`
+        })
+      );
   } catch (e) {
-    // It will throw when connection is not open, ignore
-  }
-}
-
-function* getStatusExternalIp() {
-  try {
-    const res = yield call(APIcall.statusExternalIp);
-    if (res.success) {
-      // Determine if user will have to open ports
-      const result = res.result || {};
-      let status = 0;
-      let msg = "Error verifying external ip status";
-      if (result) {
-        if (result.externalIpResolves) {
-          msg = "Resolves";
-          status = 1;
-        } else {
-          msg =
-            "External IP does not resolve (" +
-            (result.attempts || 10) +
-            " attempts). " +
-            "Please use the internal IP: " +
-            (result.internalIp || "(missing-ip)") +
-            " when you are in the same network as your DAppNode" +
-            " and the external IP: " +
-            (result.externalIp || "(missing-ip)") +
-            " otherwise";
-        }
-      }
-      yield put(updateStatus({ id: tags.externalIP, status, msg }));
-    } else {
-      console.error("Error fetching external IP status: " + res.message);
-    }
-  } catch (e) {
-    // It will throw when connection is not open, ignore
+    console.error("Error fetching VPN params (u");
   }
 }
 
@@ -93,7 +64,7 @@ function* onConnectionOpen({ session }) {
   // Check if the vpn is connected and then get its info
   const vpnRes = yield call(checkPackage, session, tags.vpn);
   if (vpnRes.status === 1) {
-    yield all([call(getStatusUpnp), call(getStatusExternalIp)]);
+    yield all([call(getVpnStatus)]);
   }
 }
 

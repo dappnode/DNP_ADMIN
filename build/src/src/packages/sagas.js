@@ -3,8 +3,11 @@ import rootWatcher from "utils/rootWatcher";
 import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
-import Toast from "components/Toast";
+import Toast from "components/toast/Toast";
 import PubSub from "eventBus";
+import { shortName } from "utils/format";
+import dataUriToBlob from "utils/dataUriToBlob";
+import { saveAs } from "file-saver";
 
 /***************************** Subroutines ************************************/
 
@@ -52,6 +55,26 @@ function* callApi({ method, kwargs, message }) {
   }
 }
 
+function* copyFileFrom({ id, fromPath }) {
+  try {
+    const pendingToast = new Toast({
+      message: `Copying file from ${shortName(id)} ${fromPath}...`,
+      pending: true
+    });
+    const res = yield call(APIcall.copyFileFrom, { id, fromPath });
+    pendingToast.resolve(res);
+    // If result, process dataUri = res.result
+    if (res.success && res.result) {
+      const dataUri = res.result;
+      const blob = dataUriToBlob(dataUri);
+      const fileName = fromPath.split("/")[fromPath.split("/").length - 1];
+      saveAs(blob, fileName);
+    }
+  } catch (error) {
+    console.error(`Error on copyFileFrom ${id} ${fromPath}: `, error);
+  }
+}
+
 function* logPackage({ id, options }) {
   try {
     if (!id) throw Error("id must be defined");
@@ -83,7 +106,8 @@ function* logPackage({ id, options }) {
 const watchers = [
   ["CONNECTION_OPEN", listPackages],
   [t.CALL, callApi],
-  [t.LOG_PACKAGE, logPackage]
+  [t.LOG_PACKAGE, logPackage],
+  [t.COPY_FILE_FROM, copyFileFrom]
 ];
 
 export default rootWatcher(watchers);

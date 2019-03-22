@@ -1,13 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import ErrorBoundary from "components/ErrorBoundary";
+import ErrorBoundary from "components/generic/ErrorBoundary";
 // Components
 import NavbarSide from "./NavbarSide";
 import NavbarTop from "./NavbarTop";
 // css
-import "./sb-admin-navbar.css"; // default
-import "./styles.css"; // custom additions
-import LogoWide from "img/logo-wide.png";
+import "./navbar-styles.css"; // custom additions
+import LogoWide from "img/dappnode-logo-wide-min.png";
 
 export default class Navbar extends React.Component {
   render() {

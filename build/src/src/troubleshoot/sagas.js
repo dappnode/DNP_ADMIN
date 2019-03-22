@@ -11,93 +11,125 @@ import pingPackage from "utils/pingPackage";
 /***************************** Subroutines ************************************/
 
 function* diagnoseDappmanager() {
-  const session = yield select(state => state.session);
-  const isConnected = yield call(pingPackage, session, "dappmanager");
-  yield put(
-    a.updateDiagnose({
-      ok: isConnected,
-      msg: isConnected
-        ? "DAPPMANAGER is connected"
-        : "DAPPMANAGER is not connected"
-    })
-  );
+  try {
+    const session = yield select(state => state.session);
+    const isConnected = yield call(pingPackage, session, "dappmanager");
+    yield put(
+      a.updateDiagnose({
+        ok: isConnected,
+        msg: isConnected
+          ? "DAPPMANAGER is connected"
+          : "DAPPMANAGER is not connected"
+      })
+    );
+  } catch (e) {
+    console.error(`Error on diagnoseDappmanager: ${e.stack}`);
+  }
 }
 
 function* diagnoseVpn() {
-  const session = yield select(state => state.session);
-  const isConnected = yield call(pingPackage, session, "vpn");
-  yield put(
-    a.updateDiagnose({
-      ok: isConnected,
-      msg: isConnected ? "VPN is connected" : "VPN is not connected"
-    })
-  );
+  try {
+    const session = yield select(state => state.session);
+    const isConnected = yield call(pingPackage, session, "vpn");
+    yield put(
+      a.updateDiagnose({
+        ok: isConnected,
+        msg: isConnected ? "VPN is connected" : "VPN is not connected"
+      })
+    );
+  } catch (e) {
+    console.error(`Error on diagnoseVpn: ${e.stack}`);
+  }
 }
 
 function* diagnoseIpfs() {
-  const { ok, msg } = yield call(diagnoses.diagnoseIpfs);
-  yield put(
-    a.updateDiagnose({
-      ok,
-      msg: ok ? "IPFS resolves" : "IPFS is not resolving: " + msg,
-      solution: [
-        `Go to the system tab and make sure IPFS is running. Otherwise open the package and click 'restart'`,
-        `If the problem persist make sure your disc has not run of space; IPFS may malfunction in that case.`
-      ]
-    })
-  );
+  try {
+    const { ok, msg } = yield call(diagnoses.diagnoseIpfs);
+    yield put(
+      a.updateDiagnose({
+        ok,
+        msg: ok ? "IPFS resolves" : "IPFS is not resolving: " + msg,
+        solution: [
+          `Go to the system tab and make sure IPFS is running. Otherwise open the package and click 'restart'`,
+          `If the problem persist make sure your disc has not run of space; IPFS may malfunction in that case.`
+        ]
+      })
+    );
+  } catch (e) {
+    console.error(`Error on diagnoseIpfs: ${e.stack}`);
+  }
 }
 
-function* diagnoseUpnp() {
-  const _diagnose = yield call(diagnoses.diagnoseUpnp);
-  yield put(a.updateDiagnose(_diagnose));
+function* diagnoseOpenPorts() {
+  try {
+    const _diagnose = yield call(diagnoses.diagnoseOpenPorts);
+    yield put(a.updateDiagnose(_diagnose));
+  } catch (e) {
+    console.error(`Error on diagnoseOpenPorts: ${e.stack}`);
+  }
 }
 
-function* diagnoseExternalIp() {
-  const _diagnose = yield call(diagnoses.diagnoseExternalIp);
-  yield put(a.updateDiagnose(_diagnose));
+function* diagnoseNatLoopback() {
+  try {
+    const _diagnose = yield call(diagnoses.diagnoseNatLoopback);
+    yield put(a.updateDiagnose(_diagnose));
+  } catch (e) {
+    console.error(`Error on diagnoseNatLoopback: ${e.stack}`);
+  }
 }
 
 function* diagnoseConnection() {
-  const connectionAttempted = yield select(state => state.session);
-  if (!connectionAttempted) {
-    yield race([take("CONNECTION_OPEN"), take("CONNECTION_CLOSE")]);
-  }
-  const session = yield select(state => state.session);
-  yield put(
-    a.updateDiagnose({
-      ok: session.isOpen,
-      msg: session.isOpen ? "Session is open" : "Session is closed",
-      solution: [
-        `You may be disconnected from your DAppNode's VPN. Please make sure your connection is still active`,
-        `If you are still connected, disconnect your VPN connection, connect again and refresh this page`
-      ]
-    })
-  );
-  if (session.isOpen) {
-    yield fork(diagnoseDappmanager);
-    yield fork(diagnoseVpn);
-    yield fork(diagnoseIpfs);
-    yield fork(diagnoseUpnp);
-    yield fork(diagnoseExternalIp);
+  try {
+    const connectionAttempted = yield select(state => state.session);
+    if (!connectionAttempted) {
+      yield race([take("CONNECTION_OPEN"), take("CONNECTION_CLOSE")]);
+    }
+    const session = yield select(state => state.session);
+    yield put(
+      a.updateDiagnose({
+        ok: session.isOpen,
+        msg: session.isOpen ? "Session is open" : "Session is closed",
+        solution: [
+          `You may be disconnected from your DAppNode's VPN. Please make sure your connection is still active`,
+          `If you are still connected, disconnect your VPN connection, connect again and refresh this page`
+        ]
+      })
+    );
+    if (session.isOpen) {
+      yield fork(diagnoseDappmanager);
+      yield fork(diagnoseVpn);
+      yield fork(diagnoseIpfs);
+      yield fork(diagnoseOpenPorts);
+      yield fork(diagnoseNatLoopback);
+    }
+  } catch (e) {
+    console.error(`Error on diagnoseConnection: ${e.stack}`);
   }
 }
 
 export function* runDiagnoses() {
-  // Fetch info
-  yield fork(fetchInfo);
-  // Run diagnoses
-  yield put(a.clearDiagnose());
-  yield call(diagnoseConnection);
+  try {
+    // Fetch info
+    yield fork(fetchInfo);
+    // Run diagnoses
+    yield put(a.clearDiagnose());
+    yield call(diagnoseConnection);
+  } catch (e) {
+    console.error(`Error on runDiagnoses: ${e.stack}`);
+  }
 }
 
 export function* fetchInfo() {
-  yield call(assertConnectionOpen);
-  yield all([
-    call(fetchPackages),
-    call(fetchDiskUsage),
-    call(diagnoseCallDappmanager)
-  ]);
+  try {
+    yield call(assertConnectionOpen);
+    yield all([
+      call(fetchPackages),
+      call(fetchDiskUsage),
+      call(diagnoseCallDappmanager)
+    ]);
+  } catch (e) {
+    console.error(`Error on fetchInfo: ${e.stack}`);
+  }
 }
 
 function capitalize(string) {
@@ -125,7 +157,10 @@ export function* fetchPackages() {
     const res = yield call(APIcall.listPackages);
     if (!res.success)
       throw Error("Unsuccessful reponse to listPackages: " + res.message);
-    yield put(a.updateInfo("packageList", res.result));
+    const packageListObj = res.result.reduce((obj, dnp) => {
+      return { ...obj, [dnp.name]: dnp };
+    }, {});
+    yield put(a.updateInfo("packageList", packageListObj));
   } catch (e) {
     console.error("Error fetching installed packages", e);
   }

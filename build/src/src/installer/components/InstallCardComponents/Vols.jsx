@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import * as action from "../../actions";
 import * as selector from "../../selectors";
-import TableInput from "components/TableInput";
+import TableInput from "components/table/TableInput";
 import capitalize from "utils/capitalize";
 
 class Vols extends React.Component {

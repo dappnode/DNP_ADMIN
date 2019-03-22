@@ -5,7 +5,7 @@ import t from "./actionTypes";
 import * as a from "./actions";
 import * as s from "./selectors";
 import uuidv4 from "uuid/v4";
-import Toast from "components/Toast";
+import Toast from "components/toast/Toast";
 import { shortName } from "utils/format";
 import isSyncing from "utils/isSyncing";
 import { idToUrl, isIpfsHash } from "./utils";

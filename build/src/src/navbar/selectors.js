@@ -1,5 +1,6 @@
 // NAVBAR
 import { NAME } from "./constants";
+import { createSelector } from "reselect";
 
 // Selectors provide a way to query data from the module state.
 // While they are not normally named as such in a Redux project, they
@@ -22,19 +23,38 @@ import { NAME } from "./constants";
 
 export const chainData = state => state.chainData;
 
+export const getChainData = createSelector(
+  state => state.chainData,
+  chainData => chainData
+);
+
 // INTERNAL
 
-const local = state => state[NAME];
-export const getDappnodeIdentity = state => {
-  const params = Object.assign({}, local(state).dappnodeIdentity || {});
-  // Remove keys that contain an undefined value
-  Object.keys(params).forEach(key => {
-    if (!params[key]) delete params[key];
-  });
-  // If the static IP is set, don't show the regular IP
-  if (params.staticIp && params.ip) delete params.ip;
+const getLocal = createSelector(
+  state => state[NAME],
+  local => local
+);
 
-  return params;
-};
+export const getDappnodeIdentity = createSelector(
+  getLocal,
+  local => local.dappnodeIdentity
+);
 
-export const getNotifications = state => local(state).notifications;
+export const getDappnodeIdentityClean = createSelector(
+  getDappnodeIdentity,
+  dappnodeIdentity => {
+    const params = Object.assign({}, dappnodeIdentity || {});
+    // Remove keys that contain an undefined value
+    Object.keys(params).forEach(key => {
+      if (!params[key]) delete params[key];
+    });
+    // If the static IP is set, don't show the regular IP
+    if (params.staticIp && params.ip) delete params.ip;
+    return params;
+  }
+);
+
+export const getNotifications = createSelector(
+  getLocal,
+  local => local.notifications
+);

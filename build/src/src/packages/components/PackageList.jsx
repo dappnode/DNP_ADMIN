@@ -5,7 +5,7 @@ import * as s from "../selectors";
 import { connect } from "react-redux";
 // Components
 import PackageRow from "./PackageRow";
-import Loading from "components/Loading";
+import Loading from "components/generic/Loading";
 import NoPackagesYet from "./NoPackagesYet";
 // Styles
 import "./packages.css";

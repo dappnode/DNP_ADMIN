@@ -75,3 +75,18 @@ export const closePorts = ports => ({
   action: "close",
   ports
 });
+
+// File manager
+
+export const copyFileTo = ({ id, dataUri, toPath }) => ({
+  type: t.CALL,
+  method: "copyFileTo",
+  message: `Copying file to ${shortName(id)} ${toPath}...`,
+  kwargs: { id, dataUri, toPath }
+});
+
+export const copyFileFrom = ({ id, fromPath }) => ({
+  type: t.COPY_FILE_FROM,
+  id,
+  fromPath
+});

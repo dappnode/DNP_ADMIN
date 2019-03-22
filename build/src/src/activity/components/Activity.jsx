@@ -31,7 +31,7 @@ class ActivityView extends React.Component {
           expanded grey text area.
         </p>
         <button
-          className="dappnode-btn mb-4"
+          className="btn btn-dappnode mb-4"
           onClick={this.download.bind(this)}
         >
           Download all logs

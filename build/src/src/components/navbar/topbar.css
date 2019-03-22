@@ -1,0 +1,60 @@
+:root {
+  --icon-size: 24px;
+  --bubble-size: 12px;
+}
+
+.dropleft .dropdown-menu {
+  top: 120% !important;
+  max-width: 90vw;
+}
+
+.dropdown-menu-toggle {
+  /* flex automatically centers the toggle icons */
+  display: flex;
+  opacity: 0.6;
+  -webkit-transition: opacity 150ms;
+  -ms-transition: opacity 150ms;
+  transition: opacity 150ms;
+}
+
+.dropdown-menu-toggle:hover {
+  opacity: 1;
+}
+
+.dropdown-menu-separator {
+  /* Since the div is empty, show only one side of the border */
+  border-right: var(--border-style);
+  height: var(--icon-size);
+}
+
+.dropdown-menu-bubble {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  background: transparent;
+  border-radius: var(--bubble-size);
+  height: var(--bubble-size);
+  width: var(--bubble-size);
+}
+.dropdown-menu-bubble.success {
+  background: var(--success-color);
+}
+.dropdown-menu-bubble.warning {
+  background: var(--warning-color);
+}
+.dropdown-menu-bubble.danger {
+  background: var(--danger-color);
+}
+
+.dappnode-name {
+  max-width: 25vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.blockies-icon {
+  border-radius: var(--icon-size);
+  width: var(--icon-size);
+  height: var(--icon-size);
+}

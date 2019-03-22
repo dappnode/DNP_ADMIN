@@ -28,3 +28,9 @@
   font-size: 90%;
   text-transform: uppercase;
 }
+
+/* Modify the buttons next to tables */
+
+.tableAction-button {
+  min-width: 75px;
+}

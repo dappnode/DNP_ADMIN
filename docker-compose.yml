@@ -6,13 +6,25 @@ networks:
             config:
                 -
                     subnet: 172.33.0.0/16
+volumes:
+    vpndnpdappnodeeth_shared: {}
 services:
     admin.dnp.dappnode.eth:
-        build: ./build
-        image: 'admin.dnp.dappnode.eth:0.1.18'
+        build:
+            context: .
+            dockerfile: ./build/Dockerfile
+        image: "admin.dnp.dappnode.eth:0.2.0"
         container_name: DAppNodeCore-admin.dnp.dappnode.eth
         restart: always
         dns: 172.33.1.2
+        ports:
+          - "8090:8090"
+        volumes:
+          - vpndnpdappnodeeth_shared:/usr/www/openvpn/cred
         networks:
             network:
                 ipv4_address: 172.33.1.9
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "3"
