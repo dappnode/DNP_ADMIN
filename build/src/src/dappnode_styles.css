@@ -1,15 +1,14 @@
+/* General OVERWRITE styles or colors */
+/* Using div a to gain specificity infront of the default rule */
+div a,
+div a:hover {
+  color: inherit;
+}
+
 /* General layout coloring */
 
 .page-content-wrapper {
   background-color: #f9f9f9;
-}
-
-.topnav {
-  background-color: white;
-  border-bottom: 1px solid #dee2e6;
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 1rem;
 }
 
 .section-title {
@@ -46,47 +45,6 @@
   opacity: 0.6;
 }
 
-/* Side nav styles */
-/* Remember specificity order rules to override bootstrap */
-.sidenav-item {
-  height: 40px;
-  width: 100%;
-  border-left: 5px solid transparent;
-  color: black;
-  text-decoration: none;
-  transition: all 0.5s;
-  /* Try to standarize this size */
-  font-size: 0.94rem;
-}
-
-/* Subheader before the list of routes, with text: Admin UI */
-.sidenav-item .subheader {
-  font-size: 80%;
-  opacity: 0.6;
-}
-
-/* List of routes, with dynamic styles on hover and active */
-.sidenav-item.selectable {
-  cursor: pointer;
-  /* All transitions have to be specified with commas in a single transition property */
-  -webkit-transition: background 150ms ease, color 150ms ease, border 150ms ease;
-  -moz-transition: background 150ms ease, color 150ms ease, border 150ms ease;
-  -o-transition: background 150ms ease, color 150ms ease, border 150ms ease;
-  transition: background 150ms ease, color 150ms ease, border 150ms ease;
-}
-.sidenav-item.selectable:hover,
-.sidenav-item.selectable.active {
-  border-left: 5px solid var(--dappnode-strong-main-color);
-  color: black;
-  font-weight: 800;
-  text-decoration: none;
-  background-color: #e6eceb80;
-}
-.sidenav-item.selectable:hover svg,
-.sidenav-item.selectable.active svg {
-  opacity: 1;
-}
-
 /* Table styles to have light gray separators.
    Visible at /packages/:id, controls panel
  */
@@ -113,26 +71,6 @@
   border-bottom: 0;
   margin-bottom: 0px;
 }
-
-/* Modify the dropdown items */
-
-.dropdown-item {
-  white-space: normal;
-  width: 300px;
-  /* Only do the top so it affects inter-element spaces only */
-  border-top: var(--border-style);
-  font-size: 0.875rem;
-}
-.dropdown-item .title {
-}
-.dropdown-item .text {
-  font-size: 0.875em;
-}
-.dropdown-item:hover .text {
-  white-space: normal;
-}
-
-/* Force text to wrap on alerts */
 
 .alert {
   word-break: break-all;

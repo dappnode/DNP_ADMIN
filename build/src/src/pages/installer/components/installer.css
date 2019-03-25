@@ -1,0 +1,33 @@
+/* New Styles */
+.dnp-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18em, 1fr));
+  grid-gap: 1rem;
+}
+
+/* Old styles */
+
+.dot-overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.lightGray {
+  opacity: 0.5;
+}
+
+.card-clickable {
+  box-shadow: 1px 1px 15px 0 rgba(0, 0, 0, 0.07);
+  -webkit-transition: box-shadow 0.25s; /* Safari */
+  transition: box-shadow 0.25s;
+}
+.card-clickable:hover {
+  box-shadow: 2px 4px 20px 0 rgba(0, 0, 0, 0.2);
+}
+.card-clickable:active {
+  box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0.03);
+}

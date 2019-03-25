@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
-import * as selector from "navbar/selectors";
-import { viewedNotifications } from "navbar/actions";
+import { getNotifications } from "services/notifications/selectors";
+import { viewedNotifications } from "services/notifications/actions";
 // Icons
 import Bell from "Icons/Bell";
 
@@ -32,7 +32,7 @@ Notifications.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  notifications: selector.getNotifications
+  notifications: getNotifications
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch

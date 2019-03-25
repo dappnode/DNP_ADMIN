@@ -7,6 +7,15 @@
 //   Object key = "installPackage"
 
 export default {
+  // ping - default method to check if app is alive
+  // > kwargs: {}
+  // > result: {
+  //     version: "0.1.21",
+  //     branch: "master",
+  //     commit: "ab991e1482b44065ee4d6f38741bd89aeaeb3cec"
+  //   }
+  ping: {},
+
   // installPackage
   // > kwargs: { id }
   // > result: {}

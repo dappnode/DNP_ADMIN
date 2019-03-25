@@ -3,6 +3,17 @@
   --bubble-size: 12px;
 }
 
+/* General topnav styles */
+
+.topnav {
+  background-color: white;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+}
+
+/* Overrides react-boostrap component for better placement */
 .dropleft .dropdown-menu {
   top: 120% !important;
   max-width: 90vw;
@@ -15,6 +26,8 @@
   -webkit-transition: opacity 150ms;
   -ms-transition: opacity 150ms;
   transition: opacity 150ms;
+  /* Show a pointer cursor */
+  cursor: pointer;
 }
 
 .dropdown-menu-toggle:hover {
@@ -44,6 +57,26 @@
 }
 .dropdown-menu-bubble.danger {
   background: var(--danger-color);
+}
+
+/* dropdown-item
+   =============
+ */
+
+.dropdown-item {
+  white-space: normal;
+  /* Only do the top so it affects inter-element spaces only */
+  border-top: var(--border-style);
+  font-size: 0.875rem;
+}
+.dropdown-item .title {
+  font-size: 1em;
+}
+.dropdown-item .text {
+  font-size: 0.875em;
+}
+.dropdown-item:hover .text {
+  white-space: normal;
 }
 
 .dappnode-name {

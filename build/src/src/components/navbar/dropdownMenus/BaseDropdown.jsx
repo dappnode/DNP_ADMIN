@@ -14,9 +14,11 @@ const ProgressBarWrapper = ({ progress }) => {
   );
 };
 
-const DropdownIcon = ({ onClick, children }) => (
-  <div onClick={onClick}>{children}</div>
-);
+class DropdownIcon extends React.Component {
+  render() {
+    return <div onClick={this.props.onClick}>{this.props.children}</div>;
+  }
+}
 
 const BaseDropdown = ({
   name,

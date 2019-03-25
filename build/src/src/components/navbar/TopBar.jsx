@@ -8,6 +8,7 @@ import Report from "./dropdownMenus/Report";
 import MenuBurger from "Icons/MenuBurger";
 // Styles
 import "./topbar.css";
+import "./notifications.css";
 
 const TopBar = ({ toggleSideNav }) => (
   <div id="topbar">

@@ -4,7 +4,7 @@ import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
 import makeBlockie from "ethereum-blockies-base64";
-import * as selector from "navbar/selectors";
+import { getDappnodeIdentityClean } from "services/dappnodeParams/selectors";
 
 const DappnodeIdentity = ({ dappnodeIdentity }) => {
   // Show a 24x24px blockie icon from the DAppNode's domain or ip+name
@@ -17,11 +17,11 @@ const DappnodeIdentity = ({ dappnodeIdentity }) => {
       <span className="dappnode-name svg-text mr-2">
         {dappnodeIdentity.name}
       </span>
-      <img
-        src={seed ? makeBlockie(seed) : ""}
-        className="blockies-icon"
-        alt="icon"
-      />
+      {seed ? (
+        <img src={makeBlockie(seed)} className="blockies-icon" alt="icon" />
+      ) : (
+        "?"
+      )}
     </React.Fragment>
   );
 
@@ -43,7 +43,7 @@ DappnodeIdentity.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  dappnodeIdentity: selector.getDappnodeIdentityClean
+  dappnodeIdentity: getDappnodeIdentityClean
 });
 
 export default connect(

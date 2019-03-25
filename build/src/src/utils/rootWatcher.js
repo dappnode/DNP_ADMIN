@@ -15,12 +15,13 @@ import { takeEvery, throttle, all } from "redux-saga/effects";
 /* eslint-disable redux-saga/no-unhandled-errors */
 
 export default function rootWatcher(watchers) {
-  return () =>
-    all(
+  return function* rootSingleSaga() {
+    yield all(
       watchers.map(([actionType, handler, options = {}]) => {
         if (options.throttle)
           return throttle(options.throttle, actionType, handler);
         else return takeEvery(actionType, handler);
       })
     );
+  };
 }

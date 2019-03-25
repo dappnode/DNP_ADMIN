@@ -2,6 +2,7 @@ import React from "react";
 // Components
 import SideNav from "./SideNav";
 import TopNav from "./TopNav";
+import ErrorBoundary from "components/generic/ErrorBoundary";
 
 export default class Navbar extends React.Component {
   constructor(props) {
@@ -14,9 +15,13 @@ export default class Navbar extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <SideNav />
+        <ErrorBoundary>
+          <SideNav />
+        </ErrorBoundary>
         <div className="content-wrapper dappnode-background">
-          <TopNav />
+          <ErrorBoundary>
+            <TopNav />
+          </ErrorBoundary>
         </div>
       </React.Fragment>
     );

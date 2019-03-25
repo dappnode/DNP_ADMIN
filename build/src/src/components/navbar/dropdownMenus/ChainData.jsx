@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
-import * as selector from "navbar/selectors";
+import { getChainData } from "services/chainData/selectors";
 // Icons
 import Link from "Icons/Link";
 
@@ -29,7 +29,7 @@ ChainData.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  chainData: selector.getChainData
+  chainData: getChainData
 });
 
 export default connect(

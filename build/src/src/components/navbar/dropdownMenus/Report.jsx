@@ -1,10 +1,15 @@
 import React from "react";
-import BaseDropdown from "./BaseDropdown";
 // Icons
 import ContactSupport from "Icons/ContactSupport";
+import NavLink from "react-router-dom/NavLink";
+import { rootPath as reportPath } from "pages/troubleshoot";
 
 const Report = () => {
-  return <BaseDropdown name="Report" messages={[]} Icon={ContactSupport} />;
+  return (
+    <NavLink className="dropdown-menu-toggle" to={reportPath}>
+      <ContactSupport />
+    </NavLink>
+  );
 };
 
 export default Report;

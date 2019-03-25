@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware } from "redux";
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
 import history from "./history";
 import createSagaMiddleware from "redux-saga";
 import eventBus from "eventBus";
@@ -14,6 +15,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const middlewares = [
   routerMiddleware(history),
+  thunk,
   // mount saga middleware on the Store
   sagaMiddleware
 ];

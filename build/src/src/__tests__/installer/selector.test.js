@@ -1,5 +1,5 @@
-import { NAME } from "../../installer/constants";
-import * as s from "../../installer/selectors";
+import { rootPath, mountPoint } from "../../pages/installer";
+import * as s from "../../pages/installer/selectors";
 
 describe("getUserSet variables (envs / ports / vols", () => {
   describe("getEnvs", () => {
@@ -8,7 +8,7 @@ describe("getUserSet variables (envs / ports / vols", () => {
         // External router state to pick up the query ID
         router: {
           location: {
-            pathname: `${NAME}/ln.dnp.dappnode.eth`
+            pathname: `${rootPath}/ln.dnp.dappnode.eth`
           }
         },
         // Directory
@@ -43,7 +43,7 @@ describe("getUserSet variables (envs / ports / vols", () => {
             }
           }
         ],
-        [NAME]: {
+        [mountPoint]: {
           packageData: "packages",
           userSetEnvs: {
             "ln.dnp.dappnode.eth": {
@@ -69,7 +69,7 @@ describe("getUserSet variables (envs / ports / vols", () => {
         // External router state to pick up the query ID
         router: {
           location: {
-            pathname: `${NAME}/ipfs:QmPi32MzYBMWgsqVaWeLB728rJqyZwcZBwwoJjd8dTyqte`
+            pathname: `${rootPath}/ipfs:QmPi32MzYBMWgsqVaWeLB728rJqyZwcZBwwoJjd8dTyqte`
           }
         },
         // Directory
@@ -107,7 +107,7 @@ describe("getUserSet variables (envs / ports / vols", () => {
             }
           }
         ],
-        [NAME]: {
+        [mountPoint]: {
           packageData: "packages",
           userSetEnvs: {
             "ethchain.dnp.dappnode.eth": {
@@ -135,7 +135,7 @@ describe("getUserSet variables (envs / ports / vols", () => {
         // External router state to pick up the query ID
         router: {
           location: {
-            pathname: `${NAME}/ln.dnp.dappnode.eth`
+            pathname: `${rootPath}/ln.dnp.dappnode.eth`
           }
         },
         // Directory
@@ -162,7 +162,7 @@ describe("getUserSet variables (envs / ports / vols", () => {
             }
           }
         },
-        [NAME]: {
+        [mountPoint]: {
           packageData: "packages",
           userSetPorts: {
             "ln.dnp.dappnode.eth": {
@@ -172,12 +172,13 @@ describe("getUserSet variables (envs / ports / vols", () => {
         }
       };
       expect(s.getPorts(state)).toEqual({
-        "ln.dnp.dappnode.eth": {
-          "30303": "",
-          "30304/udp": "35354"
-        },
         "bitcoin.dnp.dappnode.eth": {
-          "8333": "8333"
+          "8333:8333": { container: "8333", host: "8333", type: undefined }
+        },
+        "ln.dnp.dappnode.eth": {
+          "30303": { container: undefined, host: "30303", type: undefined },
+          "30304/udp": "35354",
+          "30304:30304/udp": { container: "30304", host: "30304", type: "udp" }
         }
       });
     });
@@ -189,7 +190,7 @@ describe("getUserSet variables (envs / ports / vols", () => {
         // External router state to pick up the query ID
         router: {
           location: {
-            pathname: `${NAME}/ln.dnp.dappnode.eth`
+            pathname: `${rootPath}/ln.dnp.dappnode.eth`
           }
         },
         // Directory
@@ -219,7 +220,7 @@ describe("getUserSet variables (envs / ports / vols", () => {
             }
           }
         },
-        [NAME]: {
+        [mountPoint]: {
           packageData: "packages",
           userSetVols: {
             "ln.dnp.dappnode.eth": {
@@ -256,17 +257,17 @@ describe("getUserSet variables (envs / ports / vols", () => {
   describe("getUserSetPortsStringified", () => {
     it("Should return the userSetPorts in a format compatible with the installer", () => {
       const state = {
-        [NAME]: {
-          userSetVols: {
+        [mountPoint]: {
+          userSetPorts: {
             "ln.dnp.dappnode.eth": {
-              "ln_data:/data/.var/chain": {
-                container: "/data/.var/chain",
-                host: "ln_data2"
+              "30303:30303/udp": {
+                container: "30303",
+                host: null,
+                type: "udp"
               },
-              "/usr/src/config:/data/.var/config:ro": {
-                container: "/data/.var/config",
-                host: "/usr/src/dappnode/config",
-                accessMode: "ro"
+              "30304": {
+                container: "30304",
+                host: "8001"
               }
             }
           }
@@ -274,9 +275,8 @@ describe("getUserSet variables (envs / ports / vols", () => {
       };
       expect(s.getUserSetPortsStringified(state)).toEqual({
         "ln.dnp.dappnode.eth": {
-          "ln_data:/data/.var/chain": "ln_data2:/data/.var/chain",
-          "/usr/src/config:/data/.var/config:ro":
-            "/usr/src/dappnode/config:/data/.var/config:ro"
+          "30303:30303/udp": "30303/udp",
+          "30304": "8001:30304"
         }
       });
     });
@@ -285,7 +285,7 @@ describe("getUserSet variables (envs / ports / vols", () => {
   describe("getUserSetVolsStringified", () => {
     it("Should return the userSetVols in a format compatible with the installer", () => {
       const state = {
-        [NAME]: {
+        [mountPoint]: {
           userSetVols: {
             "ln.dnp.dappnode.eth": {
               "ln_data:/data/.var/chain": {

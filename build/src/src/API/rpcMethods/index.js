@@ -1,5 +1,6 @@
 import uuidv4 from "uuid/v4";
-import store from "../../store";
+import { getSession } from "../start";
+import Toast from "components/toast/Toast";
 // Modules
 import dappmanager from "./dappmanager";
 import vpn from "./vpn";
@@ -20,22 +21,22 @@ const dnps = {
 //       event: "installPackage.dappmanager.dnp.dappnode.eth",
 //       kwargs: assertKwargs(kwargs, ["id"])
 //     });
-const exportModules = {};
+const rpcMethods = {};
 Object.keys(dnps).forEach(dnpId => {
   Object.keys(dnps[dnpId]).forEach(eventId => {
     const rpcCall = dnps[dnpId][eventId];
-    exportModules[eventId] = (kwargs = {}) => {
-      if (typeof kwargs !== "object")
-        throw Error(
-          `kwargs must be of type object in eventId ${eventId}, kwargs: ${JSON.stringify(
-            kwargs
-          )}`
-        );
+    // Returns a function
+    const call = function rpcMethod(kwargs = {}, options) {
       return wrapCall({
         event: `${eventId}.${dnpId}.dnp.dappnode.eth`,
-        kwargs: assertKwargs(kwargs, rpcCall.manadatoryKwargs)
+        kwargs: assertKwargs(kwargs, rpcCall.manadatoryKwargs),
+        options
       });
     };
+    // Export calls as: api.installPackage, api.dappmanager.installPackage
+    rpcMethods[eventId] = call;
+    if (!rpcMethods[dnpId]) rpcMethods[dnpId] = {};
+    rpcMethods[dnpId][eventId] = call;
   });
 });
 
@@ -55,29 +56,66 @@ function assertKwargs(kwargs = {}, keys = []) {
   return kwargs;
 }
 
-async function wrapCall({ event, args = [], kwargs = {} }) {
+/**
+ * Wrapper for WAMP RPC calls
+ *
+ * @param {Object}
+ * - event: logPackage.dappmanager.dnp.dappnode.eth
+ * - args: Array of arguments
+ * - kwargs: Object of arguments
+ * - options:
+ *   - toastMessage: {String} Triggers a pending toast
+ *   - toastOnError: {Bool} Triggers a toast on error only
+ */
+async function wrapCall({ event, args = [], kwargs = {}, options = {} }) {
+  // Toast visualization options
+  const pendingToast = options.toastMessage
+    ? new Toast({
+        message: options.toastMessage,
+        pending: true
+      })
+    : null;
+
   try {
     // Generate a taskid
     if (!kwargs.logId) kwargs.logId = uuidv4();
     // Get session
-    const session = store.getState().session;
+    const session = getSession();
     // If session is not available, fail gently
-    if (!(session && session.isOpen)) {
-      throw Error("Connection is not open");
-    }
-    const res = await session.call(event, args, kwargs).catch(e => {
-      // crossbar return errors in a specific format
-      throw Error(e.message || (e.args && e.args[0] ? e.args[0] : e.error));
-    });
+    if (!session) throw Error("Session object is not defined");
+    if (!session.isOpen) throw Error("Connection is not open");
+
+    const res = await session
+      .call(event, args, kwargs)
+      .then(JSON.parse)
+      .catch(e => {
+        // crossbar return errors in a specific format
+        throw Error(e.message || (e.args && e.args[0] ? e.args[0] : e.error));
+      });
+
     // Return the result
-    return JSON.parse(res);
+    if (res.success) {
+      if (options.toastMessage) {
+        pendingToast.resolve(res);
+      }
+      return res.result;
+    } else {
+      throw Error(res.message);
+    }
   } catch (e) {
-    return {
-      success: false,
-      message: e.message,
-      e
-    };
+    // Intercept errors to resolve or create toasts
+    // Re-throw the error afterwards
+    if (options.toastOnError) {
+      new Toast({ success: false, message: e.message });
+    } else if (options.toastMessage) {
+      pendingToast.resolve({ success: false, message: e.message });
+    }
+    if ((options.toastOnError || options.toastMessage) && !options.throw) {
+      console.error(`Error on ${event}: ${e.stack}`);
+    } else {
+      throw e;
+    }
   }
 }
 
-export default exportModules;
+export default rpcMethods;

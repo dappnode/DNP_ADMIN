@@ -20,7 +20,7 @@ class NonAdminRedirectorView extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   pathname: state => state.router.location.pathname || "",
-  isAdmin: state => state.status.isAdmin
+  isAdmin: state => (state.page_status || {}).isAdmin
 });
 
 const mapDispatchToProps = dispatch => {

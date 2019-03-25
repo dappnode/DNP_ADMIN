@@ -2,11 +2,9 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import newTabProps from "utils/newTabProps";
 // Items
-import navbar from "navbar";
+import { sidenavItems } from "components/navbar/navbarItems";
 // styles
 import "./home.css";
-
-const navbarItems = navbar.constants.navbarItems;
 
 const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
 
@@ -33,7 +31,7 @@ export default class Home extends React.Component {
         </div>
 
         <div className="home-links">
-          {navbarItems.map(item => (
+          {sidenavItems.map(item => (
             <NavLink to={item.href} key={item.href}>
               <button
                 type="button"

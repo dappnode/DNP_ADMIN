@@ -7,6 +7,24 @@
 //   Object key = "addDevice"
 
 export default {
+  // ping - default method to check if app is alive
+  // > kwargs: {}
+  // > result: {
+  //     version: "0.1.21",
+  //     branch: "master",
+  //     commit: "ab991e1482b44065ee4d6f38741bd89aeaeb3cec"
+  //   }
+  ping: {},
+
+  // addDevice:
+  //  Creates a new device with the provided id.
+  //  Generates certificates and keys needed for OpenVPN.
+  //  > kwargs: { id }
+  //  > result: -
+  addDevice: {
+    manadatoryKwargs: ["id"]
+  },
+
   // getDeviceCredentials:
   //  Creates a new OpenVPN credentials file, encrypted.
   //  The filename is the (16 chars short) result of hashing the generated salt in the db,
@@ -17,15 +35,6 @@ export default {
   //      key, <String>
   //    }
   getDeviceCredentials: {
-    manadatoryKwargs: ["id"]
-  },
-
-  // addDevice:
-  //  Creates a new device with the provided id.
-  //  Generates certificates and keys needed for OpenVPN.
-  //  > kwargs: { id }
-  //  > result: -
-  addDevice: {
     manadatoryKwargs: ["id"]
   },
 

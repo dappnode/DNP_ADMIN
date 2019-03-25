@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { sidenavItems, fundedBy } from "./navbarItems";
 import logo from "img/dappnode-logo-wide-min.png";
+import "./sidebar.css";
 
 const SideBar = ({ collapsed, collapseSideNav }) => (
   <div id="sidebar" className={collapsed ? "collapsed" : ""}>
