@@ -5,7 +5,8 @@ const initialState = {
   coreDeps: [],
   coreManifest: null,
   staticIp: null,
-  staticIpInput: ""
+  staticIpInput: "",
+  updatingCore: false
 };
 
 export default function(state = initialState, action) {
@@ -29,6 +30,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         staticIpInput: action.staticIpInput
+      };
+    case t.UPDATE_UPDATING_CORE:
+      return {
+        ...state,
+        updatingCore: action.updatingCore
       };
     default:
       return state;

@@ -1,8 +1,9 @@
-import { call, put, fork, all } from "redux-saga/effects";
+import { call, put, fork, all, select } from "redux-saga/effects";
 import rootWatcher from "utils/rootWatcher";
 import APIcall from "API/rpcMethods";
 import t from "./actionTypes";
 import * as a from "./actions";
+import * as s from "./selectors";
 import semver from "semver";
 import Toast from "components/Toast";
 import uuidv4 from "uuid/v4";
@@ -114,10 +115,10 @@ export function* checkCoreUpdate() {
   }
 }
 
-let updatingCore = false;
 function* updateCore() {
   try {
     // Prevent double installations
+    const updatingCore = yield select(s.updatingCore);
     if (updatingCore) {
       return console.error("DAPPNODE CORE IS ALREADY UPDATING");
     }
@@ -127,7 +128,7 @@ function* updateCore() {
       pending: true
     });
     // blacklist the current package
-    updatingCore = true;
+    yield put({ type: t.UPDATE_UPDATING_CORE, updatingCore: true });
     const res = yield call(APIcall.installPackageSafe, {
       id: coreId,
       logId,
@@ -136,12 +137,14 @@ function* updateCore() {
         : {})
     });
     yield put({ type: installer.actionTypes.CLEAR_PROGRESS_LOG, logId });
-    // Remove package from blacklist
-    updatingCore = false;
     pendingToast.resolve(res);
 
     // Call checkCoreUpdate to compute hide the "Update" warning and buttons
     yield call(checkCoreUpdate);
+
+    // Remove package from blacklist
+    // !! Wait for the checkCoreUpdate to complete to avoid glitch behaviour
+    yield put({ type: t.UPDATE_UPDATING_CORE, updatingCore: false });
   } catch (e) {
     console.error(`Error updating core: ${e.stack}`);
   }

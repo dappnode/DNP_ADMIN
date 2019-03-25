@@ -10,6 +10,10 @@ const getLocalState = createSelector(
   localState => localState
 );
 
+export const updatingCore = createSelector(
+  getLocalState,
+  localState => localState.updatingCore
+);
 export const staticIp = createSelector(
   getLocalState,
   localState => localState.staticIp
