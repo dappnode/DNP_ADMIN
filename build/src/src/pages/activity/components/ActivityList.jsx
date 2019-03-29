@@ -1,124 +1,83 @@
 import React from "react";
 import PropTypes from "prop-types";
+import parseDate from "../parsers/parseDate";
+import parseLevel from "../parsers/parseLevel";
+import { stringifyObjSafe } from "utils/objects";
 
-export default class Activity extends React.Component {
-  static propTypes = {
-    userActionLogs: PropTypes.array.isRequired
-  };
+const badgeClass = "badge badge-pill badge-";
 
-  render() {
-    function parseLevel(level) {
-      if (level === "error") return "danger";
-      if (level === "warn") return "warning";
-      if (level === "info") return "success";
-    }
+const Activity = ({ userActionLogs }) => (
+  <div className="card mb-4">
+    <div className="table-responsive">
+      <ul className="list-group user-logs">
+        {userActionLogs.map((log, i) => {
+          // log = {
+          //   event: "installPackage.dappmanager.dnp.dappnode.eth",
+          //   kwargs: {
+          //     id: "rinkeby.dnp.dappnode.eth",
+          //     userSetVols: {},
+          //     userSetPorts: {},
+          //     options: {}
+          //   },
+          //   level: "error",
+          //   message: "Timeout to cancel expired",
+          //   name: "Error",
+          //   stack: "Error: Timeout to cancel expired↵   ",
+          //   timestamp: "2019-02-01T19:09:16.503Z"
+          // };
+          const type = parseLevel(log.level);
+          const date = parseDate(log.timestamp);
+          const eventShort = (log.event || "").split(".")[0];
 
-    function formatDate(rawDate) {
-      let date = new Date(rawDate);
-      let now = new Date();
-      if (sameDay(date, now)) {
-        const minAgo = Math.floor((now - date) / 1000 / 60);
-        if (minAgo < 30) {
-          return "Today, " + minAgo + " min ago";
-        }
-        return "Today, " + date.toLocaleTimeString();
-      }
-      return date.toLocaleString();
-    }
-
-    function sameDay(d1, d2) {
-      return (
-        d1.getFullYear() === d2.getFullYear() &&
-        d1.getMonth() === d2.getMonth() &&
-        d1.getDate() === d2.getDate()
-      );
-    }
-
-    const userActionLogs = this.props.userActionLogs;
-    const userActionLogsItems = userActionLogs.map((log, i) => {
-      // Only display inner borders, by removing all external borders
-      let style = { borderLeftWidth: "0", borderRightWidth: "0" };
-      if (i === 0) style.borderTopWidth = "0";
-      if (i === userActionLogs.length - 1) style.borderBottomWidth = "0";
-      let type = parseLevel(log.level);
-      let date = formatDate(log.timestamp);
-
-      // if (log.stack) {
-      //   stack = log.stack.split("\n");
-      //   stackItems = stack.map(e => {
-      //     return <div>{e}</div>;
-      //   });
-      // }
-      const errorBadge =
-        log.level === "warn" || log.level === "error" ? (
-          <span className={"badge badge-pill mr-2 badge-" + type}>
-            {log.level}
-          </span>
-        ) : null;
-
-      const countBadge = log.count ? (
-        <span className="badge badge-pill mr-2 badge-light">{log.count}</span>
-      ) : null;
-      const eventShort = log.event.split(".")[0];
-      // const corePacakge = log.event.split(".")[1];
-      return (
-        <li
-          key={i}
-          className={"list-group-item"}
-          style={{ ...style, padding: 0 }}
-        >
-          <div
-            data-toggle="collapse"
-            data-target={"#collapseStack" + i}
-            aria-expanded="false"
-            aria-controls="collapseExample"
-            className="list-group-item-action"
-            style={{ padding: ".75rem 1.25rem" }}
-          >
-            <div className="d-flex justify-content-between">
-              <div className="log-header">
-                {errorBadge}
-                {countBadge}
-                <span className={"text-" + type}>
-                  <span style={{ opacity: 0.7 }}>Call to</span>{" "}
-                  <strong>{eventShort}</strong>
-                </span>
-              </div>
+          return (
+            <li key={i} className="list-group-item user-log">
               <div
-                className="log-header"
-                style={{ fontSize: "90%", opacity: 0.6 }}
+                data-toggle="collapse"
+                data-target={"#collapseStack" + i}
+                className="list-group-item-action log-container"
               >
-                {date}
+                <div className="d-flex justify-content-between">
+                  {/* Top row - left */}
+                  <div className="log-header">
+                    {/* Error badge */}
+                    {log.level === "warn" || log.level === "error" ? (
+                      <span className={badgeClass + type}>{log.level}</span>
+                    ) : null}
+                    {/* Count badge */}
+                    {log.count ? (
+                      <span className={badgeClass + "light"}>{log.count}</span>
+                    ) : null}
+                    {/* Call name */}
+                    <span className={"text-" + type}>
+                      <span className="call-to">Call to</span>{" "}
+                      <strong>{eventShort}</strong>
+                    </span>
+                  </div>
+                  {/* Top row - right */}
+                  <div className="date">{date}</div>
+                </div>
+                {/* Bottom row */}
+                <span className="reply">Reply:</span> {log.message}
               </div>
-            </div>
-            <span style={{ opacity: 0.4 }}>Reply:</span> {log.message}
-          </div>
-          <div
-            className="collapse"
-            id={"collapseStack" + i}
-            style={{ padding: ".75rem 1.25rem" }}
-          >
-            <div className="error-stack">
-              {log.stack ? log.stack + "\n\n" : null}
-              {log.kwargs
-                ? "kwargs = " + JSON.stringify(log.kwargs, null, 2) + "\n"
-                : ""}
-            </div>
-          </div>
-        </li>
-      );
-    });
+              {/* Collapsed stack */}
+              <div className="collapse" id={"collapseStack" + i}>
+                <div className="error-stack">
+                  {log.stack ? log.stack + "\n\n" : null}
+                  {log.kwargs
+                    ? "kwargs = " + stringifyObjSafe(log.kwargs) + "\n"
+                    : ""}
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </div>
+);
 
-    // userActionLogs
+Activity.propTypes = {
+  userActionLogs: PropTypes.array.isRequired
+};
 
-    return (
-      <div className="card mb-4">
-        <div className="card-body" style={{ padding: "0px" }}>
-          <div className="table-responsive">
-            <ul className="list-group">{userActionLogsItems}</ul>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
+export default Activity;

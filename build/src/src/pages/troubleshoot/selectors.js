@@ -9,7 +9,7 @@ import {
   getDappmanagerVersionData,
   getVpnVersionData,
   getIpfsConnectionStatus
-} from "services/dappnodeParams/selectors";
+} from "services/dappnodeStatus/selectors";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 import {
   getConnectionStatus,

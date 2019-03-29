@@ -3,26 +3,32 @@ import { mountPoint } from "./data";
 import { createSelector } from "reselect";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 
-/**
- * Parses pathname parts
- * @param {String} pathname = '/packages/kovan.dnp.dappnode.eth'
- * @return {Array} ['packages', 'kovan.dnp.dappnode.eth']
- */
-const parsePathname = pathname => (pathname || "").split("/").filter(e => e);
-
 // #### EXTERNAL
 
 export const getPackages = getDnpInstalled;
 
 // pathname = /packages/kovan.dnp.dappnode.eth
 // pathname = /system/kovan.dnp.dappnode.eth
+// ownProps = {
+//   match: {
+//     isExact: true,
+//     params: { id: "kovan.dnp.dappnode.eth" },
+//     path: "/packages/:id"
+//   }
+// };
 export const getUrlId = createSelector(
-  state => state.router.location.pathname,
-  pathname => parsePathname(pathname)[1] || ""
+  (_, ownProps) => ((ownProps.match || {}).params || {}).id,
+  id => id
 );
+
+// moduleName = "system" or "packages"
 export const getModuleName = createSelector(
-  state => state.router.location.pathname,
-  pathname => parsePathname(pathname)[0] || ""
+  (_, ownProps) => ownProps.match.path,
+  (path = "") => {
+    console.log({ path });
+    if (path.startsWith("/")) path = path.slice(1);
+    return path.split("/")[0];
+  }
 );
 
 // #### INTERNAL
@@ -35,14 +41,6 @@ const getLogs = createSelector(
   local => local.logs
 );
 
-export const fetching = createSelector(
-  getLocal,
-  local => local.fetching || false
-);
-export const hasFetched = createSelector(
-  getLocal,
-  local => local.hasFetched || false
-);
 export const areThereDnps = createSelector(
   getDnpInstalled,
   dnps => Boolean((dnps || []).length)

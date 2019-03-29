@@ -1,5 +1,5 @@
 import { call, put, all, select, take, delay } from "redux-saga/effects";
-import rootWatcher from "utils/rootWatcher";
+import { rootWatcher } from "utils/redux";
 import t from "./actionTypes";
 import * as a from "./actions";
 import * as s from "./selectors";
@@ -11,7 +11,7 @@ import apm from "./sagaUtils/apm";
 import connectToMetamask from "./sagaUtils/connectToMetamask";
 import executePublishTx from "./sagaUtils/executePublishTx";
 import APIcall from "API/rpcMethods";
-import assertConnectionOpen from "utils/assertConnectionOpen";
+import { assertConnectionOpen } from "utils/redux";
 
 // getRegistry("dnp.dappnode.eth");
 

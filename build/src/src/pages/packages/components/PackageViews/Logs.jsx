@@ -3,15 +3,12 @@ import PropTypes from "prop-types";
 import * as selector from "../../selectors";
 import { connect } from "react-redux";
 import * as action from "../../actions";
-import PubSub from "eventBus";
 
 import Terminal from "./Terminal";
 import "./switch.css";
 
 const refreshInterval = 2 * 1000;
 const terminalID = "terminal";
-
-let token;
 
 class DisplayLogs extends React.Component {
   constructor() {
@@ -21,28 +18,30 @@ class DisplayLogs extends React.Component {
       timestamps: false,
       search: "",
       lines: 200,
-      handle: 0
+      handle: null
     };
     this.toggleAutoRefresh = this.toggleAutoRefresh.bind(this);
     this.logPackage = this.logPackage.bind(this);
+    this.handleLogError = this.handleLogError.bind(this);
   }
 
   static propTypes = {
     dnp: PropTypes.object.isRequired
   };
 
+  handleLogError() {
+    clearInterval(this.handle);
+    this.setState({ autoRefresh: false });
+  }
+
   componentDidMount() {
     this.handle = setInterval(this.logPackage, refreshInterval);
-    const logErrorHandler = () => {
-      clearInterval(this.handle);
-      this.setState({ autoRefresh: false });
-    };
-    token = PubSub.subscribe("LOG_ERROR", logErrorHandler.bind(this));
+    window.addEventListener("LOG_ERROR", this.handleLogError);
   }
 
   componentWillUnmount() {
     clearInterval(this.handle);
-    PubSub.unsubscribe(token);
+    window.removeEventListener("LOG_ERROR", this.handleLogError);
   }
 
   logPackage() {

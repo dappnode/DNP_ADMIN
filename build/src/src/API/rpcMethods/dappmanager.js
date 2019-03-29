@@ -82,6 +82,8 @@ export default {
   // getUserActionLogs:
   // > kwargs: {}
   // > result: logs = <string>
+  // Which contain objects with
+  // { level, event, ...res, kwargs }
   getUserActionLogs: {},
 
   // fetchPackageVersions:

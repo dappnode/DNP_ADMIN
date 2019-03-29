@@ -3,7 +3,6 @@ import ClipboardJS from "clipboard";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 // Imgs
-import Loading from "components/generic/Loading";
 import errorAvatar from "img/errorAvatar.png";
 import ipfsBadgeImg from "img/IPFS-badge-small.png";
 import defaultAvatar from "img/defaultAvatar.png";
@@ -11,6 +10,7 @@ import defaultAvatar from "img/defaultAvatar.png";
 import NoPackageFound from "./NoPackageFound";
 import IsSyncing from "./IsSyncing";
 import enhancePkg from "utils/enhancePkg";
+import withLoading from "components/hoc/withLoading";
 // Metadata
 import { rootPath as installerRootPath } from "../data";
 import { rootPath as packagesRootPath } from "pages/packages/data";
@@ -99,12 +99,11 @@ class Card extends React.Component {
   }
 }
 
-export default class PackageStore extends React.Component {
+class PackageStore extends React.Component {
   static propTypes = {
     directory: PropTypes.array.isRequired,
     directoryLoaded: PropTypes.bool.isRequired,
-    openPackage: PropTypes.func.isRequired,
-    fetching: PropTypes.bool.isRequired
+    openPackage: PropTypes.func.isRequired
   };
 
   render() {
@@ -112,9 +111,7 @@ export default class PackageStore extends React.Component {
       <Card key={i} pkg={pkg} openPackage={this.props.openPackage} />
     ));
 
-    if (this.props.fetching && this.props.directory.length === 0) {
-      return <Loading msg="Loading package directory..." />;
-    } else if (this.props.isSyncing) {
+    if (this.props.isSyncing) {
       return <IsSyncing />;
     } else if (
       this.props.directoryLoaded &&
@@ -126,3 +123,6 @@ export default class PackageStore extends React.Component {
     }
   }
 }
+
+// Use `compose` from "redux" if you need multiple HOC
+export default withLoading("dnpDirectory")(PackageStore);

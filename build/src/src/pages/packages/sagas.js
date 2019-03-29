@@ -1,10 +1,9 @@
 import { call, put } from "redux-saga/effects";
-import rootWatcher from "utils/rootWatcher";
+import { rootWatcher } from "utils/redux";
 import APIcall from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
 import Toast from "components/toast/Toast";
-import PubSub from "eventBus";
 import { shortName } from "utils/format";
 import dataUriToBlob from "utils/dataUriToBlob";
 import { saveAs } from "file-saver";
@@ -48,7 +47,9 @@ function* fetchDnpLogs({ id, options }) {
       }
     } else {
       yield put(a.updateLog("Error logging package: \n" + res.message, id));
-      PubSub.publish("LOG_ERROR");
+      // Emit an event to instruct the DNP log UI to stop asking for logs
+      // ##### TODO: Find a cleaner way to achieve this
+      window.dispatchEvent(new Event("LOG_ERROR"));
     }
   } catch (e) {
     console.error("Error getting package logs:", e);

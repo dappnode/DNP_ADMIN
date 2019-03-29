@@ -1,6 +1,10 @@
 import autobahn from "autobahn-browser";
 import store from "../store";
 import subscriptions from "./subscriptions";
+import {
+  connectionOpen,
+  connectionClose
+} from "services/connectionStatus/actions";
 
 // Initalize app
 // Development
@@ -15,31 +19,29 @@ let sessionCache;
 export const getSession = () => sessionCache;
 
 export default function start() {
-  const connection = new autobahn.Connection({
-    url,
-    realm
-  });
+  const connection = new autobahn.Connection({ url, realm });
 
   connection.onopen = session => {
     sessionCache = session;
-    store.dispatch({ type: "CONNECTION_OPEN", session });
+    store.dispatch(connectionOpen({ session }));
     console.log("CONNECTED to \nurl: " + url + " \nrealm: " + realm);
     // Start subscriptions
     subscriptions(session);
-
     // For testing:
-    window.call = (event, args = [], kwargs = {}) =>
-      session.call(event, args, kwargs);
+    window.call = (event, kwargs = {}) => session.call(event, [], kwargs);
   };
 
   // connection closed, lost or unable to connect
   connection.onclose = (reason, details) => {
-    store.dispatch({
-      type: "CONNECTION_CLOSE",
-      reason,
-      details,
-      session: connection
-    });
+    store.dispatch(
+      connectionClose({
+        error: [reason, (details || {}).message].filter(x => x).join(" - "),
+        session: connection,
+        isNotAdmin: (details.message || "").includes(
+          "could not authenticate session"
+        )
+      })
+    );
     console.error("CONNECTION_CLOSE", { reason, details });
   };
 

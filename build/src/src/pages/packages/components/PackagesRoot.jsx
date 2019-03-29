@@ -4,6 +4,7 @@ import { rootPath } from "../data";
 // Components
 import PackagesHome from "./PackagesHome";
 import PackageInterface from "./PackageInterface";
+import withLoading from "components/hoc/withLoading";
 // Logic
 
 const PackagesRoot = () => (
@@ -13,4 +14,5 @@ const PackagesRoot = () => (
   </React.Fragment>
 );
 
-export default PackagesRoot;
+// Use `compose` from "redux" if you need multiple HOC
+export default withLoading("dnpInstalled", "installed DNPs")(PackagesRoot);

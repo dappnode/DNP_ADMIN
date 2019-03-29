@@ -1,98 +1,62 @@
 import React from "react";
 import { Route } from "react-router-dom";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 // Components
-import Home from "./components/home/Home";
 import NonAdmin from "./components/NonAdmin";
-import NonAdminRedirector from "./components/NonAdminRedirector";
+import NoConnection from "components/NoConnection";
 import ErrorBoundary from "./components/generic/ErrorBoundary";
 import TopBar from "./components/navbar/TopBar";
 import SideBar from "./components/navbar/SideBar";
+import Loading from "components/generic/Loading";
 // Pages
 import pages from "./pages";
 // Redux
+import { getConnectionStatus } from "services/connectionStatus/selectors";
 import { ToastContainer } from "react-toastify";
 
-export default class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      sidenavCollapsed: true,
-      width: window.innerWidth,
-      breakPointPx: getBreakPointPx()
-    };
-    this.onWindowResize = this.onWindowResize.bind(this);
-    this.toggleSideNav = this.toggleSideNav.bind(this);
-    this.collapseSideNav = this.collapseSideNav.bind(this);
-  }
-
-  toggleSideNav() {
-    this.setState({ sidenavCollapsed: !this.state.sidenavCollapsed });
-  }
-  collapseSideNav() {
-    this.setState({ sidenavCollapsed: true });
-  }
-
-  // Always collapse the navbar when crossing the breakpoint, going from big to small
-  onWindowResize() {
-    const breakPointPx = getBreakPointPx();
-    if (this.state.width > breakPointPx && window.innerWidth <= breakPointPx) {
-      this.collapseSideNav();
-    }
-    this.setState({ width: window.innerWidth });
-  }
-  componentDidMount() {
-    window.addEventListener("resize", this.onWindowResize);
-  }
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.onWindowResize);
-  }
-
+class App extends React.Component {
   // App is the parent container of any other component.
   // If this re-renders, the whole app will. So DON'T RERENDER APP!
   // Check ONCE what is the status of the VPN, then display the page for nonAdmin
   // Even make the non-admin a route and fore a redirect
 
   render() {
-    return (
-      <div className="body">
-        {/* SideNav expands on big screens, while content-wrapper moves left */}
-        <SideBar
-          collapsed={this.state.sidenavCollapsed}
-          collapseSideNav={this.collapseSideNav}
-        />
-        <TopBar toggleSideNav={this.toggleSideNav} />
-        <main>
-          <ErrorBoundary>
-            {/* Home, exact path home */}
-            <Route exact path="/" component={Home} />
-            {/* Create a route for each module */}
-            {Object.values(pages).map(({ RootComponent, rootPath }) => {
-              return (
+    const { isOpen, isNotAdmin, error } = this.props.connectionStatus || {};
+
+    if (isOpen) {
+      return (
+        <div className="body">
+          {/* SideNav expands on big screens, while content-wrapper moves left */}
+          <SideBar />
+          <TopBar />
+          <main>
+            <ErrorBoundary>
+              {Object.values(pages).map(({ RootComponent, rootPath }) => (
                 <Route
                   key={rootPath}
                   path={rootPath}
+                  exact={rootPath === "/"}
                   component={RootComponent}
                 />
-              );
-            })}
-            {/* Dedicated routes for non-module components */}
-            <Route path={"/nonadmin"} component={NonAdmin} />
-          </ErrorBoundary>
+              ))}
+            </ErrorBoundary>
+          </main>
           <ToastContainer />
-          <NonAdminRedirector />
-        </main>
-      </div>
-    );
+        </div>
+      );
+    } else if (isNotAdmin) {
+      return <NonAdmin />;
+    } else if (error) {
+      return <NoConnection />;
+    } else {
+      return <Loading msg={`Openning connection...`} />;
+    }
   }
 }
 
-// Utility
-function getBreakPointPx() {
-  const breakPointRem = parseFloat(
-    getComputedStyle(document.body).getPropertyValue("--sidebar-breakpoint")
-  );
-  const baseDocumentFontSize = parseFloat(
-    getComputedStyle(document.documentElement).fontSize
-  );
-  return breakPointRem * baseDocumentFontSize;
-}
+const mapStateToProps = createStructuredSelector({
+  connectionStatus: getConnectionStatus
+});
+
+export default connect(mapStateToProps)(App);

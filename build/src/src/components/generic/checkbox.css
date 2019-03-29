@@ -1,0 +1,53 @@
+.checkbox {
+  position: absolute;
+  opacity: 0;
+}
+.checkbox + label {
+  position: relative;
+  cursor: pointer;
+  /* Overrides default bootstrap styles */
+  margin: 0;
+}
+.checkbox + label:before {
+  content: "";
+  display: inline-block;
+  vertical-align: text-top;
+  width: 1.25em;
+  height: 1.25em;
+  background: white;
+  border-radius: 0.18em;
+  border: var(--border-style);
+  transition: background-color 250ms ease;
+}
+.checkbox:hover + label:before {
+  background: white;
+}
+.checkbox:focus + label:before {
+  box-shadow: 0 0 0 0.18em rgba(0, 0, 0, 0.12);
+}
+.checkbox:checked + label:before {
+  background: var(--dappnode-strong-main-color);
+}
+.checkbox:disabled + label {
+  color: #b8b8b8;
+  cursor: auto;
+}
+.checkbox:disabled + label:before {
+  box-shadow: none;
+  background: #ddd;
+}
+
+/* Fully responsive sizing */
+.checkbox:checked + label:after {
+  content: "";
+  position: absolute;
+  left: 25%;
+  top: 50%;
+  background: white;
+  width: 0.125em;
+  height: 0.125em;
+  box-shadow: 0.125em 0 0 white, 0.25em 0 0 white, 0.25em -0.125em 0 white,
+    0.25em -0.25em 0 white, 0.25em -0.375em 0 white, 0.25em -0.5em 0 white;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}

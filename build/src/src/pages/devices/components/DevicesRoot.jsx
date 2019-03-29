@@ -4,8 +4,9 @@ import { rootPath } from "../data";
 // Components
 import DeviceSettings from "./DeviceSettings";
 import Devices from "./Devices";
+import withLoading from "components/hoc/withLoading";
 
-export default class DevicesRoot extends React.Component {
+class DevicesRoot extends React.Component {
   render() {
     return (
       <React.Fragment>
@@ -15,3 +16,6 @@ export default class DevicesRoot extends React.Component {
     );
   }
 }
+
+// Use `compose` from "redux" if you need multiple HOC
+export default withLoading("devices")(DevicesRoot);

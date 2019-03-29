@@ -8,7 +8,7 @@ export const updateDevices = devices => ({
 });
 
 export const updateDevice = (id, data) => ({
-  type: t.UPDATE_DEVICES,
+  type: t.UPDATE_DEVICE,
   id,
   data
 });

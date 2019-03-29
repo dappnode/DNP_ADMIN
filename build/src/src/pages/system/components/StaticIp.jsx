@@ -5,6 +5,10 @@ import * as selector from "../selectors";
 import { connect } from "react-redux";
 import * as action from "../actions";
 import isIpv4 from "utils/isIpv4";
+// Components
+import Checkbox from "components/generic/Checkbox";
+// External
+import { getStaticIp } from "services/dappnodeStatus/selectors";
 
 class StaticIpView extends React.Component {
   constructor(props) {

@@ -2,14 +2,20 @@ import * as t from "./actionTypes";
 
 // Service > notifications
 
-export const pushNotification = notification => ({
+/**
+ * Using a `kwargs` form to make the `fromDappmanager` argument explicit
+ * [Tested]
+ */
+export const pushNotification = ({ notification, fromDappmanager }) => ({
   type: t.PUSH_NOTIFICATION,
-  notification
+  notification,
+  fromDappmanager: fromDappmanager || false
 });
 
-export const pushNotificationFromDappmanager = notification => ({
-  type: t.PUSH_NOTIFICATION,
-  notification: { ...notification, fromDappmanager: true }
+export const pushNotifications = ({ notifications, fromDappmanager }) => ({
+  type: t.PUSH_NOTIFICATIONS,
+  notifications,
+  fromDappmanager: fromDappmanager || false
 });
 
 export const viewedNotifications = () => ({

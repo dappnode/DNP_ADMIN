@@ -2,7 +2,7 @@
 import { mountPoint } from "./data";
 import { createSelector } from "reselect";
 // Modules
-import installer from "pages/installer";
+import { getProgressLogs } from "pages/installer/selectors";
 
 // #### INTERNAL
 const getLocalState = createSelector(
@@ -14,6 +14,7 @@ export const staticIp = createSelector(
   getLocalState,
   localState => localState.staticIp
 );
+
 export const staticIpInput = createSelector(
   getLocalState,
   localState => localState.staticIpInput
@@ -33,7 +34,7 @@ export const systemUpdateAvailable = createSelector(
 
 // Find progressLog of the core DNP
 export const getCoreProgressLog = createSelector(
-  installer.selectors.progressLogs,
+  getProgressLogs,
   progressLogs => {
     const coreDnpName = "core.dnp.dappnode.eth";
     for (const logId of Object.keys(progressLogs)) {

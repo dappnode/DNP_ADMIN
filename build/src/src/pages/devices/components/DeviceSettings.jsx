@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import QRCode from "qrcode.react";
 import "./adminBadge.css";
 import { guestsName, guestsIpRange } from "../data";
-import { getDevicesClean } from "services/devices/selectors";
+import { getDevices } from "services/devices/selectors";
 
 class DevicesSettings extends React.Component {
   render() {
@@ -75,12 +75,10 @@ class DevicesSettings extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  deviceList: getDevicesClean
+  deviceList: getDevices
 });
 
-const mapDispatchToProps = dispatch => {
-  return {};
-};
+const mapDispatchToProps = null;
 
 export default connect(
   mapStateToProps,

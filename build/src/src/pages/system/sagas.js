@@ -6,11 +6,12 @@ import * as a from "./actions";
 import * as t from "./actionTypes";
 // External actions
 import { pushNotification } from "services/notifications/actions";
-import { fetchDappnodeParams } from "services/dappnodeParams/actions";
+import { fetchDappnodeParams } from "services/dappnodeStatus/actions";
 import { fetchDevices } from "services/devices/actions";
+import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 // Utilities
 import api from "API/rpcMethods";
-import rootWatcher from "utils/rootWatcher";
+import { rootWatcher } from "utils/redux";
 import isSyncing from "utils/isSyncing";
 
 /**
@@ -56,11 +57,13 @@ function* putMainnetIsStillSyncing() {
     yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
     yield put(
       pushNotification({
-        id: "mainnetStillSyncing",
-        type: "warning",
-        title: "System update available",
-        body:
-          "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
+        notification: {
+          id: "mainnetStillSyncing",
+          type: "warning",
+          title: "System update available",
+          body:
+            "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
+        }
       })
     );
   } catch (e) {
@@ -165,11 +168,13 @@ function* setStaticIp({ staticIp }) {
     // Show notification to upgrade VPN profiles
     yield put(
       pushNotification({
-        id: "staticIpUpdated",
-        type: "warning",
-        title: "Update connection profiles",
-        body:
-          "Your static IP was changed, please download and install your VPN connection profile again. Instruct your users to do so also."
+        notification: {
+          id: "staticIpUpdated",
+          type: "warning",
+          title: "Update connection profiles",
+          body:
+            "Your static IP was changed, please download and install your VPN connection profile again. Instruct your users to do so also."
+        }
       })
     );
 
@@ -190,7 +195,7 @@ function* onConnectionOpen(action) {
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 const watchers = [
-  ["CONNECTION_OPEN", onConnectionOpen],
+  [CONNECTION_OPEN, onConnectionOpen],
   [t.UPDATE_CORE, updateCore],
   [t.SET_STATIC_IP, setStaticIp]
 ];

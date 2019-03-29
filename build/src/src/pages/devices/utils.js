@@ -1,13 +1,15 @@
-export function getDeviceId(d) {
-  // console.trace(d)
-  if (!d) {
+export function getDeviceId(device) {
+  // console.trace(device)
+  if (!device) {
     console.warn("Attempting to get id of undefined device");
     return null;
   }
-  if (typeof d !== "object") {
+  if (typeof device !== "object") {
     throw Error(
-      `Attempting to get id of device that is not an object, d: "${String(d)}"`
+      `Attempting to get id of device that is not an object, d: "${String(
+        device
+      )}"`
     );
   }
-  return "id" in d ? d.id : d.name;
+  return "id" in device ? device.id : device.name;
 }

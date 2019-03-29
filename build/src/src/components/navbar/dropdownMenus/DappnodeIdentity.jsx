@@ -4,7 +4,7 @@ import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
 import makeBlockie from "ethereum-blockies-base64";
-import { getDappnodeIdentityClean } from "services/dappnodeParams/selectors";
+import { getDappnodeIdentityClean } from "services/dappnodeStatus/selectors";
 
 const DappnodeIdentity = ({ dappnodeIdentity }) => {
   // Show a 24x24px blockie icon from the DAppNode's domain or ip+name

@@ -5,7 +5,14 @@ import reducer from "./reducer";
 import saga from "./sagas";
 import { mountPoint } from "./data";
 
-// Service > devices
+/**
+ * Service > devices
+ *
+ * Requests the device list to the VPN.
+ * Shown in the devices page
+ *
+ * [Tested]
+ */
 
 export default {
   mountPoint,

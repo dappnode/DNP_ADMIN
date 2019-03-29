@@ -15,7 +15,7 @@ import { title } from "../data";
 // Imgs
 import metamaskIcon from "img/metamask-white.png";
 // Utils
-import { parseUrlQuery } from "utils/urlQuery";
+import { parseUrlQuery } from "../utils/urlQuery";
 import newTabProps from "utils/newTabProps";
 // Other pages
 import { rootPath as installerRootPath } from "pages/installer";

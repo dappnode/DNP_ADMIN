@@ -45,6 +45,10 @@
 /* Funded-by
    =========
  */
+.funded-by {
+  /* This prevents the section from skrinking ackwardly when the sidebar collapses */
+  width: var(--sidenav-width);
+}
 
 .funded-by-text {
   opacity: 0.3;

@@ -1,10 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
 import * as action from "../../actions";
 import * as selector from "../../selectors";
 import TableInput from "components/table/TableInput";
-import capitalize from "utils/capitalize";
+import { capitalize } from "utils/strings";
 
 /**
  * Will receive an object with this structure, envs = {
@@ -97,7 +99,10 @@ const mapDispatchToProps = {
   updateUserSetEnvs: action.updateUserSetEnvs
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+export default compose(
+  withRouter,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
 )(Envs);

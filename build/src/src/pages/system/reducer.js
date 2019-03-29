@@ -4,7 +4,6 @@ import * as t from "./actionTypes";
 const initialState = {
   coreDeps: [],
   coreManifest: null,
-  staticIp: null,
   staticIpInput: ""
 };
 
@@ -20,12 +19,6 @@ export default function(state = initialState, action) {
       return {
         ...state,
         coreManifest: action.coreManifest
-      };
-
-    case t.UPDATE_STATIC_IP:
-      return {
-        ...state,
-        staticIp: action.staticIp
       };
 
     case t.UPDATE_STATIC_IP_INPUT:

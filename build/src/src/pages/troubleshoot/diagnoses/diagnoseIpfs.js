@@ -1,4 +1,4 @@
-import retryable from "utils/retryable";
+import { retryable } from "utils/functions";
 
 // This construction prevents ipfs from auto initialize when imported
 // If this happens tests can fail and trigger nasty effects

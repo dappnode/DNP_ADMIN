@@ -1,65 +1,47 @@
 //  INSTALLER
 import * as t from "./actionTypes";
 import merge from "deepmerge";
+import { assertAction } from "utils/redux";
 
 const initialState = {
-  queryId: null,
-  fetching: false,
   selectedTypes: {},
   input: "",
-  isInstalling: {},
-  progressLogs: {},
-  showAdvancedSettings: false,
+  // userSetEnvs = {
+  //   "kovan.dnp.dappnode.eth": {
+  //     "ENV_NAME": "VALUE1"
+  //  }, ... },
   userSetEnvs: {},
+  // userSetPorts = {
+  //   "kovan.dnp.dappnode.eth": {
+  //     "30303": "31313:30303",
+  //     "30303/udp": "31313:30303/udp"
+  //  }, ... }
   userSetPorts: {},
+  // userSetVols = "kovan.dnp.dappnode.eth": {
+  //   "path:/root/.local": {
+  //     host: "new_path"
+  //     container: "/root/.local"
+  //  }, ... },
   userSetVols: {}
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case t.UPDATE_FETCHING:
-      return {
-        ...state,
-        fetching: action.fetching
-      };
-
     case t.UPDATE_SELECTED_TYPES:
+      assertAction(action, { payload: {} });
       return merge(state, {
         selectedTypes: action.payload
       });
 
     case t.UPDATE_INPUT:
+      assertAction(action, { payload: "dnp" });
       return merge(state, {
         input: action.payload
       });
 
-    case t.PROGRESS_LOG:
-      return merge(state, {
-        progressLogs: {
-          [action.logId]: {
-            [action.pkgName]: action.msg
-          }
-        }
-      });
-
-    case t.CLEAR_PROGRESS_LOG:
-      // When an installation has finished, clear all pkg's progressLogs
-      // that belonged to that installation, refered by the logId
-      const progressLogs = Object.assign({}, state.progressLogs);
-      delete progressLogs[action.logId];
-      // Destructive action, cannot use merge
-      return {
-        ...state,
-        progressLogs
-      };
-
-    case t.UPDATE_QUERY_ID:
-      return merge(state, {
-        queryId: action.id
-      });
-
     // User set
     case t.UPDATE_USERSET_ENVS:
+      assertAction(action, { dnpName: "dnp", key: "FOO", value: "BAR" });
       return merge(state, {
         userSetEnvs: {
           [action.dnpName]: {
@@ -69,6 +51,7 @@ export default function(state = initialState, action) {
       });
 
     case t.UPDATE_USERSET_PORTS:
+      assertAction(action, { dnpName: "dnp", id: "30303", values: {} });
       return merge(state, {
         userSetPorts: {
           [action.dnpName]: {
@@ -78,6 +61,7 @@ export default function(state = initialState, action) {
       });
 
     case t.UPDATE_USERSET_VOLS:
+      assertAction(action, { dnpName: "dnp", id: "dnp_data", values: {} });
       return merge(state, {
         userSetVols: {
           [action.dnpName]: {
@@ -86,18 +70,12 @@ export default function(state = initialState, action) {
         }
       });
 
-    case t.SET_SHOW_ADVANCED_SETTINGS:
-      return merge(state, {
-        showAdvancedSettings: action.value
-      });
-
     case t.CLEAR_USERSET:
       return {
         ...state,
         userSetEnvs: {},
         userSetPorts: {},
-        userSetVols: {},
-        showAdvancedSettings: false
+        userSetVols: {}
       };
 
     // #### Default case

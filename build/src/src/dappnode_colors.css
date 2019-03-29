@@ -4,6 +4,7 @@
   --dappnode-darker-main-color: #218a82;
   --dappnode-shadow-main-color: #218a8280;
   --dappnode-light-main-color: #a0bdbb;
+  --dappnode-gray-main-color: #93a5a5;
   --border-color: #e5e5e5;
   --danger-color: #d9534f;
   --warning-color: #f0ad4e;
@@ -34,8 +35,8 @@
 .btn-dappnode.disabled,
 .btn-dappnode:disabled {
   color: var(--dappnode-white-color);
-  background-color: var(--dappnode-strong-main-color);
-  border-color: var(--dappnode-strong-main-color);
+  background-color: var(--dappnode-gray-main-color);
+  border-color: var(--dappnode-gray-main-color);
 }
 
 .btn-dappnode:not(:disabled):not(.disabled):active,

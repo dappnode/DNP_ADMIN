@@ -1,10 +1,7 @@
 import { createStore, applyMiddleware } from "redux";
-import { connectRouter, routerMiddleware } from "connected-react-router";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
-import history from "./history";
 import createSagaMiddleware from "redux-saga";
-import eventBus from "eventBus";
 
 // App modules
 import rootSaga from "./rootSaga";
@@ -14,7 +11,6 @@ import rootReducer from "./rootReducer";
 const sagaMiddleware = createSagaMiddleware();
 
 const middlewares = [
-  routerMiddleware(history),
   thunk,
   // mount saga middleware on the Store
   sagaMiddleware
@@ -26,13 +22,9 @@ const actionsBlacklist = ["UPDATE_CHAIN_DATA"];
 const composedEnhancers = composeWithDevTools({ actionsBlacklist });
 
 const store = createStore(
-  connectRouter(history)(rootReducer), // new root reducer with router state
+  rootReducer, // new root reducer with router state
   composedEnhancers(applyMiddleware(...middlewares))
 );
-
-eventBus.subscribe("ACTION", (_, action) => {
-  store.dispatch(action);
-});
 
 export default store;
 

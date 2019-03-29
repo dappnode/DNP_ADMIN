@@ -24,8 +24,7 @@ class InstallerView extends React.Component {
                 <p>
                   Please wait while your mainnet full node syncs to install
                   DAppNode packages. Otherwise, you can install packages using
-                  their IPFS hash. Thank you for your patience and to
-                  decentralize the network.
+                  their IPFS hash.
                 </p>
                 <p>{this.props.mainnet.msg}</p>
               </div>

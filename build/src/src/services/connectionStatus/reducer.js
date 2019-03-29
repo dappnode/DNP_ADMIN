@@ -1,32 +1,39 @@
+import * as t from "./actionTypes";
+import { assertAction } from "utils/redux";
+
 // Service > connectionStatus
 
+/**
+ * [Tested]
+ */
+
 const initialState = {
-  isOpenning: true,
   isOpen: false,
   error: null,
-  session: null
+  session: null,
+  isNotAdmin: false
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case "CONNECTION_OPEN":
+    case t.CONNECTION_OPEN:
+      assertAction(action, { session: {} });
       return {
         ...state,
-        isOpenning: false,
         isOpen: true,
         session: action.session,
-        error: null
+        error: null,
+        isNotAdmin: false
       };
 
-    case "CONNECTION_CLOSE":
+    case t.CONNECTION_CLOSE:
+      assertAction(action, { session: {}, error: "error", isNotAdmin: true });
       return {
         ...state,
-        isOpenning: false,
         isOpen: false,
         session: action.session,
-        error: [action.reason, (action.details || {}).message]
-          .filter(x => x)
-          .join(" - ")
+        error: action.error,
+        isNotAdmin: action.isNotAdmin
       };
 
     default:

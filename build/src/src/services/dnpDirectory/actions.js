@@ -7,6 +7,12 @@ export const updateDnpDirectory = dnps => ({
   dnps
 });
 
+export const updateDnpDirectoryById = (id, dnp) => ({
+  type: t.UPDATE_DNP_DIRECTORY_BY_ID,
+  id,
+  dnp
+});
+
 export const fetchDnpDirectory = () => ({
   type: t.FETCH_DNP_DIRECTORY
 });

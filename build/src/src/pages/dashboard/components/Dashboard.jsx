@@ -1,8 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import * as selectors from "../selectors";
-import { fetchDappnodeStats } from "services/dappnodeParams/actions";
+import { fetchDappnodeStats } from "services/dappnodeStatus/actions";
+// Selectors
+import { getDappnodeVolumes } from "services/dnpInstalled/selectors";
+import { getChainData } from "services/chainData/selectors";
+import { getDappnodeStats } from "services/dappnodeStatus/selectors";
 
 import "./dashboard.css";
 
@@ -42,7 +45,7 @@ class DashboardView extends React.Component {
         msg: status[id].msg
       }));
 
-    // ChainData, from data array to formated array
+    // ChainData, from data array to formatted array
     const chainData = this.props.chainData || [];
     const chainDataArray = chainData.map(chain => {
       const status = chain.error ? -1 : chain.syncing ? 0 : 1;
@@ -122,9 +125,9 @@ class DashboardView extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  chainData: selectors.chainData,
-  dappnodeStats: selectors.getDappnodeStatsFormated,
-  dappnodeVolumes: selectors.getDappnodeVolumes
+  chainData: getChainData,
+  dappnodeStats: getDappnodeStats,
+  dappnodeVolumes: getDappnodeVolumes
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch

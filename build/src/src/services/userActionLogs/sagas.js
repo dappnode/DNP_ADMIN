@@ -1,26 +1,46 @@
 import { put, call } from "redux-saga/effects";
-import rootWatcher from "utils/rootWatcher";
-import APIcall from "API/rpcMethods";
+import { rootWatcher } from "utils/redux";
+import api from "API/rpcMethods";
 import * as a from "./actions";
 import * as t from "./actionTypes";
+import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 
+/**
+ * [Tested]
+ */
 export function* fetchUserActionLogs() {
   try {
-    const userActionLogsString = yield call(APIcall.getUserActionLogs);
+    const userActionLogsString = yield call(api.getUserActionLogs);
     // fetchDirectory CALL DOCUMENTATION:
     // > kwargs: {}
     // > result: logs <string>
+    // Which contain objects with
+    // log = {
+    //   event: "installPackage.dappmanager.dnp.dappnode.eth",
+    //   kwargs: {
+    //     id: "rinkeby.dnp.dappnode.eth",
+    //     userSetVols: {},
+    //     userSetPorts: {},
+    //     options: {}
+    //   },
+    //   level: "error",
+    //   message: "Timeout to cancel expired",
+    //   name: "Error",
+    //   stack: "Error: Timeout to cancel expired↵  ...",
+    //   timestamp: "2019-02-01T19:09:16.503Z"
+    // };
 
     // Process userActionLogs. They are json objects appended in a log file
     let userActionLogs = [];
     userActionLogsString
       .trim()
       .split(/\r?\n/)
+      .filter(s => s.trim())
       .forEach((stringifiedLog, i) => {
         try {
           userActionLogs.push(JSON.parse(stringifiedLog));
         } catch (e) {
-          console.error(
+          console.warn(
             `Error parsing userActionLog #${i}: ${e.message}. StringifiedLog: `,
             stringifiedLog
           );
@@ -46,8 +66,13 @@ export function* fetchUserActionLogs() {
       }
     }
 
+    // Order by newest first
+    const userActionLogsSorted = userActionLogs.sort(
+      (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+    );
+
     // Update userActionLogs
-    yield put(a.updateUserActionLogs(userActionLogs));
+    yield put(a.updateUserActionLogs(userActionLogsSorted));
   } catch (error) {
     console.error("Error fetching userActionLogs: ", error);
   }
@@ -58,7 +83,7 @@ export function* fetchUserActionLogs() {
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 const watchers = [
-  ["CONNECTION_OPEN", fetchUserActionLogs],
+  [CONNECTION_OPEN, fetchUserActionLogs],
   [t.FETCH_USER_ACTION_LOGS, fetchUserActionLogs]
 ];
 

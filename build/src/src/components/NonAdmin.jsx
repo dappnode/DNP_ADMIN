@@ -1,16 +1,16 @@
 import React from "react";
+import logo from "img/dappnode-logo-wide-min.png";
+import "./nonAdmin.css";
 
 const NonAdmin = () => (
-  <div className="container-fluid app-content">
-    <div className="body">
-      <div className="jumbotron">
-        <h1 className="display-4">Welcome to the DAppNode admin page!</h1>
-        <p className="lead">
-          Turns out that you are not an admin. If you need to do admin stuff
-          please contact the admin of this DAppNode to get access
-        </p>
-      </div>
+  <div className="standalone-container">
+    <div className="title">Snap! You are not an admin</div>
+    <div className="text">
+      This website is reserved to the DAppNode admin. Your VPN profile must have
+      admin priviledges. Please contact this DAppNode's admin to get access.
     </div>
+    <div className="separator" />
+    <img className="logo" src={logo} alt="logo" />
   </div>
 );
 

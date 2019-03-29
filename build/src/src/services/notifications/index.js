@@ -7,6 +7,15 @@ import { mountPoint } from "./data";
 
 // Service > notifications
 
+/**
+ * Service > chainData
+ *
+ * Requests chainData to the DAPPMANAGER.
+ * Shown in the TopBar and in the Dashboard pages
+ *
+ * [Tested]
+ */
+
 export default {
   mountPoint,
   actionTypes,

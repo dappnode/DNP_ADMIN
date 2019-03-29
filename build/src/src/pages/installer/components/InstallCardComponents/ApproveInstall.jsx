@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import * as action from "../../actions";
-import * as selector from "../../selectors";
+import { installedPackages } from "../../selectors";
 // Components
 import SpecialPermissions from "./SpecialPermissions";
 import Envs from "./Envs";
@@ -21,7 +21,8 @@ class ApproveInstallView extends React.Component {
     super(props);
     this.state = {
       options: {
-        BYPASS_CORE_RESTRICTION: false
+        BYPASS_CORE_RESTRICTION: false,
+        showAdvancedSettings: false
       }
     };
     this.handleOptionChange = this.handleOptionChange.bind(this);
@@ -129,7 +130,7 @@ class ApproveInstallView extends React.Component {
 
         <SpecialPermissions />
 
-        {this.props.showAdvancedSettings ? (
+        {this.state.showAdvancedSettings ? (
           <React.Fragment>
             <Envs />
             <Vols />
@@ -138,7 +139,7 @@ class ApproveInstallView extends React.Component {
         ) : (
           <button
             className="btn btn-outline-secondary mt-2 mb-5"
-            onClick={this.props.setShowAdvancedSettings.bind(this, true)}
+            onClick={() => this.setState({ showAdvancedSettings: true })}
           >
             Show advanced settings
           </button>
@@ -149,13 +150,11 @@ class ApproveInstallView extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  installedPackages: selector.installedPackages,
-  showAdvancedSettings: selector.getShowAdvancedSettings
+  installedPackages: () => []
 });
 
 const mapDispatchToProps = {
-  install: action.install,
-  setShowAdvancedSettings: action.setShowAdvancedSettings
+  install: action.install
 };
 
 export default connect(

@@ -5,5 +5,5 @@ import { createSelector } from "reselect";
 
 export const getUserActionLogs = createSelector(
   state => state[mountPoint],
-  notifications => notifications
+  userActionLogs => userActionLogs
 );

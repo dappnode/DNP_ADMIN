@@ -27,11 +27,6 @@ export const setStaticIp = staticIp => ({
   staticIp
 });
 
-export const updateStaticIp = staticIp => ({
-  type: t.UPDATE_STATIC_IP,
-  staticIp
-});
-
 export const updateStaticIpInput = staticIpInput => ({
   type: t.UPDATE_STATIC_IP_INPUT,
   staticIpInput

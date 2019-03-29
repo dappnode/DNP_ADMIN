@@ -1,15 +1,13 @@
 import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-// Not needed, history.js specifies the use of Hash.
-// import { HashRouter as Router } from "react-router-dom";
-import { ConnectedRouter } from "connected-react-router";
+// ##### Investigate if HashRouter is really required
+import { HashRouter as Router } from "react-router-dom";
 
-import history from "./history";
 import store from "./store";
 import App from "./App";
 import api from "./API";
-import cleanObj from "utils/cleanObj";
+import { cleanObj } from "utils/objects";
 
 // Init css
 import "react-toastify/dist/ReactToastify.css";
@@ -41,9 +39,9 @@ window.versionData = cleanObj({
 
 render(
   <Provider store={store}>
-    <ConnectedRouter history={history}>
+    <Router>
       <App />
-    </ConnectedRouter>
+    </Router>
   </Provider>,
   document.getElementById("root")
 );

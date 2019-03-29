@@ -12,16 +12,8 @@ import "./packages.css";
 
 const xnor = (a, b) => Boolean(a) === Boolean(b);
 
-const PackagesList = ({
-  dnps = [],
-  moduleName,
-  fetching,
-  hasFetched,
-  coreDnps
-}) => {
-  if (fetching && !dnps.length) {
-    return <Loading msg="Loading installed packages..." />;
-  } else if (hasFetched && !dnps.length) {
+const PackagesList = ({ dnps = [], moduleName, coreDnps }) => {
+  if (!dnps.length) {
     return <NoPackagesYet />;
   } else {
     return (
@@ -38,17 +30,13 @@ const PackagesList = ({
 PackagesList.propTypes = {
   dnps: PropTypes.array.isRequired,
   moduleName: PropTypes.string.isRequired,
-  fetching: PropTypes.bool.isRequired,
-  hasFetched: PropTypes.bool.isRequired,
   coreDnps: PropTypes.bool
 };
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  dnps: s.getFilteredPackages,
-  fetching: s.fetching,
-  hasFetched: s.hasFetched
+  dnps: s.getFilteredPackages
 });
 
 const mapDispatchToProps = {};

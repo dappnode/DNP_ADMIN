@@ -79,10 +79,12 @@ body,
 */
 #sidebar {
   grid-area: sidebar;
+  /* Basic sizing */
+  height: 100vh;
+  width: var(--sidenav-width);
   transition: width 0.25s;
   -webkit-transition: width 0.25s;
   -moz-transition: width 0.25s;
-  width: var(--sidenav-width);
   /* When the sidenav collapses, hidde its content */
   overflow: hidden;
   /* While the sidenav is collapsing, make sure the content stays straight */
@@ -93,7 +95,6 @@ body,
   box-shadow: rgba(0, 0, 0, 0.1) 1px 0px 15px;
   /* place sidebar on top of the header and content */
   z-index: 2;
-
   /* Nested grid */
   display: grid;
   align-items: start;
@@ -187,4 +188,21 @@ main {
   overflow: auto;
   background-color: var(--color-background);
   padding: var(--container-padding);
+}
+
+/********************
+  SPECIAL STAND-ALONE
+  *******************
+  Used in:
+  - NonAdmin
+  - NoConnection
+ */
+.standalone-container {
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  padding: 5em;
+  padding: 5em 1em;
+  text-align: center;
+  background-color: var(--color-background);
 }
