@@ -22,7 +22,7 @@ function getEnvs(_dnp, _state) {
   const defaultEnvs = getDefaultEnvs(dnp);
   const defaultEnvsNames = Object.keys(defaultEnvs);
   // Verify that the current state contains only this package's envs
-  for (const env of Object.getOwnPropertyNames(state)) {
+  for (const env of Object.keys(state)) {
     if (!defaultEnvsNames.includes(env)) {
       delete state[env];
     }
@@ -56,11 +56,11 @@ class EnvVariablesView extends React.Component {
     const dnp = this.props.dnp || {};
     const envs = getEnvs(dnp, this.state);
     // const envs = dnp.envs || {};
-    if (Object.getOwnPropertyNames(envs).length === 0) {
+    if (Object.keys(envs).length === 0) {
       return null;
     }
 
-    let envsList = Object.getOwnPropertyNames(envs).map((env, i) => {
+    let envsList = Object.keys(envs).map((env, i) => {
       return (
         <div key={i} className="input-group mb-3">
           <div className="input-group-prepend">

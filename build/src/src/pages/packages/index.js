@@ -1,5 +1,4 @@
 import * as actions from "./actions";
-import reducer from "./reducer";
 import * as selectors from "./selectors";
 import PackagesRoot from "./components/PackagesRoot";
 import PackageInterface from "./components/PackageInterface";
@@ -22,7 +21,6 @@ export default {
   RootComponent: PackagesRoot,
   actions,
   components,
-  reducer,
   selectors,
   saga
 };

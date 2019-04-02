@@ -213,7 +213,7 @@ describe("pages > installer > selectors", () => {
             }
           }
         },
-        [dnpInstalledMountPoint]: {},
+        [dnpInstalledMountPoint]: [],
         [mountPoint]: {
           userSetVols: {
             "ln.dnp.dappnode.eth": {

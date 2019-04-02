@@ -1,13 +1,10 @@
-// INSTALLER
 import * as t from "./actionTypes";
 
-// Used in package interface
+// pages > system
 
 export const updateCore = () => ({
   type: t.UPDATE_CORE
 });
-
-// Used in package root
 
 export const updateCoreManifest = coreManifest => ({
   type: t.UPDATE_CORE_MANIFEST,
@@ -19,15 +16,7 @@ export const updateCoreDeps = coreDeps => ({
   coreDeps
 });
 
-// Used in package interface / logs
-// #### TODO: refactor to sagas
-
 export const setStaticIp = staticIp => ({
   type: t.SET_STATIC_IP,
   staticIp
-});
-
-export const updateStaticIpInput = staticIpInput => ({
-  type: t.UPDATE_STATIC_IP_INPUT,
-  staticIpInput
 });

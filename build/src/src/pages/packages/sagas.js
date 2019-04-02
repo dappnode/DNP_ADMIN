@@ -30,39 +30,10 @@ function* copyFileFrom({ id, fromPath }) {
   }
 }
 
-function* fetchDnpLogs({ id, options }) {
-  try {
-    if (!id) throw Error("id must be defined");
-    if (!options || typeof options !== "object")
-      throw Error("options must be defined and type object");
-    const res = yield call(APIcall.logPackage, { id, options });
-    if (res.success) {
-      const { logs } = res.result || {};
-      if (!logs) {
-        yield put(a.updateLog("Error, logs missing", id));
-      } else if (logs === "") {
-        yield put(a.updateLog("Received empty logs", id));
-      } else {
-        yield put(a.updateLog(logs, id));
-      }
-    } else {
-      yield put(a.updateLog("Error logging package: \n" + res.message, id));
-      // Emit an event to instruct the DNP log UI to stop asking for logs
-      // ##### TODO: Find a cleaner way to achieve this
-      window.dispatchEvent(new Event("LOG_ERROR"));
-    }
-  } catch (e) {
-    console.error("Error getting package logs:", e);
-  }
-}
-
 /******************************* Watchers *************************************/
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-const watchers = [
-  [t.FETCH_DNP_LOGS, fetchDnpLogs],
-  [t.COPY_FILE_FROM, copyFileFrom]
-];
+const watchers = [[t.COPY_FILE_FROM, copyFileFrom]];
 
 export default rootWatcher(watchers);

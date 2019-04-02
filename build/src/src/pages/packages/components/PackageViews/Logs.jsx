@@ -1,185 +1,117 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import * as selector from "../../selectors";
-import { connect } from "react-redux";
-import * as action from "../../actions";
-
+import api from "API/rpcMethods";
+// Components
+import Card from "components/Card";
+import SubTitle from "components/SubTitle";
+import Switch from "components/Switch";
+import Input from "components/Input";
 import Terminal from "./Terminal";
-import "./switch.css";
+// Utils
+import { stringIncludes } from "utils/strings";
 
 const refreshInterval = 2 * 1000;
 const terminalID = "terminal";
 
-class DisplayLogs extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      autoRefresh: true,
-      timestamps: false,
-      search: "",
-      lines: 200,
-      handle: null
+const validateLines = lines => !isNaN(lines) && lines > 0;
+
+export default function Logs({ dnp }) {
+  // User options
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [timestamps, setTimestamps] = useState(false);
+  const [query, setQuery] = useState("");
+  const [lines, setLines] = useState(200);
+  // Fetched data
+  const [logs, setLogs] = useState("");
+
+  /**
+   * This use effect fetches the logs again everytime any of this variables changes:
+   * - autoRefresh, timestamps, lines, dnp
+   * In case of a fetch error, it will stop the autoRefresh
+   * On every first fetch, it will automatically scroll to the bottom
+   * On every first fetch, it will display "fetching..."
+   */
+  useEffect(() => {
+    let scrollToBottom = () => {
+      const el = document.getElementById(terminalID);
+      if (el) el.scrollTop = el.scrollHeight;
+      scrollToBottom = () => {};
     };
-    this.toggleAutoRefresh = this.toggleAutoRefresh.bind(this);
-    this.logPackage = this.logPackage.bind(this);
-    this.handleLogError = this.handleLogError.bind(this);
-  }
 
-  static propTypes = {
-    dnp: PropTypes.object.isRequired
-  };
-
-  handleLogError() {
-    clearInterval(this.handle);
-    this.setState({ autoRefresh: false });
-  }
-
-  componentDidMount() {
-    this.handle = setInterval(this.logPackage, refreshInterval);
-    window.addEventListener("LOG_ERROR", this.handleLogError);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.handle);
-    window.removeEventListener("LOG_ERROR", this.handleLogError);
-  }
-
-  logPackage() {
-    this.props.logPackage(this.props.dnp.name, {
-      timestamps: this.state.timestamps,
-      tail: this.state.lines
-    });
-  }
-
-  toggleAutoRefresh = e => {
-    if (this.state.autoRefresh) {
-      // Shuting off auto-refresh
-      clearInterval(this.handle);
-    } else {
-      // Turning on auto-refresh
-      this.handle = setInterval(this.logPackage, 1000);
+    async function logDnp() {
+      try {
+        const options = { timestamps, tail: lines };
+        const logs = await api.logPackage({ id: dnp.name, options });
+        setLogs(logs.logs);
+        // Auto scroll to bottom (deffered after the paint)
+        setTimeout(scrollToBottom, 10);
+      } catch (e) {
+        setLogs(`Error fetching logs: ${e.message}`);
+        setAutoRefresh(false);
+      }
     }
-    this.setState({ autoRefresh: !this.state.autoRefresh });
-  };
-
-  toggleTimestamps = e => {
-    this.setState({ timestamps: !this.state.timestamps });
-  };
-
-  updateSearch = e => {
-    this.setState({ search: e.target.value });
-  };
-
-  updateLines = e => {
-    const n = e.target.value;
-    if (!isNaN(parseInt(n, 10)) && isFinite(n) && parseInt(n, 10) > 0) {
-      this.setState({ lines: parseInt(n, 10) });
-    } else {
-      console.warn("Attempting to use a wrong number of lines", n);
+    if (autoRefresh && validateLines(lines)) {
+      setLogs("fetching...");
+      const interval = setInterval(logDnp, refreshInterval);
+      return () => {
+        clearInterval(interval);
+      };
     }
-  };
+  }, [autoRefresh, timestamps, lines, dnp]);
 
-  scrollToBottom() {
-    const element = document.getElementById(terminalID);
-    if (element) element.scrollTop = element.scrollHeight;
-  }
+  /**
+   * Filter the logs text by lines that contain the query
+   * If the query is empty, skip the filter
+   * If the query returned no matching logs, display custom message
+   * If the lines parameter is not valid, display custom message
+   */
+  const logsArray = logs.split(/\r?\n/);
+  let logsFiltered = query
+    ? logsArray.filter(line => stringIncludes(line, query)).join("\n")
+    : logs;
+  if (logs && query && !logsFiltered) logsFiltered = "No match found";
 
-  render() {
-    let logs = this.props.logs || "";
-    let logsArray = logs.split(/\r?\n/);
-    let logsFiltered = logsArray
-      .slice(logsArray.length - this.state.lines)
-      .filter(line =>
-        line.toLowerCase().includes(this.state.search.toLowerCase())
-      )
-      .join("\n");
+  const terminalText = validateLines(lines)
+    ? logsFiltered
+    : "Lines must be a number > 0";
 
-    return (
-      <React.Fragment>
-        <div className="section-subtitle">Logs</div>
-        <div className="card mb-4">
-          <div className="card-body">
-            <div className="float-left mr-4 mb-1">
-              <span className="switch switch-sm">
-                <input
-                  type="checkbox"
-                  className="switch"
-                  id="switch-refresh"
-                  checked={this.state.autoRefresh}
-                  onChange={this.toggleAutoRefresh}
-                />
-                <label htmlFor="switch-refresh">Auto-refresh logs</label>
-              </span>
-            </div>
-            <div className="float-left mr-4 mb-1">
-              <span className="switch switch-sm">
-                <input
-                  type="checkbox"
-                  className="switch"
-                  id="switch-ts"
-                  checked={this.state.timestamps}
-                  onChange={this.toggleTimestamps.bind(this)}
-                />
-                <label htmlFor="switch-ts">Display timestamps</label>
-              </span>
-            </div>
-            <div className="float-left mr-4 mb-1">
-              <button
-                type="button"
-                className="btn btn-outline-secondary tableAction-button"
-                style={{
-                  marginBottom: "8px",
-                  position: "relative",
-                  top: "-3px"
-                }}
-                onClick={this.scrollToBottom.bind(this)}
-              >
-                Scroll to bottom
-              </button>
-            </div>
-            <div className="input-group mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text">Lines</span>
-              </div>
-              <input
-                type="number"
-                className="form-control"
-                placeholder="Number of lines to display..."
-                value={this.state.lines}
-                onChange={this.updateLines.bind(this)}
-              />
-            </div>
-            <div className="input-group mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text">Search</span>
-              </div>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Filter..."
-                value={this.state.search}
-                onChange={this.updateSearch.bind(this)}
-              />
-            </div>
-            <Terminal text={logsFiltered} terminalID={terminalID} />
-          </div>
+  return (
+    <>
+      <SubTitle>Logs</SubTitle>
+      <Card className="log-controls">
+        <div>
+          <Switch
+            checked={autoRefresh}
+            onToggle={setAutoRefresh}
+            label="Auto-refresh logs"
+            id="switch-ar"
+          />
+
+          <Switch
+            checked={timestamps}
+            onToggle={setTimestamps}
+            label="Display timestamps"
+            id="switch-ts"
+          />
         </div>
-      </React.Fragment>
-    );
-  }
+
+        <Input
+          prepend="Lines"
+          placeholder="Number of lines to display..."
+          value={lines}
+          onValueChange={setLines}
+          type="number"
+        />
+
+        <Input
+          prepend="Search"
+          placeholder="Filter by..."
+          value={query}
+          onValueChange={setQuery}
+        />
+
+        <Terminal text={terminalText} id={terminalID} />
+      </Card>
+    </>
+  );
 }
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    logs: selector.getDnpLogs(state, ownProps.dnp.name)
-  };
-};
-
-const mapDispatchToProps = {
-  logPackage: action.logPackage
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DisplayLogs);

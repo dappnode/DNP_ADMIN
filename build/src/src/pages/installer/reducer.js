@@ -3,25 +3,28 @@ import * as t from "./actionTypes";
 import merge from "deepmerge";
 import { assertAction } from "utils/redux";
 
+/**
+ * @param userSetEnvs = {
+ *   "kovan.dnp.dappnode.eth": {
+ *     "ENV_NAME": "VALUE1"
+ *   }, ... },
+ * @param userSetPorts = {
+ *   "kovan.dnp.dappnode.eth": {
+ *     "30303": "31313:30303",
+ *     "30303/udp": "31313:30303/udp"
+ *   }, ... }
+ * @param userSetVols = {
+ *   "path:/root/.local": {
+ *     host: "new_path"
+ *     container: "/root/.local"
+ *   }, ... },
+ * }
+ */
 const initialState = {
   selectedTypes: {},
   input: "",
-  // userSetEnvs = {
-  //   "kovan.dnp.dappnode.eth": {
-  //     "ENV_NAME": "VALUE1"
-  //  }, ... },
   userSetEnvs: {},
-  // userSetPorts = {
-  //   "kovan.dnp.dappnode.eth": {
-  //     "30303": "31313:30303",
-  //     "30303/udp": "31313:30303/udp"
-  //  }, ... }
   userSetPorts: {},
-  // userSetVols = "kovan.dnp.dappnode.eth": {
-  //   "path:/root/.local": {
-  //     host: "new_path"
-  //     container: "/root/.local"
-  //  }, ... },
   userSetVols: {}
 };
 

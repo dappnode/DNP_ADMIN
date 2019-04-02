@@ -4,5 +4,5 @@ export const mountPoint = "page-system";
 export const rootPath = "/system";
 export const title = "System";
 
-// Adittional data
+// Aditional data
 export const updatePath = "update";

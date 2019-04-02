@@ -12,7 +12,7 @@
  * @param {String} id: to make errors more comprehensive
  */
 export function assertObjTypes(obj, referenceTypes, id = "Obj") {
-  Object.getOwnPropertyNames(referenceTypes).forEach(key => {
+  Object.keys(referenceTypes).forEach(key => {
     if (!sameType(obj[key], referenceTypes[key])) {
       throw Error(
         `${id} prop ${key} must be like ${referenceTypes[key]} (${typeOf(
@@ -44,15 +44,6 @@ export const arrayToObj = (array, key) => {
   } else {
     throw Error("key must be a string or function");
   }
-};
-
-/**
- * Safe browser version of Object.values()
- * @param {Object} obj = { "a": { id: "a" } }
- * @returns {Array} array = [ { id: "a" } ]
- */
-export const objToArray = obj => {
-  return Object.getOwnPropertyNames(obj).map(key => obj[key]);
 };
 
 /**

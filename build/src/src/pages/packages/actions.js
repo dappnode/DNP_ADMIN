@@ -10,21 +10,6 @@ export const updatePackages = packages => ({
   packages
 });
 
-// Used in package interface / logs
-// #### TODO: refactor to sagas
-
-export const updateLog = (logs, id) => ({
-  type: t.UPDATE_LOG,
-  logs,
-  id
-});
-
-export const logPackage = (id, options) => ({
-  type: t.FETCH_DNP_LOGS,
-  id,
-  options
-});
-
 /* Notice: togglePackage, restartPackage, etc use redux-thunk
    Since there is no return value, and the state change
    is triggered via a ws subscription there is not need

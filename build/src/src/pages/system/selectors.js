@@ -10,15 +10,6 @@ const getLocalState = createSelector(
   localState => localState
 );
 
-export const staticIp = createSelector(
-  getLocalState,
-  localState => localState.staticIp
-);
-
-export const staticIpInput = createSelector(
-  getLocalState,
-  localState => localState.staticIpInput
-);
 export const coreDeps = createSelector(
   getLocalState,
   localState => localState.coreDeps

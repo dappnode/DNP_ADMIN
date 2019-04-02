@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as s from "../selectors";
 import { connect } from "react-redux";
 import withTitle from "components/hoc/withTitle";
@@ -19,87 +19,81 @@ import ProgressLog from "./InstallCardComponents/ProgressLog";
 import ApproveInstall from "./InstallCardComponents/ApproveInstall";
 import Success from "./InstallCardComponents/Success";
 
-class InstallerInterfaceView extends React.Component {
-  static propTypes = {
-    connectionOpen: PropTypes.bool // is null on init
-  };
+function InstallerInterface({
+  id,
+  dnp,
+  progressLog,
+  clearUserSet,
+  fetchPackageRequest,
+  fetchPackageData
+}) {
+  useEffect(() => {
+    clearUserSet();
+    fetchPackageRequest(id);
+    fetchPackageData(id);
+  }, [id]);
 
-  componentWillMount() {
-    const id = this.props.id;
-    this.props.clearUserSet();
-    this.props.fetchPackageRequest(id);
-    this.props.fetchPackageData(id);
+  const isLoading = (dnp || {}).loading;
+  const isResolving = (dnp || {}).resolving;
+  const isError = (dnp || {}).error;
+  const hasManifest = (dnp || {}).manifest;
+
+  if (!hasManifest && isError) {
+    return <Error msg={`Error: ${isError}`} />;
+  }
+  if (isLoading) {
+    return <Loading msg={"Loading DNP data..."} />;
+  }
+  if (isResolving) {
+    return <Loading msg={"Resolving DNP dependencies..."} />;
+  }
+  if (!dnp || dnp.error) {
+    return <Error msg={"Package not found"} />;
   }
 
-  render() {
-    const id = this.props.id;
-    const dnp = this.props.dnp;
-    const isLoading = (dnp || {}).loading;
-    const isResolving = (dnp || {}).resolving;
-    const isError = (dnp || {}).error;
-    const hasManifest = (dnp || {}).manifest;
-    const connectionOpen = this.props.connectionOpen;
+  const manifest = dnp.manifest || {};
 
-    if (!hasManifest && isError) {
-      return <Error msg={`Error: ${isError}`} />;
-    }
-    if (isLoading) {
-      return <Loading msg={"Loading DNP data..."} />;
-    }
-    if (isResolving) {
-      return <Loading msg={"Resolving DNP dependencies..."} />;
-    }
-    if (!connectionOpen) {
-      return <Loading msg="Openning connection..." />;
-    }
-    if (!dnp || dnp.error) {
-      return <Error msg={"Package not found"} />;
-    }
-
-    const manifest = dnp.manifest || {};
-    const progressLog = this.props.progressLog;
-
-    if (progressLog) {
-      // If there is an installation in progress, show it.
-      // Also prevents the user to install an installing package
-      return (
-        <React.Fragment>
-          <ProgressLog progressLog={progressLog} />
-          <Details dnp={dnp} />
-        </React.Fragment>
-      );
-    } else if (dnp.tag && dnp.tag === "UPDATED") {
-      // If the package is updated, show a redirect to the packages section
-      return (
-        <React.Fragment>
-          <Success manifest={manifest} />
-          <Details dnp={dnp} />
-        </React.Fragment>
-      );
-    } else {
-      // Otherwise, show info an allow an install
-      let request = dnp.requestResult || {};
-      if ("fetchingRequest" in dnp) {
-        request.fetching = dnp.fetchingRequest;
-      }
-      return (
-        <ApproveInstall
-          id={id}
-          pkg={dnp}
-          manifest={manifest}
-          request={request}
-        />
-      );
-    }
+  // If there is an installation in progress, show it.
+  // Also prevents the user to install an installing package
+  if (progressLog) {
+    return (
+      <>
+        <ProgressLog progressLog={progressLog} />
+        <Details dnp={dnp} />
+      </>
+    );
   }
+
+  // If the package is updated, show a redirect to the packages section
+  if (dnp.tag && dnp.tag === "UPDATED") {
+    return (
+      <>
+        <Success manifest={manifest} />
+        <Details dnp={dnp} />
+      </>
+    );
+  }
+
+  // Otherwise, show info an allow an install
+  let request = dnp.requestResult || {};
+  if ("fetchingRequest" in dnp) {
+    request.fetching = dnp.fetchingRequest;
+  }
+  return (
+    <ApproveInstall id={id} pkg={dnp} manifest={manifest} request={request} />
+  );
 }
+
+InstallerInterface.propTypes = {
+  id: PropTypes.string.isRequired,
+  dnp: PropTypes.object
+};
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
   id: s.getQueryId,
   dnp: s.getQueryDnp,
-  connectionOpen: s.connectionOpen,
   progressLogs: () => {},
   // For the withTitle HOC
   title: () => "Installer",
@@ -119,6 +113,6 @@ export default compose(
     mapDispatchToProps
   ),
   withTitle
-)(InstallerInterfaceView);
+)(InstallerInterface);
 
 // ##### TODO: - Implement the loading HOC for the specific DNP fetch

@@ -8,14 +8,12 @@ import SdkHome from "./SdkHome";
 
 import "./sdk.css";
 
-export default class InstallerRoot extends React.Component {
-  render() {
-    return (
-      <div>
-        <Route exact path={rootPath} component={SdkHome} />
-        <Route path={rootPath + "/publish/:urlQuery?"} component={Publish} />
-        <Route path={rootPath + "/explore"} component={Explore} />
-      </div>
-    );
-  }
-}
+const SdkRoot = () => (
+  <React.Fragment>
+    <Route exact path={rootPath} component={SdkHome} />
+    <Route path={rootPath + "/publish/:urlQuery?"} component={Publish} />
+    <Route path={rootPath + "/explore"} component={Explore} />
+  </React.Fragment>
+);
+
+export default SdkRoot;

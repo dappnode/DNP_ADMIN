@@ -6,16 +6,12 @@ import DeviceSettings from "./DeviceSettings";
 import Devices from "./Devices";
 import withLoading from "components/hoc/withLoading";
 
-class DevicesRoot extends React.Component {
-  render() {
-    return (
-      <React.Fragment>
-        <Route exact path={rootPath} component={Devices} />
-        <Route path={rootPath + "/:id"} component={DeviceSettings} />
-      </React.Fragment>
-    );
-  }
-}
+const DevicesRoot = () => (
+  <React.Fragment>
+    <Route exact path={rootPath} component={Devices} />
+    <Route path={rootPath + "/:id"} component={DeviceSettings} />
+  </React.Fragment>
+);
 
 // Use `compose` from "redux" if you need multiple HOC
 export default withLoading("devices")(DevicesRoot);

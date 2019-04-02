@@ -32,6 +32,10 @@ export const updateIpfsConnectionStatus = ipfsConnectionStatus => ({
 
 // Fetch
 
+export const fetchAllDappnodeStatus = () => ({
+  type: t.FETCH_ALL_DAPPNODE_STATUS
+});
+
 export const fetchDappnodeParams = () => ({
   type: t.FETCH_DAPPNODE_PARAMS
 });

@@ -34,7 +34,7 @@ export const getProgressLogsById = createSelector(
   (_, id) => id,
   (isInstallingLogs, id) => {
     const progressLogs = {};
-    Object.getOwnPropertyNames(isInstallingLogs).forEach(key => {
+    Object.keys(isInstallingLogs).forEach(key => {
       if (isInstallingLogs[key].id === id)
         progressLogs[key] = isInstallingLogs[key].log;
     });

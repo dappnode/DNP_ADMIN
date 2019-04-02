@@ -11,7 +11,6 @@ import {
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 // Utils
 import { rootWatcher } from "utils/redux";
-import { objToArray } from "utils/objects";
 
 // Service > notifications
 
@@ -49,7 +48,7 @@ export function* removeDappmanagerNotifications() {
     // Load notifications
     const notifications = yield select(s.getNotifications);
     // Check the ones that came from the dappmanager
-    const ids = objToArray(notifications)
+    const ids = Object.values(notifications)
       .filter(notification => notification.fromDappmanager)
       .map(notification => notification.id);
     if (ids.length) {

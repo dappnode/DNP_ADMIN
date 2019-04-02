@@ -1,5 +1,5 @@
 // PACKAGES
-import { mountPoint } from "./data";
+import { issueBaseUrl } from "./data";
 import { createSelector, createStructuredSelector } from "reselect";
 import {
   getDappnodeParams,
@@ -15,62 +15,27 @@ import {
   getConnectionStatus,
   getIsConnectionOpen
 } from "services/connectionStatus/selectors";
-import merge from "deepmerge";
 
-const repo = "DNP_ADMIN";
-const username = "dappnode";
+/**
+ * Diagnose selectors
+ * ==================
+ *
+ * Must return an object as:
+ *
+ * {
+ *   ok: {Boolean},
+ *   msg: {String} (short description),
+ *   solutions: {Array}
+ * }
+ *
+ * can also return null, and that diagnose will be ignored
+ */
 
-function baseUrl(username, repo) {
-  return `https://github.com/${username}/${repo}/issues/new`;
-}
-
-// #### EXTERNAL
-
-export const getInstalledPackages = createSelector(
-  state => state.installedPackages,
-  installedPackages => installedPackages
-);
-export const getPackageStatus = createSelector(
-  state => state.packageStatus,
-  packageStatus => packageStatus
-);
-
-// #### INTERNAL
-
-const getLocal = createSelector(
-  state => state[mountPoint],
-  local => local
-);
-
-export const getInfo = createSelector(
-  getLocal,
-  local => local.info || {}
-);
-
-export const getDnpInstalledWithVersionData = createSelector(
-  getDnpInstalled,
-  getDappmanagerVersionData,
-  getVpnVersionData,
-  (packageList, dappmanagerVersionData, vpnVersionData) => {
-    const adminVersionData = window.versionData;
-    return merge(packageList, {
-      "dappmanager.dnp.dappnode.eth": dappmanagerVersionData,
-      "vpn.dnp.dappnode.eth": vpnVersionData,
-      "admin.dnp.dappnode.eth": adminVersionData
-    });
-  }
-);
-
-// Diagnose functions
-// ==================
-
-export const getDiagnoseConnection = createSelector(
+const getDiagnoseConnection = createSelector(
   getConnectionStatus,
-  connectionStatus => ({
-    ok: connectionStatus.isOpen,
-    msg: connectionStatus.isOpen
-      ? "Session is open"
-      : `Session is closed: ${connectionStatus.error || ""}`,
+  ({ isOpen, error }) => ({
+    ok: isOpen,
+    msg: isOpen ? "Session is open" : `Session is closed: ${error || ""}`,
     solutions: [
       `You may be disconnected from your DAppNode's VPN. Please make sure your connection is still active`,
       `If you are still connected, disconnect your VPN connection, connect again and refresh this page`
@@ -78,85 +43,68 @@ export const getDiagnoseConnection = createSelector(
   })
 );
 
-/**
- * To be composed with `createSelector`
- * If connection is not open, the selector returns null
- * @param {Function} selector
- * @return {Function}
- */
-function onlyIfConnectionIsOpen(selector) {
-  return createSelector(
-    getIsConnectionOpen,
-    selector,
-    (isConnectionOpen, result) => (isConnectionOpen ? result : null)
-  );
-}
-
-export const getDiagnoseOpenPorts = onlyIfConnectionIsOpen(
+const getDiagnoseOpenPorts = onlyIfConnectionIsOpen(
   createSelector(
     getDappnodeParams,
-    dappnodeParams =>
-      dappnodeParams.alertToOpenPorts
-        ? {
-            ok: false,
-            msg:
-              "Ports have to be openned and there is no UPnP device available",
-            solutions: [
-              "If you are capable of openning ports manually, please ignore this error",
-              "Your router may have UPnP but it is not turned on yet. Please research if your specific router has UPnP and turn it on"
-            ]
-          }
-        : {
-            ok: true,
-            msg: "No ports have to be oppened OR the router has UPnP enabled"
-          }
+    ({ alertToOpenPorts }) => ({
+      ok: !alertToOpenPorts,
+      msg: alertToOpenPorts
+        ? "Ports have to be openned and there is no UPnP device available"
+        : "No ports have to be oppened OR the router has UPnP enabled",
+      solutions: [
+        "If you are capable of openning ports manually, please ignore this error",
+        "Your router may have UPnP but it is not turned on yet. Please research if your specific router has UPnP and turn it on"
+      ]
+    })
   )
 );
 
-export const getDiagnoseNoNatLoopback = onlyIfConnectionIsOpen(
+const getDiagnoseNoNatLoopback = onlyIfConnectionIsOpen(
   createSelector(
     getDappnodeParams,
-    dappnodeParams =>
-      dappnodeParams.noNatLoopback
-        ? {
-            ok: false,
-            msg: "No NAT loopback, external IP did not resolve",
-            solutions: [
-              `Please use the internal IP: ${
-                dappnodeParams.internalIp
-              } when you are in the same network as your DAppNode`
-            ]
-          }
-        : {
-            ok: true,
-            msg: "NAT loopback enabled, external IP resolves"
-          }
+    ({ noNatLoopback, internalIp }) => ({
+      ok: !noNatLoopback,
+      msg: noNatLoopback
+        ? "No NAT loopback, external IP did not resolve"
+        : "NAT loopback enabled, external IP resolves",
+      solutions: [
+        `Please use the internal IP: ${internalIp} when you are in the same network as your DAppNode`
+      ]
+    })
   )
 );
 
-export const getDiagnoseDappmanagerConnected = onlyIfConnectionIsOpen(
+const getDiagnoseDappmanagerConnected = onlyIfConnectionIsOpen(
   createSelector(
     getPingReturns,
     pingReturns => ({
       ok: pingReturns.dappmanager,
       msg: pingReturns.dappmanager
         ? "DAPPMANAGER is connected"
-        : "DAPPMANAGER is not connected"
+        : "DAPPMANAGER is not connected",
+      solutions: [
+        "Close your VPN connection and connect again",
+        "If the problem persists, reset the DAppNode machine"
+      ]
     })
   )
 );
 
-export const getDiagnoseVpnConnected = onlyIfConnectionIsOpen(
+const getDiagnoseVpnConnected = onlyIfConnectionIsOpen(
   createSelector(
     getPingReturns,
     pingReturns => ({
       ok: pingReturns.vpn,
-      msg: pingReturns.vpn ? "VPN is connected" : "VPN is not connected"
+      msg: pingReturns.vpn ? "VPN is connected" : "VPN is not connected",
+      solutions: [
+        "Close your VPN connection and connect again",
+        "If the problem persists, reset the DAppNode machine"
+      ]
     })
   )
 );
 
-export const getDiagnoseIpfs = createSelector(
+const getDiagnoseIpfs = createSelector(
   getIpfsConnectionStatus,
   ({ resolves, error }) => ({
     ok: resolves,
@@ -178,85 +126,118 @@ export const getDiagnoses = createSelector(
     getDiagnoseVpnConnected,
     getDiagnoseIpfs
   }),
-  diagnosesObj =>
-    Object.keys(diagnosesObj)
+  diagnoseObjects =>
+    Object.keys(diagnoseObjects)
       // Filter out null diagnoses
-      .filter(id => diagnosesObj[id])
-      .map(id => ({ ...diagnosesObj[id], id }))
+      .filter(id => diagnoseObjects[id])
+      // The id is used by react as key={id}
+      .map(id => ({ ...diagnoseObjects[id], id }))
 );
 
-// Info gather functions
-// =====================
+/**
+ * Info selectors
+ * ==============
+ *
+ * Must return an object as:
+ *
+ * {
+ *   name: {String},
+ *   result: {String}, (or)
+ *   error: {String}
+ * }
+ */
 
-export const getDiskUsage = createSelector(
+const getDiskUsageInfo = createSelector(
   getDappnodeStats,
-  dappnodeStats => (dappnodeStats || {}).disk
+  dappnodeStats => ({
+    name: "Disk usage",
+    result: (dappnodeStats || {}).disk
+  })
 );
 
-// Construct github issue body and text
-// ====================================
-// - getDappnodeStats
-// - getDappnodeDiagnose
-// - listPackages
-
-//   dappmanagerDiagnoses = {
-//     dockerVersion: {
-//       name: 'docker version',
-//       result: 'Docker version 18.06.1-ce, build e68fc7a' <or>
-//       error: 'sh: docker: not found'
-//     },
-//     ...
-//   }
-export const getSystemInfo = createSelector(
-  getDiskUsage,
-  getDappnodeDiagnose,
-  (diskUsage, dappnodeDiagnose) => {
-    return {
-      diskUsage: { name: "Disk usage", data: diskUsage },
-      ...dappnodeDiagnose
-    };
-  }
+const getDnpInstalledWithVersionData = createSelector(
+  getDnpInstalled,
+  createStructuredSelector({
+    "dappmanager.dnp.dappnode.eth": getDappmanagerVersionData,
+    "vpn.dnp.dappnode.eth": getVpnVersionData,
+    "admin.dnp.dappnode.eth": () => window.versionData
+  }),
+  (dnps, versionDatas) =>
+    dnps.map(dnp => ({ ...dnp, ...(versionDatas[dnp.name] || {}) }))
 );
+
+/**
+ * Agreggates single info selectors with info comming from the DAPPMANAGER
+ *
+ * dappmanagerDiagnoses = {
+ *   dockerVersion: {
+ *     name: 'docker version',
+ *     result: 'Docker version 18.06.1-ce, build e68fc7a' <or>
+ *     error: 'sh: docker: not found'
+ *   }, ... }
+ */
+const getSystemInfo = createSelector(
+  createStructuredSelector({
+    ...getDappnodeDiagnose,
+    getDiskUsageInfo
+  }),
+  infoObjects =>
+    Object.keys(infoObjects)
+      .filter(id => infoObjects[id])
+      .map(id => ({ ...infoObjects[id], id }))
+);
+
+/**
+ * Construct github issue
+ * ======================
+ *
+ * Before filing a new issue...
+ *
+ * Core DNPs versions
+ * - admin.dnp.dappnode.eth: 0.1.18
+ * ...
+ *
+ * System info
+ * - docker version:
+ * ...
+ */
 
 export const getIssueBody = createSelector(
   getDnpInstalledWithVersionData,
   getSystemInfo,
-  (packageList, systemInfo) => {
-    // Construct issueUrl from the available info
-    let body = `*Before filing a new issue, please **provide the following information**.*`;
+  (dnps, systemInfo) => {
+    const sections = [
+      {
+        title: "Core DNPs versions",
+        items: dnps
+          .filter(dnp => dnp.isCORE)
+          .map(({ name, version, branch, commit }) => ({
+            name,
+            data:
+              version +
+              (branch && branch !== "master" ? `, branch: ${branch}` : "") +
+              (commit ? `, commit: ${commit.slice(0, 8)}` : "")
+          }))
+      },
+      {
+        title: "System info",
+        items: Object.values(systemInfo).map(({ name, result, error }) => ({
+          name,
+          data: (result || error || "").trim()
+        }))
+      }
+    ];
 
-    if (Object.keys(packageList).length) {
-      // dnp = {
-      //   name: "vpn.dnp.dappnode.eth"
-      //   version: "0.1.19"
-      // }
-      const msgVersions = Object.values(packageList)
-        .filter(dnp => dnp.isCORE)
-        .map(dnp => {
-          let versionTag = dnp.version;
-          if (dnp.branch && dnp.branch !== "master")
-            versionTag += `, branch: ${dnp.branch}`;
-          if (dnp.commit) versionTag += `, commit: ${dnp.commit.slice(0, 8)}`;
-          return `- **${dnp.name}**: ${versionTag}`;
-        });
-      body += `\n\n## Current versions\n${msgVersions.join("\n")}`;
-    }
-
-    // Append system info
-    if (Object.keys(systemInfo).length) {
-      console.log({
-        systemInfo,
-        keys: Object.getOwnPropertyNames(systemInfo),
-        keysNormal: Object.keys(systemInfo)
-      });
-      const systemInfoMessages = Object.values(systemInfo).map(
-        item =>
-          `- **${item.name}**: ${(item.result || item.error || "").trim()}`
-      );
-      body += `\n\n## System info\n${systemInfoMessages.join("\n")}`;
-    }
-
-    return body;
+    return [
+      "*Before filing a new issue, please **provide the following information**.*",
+      ...sections
+        .filter(({ items }) => items.length)
+        .map(
+          ({ title, items }) =>
+            `## ${title}\n` +
+            items.map(({ name, data }) => `- **${name}**: ${data}`).join("\n")
+        )
+    ].join("\n\n");
   }
 );
 
@@ -264,14 +245,32 @@ export const getIssueUrl = createSelector(
   getIssueBody,
   body => {
     // Construct issueUrl from the available info
-    let title = "";
-    // Construct issueUrl
-    // eslint-disable-next-line
-    const issueUrl = `${baseUrl(username, repo)}?title=${encodeURIComponent(
-      title
-    )}&body=${encodeURIComponent(body)}`;
-    return issueUrl;
+    const title = "";
+    const params = [
+      "title=" + encodeURIComponent(title),
+      "body=" + encodeURIComponent(body)
+    ];
+    return issueBaseUrl + "?" + params.join("&");
   }
 );
 
-export const getIssueUrlRaw = () => `${baseUrl(username, repo)}`;
+export const getIssueUrlRaw = () => issueBaseUrl;
+
+/**
+ * Utilities
+ * =========
+ */
+
+/**
+ * To be composed with `createSelector`
+ * If connection is not open, the selector returns null
+ * @param {Function} selector
+ * @return {Function}
+ */
+function onlyIfConnectionIsOpen(selector) {
+  return createSelector(
+    getIsConnectionOpen,
+    selector,
+    (isConnectionOpen, result) => (isConnectionOpen ? result : null)
+  );
+}

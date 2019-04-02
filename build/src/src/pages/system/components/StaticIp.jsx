@@ -1,156 +1,73 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
-import * as selector from "../selectors";
 import { connect } from "react-redux";
-import * as action from "../actions";
+import * as a from "../actions";
 import isIpv4 from "utils/isIpv4";
 // Components
-import Checkbox from "components/generic/Checkbox";
+import Card from "components/Card";
+import SubTitle from "components/SubTitle";
+import Input from "components/Input";
+import Button from "components/Button";
 // External
 import { getStaticIp } from "services/dappnodeStatus/selectors";
 
-class StaticIpView extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      enable: false
-    };
-  }
+function StaticIp({ staticIp = "", setStaticIp }) {
+  const [input, setInput] = useState(staticIp);
 
-  static propTypes = {
-    staticIp: PropTypes.string,
-    setStaticIp: PropTypes.func.isRequired
+  useEffect(() => {
+    setInput(staticIp);
+  }, [staticIp]);
+
+  const update = () => {
+    if (isIpv4(input)) setStaticIp(input);
   };
 
-  enableStaticIp() {
-    this.setState({ enable: true });
-  }
-
-  disableStaticIp() {
-    this.props.setStaticIp(null);
-  }
-
-  setStaticIp() {
-    this.props.setStaticIp(this.props.staticIpInput);
-    this.setState({ enable: false });
-  }
-
-  render() {
-    const margin = "5px";
-    const padding = "0.7rem";
-    const width = "85px";
-
-    const { staticIp, staticIpInput } = this.props;
-    const ipIsValid = isIpv4(staticIpInput);
-
-    // Three states:
-    let content;
-    // 1. Disabled
-    if (!staticIp && !this.state.enable) {
-      return (
-        <div className="d-flex justify-content-between">
-          <div className="section-subtitle">Static IP</div>
-          <div>
-            <button
-              className="btn btn-outline-secondary float-right"
-              type="button"
-              onClick={this.enableStaticIp.bind(this)}
-              style={{ width }}
-            >
-              Enable
-            </button>
-          </div>
-        </div>
-      );
-    }
-    // Declared components as varibles to avoid code duplication
-    // - inputFieldComponent is used in case 2, 3
-    // - setButtonComponent is used in case 2, 3
-    // - disableButtonComponent is used in case 3
-    const inputFieldComponent = (
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Your static ip..."
-        value={staticIpInput}
-        onChange={e => this.props.updateStaticIpInput(e.target.value)}
-        onKeyPress={e => {
-          if (e.key === "Enter" && ipIsValid) this.setStaticIp.bind(this)();
-        }}
-      />
-    );
-    const setButtonComponent = (
-      <button
-        className="btn btn-outline-secondary"
-        type="button"
-        disabled={!ipIsValid}
-        onClick={this.setStaticIp.bind(this)}
-      >
-        Set
-      </button>
-    );
-    const disableButtonComponent = (
-      <button
-        className="btn btn-outline-danger"
-        type="button"
-        onClick={this.disableStaticIp.bind(this)}
-      >
-        Disable
-      </button>
-    );
-    // 2. Disabled but about to enable
-    if (this.state.enable) {
-      content = (
+  return (
+    <>
+      <SubTitle>Static IP</SubTitle>
+      <Card>
         <div className="input-group">
-          {inputFieldComponent}
-          <div className="input-group-append">{setButtonComponent}</div>
+          <Input
+            placeholder="Your static ip..."
+            value={input}
+            onValueChange={setInput}
+            onEnterPress={update}
+          />
+          <Button
+            variant="outline-secondary"
+            disabled={!isIpv4(input)}
+            onClick={update}
+          >
+            {staticIp ? "Update" : "Enable"}
+          </Button>
+          {staticIp && (
+            <Button variant="outline-danger" onClick={() => setStaticIp(null)}>
+              Disable
+            </Button>
+          )}
         </div>
-      );
-    }
-    // 3. Enabled
-    if (staticIp && !this.state.enable) {
-      content = (
-        <div className="input-group">
-          {inputFieldComponent}
-          <div className="input-group-append">
-            {setButtonComponent}
-            {disableButtonComponent}
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <React.Fragment>
-        <div className="section-subtitle">Static IP</div>
-        <div className="card mb-3">
-          <div className="card-body" style={{ padding }}>
-            <div className="row">
-              <div className="col" style={{ margin, overflow: "hidden" }}>
-                {content}
-              </div>
-            </div>
-          </div>
-        </div>
-      </React.Fragment>
-    );
-  }
+      </Card>
+    </>
+  );
 }
+
+StaticIp.propTypes = {
+  staticIp: PropTypes.string.isRequired,
+  setStaticIp: PropTypes.func.isRequired
+};
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  staticIp: selector.staticIp,
-  staticIpInput: selector.staticIpInput
+  staticIp: getStaticIp
 });
 
 const mapDispatchToProps = {
-  setStaticIp: action.setStaticIp,
-  updateStaticIpInput: action.updateStaticIpInput
+  setStaticIp: a.setStaticIp
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(StaticIpView);
+)(StaticIp);

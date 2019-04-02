@@ -13,8 +13,7 @@ const NoPackagesYet = ({ id, moduleName }) => (
     </div>
     <div className="row justify-content-center">
       <p style={{ opacity: 0.4 }}>
-        You can go back to the {moduleName} or if you would like install it, go
-        to the installer tab.
+        Go back to {moduleName} or click below to install it
       </p>
     </div>
     <div className="row justify-content-center mb-5">

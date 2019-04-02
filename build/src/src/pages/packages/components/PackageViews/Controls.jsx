@@ -1,6 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import * as action from "../../actions";
+// Components
+import Card from "components/Card";
+import SubTitle from "components/SubTitle";
+import Button from "components/Button";
 // Confirm UI
 import confirmRemovePackage from "../confirmRemovePackage";
 import { confirmAlert } from "react-confirm-alert"; // Import js
@@ -80,45 +84,38 @@ class PackageControls extends React.Component {
 
     // Table style -> Removes the space below the table, only for tables in cards
     return (
-      <div className="mb-4">
-        <div className="section-subtitle">Controls</div>
-        <div className="card mb-4">
-          <div className="card-body">
-            <table className="table" style={{ marginBottom: "0" }}>
-              <tbody>
-                {actions
-                  .filter(
-                    action =>
-                      action.availableForCore || !(dnp.isCore || dnp.isCORE)
-                  )
-                  .map(action => (
-                    <tr key={action.name} className="inter-border">
-                      <td style={{ paddingLeft: 0 }}>
-                        <strong>{action.name}</strong>
-                        <br />
-                        {action.text}
-                      </td>
-                      <td style={{ textAlign: "right", paddingRight: 0 }}>
-                        <button
-                          type="button"
-                          className={
-                            "btn btn-outline-" +
-                            action.type +
-                            " tableAction-button"
-                          }
-                          style={{ width: "100px", whiteSpace: "normal" }}
-                          onClick={action.action}
-                        >
-                          {action.name}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <>
+        <SubTitle>Controls</SubTitle>
+        <Card>
+          <table className="table" style={{ marginBottom: "0" }}>
+            <tbody>
+              {actions
+                .filter(
+                  action =>
+                    action.availableForCore || !(dnp.isCore || dnp.isCORE)
+                )
+                .map(action => (
+                  <tr key={action.name} className="inter-border">
+                    <td style={{ paddingLeft: 0 }}>
+                      <strong>{action.name}</strong>
+                      <br />
+                      {action.text}
+                    </td>
+                    <td style={{ textAlign: "right", paddingRight: 0 }}>
+                      <Button
+                        variant={`outline-${action.type}`}
+                        onClick={action.action}
+                        style={{ width: "100px", whiteSpace: "normal" }}
+                      >
+                        {action.name}
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </Card>
+      </>
     );
   }
 }

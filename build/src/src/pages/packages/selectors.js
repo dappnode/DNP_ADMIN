@@ -1,7 +1,7 @@
-// PACKAGES
-import { mountPoint } from "./data";
 import { createSelector } from "reselect";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
+
+// pages > packages
 
 // #### EXTERNAL
 
@@ -25,20 +25,9 @@ export const getUrlId = createSelector(
 export const getModuleName = createSelector(
   (_, ownProps) => ownProps.match.path,
   (path = "") => {
-    console.log({ path });
     if (path.startsWith("/")) path = path.slice(1);
     return path.split("/")[0];
   }
-);
-
-// #### INTERNAL
-const getLocal = createSelector(
-  state => state[mountPoint],
-  local => local
-);
-const getLogs = createSelector(
-  getLocal,
-  local => local.logs
 );
 
 export const areThereDnps = createSelector(
@@ -63,11 +52,4 @@ export const getDnp = createSelector(
   getUrlId,
   getDnpInstalled,
   (id, dnps) => dnps.find(dnp => dnp.name === id)
-);
-
-// Package logs
-export const getDnpLogs = createSelector(
-  getUrlId,
-  getLogs,
-  (id, logs) => logs[id]
 );

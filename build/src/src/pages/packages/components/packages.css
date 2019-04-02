@@ -18,3 +18,10 @@
 .tableAction-button {
   min-width: 75px;
 }
+
+/* ##### DEV */
+
+.log-controls .input-group,
+.log-controls label {
+  margin-bottom: 1rem !important;
+}

@@ -69,13 +69,8 @@ div a:hover {
    Visible at installer/:id openning the advanced options
 */
 
-.card-subgroup {
-  border-bottom: 1px solid #dfdfdf;
-  margin-bottom: 8px;
-}
-.card-subgroup:last-child {
-  border-bottom: 0;
-  margin-bottom: 0px;
+.card-subgroup:not(:last-child) {
+  margin-bottom: 1.25rem;
 }
 
 .alert {

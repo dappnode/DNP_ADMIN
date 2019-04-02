@@ -130,7 +130,7 @@ function* updateCore() {
   try {
     // Prevent double installations
     if (updatingCore) {
-      return console.error("DAPPNODE CORE IS ALREADY UPDATING");
+      return console.error("Error: DAppNode core is already updating");
     }
     const logId = uuidv4();
 

@@ -6,15 +6,12 @@ import InstallerHome from "./InstallerHome";
 import InstallerSinglePkg from "./InstallerSinglePkg";
 // Modules
 
-export default class InstallerRoot extends React.Component {
-  render() {
-    // The second route uses regex. :id has to match ipfs/QmZ4faa..
-    // so it uses the regex parameter + to any character when id's length > 0
-    return (
-      <div>
-        <Route exact path={rootPath} component={InstallerHome} />
-        <Route path={rootPath + "/:id+"} component={InstallerSinglePkg} />
-      </div>
-    );
-  }
-}
+const InstallerRoot = () => (
+  <React.Fragment>
+    <Route exact path={rootPath} component={InstallerHome} />
+    {/* Using :id+ so it matches only id.length > 0 */}
+    <Route path={rootPath + "/:id+"} component={InstallerSinglePkg} />
+  </React.Fragment>
+);
+
+export default InstallerRoot;

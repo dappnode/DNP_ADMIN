@@ -1,4 +1,4 @@
-import { put, call } from "redux-saga/effects";
+import { put, call, all } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import api from "API/rpcMethods";
 import * as a from "./actions";
@@ -89,16 +89,32 @@ export function* checkIpfsConnectionStatus() {
   }
 }
 
+/**
+ * Aggregates all previous data fetches
+ */
+export function* fetchAllDappnodeStatus() {
+  try {
+    yield all([
+      call(fetchDappnodeParams),
+      call(fetchDappnodeStats),
+      call(fetchDappnodeDiagnose),
+      call(pingDappnodeDnps),
+      call(checkIpfsConnectionStatus)
+    ]);
+  } catch (e) {
+    console.error(`Error on fetchAllDappnodeStatus: ${e.stack}`);
+  }
+}
+
 /******************************* Watchers *************************************/
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 export default rootWatcher([
-  [CONNECTION_OPEN, fetchDappnodeParams],
-  [CONNECTION_OPEN, fetchDappnodeStats],
-  [CONNECTION_OPEN, fetchDappnodeDiagnose],
-  [CONNECTION_OPEN, pingDappnodeDnps],
-  [CONNECTION_OPEN, checkIpfsConnectionStatus],
+  // Fetch everything
+  [CONNECTION_OPEN, fetchAllDappnodeStatus],
+  [t.FETCH_ALL_DAPPNODE_STATUS, fetchAllDappnodeStatus],
+  // Fetch single data
   [t.FETCH_DAPPNODE_PARAMS, fetchDappnodeParams],
   [t.FETCH_DAPPNODE_STATS, fetchDappnodeStats],
   [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],

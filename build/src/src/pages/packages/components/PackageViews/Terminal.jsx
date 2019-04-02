@@ -1,27 +1,31 @@
 import React from "react";
-import "./terminal.css";
+import styled from "styled-components";
 import striptags from "striptags";
 import AnsiUp from "ansi_up";
+
 const ansi_up = new AnsiUp();
 
-export default class Log extends React.Component {
-  render() {
-    let msgAnsi;
+const TerminalBox = styled.div`
+  white-space: pre;
+  font-size: 75%;
+  font-family: "Inconsolata", monospace;
+  overflow: auto;
+  height: 30rem;
+  padding: 1.25rem;
+  border-radius: 0.25rem;
+  background-color: #343a40;
+  color: white;
+`;
 
-    if (this.props.text && this.props.text !== "") {
-      msgAnsi = this.props.text;
-    } else msgAnsi = "loading...";
-
-    let msgHTML = ansi_up.ansi_to_html(striptags(msgAnsi));
-    return (
-      <div className="card text-white bg-dark">
-        <div className="card-body terminal" id={this.props.terminalID}>
-          <div
-            className="card-text"
-            dangerouslySetInnerHTML={{ __html: msgHTML }}
-          />
-        </div>
-      </div>
-    );
-  }
+export default function Terminal({ text, ...props }) {
+  return (
+    <div className="card">
+      <TerminalBox
+        dangerouslySetInnerHTML={{
+          __html: ansi_up.ansi_to_html(striptags(text || "No input"))
+        }}
+        {...props}
+      />
+    </div>
+  );
 }

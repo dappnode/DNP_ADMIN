@@ -9,8 +9,6 @@ import Logs from "./PackageViews/Logs";
 import Envs from "./PackageViews/Envs";
 import FileManager from "./PackageViews/FileManager";
 import Controls from "./PackageViews/Controls";
-import Loading from "components/generic/Loading";
-import NoPackagesYet from "./NoPackagesYet";
 import NoDnpInstalled from "./NoDnpInstalled";
 
 const PackageInterface = ({ dnp, id, moduleName, areThereDnps }) => (

@@ -30,7 +30,7 @@ export default (state = {}, action) => {
       // Assuming this function is only called to fetch the DNPs from the DAPPMANAGER
       // DNPs will be whitelisted
       assertAction(action, { dnps: {} });
-      Object.getOwnPropertyNames(action.dnps).forEach(key => {
+      Object.keys(action.dnps).forEach(key => {
         action.dnps[key].whitelisted = true;
       });
       return mergeOverwriteArrays(state, action.dnps);

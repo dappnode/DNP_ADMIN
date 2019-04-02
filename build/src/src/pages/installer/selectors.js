@@ -19,6 +19,8 @@ import {
 import parseInstallTag from "./parsers/parseInstallTag";
 import stringifyUserSetPorts from "./parsers/stringifyUserSetPorts";
 import stringifyUserSetVols from "./parsers/stringifyUserSetVols";
+// Utils
+import _ from "lodash";
 
 // #### EXTERNAL SELECTORS
 export const connectionOpen = getIsConnectionOpen;
@@ -146,7 +148,8 @@ const getVarFactory = varId => {
         });
 
       // Merge default envs and the ones set by the user
-      return merge(defaultVars, userSetVar);
+      // Also, clean empty objects
+      return cleanObj(merge(defaultVars, userSetVar));
     }
   );
 };
@@ -274,6 +277,7 @@ export const directoryLoaded = createSelector(
 );
 
 // Utilitites
+
 function includesSafe(source, target) {
   try {
     return JSON.stringify(source).includes(target);
@@ -281,4 +285,8 @@ function includesSafe(source, target) {
     console.error(`Error on includesSafe: ${e.stack}`);
     return true;
   }
+}
+
+function cleanObj(obj) {
+  return _.pickBy(obj, value => !_.isEmpty(value));
 }

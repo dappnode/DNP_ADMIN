@@ -26,6 +26,9 @@ const store = createStore(
   composedEnhancers(applyMiddleware(...middlewares))
 );
 
+// ##### DEV
+window.dispach = store.dispatch;
+
 export default store;
 
 // Run the saga

@@ -6,7 +6,7 @@ export default class PackageDetails extends React.Component {
     //   let homepage = manifest ? manifest.homepage || {} : {};
     //   if (typeof homepage === typeof "String") homepage = { homepage };
     //   else if (typeof homepage !== typeof {}) homepage = {};
-    //   return Object.getOwnPropertyNames(homepage).map(e => ({
+    //   return Object.keys(homepage).map(e => ({
     //     name: e,
     //     link: homepage[e]
     //   }));

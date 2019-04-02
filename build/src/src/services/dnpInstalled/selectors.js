@@ -1,12 +1,11 @@
 import { mountPoint } from "./data";
 import { createSelector } from "reselect";
-import { objToArray } from "utils/objects";
 
 // Service > dnpInstalled
 
 export const getDnpInstalled = createSelector(
   state => state[mountPoint],
-  dnps => objToArray(dnps)
+  dnps => dnps
 );
 
 /**

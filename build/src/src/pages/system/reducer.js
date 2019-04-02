@@ -3,8 +3,7 @@ import * as t from "./actionTypes";
 
 const initialState = {
   coreDeps: [],
-  coreManifest: null,
-  staticIpInput: ""
+  coreManifest: null
 };
 
 export default function(state = initialState, action) {
@@ -19,12 +18,6 @@ export default function(state = initialState, action) {
       return {
         ...state,
         coreManifest: action.coreManifest
-      };
-
-    case t.UPDATE_STATIC_IP_INPUT:
-      return {
-        ...state,
-        staticIpInput: action.staticIpInput
       };
 
     default:

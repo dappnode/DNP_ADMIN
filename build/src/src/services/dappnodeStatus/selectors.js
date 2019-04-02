@@ -57,7 +57,8 @@ export const getDappnodeIdentityClean = createSelector(
 
 export const getStaticIp = createSelector(
   getDappnodeParams,
-  ({ staticIp }) => staticIp
+  // Asign "" as default value to prevent errors in inputs and react hooks
+  ({ staticIp }) => staticIp || ""
 );
 
 export const getUpnpAvailable = createSelector(

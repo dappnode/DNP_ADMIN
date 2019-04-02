@@ -25,10 +25,9 @@ export default class TypeFilter extends React.Component {
     const directory = this.props.directory || {};
     // Adding default types
     let uniqueTypes = defaultTypes;
-    Object.getOwnPropertyNames(directory).forEach(pkgName => {
-      const pkg = directory[pkgName];
-      if (pkg && pkg.manifest && pkg.manifest.type) {
-        uniqueTypes[pkg.manifest.type] = true;
+    Object.values(directory).forEach(dnp => {
+      if ((dnp.manifest || {}).type) {
+        uniqueTypes[dnp.manifest.type] = true;
       }
     });
 

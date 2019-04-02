@@ -7,18 +7,18 @@ describe("service > dnpInstalled", () => {
       const ethchain = "ethchain.dnp.dappnode.eth";
       const ipfs = "ipfs.dnp.dappnode.eth";
       const state = {
-        [mountPoint]: {
-          [ethchain]: {
+        [mountPoint]: [
+          {
             name: ethchain,
             shortName: "ethchain",
             volumes: [{ name: ethchain + "_data", size: 1000 }]
           },
-          [ipfs]: {
+          {
             name: ipfs,
             shortName: "ipfs",
             volumes: [{ name: ipfs + "_data", size: 1000 }]
           }
-        }
+        ]
       };
       expect(s.getDappnodeVolumes(state)).toEqual([
         { name: "ethchain size", size: 1000 },
