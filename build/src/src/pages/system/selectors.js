@@ -28,7 +28,7 @@ export const getCoreProgressLog = createSelector(
   getProgressLogs,
   progressLogs => {
     const coreDnpName = "core.dnp.dappnode.eth";
-    for (const logId of Object.keys(progressLogs)) {
+    for (const logId of Object.keys(progressLogs || {})) {
       if (Object.keys(progressLogs[logId]).includes(coreDnpName)) {
         return progressLogs[logId];
       }

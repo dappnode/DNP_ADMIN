@@ -4,10 +4,10 @@ import { title } from "../data";
 import PackageList from "./PackageList";
 
 const PackagesHome = () => (
-  <React.Fragment>
+  <>
     <div className="section-title">{title}</div>
     <PackageList moduleName={title} coreDnps={false} />
-  </React.Fragment>
+  </>
 );
 
 export default PackagesHome;

@@ -11,7 +11,7 @@ const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
 export default class Home extends React.Component {
   render() {
     return (
-      <div>
+      <>
         <div className="jumbotron">
           <h1 className="display-4">Welcome to DAppNode</h1>
           <p className="lead">
@@ -45,7 +45,7 @@ export default class Home extends React.Component {
             </NavLink>
           ))}
         </div>
-      </div>
+      </>
     );
   }
 }

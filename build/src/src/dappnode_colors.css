@@ -9,6 +9,8 @@
   --danger-color: #d9534f;
   --warning-color: #f0ad4e;
   --success-color: #5cb85c;
+  /* Shortcuts */
+  --dappnode-color: var(--dappnode-strong-main-color);
 }
 
 /* btn styles - extend bootstrap v4. Use with:

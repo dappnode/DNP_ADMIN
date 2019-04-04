@@ -14,7 +14,7 @@ const PackageList = packages.components.PackageList;
 const width = "85px";
 
 const SystemHome = ({ coreDeps }) => (
-  <React.Fragment>
+  <>
     <div className="section-title capitalize">{title}</div>
 
     {coreDeps.length ? (
@@ -36,7 +36,7 @@ const SystemHome = ({ coreDeps }) => (
 
     <div className="section-subtitle">Packages</div>
     <PackageList moduleName={title} coreDnps={true} />
-  </React.Fragment>
+  </>
 );
 
 // Container

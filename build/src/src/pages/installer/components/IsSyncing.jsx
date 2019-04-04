@@ -2,52 +2,23 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-// Styles
-import "./installer.css";
+// Components
+import Card from "components/Card";
+import SubTitle from "components/SubTitle";
 
-class InstallerView extends React.Component {
-  static propTypes = {
-    mainnet: PropTypes.object.isRequired
-  };
-
-  render() {
-    const margin = "5px";
-    const padding = "0.7rem";
-
-    return (
-      <React.Fragment>
-        <div className="section-subtitle">Mainnet is syncing...</div>
-        <div className="card mb-3">
-          <div className="card-body" style={{ padding }}>
-            <div className="row">
-              <div className="col" style={{ margin, overflow: "hidden" }}>
-                <p>
-                  Please wait while your mainnet full node syncs to install
-                  DAppNode packages. Otherwise, you can install packages using
-                  their IPFS hash.
-                </p>
-                <p>{this.props.mainnet.msg}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </React.Fragment>
-    );
-  }
+function IsSyncing({ message }) {
+  return (
+    <React.Fragment>
+      <SubTitle>Mainnet is syncing...</SubTitle>
+      <Card>
+        <p>
+          Please wait while your mainnet full node syncs to install DAppNode
+          packages. Otherwise, you can install packages using their IPFS hash.
+        </p>
+        <p>{message}</p>
+      </Card>
+    </React.Fragment>
+  );
 }
 
-const mapStateToProps = createStructuredSelector({
-  mainnet: state => {
-    const mainnet = state.chainData.find(
-      chain => (chain.name || "").toLowerCase() === "mainnet"
-    );
-    return mainnet || {};
-  }
-});
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InstallerView);
+export default IsSyncing;

@@ -25,7 +25,7 @@ export default class SdkHome extends React.Component {
     const padding = "0.7rem";
 
     return (
-      <React.Fragment>
+      <>
         <div className="section-title">{title}</div>
 
         <div className="section-subtitle">What is the SDK?</div>
@@ -104,7 +104,7 @@ export default class SdkHome extends React.Component {
             </div>
           </div>
         ))}
-      </React.Fragment>
+      </>
     );
   }
 }

@@ -12,23 +12,23 @@ import Controls from "./PackageViews/Controls";
 import NoDnpInstalled from "./NoDnpInstalled";
 
 const PackageInterface = ({ dnp, id, moduleName, areThereDnps }) => (
-  <React.Fragment>
+  <>
     <div className="section-title">
       <span className="pre-title">{moduleName} </span>
       {id}
     </div>
     {dnp ? (
-      <React.Fragment>
+      <>
         <Details dnp={dnp} />
         <Controls dnp={dnp} />
         <Envs dnp={dnp} />
         <FileManager dnp={dnp} />
-        <Logs dnp={dnp} />
-      </React.Fragment>
+        <Logs id={dnp.name} />
+      </>
     ) : areThereDnps ? (
       <NoDnpInstalled id={id} moduleName={moduleName} />
     ) : null}
-  </React.Fragment>
+  </>
 );
 
 PackageInterface.propTypes = {

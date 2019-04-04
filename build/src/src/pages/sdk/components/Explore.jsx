@@ -18,7 +18,7 @@ class Explore extends React.Component {
 
     const registries = this.props.registries || {};
     return (
-      <React.Fragment>
+      <>
         <div className="section-title">
           <span
             style={{
@@ -91,7 +91,7 @@ class Explore extends React.Component {
             </React.Fragment>
           );
         })}
-      </React.Fragment>
+      </>
     );
   }
 }

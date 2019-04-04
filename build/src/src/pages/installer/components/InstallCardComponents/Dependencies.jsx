@@ -1,84 +1,60 @@
 import React from "react";
-import "./loadBar.css";
+// Components
+import CardList from "components/CardList";
+import SubTitle from "components/SubTitle";
+import Ok from "components/Ok";
+import DependencyList from "./DependencyList";
+import ProgressBar from "react-bootstrap/ProgressBar";
 
-export default class Dependencies extends React.Component {
-  render() {
-    const request = this.props.request || {};
-    const installedPackages = this.props.installedPackages || {};
-    let body;
-    if (!Object.keys(request).length) {
-      body = <p>Empty request</p>;
-    } else if (request.fetching) {
-      body = (
-        <React.Fragment>
-          <p style={{ opacity: 0.6 }}>
-            <strong>Verifying compatibility...</strong>
-          </p>
-          <div className="progress">
-            <div className="indeterminate" />
-          </div>
-        </React.Fragment>
-      );
-    } else if (!request.success) {
-      body = <p style={{ color: "#d50f0fd1" }}>✕ {request.message}</p>;
-    } else if (request.success) {
-      const success = request.success || {};
-      const alreadyUpdated = request.alreadyUpdated || {};
-      const dnps = { ...alreadyUpdated, ...success };
-      body = (
-        <React.Fragment>
-          <p style={{ color: "#2fbcb2" }}>
-            <strong>✓ Compatible</strong>
-          </p>
-          <div className="row">
-            <div className="col-4" />
-            <div className="col-4">Current version</div>
-            <div className="col-4">Requested version</div>
-          </div>
-          {Object.keys(dnps).map((dnpName, i) => {
-            try {
-              return (
-                <div key={i} className="row">
-                  <div className="col-4 text-truncate">{dnpName}</div>
-                  <div className="col-4 text-truncate">
-                    {(installedPackages.find(dnp => dnp.name === dnpName) || {})
-                      .version || "-"}
-                  </div>
-                  <div className="col-4 text-truncate">
-                    {(request.success || {})[dnpName]}
-                  </div>
-                </div>
-              );
-            } catch (e) {
-              console.warn(
-                `Error generating row in <Dependencies> for dnpName ${dnpName}`,
-                e
-              );
-              return null;
-            }
-          })}
-        </React.Fragment>
-      );
-    } else if (request.errors) {
-      body = (
-        <p style={{ color: "#d50f0fd1" }}>✕ Install request not compatible</p>
-      );
-    } else {
-      body = (
-        <p style={{ color: "#d50f0fd1" }}>
-          ✕ Something went wrong, broken request object{" "}
-          {JSON.stringify(request)}
-        </p>
-      );
-    }
-
+function Dependencies({ request, resolving }) {
+  if (resolving)
     return (
-      <React.Fragment>
-        <div className="section-subtitle">Dependencies</div>
-        <div className="card mb-4">
-          <div className="card-body">{body}</div>
-        </div>
-      </React.Fragment>
+      <div>
+        <ProgressBar now={100} animated={true} label={"Resolving..."} />
+      </div>
+    );
+
+  if (!Object.keys(request || {}).length) return "Empty request";
+
+  const { success, alreadyUpdated, errors } = request || {};
+  const installedPackages = [];
+
+  if (success) {
+    const dnps2 = { ...(alreadyUpdated || {}), ...(success || {}) };
+    const dnps = Object.entries(dnps2).map(([dnpName, version]) => {
+      const dnp = installedPackages.find(dnp => dnp.name === dnpName);
+      return {
+        from: (dnp || {}).version || "",
+        to: version,
+        name: dnpName,
+        manifest: {}
+      };
+    });
+    return (
+      <>
+        <Ok ok={true} msg={"DNP is compatible with current DNPs"} />
+        <DependencyList deps={dnps} />
+      </>
     );
   }
+
+  if (errors) {
+    return <Ok ok={false} msg={"Install request not compatible"} />;
+  }
+
+  return (
+    <Ok
+      ok={false}
+      msg={"Something went wrong, request = " + JSON.stringify(request)}
+    />
+  );
 }
+
+export default props => (
+  <>
+    <SubTitle>Dependencies</SubTitle>
+    <CardList>
+      <Dependencies {...props} />
+    </CardList>
+  </>
+);

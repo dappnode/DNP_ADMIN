@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+// Components
+import Button from "components/Button";
 // Modules
 import { rootPath as installerRootPath } from "pages/installer";
 // Utils
@@ -18,13 +20,18 @@ const NoPackagesYet = ({ id, moduleName }) => (
     </div>
     <div className="row justify-content-center mb-5">
       <Link style={{ margin: "0 10px" }} to={"/" + moduleName}>
-        <button className="dappnode-pill-gray">{moduleName}</button>
+        <Button
+          variant="outline-secondary"
+          style={{ textTransform: "capitalize" }}
+        >
+          {moduleName}
+        </Button>
       </Link>
 
       <Link style={{ margin: "0 10px" }} to={installerRootPath + "/" + id}>
-        <button className="dappnode-pill-gray">
+        <Button variant="outline-secondary">
           Install {shortNameCapitalized(id)}
-        </button>
+        </Button>
       </Link>
     </div>
   </React.Fragment>

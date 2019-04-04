@@ -1,103 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as action from "../../actions";
 import { createStructuredSelector } from "reselect";
+// Components
+import Card from "components/Card";
+import SubTitle from "components/SubTitle";
+import TableInputs from "components/TableInputs";
+import Button from "components/Button";
+// Utils
+import parseManifestEnvs from "pages/installer/parsers/parseManifestEnvs";
 
-function getCurrentEnvs(dnp) {
-  return dnp.envs || {};
-}
-
-function getDefaultEnvs(dnp) {
-  const envsArray = ((dnp.manifest || {}).image || {}).environment || [];
-  const defaultEnvs = {};
-  for (const row of envsArray) {
-    defaultEnvs[row.split("=")[0]] = row.split("=")[1] || "";
-  }
-  return defaultEnvs;
-}
-
-function getEnvs(_dnp, _state) {
-  const dnp = { ..._dnp };
-  const state = { ..._state };
-  const defaultEnvs = getDefaultEnvs(dnp);
-  const defaultEnvsNames = Object.keys(defaultEnvs);
-  // Verify that the current state contains only this package's envs
-  for (const env of Object.keys(state)) {
-    if (!defaultEnvsNames.includes(env)) {
-      delete state[env];
-    }
-  }
+function parseEnvs(dnp) {
   return {
-    ...defaultEnvs,
-    ...getCurrentEnvs(dnp),
-    ...state
+    ...parseManifestEnvs(dnp.manifest),
+    ...(dnp.envs || {})
   };
 }
 
-class EnvVariablesView extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.changeEnv = this.changeEnv.bind(this);
-    this.updateEnvs = this.updateEnvs.bind(this);
-  }
+function Envs({ dnp, updateEnvs }) {
+  const dnpEnvs = parseEnvs(dnp);
+  const [envs, setEnvs] = useState(dnpEnvs);
+  useEffect(() => {
+    console.log("Setting ENVS");
+    setEnvs(dnpEnvs);
+  }, [dnp]);
+  console.log("Envs", { envs, dnpEnvs });
 
-  changeEnv(e) {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
-  }
+  if (!Object.keys(dnpEnvs).length) return null;
 
-  updateEnvs() {
-    const dnp = this.props.dnp || {};
-    this.props.updateEnvs(dnp.name, getEnvs(dnp, this.state));
-  }
-
-  render() {
-    const dnp = this.props.dnp || {};
-    const envs = getEnvs(dnp, this.state);
-    // const envs = dnp.envs || {};
-    if (Object.keys(envs).length === 0) {
-      return null;
-    }
-
-    let envsList = Object.keys(envs).map((env, i) => {
-      return (
-        <div key={i} className="input-group mb-3">
-          <div className="input-group-prepend">
-            <span className="input-group-text">{env}</span>
-          </div>
-          <input
-            type="text"
-            className="form-control"
-            name={env}
-            value={envs[env]}
-            onChange={this.changeEnv}
-            aria-label={env}
-            aria-describedby="basic-addon1"
-          />
-        </div>
-      );
-    });
-
-    return (
-      <React.Fragment>
-        <div className="section-subtitle">Environment variables</div>
-        <div className="card mb-4">
-          <div className="card-body">
-            {envsList}
-            <button
-              type="button"
-              className="btn btn-outline-secondary tableAction-button"
-              id={this.props.id}
-              onClick={this.updateEnvs}
-            >
-              Update environment variables
-            </button>
-          </div>
-        </div>
-      </React.Fragment>
-    );
-  }
+  return (
+    <>
+      <SubTitle>Enviroment variables</SubTitle>
+      <Card>
+        <TableInputs
+          headers={["Name", "Value"]}
+          content={Object.entries(envs).map(([key, value]) => [
+            {
+              lock: true,
+              value: key
+            },
+            {
+              placeholder: "enter value...",
+              value: value || "",
+              onValueChange: value => setEnvs({ ...envs, [key]: value })
+            }
+          ])}
+        />
+        <Button
+          variant="outline-secondary"
+          onClick={() => updateEnvs(dnp.name, envs)}
+        >
+          Update environment variables
+        </Button>
+      </Card>
+    </>
+  );
 }
 
 // Container
@@ -111,4 +68,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EnvVariablesView);
+)(Envs);

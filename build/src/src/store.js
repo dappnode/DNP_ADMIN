@@ -28,6 +28,7 @@ const store = createStore(
 
 // ##### DEV
 window.dispach = store.dispatch;
+window.store = store;
 
 export default store;
 

@@ -10,7 +10,7 @@ import withLoading from "components/hoc/withLoading";
 const PackageInterface = packages.components.PackageInterface;
 
 const SystemRoot = () => (
-  <React.Fragment>
+  <>
     {/* Use switch so only the first match is rendered. match.url = /system */}
     <Switch>
       <Route exact path={rootPath} component={SystemHome} />
@@ -20,7 +20,7 @@ const SystemRoot = () => (
         render={props => <PackageInterface {...props} moduleName={title} />}
       />
     </Switch>
-  </React.Fragment>
+  </>
 );
 
 // Container

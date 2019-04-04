@@ -79,7 +79,7 @@ class Publish extends React.Component {
       loading ? "is-loading" : error ? "is-invalid" : success ? "is-valid" : "";
 
     return (
-      <React.Fragment>
+      <>
         <div className="section-title">
           <span
             style={{
@@ -236,7 +236,7 @@ class Publish extends React.Component {
             </form>
           </div>
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }

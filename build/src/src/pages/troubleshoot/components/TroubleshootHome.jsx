@@ -13,6 +13,7 @@ import Title from "components/Title";
 import { fetchAllDappnodeStatus } from "services/dappnodeStatus/actions";
 // Icon
 import Github from "Icons/Github";
+import Ok from "components/Ok";
 // Styles
 import "./troubleshoot.css";
 
@@ -36,17 +37,7 @@ function TroubleshootHome({
       <Card>
         {diagnoses.map(({ ok, msg, solutions }, i) => (
           <div key={i}>
-            <div>
-              <span
-                style={{
-                  color: ok ? "#1ccec0" : "#ff0000",
-                  fontWeight: 800
-                }}
-              >
-                {ok ? "✓" : "✕"}
-              </span>{" "}
-              {msg}
-            </div>
+            <Ok {...{ ok, msg }} />
             {!ok && solutions ? (
               <ul>
                 {solutions.map((item, j) => (

@@ -29,14 +29,14 @@ function Ports({ ports, isInstalled, hideCardHeaders, updateUserSetPorts }) {
               headers={["Host port", "Package port / type"]}
               content={Object.entries(dnpVols).map(([id, port]) => [
                 {
-                  lock: isInstalled[dnpName],
+                  disabled: isInstalled[dnpName],
                   placeholder: "ephemeral port (32768-65535)",
                   value: port.host || "",
                   onValueChange: value =>
                     updateUserSetPorts({ ...port, id, dnpName, host: value })
                 },
                 {
-                  lock: true,
+                  disabled: true,
                   value: port.container + (port.type ? "/" + port.type : "")
                 }
               ])}

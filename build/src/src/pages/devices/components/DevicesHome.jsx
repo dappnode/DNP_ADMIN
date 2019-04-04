@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import * as a from "../actions";
 import { createStructuredSelector } from "reselect";
-import DeviceList from "./DeviceList";
+// Own module
+import DeviceGrid from "./DeviceGrid";
+import * as a from "../actions";
+// Services
 import { getDevices } from "services/devices/selectors";
-// Utils
-import onEnterKey from "utils/onEnterKey";
+// Components
+import Input from "components/Input";
+import Button from "components/Button";
 
 const DevicesHome = ({
   deviceList,
@@ -17,41 +20,33 @@ const DevicesHome = ({
 }) => {
   const [id, setId] = useState("");
   return (
-    <React.Fragment>
+    <>
       <div className="section-title">Devices</div>
 
-      <div className="input-group mb-3">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Device's unique name"
-          value={id}
-          // Ensure id contains only alphanumeric characters
-          onChange={e => setId((e.target.value || "").replace(/\W/g, ""))}
-          onKeyPress={onEnterKey(() => {
-            addDevice(id);
-            setId("");
-          })}
-        />
-        <div className="input-groupWithoutGuest-append">
-          <button
-            className="btn btn-outline-secondary"
-            type="button"
-            onClick={() => addDevice(id)}
-          >
+      <Input
+        placeholder="Device's unique name"
+        value={id}
+        // Ensure id contains only alphanumeric characters
+        onValueChange={value => setId((value || "").replace(/\W/g, ""))}
+        onEnterPress={() => {
+          addDevice(id);
+          setId("");
+        }}
+        append={
+          <Button variant="outline-secondary" onClick={() => addDevice(id)}>
             Add device
-          </button>
-        </div>
-      </div>
+          </Button>
+        }
+      />
 
-      <DeviceList
-        deviceList={deviceList}
+      <DeviceGrid
+        devices={deviceList}
         removeDevice={removeDevice}
         resetDevice={resetDevice}
         toggleAdmin={toggleAdmin}
         getDeviceCredentials={getDeviceCredentials}
       />
-    </React.Fragment>
+    </>
   );
 };
 

@@ -1,4 +1,12 @@
 import React from "react";
+import styled from "styled-components";
+
+const Domain = styled.span`
+  opacity: 0.3;
+`;
+const Name = styled.span`
+  text-transform: capitalize;
+`;
 
 const DnpName = ({ dnpName }) => {
   // Return no name if undefined
@@ -8,10 +16,10 @@ const DnpName = ({ dnpName }) => {
   const [shortName, domain] = dnpName.split(/\.(.+)/);
   if (shortName && domain) {
     return (
-      <React.Fragment>
-        <span style={{ textTransform: "capitalize" }}>{shortName}</span>
-        <span style={{ opacity: 0.3 }}>.{domain}</span>
-      </React.Fragment>
+      <span>
+        <Name>{shortName}</Name>
+        <Domain>.{domain}</Domain>
+      </span>
     );
   } else {
     return <span>{dnpName}</span>;

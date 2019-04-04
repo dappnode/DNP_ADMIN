@@ -1,14 +1,13 @@
 import React from "react";
+// Components
+import Card from "components/Card";
+import SubTitle from "components/SubTitle";
 
 const SpecialPermissions = () => (
-  <React.Fragment>
-    <div className="section-subtitle">Special Permissions</div>
-    <div className="card mb-4">
-      <div className="card-body">
-        <p className="card-text">Requires no special permissions</p>
-      </div>
-    </div>
-  </React.Fragment>
+  <>
+    <SubTitle>Special Permissions</SubTitle>
+    <Card>Requires no special permissions</Card>
+  </>
 );
 
 export default SpecialPermissions;

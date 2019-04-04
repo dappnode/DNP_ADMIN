@@ -1,0 +1,101 @@
+.devices-grid {
+  --icon-size: 1.75em;
+  --grid-spacing: 1rem;
+  display: grid;
+  /*
+  Col 1: Shrink the text to an extend, otherwise fill all available space
+  Col 2, 3: Fit to the link buttons / switch always
+  Col 4, 5: On small screens fit to the icon, otherwise to the text
+  NOTE: The min values are less than the content so it collapses over the
+  grid-gap space. On really small screens it helps delay the appearance of
+  the lateral scrollbar
+   */
+  grid-template-columns:
+    minmax(4rem, auto)
+    min-content
+    minmax(2.5rem, min-content)
+    minmax(calc(var(--icon-size) / 2), min-content)
+    minmax(calc(var(--icon-size) / 2), min-content);
+  grid-gap: var(--grid-spacing);
+  place-items: center;
+}
+
+/* Align the second column to the left */
+.devices-grid > .center {
+  justify-self: center;
+  text-align: center;
+}
+
+.devices-grid > header {
+  opacity: 0.5;
+  text-transform: capitalize;
+  /* When the screen is really small, hide the name of the actions */
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+
+.devices-grid > *:not(header) {
+  align-items: center;
+}
+
+/* Make the text break word */
+.devices-grid > aside {
+  justify-self: left;
+  white-space: normal;
+  width: 100%;
+  font-size: 1.2rem;
+}
+
+.devices-grid svg {
+  height: var(--icon-size);
+  width: var(--icon-size);
+  opacity: 0.5;
+  cursor: pointer;
+}
+.devices-grid svg:hover {
+  opacity: 0.8;
+}
+.devices-grid > hr {
+  grid-column: 1 / -1;
+  border-bottom: var(--border-style);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.devices-grid > hr:last-child {
+  display: none;
+}
+
+/* When showing two buttons, inline and space them */
+.devices-grid > .group {
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: var(--grid-spacing);
+}
+
+/* Center the button inside the NavLink */
+.devices-grid > .group > a {
+  display: flex;
+}
+
+/* Make bootstrap buttons smaller */
+.devices-grid .btn {
+  padding: 0.2rem 0.5rem;
+}
+
+/* Device Settings `/devices/:id` */
+
+.device-settings {
+  display: grid;
+  grid-gap: var(--default-spacing);
+}
+.device-settings > header {
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: minmax(4rem, auto) min-content;
+  grid-gap: var(--default-spacing);
+}
+.device-settings > .alert {
+  margin: 0;
+}

@@ -18,7 +18,8 @@ import { arrayToObj } from "utils/objects";
 
 // Prevent manifest arrays to keep populating
 const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
-const mergeOverwriteArrays = (a, b) => merge(a, b, overwriteMerge);
+const mergeOverwriteArrays = (a, b) =>
+  merge(a, b, { arrayMerge: overwriteMerge });
 
 export default (state = {}, action) => {
   switch (action.type) {

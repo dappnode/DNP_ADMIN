@@ -19,9 +19,18 @@
   min-width: 75px;
 }
 
-/* ##### DEV */
+/* PackagesViews / Logs */
 
 .log-controls .input-group,
 .log-controls label {
   margin-bottom: 1rem !important;
+}
+
+/* PackagesViews / Controls */
+
+.control-item {
+  display: grid;
+  grid-template-columns: auto 100px;
+  align-items: start;
+  grid-gap: var(--default-spacing);
 }

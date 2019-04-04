@@ -1,86 +1,66 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
 import { NavLink } from "react-router-dom";
 import QRCode from "qrcode.react";
-import "./adminBadge.css";
-import { guestsName, guestsIpRange } from "../data";
-import { getDevices } from "services/devices/selectors";
+import withTitle from "components/hoc/withTitle";
+// Own module
+import * as a from "../actions";
+import { rootPath } from "../data";
+// Services
+import { getDeviceById } from "services/devices/selectors";
+// Components
+import Card from "components/Card";
+import Button from "components/Button";
 
-class DevicesSettings extends React.Component {
-  render() {
-    const idUrl = this.props.match.params.id;
-    const device = this.props.deviceList.find(d => d.id === idUrl) || {};
+function DevicesSettings({ device, getDeviceCredentials }) {
+  const { id, url } = device;
+  useEffect(() => {
+    if (!url && id) getDeviceCredentials(id);
+  }, [url, id]);
 
-    const margin = "5px";
-    const padding = "0.7rem";
-    const { id, url, isAdmin, ip } = device;
-    const ipField = id
-      ? id === guestsName
-        ? guestsIpRange
-        : ip
-      : "Go back to the device list";
+  return (
+    <Card className="device-settings">
+      <header>
+        <h5 className="card-title">{id || "Device not found"}</h5>
+        <NavLink to={rootPath}>
+          <Button variant="outline-secondary">Back</Button>
+        </NavLink>
+      </header>
 
-    return (
-      <div>
-        <div className="section-title">
-          <span style={{ opacity: 0.3, fontWeight: 300 }}>Devices </span>
-          {id || "Device not found"}
-        </div>
-        <div className="card mb-3" id={id}>
-          <div className="card-body" style={{ padding }}>
-            <div className="d-flex justify-content-between">
-              <div style={{ margin, width: "200px" }}>
-                <h5 className="card-title">{id}</h5>
-                <p className="card-text">
-                  {ipField && <span className="ipBadge">{ipField}</span>}
-                  {isAdmin && <span className="adminBadge">ADMIN</span>}
-                </p>
-              </div>
-              <div className="btn-group" role="group" style={{ margin }}>
-                <NavLink to={"/devices/"}>
-                  <button type="button" className="btn btn-outline-secondary">
-                    Back
-                  </button>
-                </NavLink>
-              </div>
-            </div>
-
-            <div className="d-flex justify-content-center">
-              <div className="mt-3" style={{ margin }}>
-                {url && (
-                  <div className="alert alert-warning" role="alert">
-                    Beware of shoulder surfing attacks (unsolicited observers),
-                    This QR code will grant them access to your DAppNode
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="d-flex justify-content-center">
-              <div style={{ maxWidth: "400px", margin }}>
-                {url && (
-                  <QRCode
-                    value={url}
-                    renderAs="svg"
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="alert alert-warning" role="alert">
+        Beware of shoulder surfing attacks (unsolicited observers), This QR code
+        will grant them access to your DAppNode
       </div>
-    );
-  }
+
+      <div style={{ maxWidth: "400px" }}>
+        {url && (
+          <QRCode
+            value={url}
+            renderAs="svg"
+            style={{ width: "100%", height: "100%" }}
+          />
+        )}
+      </div>
+    </Card>
+  );
 }
 
 const mapStateToProps = createStructuredSelector({
-  deviceList: getDevices
+  device: (state, ownProps) => getDeviceById(state, ownProps.match.params.id),
+  // For the withTitle HOC
+  subtitle: (_, ownProps) => ownProps.match.params.id
 });
 
-const mapDispatchToProps = null;
+const mapDispatchToProps = {
+  getDeviceCredentials: a.getDeviceCredentials
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+export default compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  withTitle("Devices")
 )(DevicesSettings);

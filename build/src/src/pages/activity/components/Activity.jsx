@@ -6,8 +6,8 @@ import { getUserActionLogs } from "services/userActionLogs/selectors";
 
 import "./activity.css";
 
-class ActivityView extends React.Component {
-  download() {
+function Activity({ userActionLogs }) {
+  function download() {
     var dataStr =
       "data:text/json;charset=utf-8," +
       encodeURIComponent(JSON.stringify(this.props.userActionLogs, null, 2));
@@ -17,29 +17,24 @@ class ActivityView extends React.Component {
     dlAnchorElem.click();
   }
 
-  render() {
-    return (
-      <div>
-        <div className="section-title">Activity</div>
+  return (
+    <>
+      <div className="section-title">Activity</div>
 
-        <p>
-          If a developer asks for more information regarding an error; please
-          find the error in the list below, tap on it and copy everything in the
-          expanded grey text area.
-        </p>
-        <button
-          className="btn btn-dappnode mb-4"
-          onClick={this.download.bind(this)}
-        >
-          Download all logs
-        </button>
-        <a id="downloadAnchorElem" style={{ display: "none" }} href="/">
-          Download Anchor
-        </a>
-        <ActivityList userActionLogs={this.props.userActionLogs} />
-      </div>
-    );
-  }
+      <p>
+        If a developer asks for more information regarding an error; please find
+        the error in the list below, tap on it and copy everything in the
+        expanded grey text area.
+      </p>
+      <button className="btn btn-dappnode mb-4" onClick={download}>
+        Download all logs
+      </button>
+      <a id="downloadAnchorElem" style={{ display: "none" }} href="/">
+        Download Anchor
+      </a>
+      <ActivityList userActionLogs={userActionLogs} />
+    </>
+  );
 }
 
 const mapStateToProps = createStructuredSelector({
@@ -51,4 +46,4 @@ const mapDispatchToProps = {};
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ActivityView);
+)(Activity);

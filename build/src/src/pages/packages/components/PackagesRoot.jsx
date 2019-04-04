@@ -8,10 +8,10 @@ import withLoading from "components/hoc/withLoading";
 // Logic
 
 const PackagesRoot = () => (
-  <React.Fragment>
+  <>
     <Route exact path={rootPath} component={PackagesHome} />
     <Route path={rootPath + "/:id"} component={PackageInterface} />
-  </React.Fragment>
+  </>
 );
 
 // Use `compose` from "redux" if you need multiple HOC

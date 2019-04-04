@@ -232,30 +232,8 @@ const getDnpDirectoryWithTags = createSelector(
       const tag = parseInstallTag(dnpDirectory, dnpInstalled, dnpName);
       dnpDirectory[dnpName].tag = tag;
     });
-    return dnpDirectory;
+    return Object.values(dnpDirectory);
   }
-);
-
-/**
- * Filters directory by:
- * 1. Search bar. If search bar is empty, return all
- * 2. Selected types: If no types selected, return all
- * @returns {Array}
- * [Tested]
- */
-export const getFilteredDirectoryWithTags = createSelector(
-  getDnpDirectoryWithTags,
-  getInputValue,
-  getSelectedTypes,
-  (dnps, inputValue, selectedTypes) =>
-    Object.values(dnps)
-      .reverse()
-      .filter(dnp => !inputValue || includesSafe(dnp.manifest, inputValue))
-      .filter(
-        dnp =>
-          !Object.keys(selectedTypes).length ||
-          ((dnp.manifest || {}).type && selectedTypes[dnp.manifest.type])
-      )
 );
 
 /**
@@ -264,8 +242,8 @@ export const getFilteredDirectoryWithTags = createSelector(
  * @returns {Array}
  * [Tested]
  */
-export const getFilteredDirectoryWithTagsNonCores = createSelector(
-  getFilteredDirectoryWithTags,
+export const getDirectoryWithTagsNonCores = createSelector(
+  getDnpDirectoryWithTags,
   dnps =>
     // If packages are broken, display them anyway
     dnps.filter(dnp => !dnp.manifest || (dnp.manifest || {}).type !== "dncore")
@@ -277,15 +255,6 @@ export const directoryLoaded = createSelector(
 );
 
 // Utilitites
-
-function includesSafe(source, target) {
-  try {
-    return JSON.stringify(source).includes(target);
-  } catch (e) {
-    console.error(`Error on includesSafe: ${e.stack}`);
-    return true;
-  }
-}
 
 function cleanObj(obj) {
   return _.pickBy(obj, value => !_.isEmpty(value));

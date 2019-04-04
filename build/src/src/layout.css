@@ -8,6 +8,7 @@
   --color-background: #f7f9f9a8;
   --border-size: 0.08rem;
   --border-style: var(--border-size) solid var(--color-border);
+  --default-spacing: 1.25rem;
 }
 
 /* 
@@ -167,10 +168,17 @@ body,
 
 /* Align right to the right so the position does not change when the left div is not there */
 #topbar .right {
+  --icon-size: 1.5rem;
   flex: auto;
   display: grid;
   /* Create as much columns as necessary aligned center vertically and justified to the right */
-  grid-auto-columns: min-content;
+  grid-template-columns:
+    minmax(var(--icon-size), min-content)
+    min-content
+    minmax(var(--icon-size), min-content)
+    minmax(var(--icon-size), min-content)
+    min-content
+    minmax(var(--icon-size), min-content);
   grid-auto-flow: column;
   place-content: center end;
   /* Auto-space the items only in-between, hard to achieve with flex */
@@ -188,6 +196,10 @@ main {
   overflow: auto;
   background-color: var(--color-background);
   padding: var(--container-padding);
+}
+
+main > div {
+  margin-bottom: var(--default-spacing);
 }
 
 /********************

@@ -60,7 +60,7 @@ const BaseDropdown = ({
       {/* offset controls the position of the dropdown menu.
         It's purpose is to control clipping on small screens, 
         by placing them as right as possible */}
-      <Dropdown.Menu style={{ right: offset || "0%" }}>
+      <Dropdown.Menu>
         <Dropdown.Header>{name}</Dropdown.Header>
         {messages.map(({ type, title, body, progress }) => (
           <Dropdown.Item key={title || body}>

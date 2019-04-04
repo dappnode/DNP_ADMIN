@@ -29,7 +29,7 @@ function Envs({ envs, hideCardHeaders, updateUserSetEnvs }) {
               headers={["Name", "Value"]}
               content={Object.entries(dnpEnvs).map(([envName, envValue]) => [
                 {
-                  lock: true,
+                  disabled: true,
                   value: envName
                 },
                 {

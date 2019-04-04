@@ -6,6 +6,7 @@ import BaseDropdown from "./BaseDropdown";
 import { getChainData } from "services/chainData/selectors";
 // Icons
 import Link from "Icons/Link";
+import { FiBox } from "react-icons/fi";
 
 const ChainData = ({ chainData }) => {
   return (
@@ -17,7 +18,7 @@ const ChainData = ({ chainData }) => {
         type: chain.error ? "danger" : chain.syncing ? "warning" : "success",
         progress: chain.progress
       }))}
-      Icon={Link}
+      Icon={() => <FiBox size={"1.4em"} />}
       // Right position of the dropdown to prevent clipping on small screens
       offset={"-99px"}
     />

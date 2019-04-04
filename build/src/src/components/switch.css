@@ -68,9 +68,6 @@
 .switch input:disabled + label::before {
   background-color: #e9ecef;
 }
-.switch.switch-sm {
-  font-size: 0.875rem;
-}
 .switch.switch-sm input + label {
   min-width: calc(calc(1.9375rem * 0.8) * 2);
   height: calc(1.9375rem * 0.8);
@@ -86,9 +83,6 @@
 }
 .switch.switch-sm input:checked + label::after {
   margin-left: calc(1.9375rem * 0.8);
-}
-.switch.switch-lg {
-  font-size: 1.25rem;
 }
 .switch.switch-lg input + label {
   min-width: calc(calc(3rem * 0.8) * 2);

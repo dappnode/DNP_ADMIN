@@ -17,6 +17,14 @@
 .dropleft .dropdown-menu {
   top: 120% !important;
   max-width: 90vw;
+  min-width: 14rem;
+}
+/* Only force correction on big screens. 
+  Otherwise let react-bootstrap transform deal with it*/
+@media (min-width: 40rem) {
+  .dropleft .dropdown-menu {
+    left: 100% !important;
+  }
 }
 
 .dropdown-menu-toggle {
@@ -26,10 +34,8 @@
   -webkit-transition: opacity 150ms;
   -ms-transition: opacity 150ms;
   transition: opacity 150ms;
-  /* Show a pointer cursor */
   cursor: pointer;
 }
-
 .dropdown-menu-toggle:hover {
   opacity: 1;
 }
@@ -74,9 +80,11 @@
 }
 .dropdown-item .text {
   font-size: 0.875em;
-}
-.dropdown-item:hover .text {
   white-space: normal;
+}
+.dropdown-item > * {
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .dappnode-name {

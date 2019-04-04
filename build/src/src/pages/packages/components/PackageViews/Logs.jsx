@@ -15,7 +15,7 @@ const terminalID = "terminal";
 
 const validateLines = lines => !isNaN(lines) && lines > 0;
 
-export default function Logs({ dnp }) {
+function Logs({ id }) {
   // User options
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [timestamps, setTimestamps] = useState(false);
@@ -41,7 +41,7 @@ export default function Logs({ dnp }) {
     async function logDnp() {
       try {
         const options = { timestamps, tail: lines };
-        const logs = await api.logPackage({ id: dnp.name, options });
+        const logs = await api.logPackage({ id, options });
         setLogs(logs.logs);
         // Auto scroll to bottom (deffered after the paint)
         setTimeout(scrollToBottom, 10);
@@ -57,7 +57,7 @@ export default function Logs({ dnp }) {
         clearInterval(interval);
       };
     }
-  }, [autoRefresh, timestamps, lines, dnp]);
+  }, [autoRefresh, timestamps, lines, id]);
 
   /**
    * Filter the logs text by lines that contain the query
@@ -115,3 +115,9 @@ export default function Logs({ dnp }) {
     </>
   );
 }
+
+Logs.propTypes = {
+  id: PropTypes.string.isRequired
+};
+
+export default Logs;
