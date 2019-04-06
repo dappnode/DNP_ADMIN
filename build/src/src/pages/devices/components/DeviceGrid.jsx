@@ -8,10 +8,13 @@ import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 // Components
 import Card from "components/Card";
 import Switch from "components/Switch";
-import { ButtonLight } from "components/Button";
+// Helpers
+// import downloadVpnCredentials from "../helpers/downloadVpnCredentials";
+// Utils
+import newTabProps from "utils/newTabProps";
 // Icons
-import { MdDelete, MdRefresh } from "react-icons/md";
-import { FaQrcode } from "react-icons/fa";
+import { MdDelete, MdRefresh, MdShare } from "react-icons/md";
+import { FaQrcode, FaDownload } from "react-icons/fa";
 import { GoClippy } from "react-icons/go";
 import "./devices.css";
 
@@ -50,8 +53,13 @@ function DeviceGrid({
     });
   }
 
+  // function download(id) {
+  //   const device = devices.find(d => d.id === id);
+  //   if (device) downloadVpnCredentials(device);
+  // }
+
   return (
-    <Card className="devices-grid">
+    <Card className="list-grid devices">
       <header>Name</header>
       <header className="center">Link</header>
       <header>Admin</header>
@@ -59,18 +67,19 @@ function DeviceGrid({
       <header>Remove</header>
       {devices.map(({ id, admin, url }) => (
         <React.Fragment key={id}>
-          <aside>{id}</aside>
+          <div className="name">{id}</div>
           {url ? (
-            <div className="group">
+            <div className="group no-a-style">
               <NavLink to={"/devices/" + id}>
-                <FaQrcode />
+                <FaQrcode className="bigger" />
               </NavLink>
               <GoClippy className="copy" data-clipboard-text={url} />
+              <a href="google.com" {...newTabProps}>
+                <FaDownload className="smaller" />
+              </a>
             </div>
           ) : (
-            <ButtonLight onClick={() => getDeviceCredentials(id)}>
-              Get
-            </ButtonLight>
+            <MdShare onClick={() => getDeviceCredentials(id)} />
           )}
           <Switch checked={admin} onToggle={() => toggleAdmin(id)} />
           <MdRefresh onClick={() => resetDeviceConfirm(id)} />

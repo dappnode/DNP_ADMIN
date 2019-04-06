@@ -6,6 +6,8 @@ import SystemHome from "./SystemHome";
 import SystemUpdate from "./SystemUpdate";
 import packages from "pages/packages";
 import withLoading from "components/hoc/withLoading";
+// Styles
+import "./system.css";
 
 const PackageInterface = packages.components.PackageInterface;
 

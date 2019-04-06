@@ -6,7 +6,7 @@ import { createStructuredSelector } from "reselect";
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
 import TableInputs from "components/TableInputs";
-import Button from "components/Button";
+import { ButtonLight } from "components/Button";
 // Utils
 import parseManifestEnvs from "pages/installer/parsers/parseManifestEnvs";
 
@@ -21,24 +21,19 @@ function Envs({ dnp, updateEnvs }) {
   const dnpEnvs = parseEnvs(dnp);
   const [envs, setEnvs] = useState(dnpEnvs);
   useEffect(() => {
-    console.log("Setting ENVS");
     setEnvs(dnpEnvs);
   }, [dnp]);
-  console.log("Envs", { envs, dnpEnvs });
 
   if (!Object.keys(dnpEnvs).length) return null;
 
   return (
     <>
       <SubTitle>Enviroment variables</SubTitle>
-      <Card>
+      <Card spacing>
         <TableInputs
           headers={["Name", "Value"]}
           content={Object.entries(envs).map(([key, value]) => [
-            {
-              lock: true,
-              value: key
-            },
+            { lock: true, value: key },
             {
               placeholder: "enter value...",
               value: value || "",
@@ -46,12 +41,9 @@ function Envs({ dnp, updateEnvs }) {
             }
           ])}
         />
-        <Button
-          variant="outline-secondary"
-          onClick={() => updateEnvs(dnp.name, envs)}
-        >
+        <ButtonLight onClick={() => updateEnvs(dnp.name, envs)}>
           Update environment variables
-        </Button>
+        </ButtonLight>
       </Card>
     </>
   );

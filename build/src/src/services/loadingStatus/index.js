@@ -8,7 +8,7 @@ import { mountPoint } from "./data";
  * Tracks the loading status by a given ID.
  * When sagas load important content, they should call:
  *
- *   const loadingId = "devices"
+ *   import { loadingId } from "./data"
  *   // Use a variable to ensure consistency
  *   yield put(updateIsLoading(loadingId));
  *   const data = yield call(api);

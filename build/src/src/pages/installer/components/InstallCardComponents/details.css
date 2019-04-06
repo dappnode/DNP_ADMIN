@@ -10,21 +10,7 @@
   max-width: 12rem;
   justify-self: center;
 }
-/* Description */
-.installer-details #description {
-  overflow: hidden;
-}
-.installer-details #description.short {
-  /* DO NOT CHANGE THIS VALUE. Linked to Details.jsx */
-  max-height: 121px;
-}
-.installer-details .read-more {
-  color: var(--dappnode-gray-main-color);
-  cursor: pointer;
-}
-.installer-details .read-more:hover {
-  color: var(--dappnode-strong-main-color);
-}
+
 /* Data grid */
 .installer-details .data {
   margin-top: var(--default-spacing);

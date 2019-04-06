@@ -12,7 +12,7 @@ import { rootPath } from "../data";
 import { getDeviceById } from "services/devices/selectors";
 // Components
 import Card from "components/Card";
-import Button from "components/Button";
+import { ButtonLight } from "components/Button";
 
 function DevicesSettings({ device, getDeviceCredentials }) {
   const { id, url } = device;
@@ -25,7 +25,7 @@ function DevicesSettings({ device, getDeviceCredentials }) {
       <header>
         <h5 className="card-title">{id || "Device not found"}</h5>
         <NavLink to={rootPath}>
-          <Button variant="outline-secondary">Back</Button>
+          <ButtonLight>Back</ButtonLight>
         </NavLink>
       </header>
 

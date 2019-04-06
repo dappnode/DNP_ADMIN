@@ -28,3 +28,24 @@ details {
   bottom: 2px;
   margin-right: 6px;
 }
+
+/* SDK Home */
+
+.sdk-link {
+  display: grid;
+  grid-template-columns: auto min-content;
+}
+.sdk-link button {
+  text-transform: capitalize;
+}
+.sdk-link h5 {
+  margin-bottom: 0.25rem;
+}
+
+/* Publish */
+.publish-grid {
+  display: grid;
+  grid-template-columns: max-content auto;
+  align-items: center;
+  grid-gap: var(--default-spacing);
+}

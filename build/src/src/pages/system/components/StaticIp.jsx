@@ -8,7 +8,7 @@ import isIpv4 from "utils/isIpv4";
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
 import Input from "components/Input";
-import Button from "components/Button";
+import { ButtonLight, ButtonDanger } from "components/Button";
 // External
 import { getStaticIp } from "services/dappnodeStatus/selectors";
 
@@ -33,19 +33,19 @@ function StaticIp({ staticIp = "", setStaticIp }) {
             value={input}
             onValueChange={setInput}
             onEnterPress={update}
+            append={
+              <>
+                <ButtonLight disabled={!isIpv4(input)} onClick={update}>
+                  {staticIp ? "Update" : "Enable"}
+                </ButtonLight>
+                {staticIp && (
+                  <ButtonDanger onClick={() => setStaticIp(null)}>
+                    Disable
+                  </ButtonDanger>
+                )}
+              </>
+            }
           />
-          <Button
-            variant="outline-secondary"
-            disabled={!isIpv4(input)}
-            onClick={update}
-          >
-            {staticIp ? "Update" : "Enable"}
-          </Button>
-          {staticIp && (
-            <Button variant="outline-danger" onClick={() => setStaticIp(null)}>
-              Disable
-            </Button>
-          )}
         </div>
       </Card>
     </>

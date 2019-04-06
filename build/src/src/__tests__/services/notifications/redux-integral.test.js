@@ -28,7 +28,7 @@ describe("services > notifications, integral redux test", () => {
       state,
       a.pushNotifications({ notifications, fromDappmanager: true })
     );
-    expect(s.getNotifications({ [mountPoint]: state })).toEqual(stateFull);
+    expect(state).toEqual(stateFull);
   });
 
   it("Should add two single notifications, and retrieve them", () => {
@@ -46,16 +46,22 @@ describe("services > notifications, integral redux test", () => {
         fromDappmanager: true
       })
     );
-    expect(s.getNotifications({ [mountPoint]: state })).toEqual(stateFull);
+    expect(state).toEqual(stateFull);
   });
 
   it("Should mark all notifications as viewed", () => {
     state = reducer(stateFull, a.viewedNotifications());
-    expect(s.getNotifications({ [mountPoint]: state })).toEqual(stateViewed);
+    expect(state).toEqual(stateViewed);
   });
 
   it("Should remove the fromDappmanager notification", () => {
     state = reducer(stateFull, a.removeDappmanagerNotifications());
-    expect(s.getNotifications({ [mountPoint]: state })).toEqual(stateRemove);
+    expect(state).toEqual(stateRemove);
+  });
+
+  it("Should select the full state and retrieve it as an array", () => {
+    expect(s.getNotifications({ [mountPoint]: stateFull })).toEqual(
+      Object.values(stateFull)
+    );
   });
 });

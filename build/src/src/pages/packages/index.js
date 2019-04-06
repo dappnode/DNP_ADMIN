@@ -3,7 +3,6 @@ import * as selectors from "./selectors";
 import PackagesRoot from "./components/PackagesRoot";
 import PackageInterface from "./components/PackageInterface";
 import PackageList from "./components/PackageList";
-import saga from "./sagas";
 import * as data from "./data";
 
 export const rootPath = data.rootPath;
@@ -21,6 +20,5 @@ export default {
   RootComponent: PackagesRoot,
   actions,
   components,
-  selectors,
-  saga
+  selectors
 };

@@ -3,6 +3,7 @@ import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 // Components
+import NotificationsMain from "./components/NotificationsMain";
 import NonAdmin from "./components/NonAdmin";
 import NoConnection from "components/NoConnection";
 import ErrorBoundary from "./components/generic/ErrorBoundary";
@@ -31,6 +32,9 @@ class App extends React.Component {
           <SideBar />
           <TopBar />
           <main>
+            <ErrorBoundary>
+              <NotificationsMain />
+            </ErrorBoundary>
             <ErrorBoundary>
               {Object.values(pages).map(({ RootComponent, rootPath }) => (
                 <Route

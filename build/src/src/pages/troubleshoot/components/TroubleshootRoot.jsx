@@ -6,10 +6,10 @@ import TroubleshootHome from "./TroubleshootHome";
 // Logic
 
 const TroubleshootRoot = () => (
-  <React.Fragment>
+  <>
     <Route exact path={rootPath} component={TroubleshootHome} />
     <Route path={rootPath + "/:id"} component={null} />
-  </React.Fragment>
+  </>
 );
 
 export default TroubleshootRoot;

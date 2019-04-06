@@ -3,6 +3,7 @@ import { rootWatcher } from "utils/redux";
 import api from "API/rpcMethods";
 import * as a from "./actions";
 import * as t from "./actionTypes";
+import { loadingId } from "./data";
 import {
   updateIsLoading,
   updateIsLoaded
@@ -10,8 +11,6 @@ import {
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 
 // Service > devices
-
-const loadingId = "devices";
 
 export function* fetchDevices() {
   try {

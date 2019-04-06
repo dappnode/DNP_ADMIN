@@ -1,14 +1,6 @@
 // INSTALLER
-import * as t from "./actionTypes";
 import { shortName as sn } from "utils/format";
 import api from "API/rpcMethods";
-
-// Used in package root
-
-export const updatePackages = packages => ({
-  type: "UPDATE_INSTALLED_PACKAGES",
-  packages
-});
 
 /* Notice: togglePackage, restartPackage, etc use redux-thunk
    Since there is no return value, and the state change
@@ -60,9 +52,3 @@ export const copyFileTo = ({ id, dataUri, toPath }) => () =>
     { id, dataUri, toPath },
     { toastMessage: `Copying file to ${sn(id)} ${toPath}...` }
   );
-
-export const copyFileFrom = ({ id, fromPath }) => ({
-  type: t.COPY_FILE_FROM,
-  id,
-  fromPath
-});

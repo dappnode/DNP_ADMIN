@@ -1,10 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import ActivityList from "./ActivityList";
 import { getUserActionLogs } from "services/userActionLogs/selectors";
-
+// Own module
+import ActivityList from "./ActivityList";
+import { title } from "../data";
 import "./activity.css";
+// Components
+import Title from "components/Title";
 
 function Activity({ userActionLogs }) {
   function download() {
@@ -19,7 +22,7 @@ function Activity({ userActionLogs }) {
 
   return (
     <>
-      <div className="section-title">Activity</div>
+      <Title title={title} />
 
       <p>
         If a developer asks for more information regarding an error; please find

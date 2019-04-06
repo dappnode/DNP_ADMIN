@@ -1,6 +1,4 @@
 import * as actions from "./actions";
-import reducer from "./reducer";
-import * as selectors from "./selectors";
 import System from "./components/SystemRoot";
 import saga from "./sagas";
 import * as data from "./data";
@@ -13,7 +11,5 @@ export default {
   rootPath,
   RootComponent: System,
   actions,
-  reducer,
-  selectors,
   saga
 };

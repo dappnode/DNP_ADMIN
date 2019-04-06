@@ -2,6 +2,7 @@ import { put, call } from "redux-saga/effects";
 import api from "API/rpcMethods";
 import * as a from "./actions";
 import * as t from "./actionTypes";
+import { loadingId } from "./data";
 import {
   updateIsLoading,
   updateIsLoaded
@@ -12,8 +13,6 @@ import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 import { rootWatcher } from "utils/redux";
 
 // Service > dnpInstalled
-
-const loadingId = "dnpInstalled";
 
 function* fetchDnpInstalled() {
   try {

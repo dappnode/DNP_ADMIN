@@ -7,7 +7,7 @@
  * @param {String} params
  * @returns {Object}
  */
-export const parseUrlQuery = params =>
+export const parseUrlQuery = (params = "") =>
   params.split("&").reduce((obj, pair) => {
     const [key, value] = pair.split("=");
     obj[key] = decodeURIComponent(value);

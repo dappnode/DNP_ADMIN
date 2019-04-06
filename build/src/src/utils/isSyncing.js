@@ -1,5 +1,10 @@
 const Web3 = require("web3");
-const web3 = new Web3("http://my.ethchain.dnp.dappnode.eth:8545");
+
+let web3;
+function getWeb3() {
+  if (!web3) web3 = new Web3("http://my.ethchain.dnp.dappnode.eth:8545");
+  return web3;
+}
 
 const blockDiff = 50;
 const cacheTime = 120 * 1000; // ms
@@ -15,8 +20,8 @@ const cacheTime = 120 * 1000; // ms
  * is big enough. Returns false otherwise
  */
 const isSyncingRpcCall = () =>
-  web3.eth
-    .isSyncing()
+  getWeb3()
+    .eth.isSyncing()
     .then(res => {
       if (!res) return false;
       const currentBlock = parseInt(res.currentBlock, 10);
@@ -47,6 +52,9 @@ const isSyncingCache = {
  * @return {Bool} isSyncing: true / false
  */
 async function isSyncingWrap() {
+  // Prevent logging errors on offline development
+  if (process.env.REACT_APP_MOCK_DATA) return false;
+
   if (Date.now() - isSyncingCache.lastCheck > cacheTime) {
     isSyncingCache.lastCheck = Date.now();
     isSyncingCache.res = await isSyncingRpcCall();

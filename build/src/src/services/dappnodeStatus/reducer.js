@@ -1,6 +1,5 @@
 import * as t from "./actionTypes";
 import merge from "deepmerge";
-import check from "check-types";
 import { assertAction } from "utils/redux";
 
 // Service > dappnodeStatus

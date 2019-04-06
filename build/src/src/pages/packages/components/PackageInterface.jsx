@@ -10,13 +10,12 @@ import Envs from "./PackageViews/Envs";
 import FileManager from "./PackageViews/FileManager";
 import Controls from "./PackageViews/Controls";
 import NoDnpInstalled from "./NoDnpInstalled";
+import Title from "components/Title";
 
 const PackageInterface = ({ dnp, id, moduleName, areThereDnps }) => (
   <>
-    <div className="section-title">
-      <span className="pre-title">{moduleName} </span>
-      {id}
-    </div>
+    <Title title={moduleName} subtitle={id} />
+
     {dnp ? (
       <>
         <Details dnp={dnp} />

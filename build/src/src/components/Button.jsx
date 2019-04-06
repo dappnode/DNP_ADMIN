@@ -16,4 +16,10 @@ export const ButtonLight = props => (
   </Button>
 );
 
+export const ButtonDanger = props => (
+  <Button variant={"outline-danger"} {...props}>
+    {props.children}
+  </Button>
+);
+
 export default Button;

@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { uniqBy } from "lodash";
 // Imgs
 import errorAvatar from "img/errorAvatar.png";
 import ipfsLogo from "img/IPFS-badge-small.png";

@@ -1,21 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
-import * as a from "../actions";
-import * as s from "../selectors";
 import { connect } from "react-redux";
-import TextWithUrls from "components/TextWithUrls";
 import DependencyList from "pages/installer/components/InstallCardComponents/DependencyList";
 import Linkify from "react-linkify";
+// Actions
+import { updateCore } from "services/coreUpdate/actions";
+// Selectors
+import { getCoreDeps, getCoreManifest } from "services/coreUpdate/selectors";
+import { getIsLoadingStrictById } from "services/loadingStatus/selectors";
+import { loadingId as loadingIdCoreUpdate } from "services/coreUpdate/data";
 // Components
 import Card from "components/Card";
-
-const bottomLine = {
-  borderBottom: "1px solid #dfdfdf",
-  paddingBottom: "12px",
-  marginBottom: "12px"
-};
-const margin = "5px";
+import Button from "components/Button";
+import Loading from "components/generic/Loading";
 
 function OnInstallAlert({ manifest }) {
   const { onInstall } = (manifest || {}).warnings || {};
@@ -27,39 +25,32 @@ function OnInstallAlert({ manifest }) {
   );
 }
 
-const SystemUpdateDetails = ({ coreDeps, coreManifest, updateCore }) => {
+const SystemUpdateDetails = ({
+  coreDeps,
+  coreManifest,
+  isLoading,
+  updateCore
+}) => {
+  /* If loading, return a loading animation */
+  if (isLoading) return <Loading msg="Checking core version..." />;
+  /* If no deps, don't show the card */
   if (!coreDeps.length) return null;
+
   const coreChangelog = (coreManifest || {}).changelog;
   return (
-    <Card>
-      <div className="card-text" style={{ margin }}>
-        {/* Header: core change log and warning */}
-
-        <div style={bottomLine}>
-          {coreChangelog ? (
-            <div>
-              <strong>Core {coreManifest.version} changelog: </strong>{" "}
-              <TextWithUrls text={coreChangelog} />
-            </div>
-          ) : null}
-
-          <OnInstallAlert manifest={coreManifest} />
-        </div>
-
-        {/* Dedicated per core version update and warnings */}
-        <DependencyList deps={coreDeps} />
+    <Card className="system-update-grid">
+      <div>
+        <div className="section-card-subtitle">Core {coreManifest.version}</div>
+        {coreChangelog && <Linkify>{coreChangelog}</Linkify>}
+        <OnInstallAlert manifest={coreManifest} />
       </div>
 
-      {/* Update button */}
-      <div className="float-right" style={{ margin }}>
-        <button
-          className="btn btn-outline-danger"
-          type="button"
-          onClick={updateCore}
-        >
-          Update
-        </button>
-      </div>
+      {/* Dedicated per core version update and warnings */}
+      <DependencyList deps={coreDeps} />
+
+      <Button variant="dappnode" onClick={updateCore}>
+        Update
+      </Button>
     </Card>
   );
 };
@@ -72,12 +63,13 @@ SystemUpdateDetails.propTypes = {
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  coreDeps: s.coreDeps,
-  coreManifest: s.coreManifest
+  coreDeps: getCoreDeps,
+  coreManifest: getCoreManifest,
+  isLoading: getIsLoadingStrictById(loadingIdCoreUpdate)
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch
-const mapDispatchToProps = { updateCore: a.updateCore };
+const mapDispatchToProps = { updateCore };
 
 export default connect(
   mapStateToProps,

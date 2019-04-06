@@ -3,6 +3,7 @@ import api from "API/rpcMethods";
 import * as a from "./actions";
 import * as t from "./actionTypes";
 import * as s from "./selectors";
+import { loadingId } from "./data";
 // Actions
 import {
   updateIsLoading,
@@ -14,8 +15,6 @@ import { rootWatcher } from "utils/redux";
 
 // Service > notifications
 
-const loadingId = "notifications";
-
 function* fetchNotifications() {
   try {
     yield put(updateIsLoading(loadingId));
@@ -25,7 +24,7 @@ function* fetchNotifications() {
      * @param notifications = {
      *   "notificiation-id": {
      *     id: "diskSpaceRanOut-stoppedPackages",
-     *     type: "error",
+     *     type: "danger",
      *     title: "Disk space ran out, stopped packages",
      *     body: "Available disk space is less than a safe ...",
      *   }, ... }

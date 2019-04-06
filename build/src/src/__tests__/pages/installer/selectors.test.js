@@ -17,9 +17,7 @@ describe("pages > installer > selectors", () => {
               }
             },
             requestResult: {
-              success: {
-                "bitcoin.dnp.dappnode.eth": "0.1.1"
-              }
+              success: { "bitcoin.dnp.dappnode.eth": "0.1.1" }
             }
           },
           "bitcoin.dnp.dappnode.eth": {
@@ -48,9 +46,7 @@ describe("pages > installer > selectors", () => {
         }
       };
       const ownProps = {
-        match: {
-          params: { id: "ln.dnp.dappnode.eth" }
-        }
+        match: { params: { id: "ln.dnp.dappnode.eth" } }
       };
       expect(s.getEnvs(state, ownProps)).toEqual({
         "ln.dnp.dappnode.eth": {
@@ -96,16 +92,12 @@ describe("pages > installer > selectors", () => {
         [dnpInstalledMountPoint]: [
           {
             name: "dep.dnp.dappnode.eth",
-            envs: {
-              ENV_NAME2: "set_on_installation"
-            }
+            envs: { ENV_NAME2: "set_on_installation" }
           }
         ],
         [mountPoint]: {
           userSetEnvs: {
-            "ethchain.dnp.dappnode.eth": {
-              ENV_NAME2: "user_set"
-            }
+            "ethchain.dnp.dappnode.eth": { ENV_NAME2: "user_set" }
           }
         }
       };
@@ -137,31 +129,23 @@ describe("pages > installer > selectors", () => {
           "ln.dnp.dappnode.eth": {
             name: "ln.dnp.dappnode.eth",
             manifest: {
-              image: {
-                ports: ["30303", "30304:30304/udp"]
-              }
+              image: { ports: ["30303", "30304:30304/udp"] }
             },
             requestResult: {
-              success: {
-                "bitcoin.dnp.dappnode.eth": "0.1.1"
-              }
+              success: { "bitcoin.dnp.dappnode.eth": "0.1.1" }
             }
           },
           "bitcoin.dnp.dappnode.eth": {
             name: "bitcoin.dnp.dappnode.eth",
             manifest: {
-              image: {
-                ports: ["8333:8333"]
-              }
+              image: { ports: ["8333:8333"] }
             }
           }
         },
         [dnpInstalledMountPoint]: {},
         [mountPoint]: {
           userSetPorts: {
-            "ln.dnp.dappnode.eth": {
-              "30304/udp": "35354"
-            }
+            "ln.dnp.dappnode.eth": { "30304/udp": "35354" }
           }
         }
       };
@@ -191,14 +175,10 @@ describe("pages > installer > selectors", () => {
           "ln.dnp.dappnode.eth": {
             name: "ln.dnp.dappnode.eth",
             manifest: {
-              image: {
-                volumes: ["ln_data:/data/.var/chain"]
-              }
+              image: { volumes: ["ln_data:/data/.var/chain"] }
             },
             requestResult: {
-              success: {
-                "bitcoin.dnp.dappnode.eth": "0.1.1"
-              }
+              success: { "bitcoin.dnp.dappnode.eth": "0.1.1" }
             }
           },
           "bitcoin.dnp.dappnode.eth": {
@@ -226,9 +206,7 @@ describe("pages > installer > selectors", () => {
         }
       };
       const ownProps = {
-        match: {
-          params: { id: "ln.dnp.dappnode.eth" }
-        }
+        match: { params: { id: "ln.dnp.dappnode.eth" } }
       };
       expect(s.getVols(state, ownProps)).toEqual({
         "ln.dnp.dappnode.eth": {
@@ -257,9 +235,7 @@ describe("pages > installer > selectors", () => {
       const state = {
         [mountPoint]: {
           userSetEnvs: {
-            "ln.dnp.dappnode.eth": {
-              FOO: "BAR"
-            }
+            "ln.dnp.dappnode.eth": { FOO: "BAR" }
           },
           userSetPorts: {
             "ln.dnp.dappnode.eth": {
@@ -292,9 +268,7 @@ describe("pages > installer > selectors", () => {
 
       expect(s.getUserSetFormatted(state)).toEqual({
         userSetEnvs: {
-          "ln.dnp.dappnode.eth": {
-            FOO: "BAR"
-          }
+          "ln.dnp.dappnode.eth": { FOO: "BAR" }
         },
         userSetPorts: {
           "ln.dnp.dappnode.eth": {
@@ -318,22 +292,14 @@ describe("pages > installer > selectors", () => {
       const name = "ln.dnp.dappnode.eth";
       const state = {
         [mountPoint]: {
-          userSetEnvs: {
-            [name]: { FOO: "BAR" }
-          },
-          userSetPorts: {
-            [name]: { FOO: "BAR" }
-          },
-          userSetVols: {
-            [name]: { FOO: "BAR" }
-          }
+          userSetEnvs: { [name]: { FOO: "BAR" } },
+          userSetPorts: { [name]: { FOO: "BAR" } },
+          userSetVols: { [name]: { FOO: "BAR" } }
         },
         [dnpDirectoryMountPoint]: { [name]: { name } },
         [dnpInstalledMountPoint]: []
       };
-      const ownProps = {
-        match: { params: { id: name } }
-      };
+      const ownProps = { match: { params: { id: name } } };
       expect(s.getHideCardHeaders(state, ownProps)).toEqual(true);
     });
 
@@ -346,24 +312,18 @@ describe("pages > installer > selectors", () => {
             [name]: { FOO: "BAR" },
             [otherName]: { FOO: "BAR" }
           },
-          userSetPorts: {
-            [name]: { FOO: "BAR" }
-          },
-          userSetVols: {
-            [name]: { FOO: "BAR" }
-          }
+          userSetPorts: { [name]: { FOO: "BAR" } },
+          userSetVols: { [name]: { FOO: "BAR" } }
         },
         [dnpDirectoryMountPoint]: { [name]: { name } },
         [dnpInstalledMountPoint]: []
       };
-      const ownProps = {
-        match: { params: { id: name } }
-      };
+      const ownProps = { match: { params: { id: name } } };
       expect(s.getHideCardHeaders(state, ownProps)).toEqual(false);
     });
   });
 
-  describe("getFilteredDirectoryWithTagsNonCores", () => {
+  describe("getDnpDirectoryWithTagsNonCores", () => {
     const dnp1 = "dnp1.dnp.dappnode.eth";
     const dnp2 = "dnp2.dnp.dappnode.eth";
     const dnp3 = "dnp3.dnp.dappnode.eth";
@@ -411,9 +371,7 @@ describe("pages > installer > selectors", () => {
         [dnpDirectoryMountPoint]: dnpDirectory,
         [dnpInstalledMountPoint]: dnpInstalled
       };
-      expect(
-        s.getFilteredDirectoryWithTagsNonCores(state).sort(byName)
-      ).toEqual(
+      expect(s.getDnpDirectoryWithTagsNonCores(state).sort(byName)).toEqual(
         [
           {
             name: dnp1,
@@ -434,30 +392,6 @@ describe("pages > installer > selectors", () => {
             tag: "UPDATED",
             version: "0.1.0",
             manifest: { name: dnp3 },
-            whitelisted: true
-          }
-        ].sort(byName)
-      );
-    });
-
-    it("Should filter by input", () => {
-      const state = {
-        [mountPoint]: {
-          selectedTypes: {},
-          input: dnp1
-        },
-        [dnpDirectoryMountPoint]: dnpDirectory,
-        [dnpInstalledMountPoint]: dnpInstalled
-      };
-      expect(
-        s.getFilteredDirectoryWithTagsNonCores(state).sort(byName)
-      ).toEqual(
-        [
-          {
-            name: dnp1,
-            tag: "UPDATED",
-            version: "0.1.0",
-            manifest: { name: dnp1 },
             whitelisted: true
           }
         ].sort(byName)

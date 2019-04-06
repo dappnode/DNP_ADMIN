@@ -2,7 +2,7 @@ import reducer from "./reducer";
 import * as selectors from "./selectors";
 import saga from "./sagas";
 import InstallerRoot from "./components/InstallerRoot";
-import ProgressLog from "./components/InstallCardComponents/ProgressLog";
+import ProgressLogs from "./components/InstallCardComponents/ProgressLogs";
 import * as data from "./data";
 
 export const rootPath = data.rootPath;
@@ -10,7 +10,7 @@ export const mountPoint = data.mountPoint;
 
 const components = {
   InstallerRoot,
-  ProgressLog
+  ProgressLogs
 };
 
 export default {

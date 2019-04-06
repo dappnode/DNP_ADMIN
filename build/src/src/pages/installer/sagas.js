@@ -6,18 +6,11 @@ import * as a from "./actions";
 import * as s from "./selectors";
 // Actions
 import { fetchDnpDirectory as actionFetchDnpDirectory } from "services/dnpDirectory/actions";
-import {
-  updateDnpDirectory,
-  updateDnpDirectoryById
-} from "services/dnpDirectory/actions";
+import { updateDnpDirectoryById } from "services/dnpDirectory/actions";
 import {
   clearIsInstallingLogsById,
   updateIsInstallingLog
 } from "services/isInstallingLogs/actions";
-import {
-  updateIsLoading,
-  updateIsLoaded
-} from "services/loadingStatus/actions";
 // Selectors
 import { getUpnpAvailable } from "services/dappnodeStatus/selectors";
 import { getDnpDirectoryById } from "services/dnpDirectory/selectors";

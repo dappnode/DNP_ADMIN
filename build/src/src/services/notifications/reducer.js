@@ -8,7 +8,7 @@ import _ from "lodash";
  * @param state = {
  *   "diskSpaceRanOut-stoppedPackages": {
  *     id: "diskSpaceRanOut-stoppedPackages",
- *     type: "error",
+ *     type: "danger",
  *     title: "Disk space ran out, stopped packages",
  *     body: "Available disk space is less than a safe ...",
  *       (added props)

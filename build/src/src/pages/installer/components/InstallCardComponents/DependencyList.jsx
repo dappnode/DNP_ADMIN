@@ -11,6 +11,11 @@ const InfoContainer = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(12rem, max-content));
 `;
 
+const SpanCenter = styled.span`
+  display: flex;
+  align-items: center;
+`;
+
 function byName(a, b) {
   if (a.name < b.name) return -1;
   if (a.name > b.name) return 1;
@@ -49,10 +54,10 @@ function DependencyList({ deps }) {
           <div key={name} className="dependency-list">
             <InfoContainer>
               <DnpName dnpName={name} />
-              <span>
-                {from ? `Update from ${from} to ${to}` : `Install ${to}`}
-              </span>
-              {showBadge && <Badge text={updateType} />}
+              <SpanCenter>
+                {from ? `Update from ${from} to ${to}` : `Installs ${to}`}
+                {showBadge && <Badge text={updateType} />}
+              </SpanCenter>
             </InfoContainer>
             <OnInstallAlert manifest={manifest} />
           </div>

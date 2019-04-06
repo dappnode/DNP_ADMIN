@@ -1,37 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import withTitle from "components/hoc/withTitle";
 import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
 import PropTypes from "prop-types";
-import { toSentence } from "utils/strings";
+import { toSentence, stringIncludes } from "utils/strings";
+import { isEmpty } from "lodash";
 // This module
 import * as s from "../selectors";
 import * as a from "../actions";
 import Details from "./InstallCardComponents/Details";
-import ProgressLog from "./InstallCardComponents/ProgressLog";
-import Success from "./InstallCardComponents/Success";
+import ProgressLogs from "./InstallCardComponents/ProgressLogs";
 import Dependencies from "./InstallCardComponents/Dependencies";
 import SpecialPermissions from "./InstallCardComponents/SpecialPermissions";
 import Vols from "./InstallCardComponents/Vols";
 import Envs from "./InstallCardComponents/Envs";
 import Ports from "./InstallCardComponents/Ports";
+// Selectors
+import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
+import { rootPath as packagesRootPath } from "pages/packages/data";
 // Components
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
-// Components generic
-import Button from "components/Button";
+import Button, { ButtonLight } from "components/Button";
 import Card from "components/Card";
 import Switch from "components/Switch";
 
 function InstallerInterface({
   id,
   dnp,
-  progressLog,
+  progressLogs,
+  // Actions
   install,
   clearUserSet,
   fetchPackageRequest,
-  fetchPackageData
+  fetchPackageData,
+  // Extra
+  history
 }) {
   const [showSettings, setShowSettings] = useState(false);
   const [options, setOptions] = useState({});
@@ -43,41 +49,30 @@ function InstallerInterface({
   }, [id]);
 
   const { loading, resolving, error, manifest, requestResult, tag } = dnp || {};
+  const { name, type } = manifest || {};
+
+  // When the DNP is updated (finish installation), redirect to /packages
+  useEffect(() => {
+    if (stringIncludes(tag, "updated") && name)
+      history.push(packagesRootPath + "/" + name);
+  }, tag);
 
   if (error && !manifest) return <Error msg={`Error: ${error}`} />;
   if (loading) return <Loading msg={"Loading DNP data..."} />;
   if (!dnp && !error) return <Error msg={"Package not found"} />;
-
-  // If there is an installation in progress, show it.
-  // Also prevents the user to install an installing package
-  if (progressLog)
-    return (
-      <>
-        <ProgressLog progressLog={progressLog} />
-        <Details dnp={dnp} />
-      </>
-    );
-
-  // If the package is updated, show a redirect to the packages section
-  if (dnp.tag && dnp.tag === "UPDATED")
-    return (
-      <>
-        <Success manifest={manifest} />
-        <Details dnp={dnp} />
-      </>
-    );
 
   /**
    * Filter options according to the current package
    * 1. If package is core and from ipfs, show "BYPASS_CORE_RESTRICTION" option
    */
   const availableOptions = [];
-  if ((id || "").startsWith("/ipfs/") && manifest.type === "dncore")
+  if ((id || "").startsWith("/ipfs/") && type === "dncore")
     availableOptions.push("BYPASS_CORE_RESTRICTION");
 
   // Otherwise, show info an allow an install
   return (
     <>
+      <ProgressLogs progressLogs={progressLogs} />
       <Card className="installer-header">
         <Details dnp={dnp} />
         {availableOptions.map(option => (
@@ -88,16 +83,14 @@ function InstallerInterface({
             id={"switch-" + option}
           />
         ))}
-
-        <Button variant="dappnode" onClick={() => install(id, options)}>
-          {tag}
-        </Button>
+        {isEmpty(progressLogs) && (
+          <Button variant="dappnode" onClick={() => install(id, options)}>
+            {tag}
+          </Button>
+        )}
       </Card>
-
       <Dependencies request={requestResult} resolving={resolving} />
-
       <SpecialPermissions />
-
       {showSettings ? (
         <>
           <Envs />
@@ -105,12 +98,9 @@ function InstallerInterface({
           <Vols />
         </>
       ) : (
-        <Button
-          variant="outline-secondary"
-          onClick={() => setShowSettings(true)}
-        >
+        <ButtonLight onClick={() => setShowSettings(true)}>
           Show advanced settings
-        </Button>
+        </ButtonLight>
       )}
     </>
   );
@@ -118,7 +108,8 @@ function InstallerInterface({
 
 InstallerInterface.propTypes = {
   id: PropTypes.string.isRequired,
-  dnp: PropTypes.object
+  dnp: PropTypes.object,
+  history: PropTypes.object.isRequired
 };
 
 // Container
@@ -126,7 +117,8 @@ InstallerInterface.propTypes = {
 const mapStateToProps = createStructuredSelector({
   id: s.getQueryId,
   dnp: s.getQueryDnp,
-  progressLogs: () => {},
+  progressLogs: (state, ownProps) =>
+    getProgressLogsByDnp(state, s.getQueryId(state, ownProps)),
   // For the withTitle HOC
   subtitle: s.getQueryIdOrName
 });
@@ -140,6 +132,7 @@ const mapDispatchToProps = {
 };
 
 export default compose(
+  withRouter,
   connect(
     mapStateToProps,
     mapDispatchToProps

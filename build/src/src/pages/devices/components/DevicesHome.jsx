@@ -4,11 +4,13 @@ import { createStructuredSelector } from "reselect";
 // Own module
 import DeviceGrid from "./DeviceGrid";
 import * as a from "../actions";
+import { title } from "../data";
 // Services
 import { getDevices } from "services/devices/selectors";
 // Components
 import Input from "components/Input";
-import Button from "components/Button";
+import { ButtonLight } from "components/Button";
+import Title from "components/Title";
 
 const DevicesHome = ({
   deviceList,
@@ -21,7 +23,7 @@ const DevicesHome = ({
   const [id, setId] = useState("");
   return (
     <>
-      <div className="section-title">Devices</div>
+      <Title title={title} />
 
       <Input
         placeholder="Device's unique name"
@@ -33,9 +35,7 @@ const DevicesHome = ({
           setId("");
         }}
         append={
-          <Button variant="outline-secondary" onClick={() => addDevice(id)}>
-            Add device
-          </Button>
+          <ButtonLight onClick={() => addDevice(id)}>Add device</ButtonLight>
         }
       />
 

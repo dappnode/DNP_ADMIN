@@ -2489,11 +2489,6 @@ check-types@^7.3.0:
   resolved "https://registry.yarnpkg.com/check-types/-/check-types-7.4.0.tgz#0378ec1b9616ec71f774931a3c6516fad8c152f4"
   integrity sha512-YbulWHdfP99UfZ73NcUDlNJhEIDgm9Doq9GhpyXbF+7Aegi3CVV7qqMCKTTqJxlvEvnQBp9IA+dxsGN6xK/nSg==
 
-check-types@^8.0.2:
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/check-types/-/check-types-8.0.2.tgz#400e1b393fa47802135f17d3ab31102a95d84038"
-  integrity sha512-rS6P/iiI/5YVTKc2uYi30l6rp3ygz3+C8woEGQMsJ/77tl5LiSrLxOIm4cNAG3RhjHeKXUn1GrzTED3heX3tPw==
-
 chokidar@^2.0.0, chokidar@^2.0.4:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-2.1.0.tgz#5fcb70d0b28ebe0867eb0f09d5f6a08f29a1efa0"
@@ -9923,6 +9918,11 @@ recursive-readdir@2.2.2:
   integrity sha512-nRCcW9Sj7NuZwa2XvH9co8NPeXUBhZP7CRKJtU+cS6PW9FpCIFoI5ib0NT1ZrbNuPoRy0ylyCaUL8Gih4LSyFg==
   dependencies:
     minimatch "3.0.4"
+
+reduce-reducers@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/reduce-reducers/-/reduce-reducers-1.0.1.tgz#00735ff3dce986511bc3b86b1cd544822ce6d713"
+  integrity sha512-Nh5zvjF6o3mw/++hm+nq8eeDYQC0Go4dZIZjfXkfGLBhmFWbgvr6NFJw4ebu2OrUayXMzRZKcxU0vOo/nUAWyQ==
 
 redux-devtools-extension@^2.13.7, redux-devtools-extension@^2.13.8:
   version "2.13.8"

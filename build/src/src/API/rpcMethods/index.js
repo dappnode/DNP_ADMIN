@@ -69,6 +69,7 @@ function assertKwargs(kwargs = {}, keys = []) {
  */
 async function wrapCall({ event, args = [], kwargs = {}, options = {} }) {
   // Toast visualization options
+
   const pendingToast = options.toastMessage
     ? new Toast({
         message: options.toastMessage,

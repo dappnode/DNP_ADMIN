@@ -6,7 +6,7 @@ import { rootPath as reportPath } from "pages/troubleshoot";
 
 const Report = () => {
   return (
-    <NavLink className="dropdown-menu-toggle" to={reportPath}>
+    <NavLink className="dropdown-menu-toggle no-a-style" to={reportPath}>
       <ContactSupport />
     </NavLink>
   );

@@ -7,6 +7,7 @@ import SubTitle from "components/SubTitle";
 import Button from "components/Button";
 // Confirm UI
 import confirmRemovePackage from "../confirmRemovePackage";
+import confirmRestartPackage from "../confirmRestartPackage";
 import { confirmAlert } from "react-confirm-alert"; // Import js
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { shortName } from "utils/format";
@@ -49,7 +50,7 @@ function PackageControls({
       name: "Restart",
       text:
         "Restarting a package will interrupt the service during 1-10s but preserve its data",
-      action: () => restartPackage(dnp.name),
+      action: () => confirmRestartPackage(dnp.name, restartPackage),
       availableForCore: true,
       type: "secondary"
     },
@@ -83,18 +84,18 @@ function PackageControls({
           .filter(
             action => action.availableForCore || !(dnp.isCore || dnp.isCORE)
           )
-          .map(action => (
-            <div className="control-item">
+          .map(({ name, text, type, action }) => (
+            <div key={name} className="control-item">
               <div>
-                <strong>{action.name}</strong>
-                <div>{action.text}</div>
+                <strong>{name}</strong>
+                <div>{text}</div>
               </div>
               <Button
-                variant={`outline-${action.type}`}
-                onClick={action.action}
+                variant={`outline-${type}`}
+                onClick={action}
                 style={{ whiteSpace: "normal" }}
               >
-                {action.name}
+                {name}
               </Button>
             </div>
           ))}

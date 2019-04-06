@@ -6,12 +6,15 @@ import { fetchDappnodeStats } from "services/dappnodeStatus/actions";
 import { getDappnodeVolumes } from "services/dnpInstalled/selectors";
 import { getChainData } from "services/chainData/selectors";
 import { getDappnodeStats } from "services/dappnodeStatus/selectors";
-
-import "./dashboard.css";
-import SubTitle from "components/SubTitle";
+// Own module
+import { title } from "../data";
 import ChainCard from "./ChainCard";
 import StatsCard from "./StatsCard";
 import VolumeCard from "./VolumeCard";
+import "./dashboard.css";
+// Components
+import SubTitle from "components/SubTitle";
+import Title from "components/Title";
 
 /**
  * @param {Array} chainData = [{
@@ -46,7 +49,7 @@ function Dashboard({
 
   return (
     <>
-      <div className="section-title">Status</div>
+      <Title title={title} />
 
       <SubTitle>Chains</SubTitle>
       <div className="dashboard-cards">

@@ -26,8 +26,22 @@ window.jQuery = window.$ = $;
 window.Tether = Tether;
 window.Popper = Popper;
 
-// Start the autobahn instance
-api.start();
+/**
+ * `yarn dev` REACT_APP_MOCK_DATA = true
+ * - Loads a mock state from ./mockState
+ * - Dispatches an action to replace the entire state
+ * `yarn start` / [Production] REACT_APP_MOCK_DATA = false
+ * - Starts the api, subscribing to WAMP
+ */
+if (process.env.REACT_APP_MOCK_DATA) {
+  import("./mockState")
+    .then(({ mockState }) =>
+      store.dispatch({ type: "DEV_ONLY_REPLACE_STATE", state: mockState })
+    )
+    .catch(e => console.log(`Error loading mockContent: ${e.stack}`));
+} else {
+  api.start();
+}
 
 // This process.env. vars will be substituted at build time
 // The REACT_APP_ prefix is mandatory for the substitution to work

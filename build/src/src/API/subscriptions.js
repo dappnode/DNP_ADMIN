@@ -105,9 +105,9 @@ export default function subscriptions(session) {
   /**
    * @param notification = {
    *   id: "diskSpaceRanOut-stoppedPackages",
-   *   type: "error",
+   *   type: "danger",
    *   title: "Disk space ran out, stopped packages",
-   *   body: "Available disk space is less than a safe ...",
+   *   body: "Available disk space is less than a safe ... ",
    * }
    */
   session.subscribe(

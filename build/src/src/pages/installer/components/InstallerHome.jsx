@@ -9,14 +9,14 @@ import { createStructuredSelector } from "reselect";
 import * as a from "../actions";
 import * as s from "../selectors";
 import * as utils from "../utils";
-import filterDirectory from "../utils/filterDirectory";
+import filterDirectory from "../helpers/filterDirectory";
 import { rootPath } from "../data";
 import NoPackageFound from "./NoPackageFound";
 import TypeFilter from "./TypeFilter";
 import PackageStore from "./PackageStore";
 // Components
 import Input from "components/Input";
-import Button from "components/Button";
+import { ButtonLight } from "components/Button";
 import Loading from "components/generic/Loading";
 // Selectors
 import { getMainnet } from "services/chainData/selectors";
@@ -106,11 +106,7 @@ function InstallerHome({
         value={query}
         onValueChange={value => setQuery(utils.correctPackageName(value))}
         onEnterPress={runQuery}
-        append={
-          <Button variant="outline-secondary" onClick={runQuery}>
-            Search
-          </Button>
-        }
+        append={<ButtonLight onClick={runQuery}>Search</ButtonLight>}
       />
 
       <TypeFilter types={types} onTypeChange={onTypeChange} />
@@ -133,7 +129,7 @@ InstallerHome.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  directory: s.getDirectoryWithTagsNonCores,
+  directory: s.getDnpDirectoryWithTagsNonCores,
   directoryLoaded: s.directoryLoaded,
   selectedTypes: s.getSelectedTypes,
   inputValue: s.getInputValue,

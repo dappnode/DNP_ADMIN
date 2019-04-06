@@ -5,6 +5,8 @@ import { fetchRegistry } from "../actions";
 import { createStructuredSelector } from "reselect";
 import { title } from "../data";
 import LoadingDots from "components/generic/LoadingDots";
+// Components
+import Title from "components/Title";
 
 const padding = "0.7rem";
 
@@ -19,18 +21,7 @@ class Explore extends React.Component {
     const registries = this.props.registries || {};
     return (
       <>
-        <div className="section-title">
-          <span
-            style={{
-              opacity: 0.3,
-              fontWeight: 300,
-              textTransform: "uppercase"
-            }}
-          >
-            {title}{" "}
-          </span>
-          {id}
-        </div>
+        <Title title={title} subtitle={id} />
 
         {/* {registry.address ? <div>Address: {registry.address}</div> : null} */}
 

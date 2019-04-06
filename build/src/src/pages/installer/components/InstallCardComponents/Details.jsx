@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import defaultAvatar from "img/defaultAvatar.png";
 import humanFileSize from "utils/humanFileSize";
 // Icons
-import { MdUnfoldMore, MdUnfoldLess } from "react-icons/md";
+import ReadMore from "components/ReadMore";
 // Styles
 import "./details.css";
 
@@ -17,20 +17,6 @@ import "./details.css";
  * to the height of 4 lines in default font size.
  */
 function Details({ dnp }) {
-  const [readMore, setReadMore] = useState(false);
-  const [showReadMore, setShowReadMore] = useState(false);
-  useEffect(() => {
-    function update() {
-      const height = document.getElementById("description").clientHeight;
-      setShowReadMore(height >= 121); // max-height of .description
-    }
-    update();
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
   const { manifest = {}, avatar = defaultAvatar, origin } = dnp;
   const { description, author, version, image } = manifest;
   const size = humanFileSize((image || {}).size || "");
@@ -44,23 +30,10 @@ function Details({ dnp }) {
     <div className="installer-details">
       <img src={avatar} alt="Avatar" />
       <div>
-        <div id="description" className={readMore ? "" : "short"}>
+        <ReadMore>
           <header>About this DNP</header>
           {description}
-        </div>
-        {showReadMore && (
-          <span className="read-more" onClick={() => setReadMore(!readMore)}>
-            {readMore ? (
-              <>
-                <MdUnfoldLess /> Read less
-              </>
-            ) : (
-              <>
-                <MdUnfoldMore /> Read more
-              </>
-            )}
-          </span>
-        )}
+        </ReadMore>
 
         <div className="data">
           {Object.entries(data).map(([key, val]) => (

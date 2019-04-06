@@ -10,6 +10,7 @@ const getIsInstallingLogs = createSelector(
 
 /**
  * Returns true if the DNP is being installed
+ *
  * @param {String} id: "ln.dnp.dappnode.eth"
  * @returns {Boolean}
  * [Tested]
@@ -22,6 +23,7 @@ export const getIsInstallingByDnp = createSelector(
 
 /**
  * Gets the progressLogs of an installation id
+ *
  * @param {String} id: "ln.dnp.dappnode.eth"
  * @returns {Object} progressLogs = {
  *   "bitcoin.dnp.dappnode.eth": "Loading...",
@@ -32,12 +34,41 @@ export const getIsInstallingByDnp = createSelector(
 export const getProgressLogsById = createSelector(
   getIsInstallingLogs,
   (_, id) => id,
-  (isInstallingLogs, id) => {
-    const progressLogs = {};
-    Object.keys(isInstallingLogs).forEach(key => {
-      if (isInstallingLogs[key].id === id)
-        progressLogs[key] = isInstallingLogs[key].log;
-    });
-    return progressLogs;
+  (isInstallingLogs, id) => gatherLogsById(isInstallingLogs, id)
+);
+
+/**
+ * Gets the progressLogs of an installation id, given a DNP
+ * [NOTE]: This selector is compatible with both types of logId:
+ * - Old: logId = "834d5e59-664b-46b9-8906-fbc5341d1acf"
+ * - New: logId = "ln.dnp.dappnode.eth"
+ *
+ * @param {String} dnpName: "bitcoin.dnp.dappnode.eth"
+ * @returns {Object} progressLogs = {
+ *   "bitcoin.dnp.dappnode.eth": "Loading...",
+ *   "ln.dnp.dappnode.eth": "Downloading 46%"
+ * }
+ * [Tested]
+ */
+export const getProgressLogsByDnp = createSelector(
+  getIsInstallingLogs,
+  (_, dnpName) => dnpName,
+  (isInstallingLogs, dnpName) => {
+    const id = (isInstallingLogs[dnpName] || {}).id;
+    return id ? gatherLogsById(isInstallingLogs, id) : {};
   }
 );
+
+// Utilitiy
+
+/**
+ * Same as getProgressLogsById
+ * @param {Object} logs
+ * @param {String} id
+ */
+function gatherLogsById(logs, id) {
+  return Object.entries(logs).reduce((obj, [dnpName, log]) => {
+    if (log.id === id) obj[dnpName] = log.log;
+    return obj;
+  }, {});
+}

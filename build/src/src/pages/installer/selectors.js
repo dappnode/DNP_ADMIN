@@ -77,7 +77,13 @@ export const getQueryId = createSelector(
 export const getQueryDnp = createSelector(
   getQueryId,
   getDnpDirectory,
-  (queryId, dnpDirectory) => dnpDirectory[queryId]
+  getDnpInstalled,
+  (queryId, dnpDirectory, dnpInstalled) => {
+    const dnp = dnpDirectory[queryId];
+    const tag =
+      dnp && dnp.name && parseInstallTag(dnpDirectory, dnpInstalled, dnp.name);
+    return { ...dnp, tag };
+  }
 );
 
 export const getQueryName = createSelector(
@@ -228,11 +234,10 @@ const getDnpDirectoryWithTags = createSelector(
   getDnpDirectoryWhitelisted,
   getDnpInstalled,
   (dnpDirectory, dnpInstalled) => {
-    Object.keys(dnpDirectory).forEach(dnpName => {
+    return Object.entries(dnpDirectory).map(([dnpName, dnp]) => {
       const tag = parseInstallTag(dnpDirectory, dnpInstalled, dnpName);
-      dnpDirectory[dnpName].tag = tag;
+      return { ...dnp, tag };
     });
-    return Object.values(dnpDirectory);
   }
 );
 
@@ -242,7 +247,7 @@ const getDnpDirectoryWithTags = createSelector(
  * @returns {Array}
  * [Tested]
  */
-export const getDirectoryWithTagsNonCores = createSelector(
+export const getDnpDirectoryWithTagsNonCores = createSelector(
   getDnpDirectoryWithTags,
   dnps =>
     // If packages are broken, display them anyway

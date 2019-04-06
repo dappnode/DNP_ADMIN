@@ -1,7 +1,9 @@
 /* General OVERWRITE styles or colors */
 /* Using div a to gain specificity infront of the default rule */
-div a,
-div a:hover {
+a.no-a-style,
+a.no-a-style:hover,
+.no-a-style a,
+.no-a-style a:hover {
   color: inherit;
 }
 
@@ -88,4 +90,82 @@ div a:hover {
 /* react-bootstrap's ProgressBar */
 .progress-bar {
   background-color: var(--dappnode-color);
+}
+
+/* 
+  Grid list
+  =========
+  - Make the fonts a little bit smaller for better mobile
+*/
+
+.list-grid {
+  --icon-size: 1.75em;
+  --grid-spacing: 1rem;
+  display: grid;
+  /* Specify a custom grid-template-columns:  */
+  grid-gap: var(--grid-spacing);
+  place-items: center;
+}
+
+.list-grid > header {
+  opacity: 0.5;
+  text-transform: capitalize;
+  /* When the screen is really small, hide the name of the actions */
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  font-size: 0.9rem;
+}
+.list-grid > *:not(header) {
+  align-items: center;
+}
+
+/* Make the text break word */
+.list-grid > .name {
+  justify-self: left;
+  white-space: normal;
+  width: 100%;
+  font-size: 1.1rem;
+}
+
+/* Custom alignment */
+.list-grid > .center {
+  justify-self: center;
+  text-align: center;
+}
+
+.list-grid svg {
+  height: var(--icon-size);
+  width: var(--icon-size);
+  opacity: 0.5;
+  cursor: pointer;
+}
+.list-grid svg:hover {
+  opacity: 0.8;
+}
+.list-grid > hr {
+  grid-column: 1 / -1;
+  border-bottom: var(--border-style);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.list-grid > hr:last-child {
+  display: none;
+}
+
+/* Generic centered container */
+
+.centered-container {
+  display: grid;
+  place-items: center;
+  grid-gap: var(--default-spacing);
+  text-align: center;
+  opacity: 0.5;
+}
+
+/* Card styling for children */
+
+.card-body.spacing > *:not(:last-child) {
+  margin-bottom: var(--default-spacing);
 }

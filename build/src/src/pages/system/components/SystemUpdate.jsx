@@ -1,28 +1,23 @@
 import React from "react";
 import { createStructuredSelector } from "reselect";
-import * as s from "../selectors";
 import { connect } from "react-redux";
 import { title } from "../data";
 // Modules
 import installer from "pages/installer";
+// Selectors
+import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
+import { coreName } from "services/coreUpdate/data";
 // Components
 import SystemUpdateDetails from "./SystemUpdateDetails";
+import Title from "components/Title";
 
 const SystemUpdate = ({ coreProgressLogs }) => (
   <React.Fragment>
-    <div className="section-title">
-      <span className="pre-title">{title} </span>
-      Update
-    </div>
+    <Title title={title} subtitle={"Update"} />
 
-    {coreProgressLogs ? (
-      <installer.components.ProgressLog
-        progressLog={coreProgressLogs}
-        subtitle={"Updating..."}
-      />
-    ) : null}
+    {/* This component will automatically hide if logs are empty */}
+    <installer.components.ProgressLogs progressLogs={coreProgressLogs} />
 
-    <div className="section-subtitle">Details</div>
     <SystemUpdateDetails />
   </React.Fragment>
 );
@@ -30,7 +25,7 @@ const SystemUpdate = ({ coreProgressLogs }) => (
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  coreProgressLogs: s.getCoreProgressLog
+  coreProgressLogs: state => getProgressLogsByDnp(state, coreName)
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch
