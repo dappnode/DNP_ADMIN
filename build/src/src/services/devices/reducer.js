@@ -18,12 +18,8 @@ import { arrayToObj } from "utils/objects";
 export default function(state = {}, action) {
   switch (action.type) {
     case t.UPDATE_DEVICES:
-      // Patch to ensure action.dnps is an object, if it is an array
-      action.devices = Array.isArray(action.devices)
-        ? arrayToObj(action.devices, "id")
-        : action.devices;
-      assertAction(action, { devices: {} });
-      return action.devices;
+      assertAction(action, { devices: [] });
+      return arrayToObj(action.devices, "id");
 
     case t.UPDATE_DEVICE:
       assertAction(action, { id: "Mike", data: {} });

@@ -164,16 +164,17 @@ export default {
    *
    * @param {number} fromLog, default value = 0
    * @param {number} numLogs, default value = 50
-   * @returns {string} logs, stringified JSON concatenated by "\n"
+   * @returns {string} logs, stringified userActionLog JSON objects appended on new lines
    * To parse, by newline and then parse each line individually.
-   * Each resulting object, log = {
-   *   event: "installPackage.dappmanager.dnp.dappnode.eth",
-   *   kwargs: { id: "rinkeby.dnp.dappnode.eth", ... },
-   *   level: "error",
-   *   message: "Timeout to cancel expired",
-   *   name: "Error",
-   *   stack: "Error: Timeout to cancel expired↵  ...",
-   *   timestamp: "2019-02-01T19:09:16.503Z"
+   * userActionLog = {
+   *   level: "info" | "error", {string}
+   *   event: "installPackage.dnp.dappnode.eth", {string}
+   *   message: "Successfully install DNP", {string} Returned message from the call function
+   *   result: { data: "contents" }, {*} Returned result from the call function
+   *   kwargs: { id: "dnpName" }, {object} RPC key-word arguments
+   *   // Only if error
+   *   message: e.message, {string}
+   *   stack.e.stack {string}
    * }
    */
   getUserActionLogs: {},
@@ -209,7 +210,7 @@ export default {
    *   running: true, {Boolean}
    *   ...
    *   envs: <Env variables> {object}
-   * }]
+   * }]f
    */
   listPackages: {},
 

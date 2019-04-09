@@ -30,6 +30,12 @@ export function* fetchUserActionLogs() {
     //   timestamp: "2019-02-01T19:09:16.503Z"
     // };
 
+    if (typeof userActionLogsString !== "string")
+      return console.warn(
+        "userActionLogsString must be a string, userActionLogsString:",
+        userActionLogsString
+      );
+
     // Process userActionLogs. They are json objects appended in a log file
     let userActionLogs = [];
     userActionLogsString

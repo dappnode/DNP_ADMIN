@@ -10,110 +10,116 @@ import { updateIsInstallingLog } from "services/isInstallingLogs/actions";
 
 export default function subscriptions(session) {
   /**
-   * @param userActionLog = {
-   *   event: "installPackage.dappmanager.dnp.dappnode.eth",
-   *   kwargs: { id: "rinkeby.dnp.dappnode.eth", ... },
-   *   level: "error",
-   *   message: "Timeout to cancel expired",
-   *   stack: "Error: Timeout to cancel expired↵  ...",
-   *   timestamp: "2019-02-01T19:09:16.503Z"
-   * }
+   * Utilities to encode arguments to publish with the Crossbar format (args, kwargs)
+   * - Publisher:
+   *     publish("event.name", arg1, arg2)
+   * - Subscriber:
+   *     session.subscribe("event.name", args => {
+   *       listener(...args)
+   *     })
    */
-  session.subscribe(
-    "logUserAction.dappmanager.dnp.dappnode.eth",
-    (_, userActionLog) => {
-      store.dispatch(pushUserActionLog(userActionLog));
-    }
-  );
+  // function publish(event, ...args) {
+  //   // session.publish(topic, args, kwargs, options)
+  //   session.publish(event, args);
+  // }
+  function subscribe(event, cb) {
+    // session.subscribe(topic, function(args, kwargs, details) )
+    session.subscribe(event, args => {
+      try {
+        cb(...args);
+      } catch (e) {
+        console.error(`Error on WAMP ${event}: ${e.stack}`);
+      }
+    });
+  }
 
   /**
-   * @param log = {
-   *   pkg: "bitcoin.dnp.dappnode.eth",
-   *   msg: "Downloading 75%",
-   *   id: "ln.dnp.dappnode.eth"
+   * @param {object} userActionLog = {
+   *   level: "info" | "error", {string}
+   *   event: "installPackage.dnp.dappnode.eth", {string}
+   *   message: "Successfully install DNP", {string} Returned message from the call function
+   *   result: { data: "contents" }, {*} Returned result from the call function
+   *   kwargs: { id: "dnpName" }, {object} RPC key-word arguments
+   *   // Only if error
+   *   message: e.message, {string}
+   *   stack.e.stack {string}
    * }
    */
-  session.subscribe("log.dappmanager.dnp.dappnode.eth", (_, log) => {
-    store.dispatch(updateIsInstallingLog(log.pkg, log.msg, log.logId));
+  subscribe("logUserAction.dappmanager.dnp.dappnode.eth", userActionLog => {
+    store.dispatch(pushUserActionLog(userActionLog));
   });
 
   /**
-   * @param packages = res.result = [{
+   * DNP installation progress log
+   * @param {object} logData = {
+   *   id: "ln.dnp.dappnode.eth@/ipfs/Qmabcdf", {String} overall log id (to bundle multiple logs)
+   *   name: "bitcoin.dnp.dappnode.eth", {String} dnpName the log is referring to
+   *   message: "Downloading 75%", {String} log message
+   * }
+   */
+  subscribe("log.dappmanager.dnp.dappnode.eth", ({ id, name, message }) => {
+    store.dispatch(updateIsInstallingLog(id, name, message));
+  });
+
+  /**
+   * @param {array} dnpList = res.result = [{
    *   id: '927623894...',
    *   isDNP: true,
    *   name: otpweb.dnp.dappnode.eth,
    *   ... (see `api/rpcMethods/dappmanager#listPackages` for more details)
    * }, ... ]
    */
-  session.subscribe("packages.dappmanager.dnp.dappnode.eth", (_, res) => {
-    if (!res.success)
-      return console.error(
-        "Error on packages.dappmanager.dnp.dappnode.eth: ",
-        res.message
-      );
-    store.dispatch(updateDnpInstalled(res.result));
+  subscribe("packages.dappmanager.dnp.dappnode.eth", dnpList => {
+    store.dispatch(updateDnpInstalled(dnpList));
   });
 
   /**
-   * @param dnps {
+   * @param {object} dnps {
    *   "dnpName.dnp.dappnode.eth": {
    *     name: "dnpName.dnp.dappnode.eth",
    *     manifest: { ... },
    *     ...
-   *   }
-   * }
+   *   }, ... }
    */
-  session.subscribe("directory.dappmanager.dnp.dappnode.eth", (_, dnps) => {
+  subscribe("directory.dappmanager.dnp.dappnode.eth", dnps => {
     store.dispatch(updateDnpDirectory(dnps));
   });
 
   /**
-   * `devices` can be:
-   * - an array and is sent as an `arg`
-   * - an object and is sent as a `kwarg`
-   * @param devices = [{
+   * @param {array} devices = [{
    *   id: "MyPhone",
-   *   isAdmin: false,
-   *   url: "link-to-otp/?id=617824#hdfuisf" (optional),
-   *   ip: 172.44.12.4 (optional)
+   *   isAdmin: false
    * }, ... ]
    */
-  session.subscribe("devices.vpn.dnp.dappnode.eth", (array, obj) => {
-    // Support updates by arg and kwarg, `services/devices/reducer` handles the type conversion
-    const devices = (array || []).length ? array : obj;
+  subscribe("devices.vpn.dnp.dappnode.eth", devices => {
     store.dispatch(updateDevices(devices));
   });
 
   /**
    * Periodic updates of the state of all chains bundled together
    * `chainData` is an array and is sent as an `arg` not `kwarg`
-   * @param chainData = [{
-   *   name: "kovan",
-   *   message: "Syncing 5936184/6000000",
-   *   syncing: true,
-   *   progress: 0.8642
-   * }, ... ]
+   * @param {array} chainData = [{
+   *     syncing: true, {Bool}
+   *     message: "Blocks synced: 543000 / 654000", {String}
+   *     progress: 0.83027522935,
+   *   }, {
+   *     message: "Could not connect to RPC", {String}
+   *     error: true {Bool},
+   *   }, ... ]
    */
-  session.subscribe("chainData.dappmanager.dnp.dappnode.eth", chainData => {
-    if (!Array.isArray(chainData))
-      return console.error(
-        "chainData.dappmanager.dnp.dappnode.eth must return an array"
-      );
+  subscribe("chainData.dappmanager.dnp.dappnode.eth", chainData => {
     store.dispatch(updateChainData(chainData));
   });
 
   /**
-   * @param notification = {
+   * @param {object} notification = {
    *   id: "diskSpaceRanOut-stoppedPackages",
    *   type: "danger",
    *   title: "Disk space ran out, stopped packages",
    *   body: "Available disk space is less than a safe ... ",
    * }
    */
-  session.subscribe(
-    "pushNotification.dappmanager.dnp.dappnode.eth",
-    (_, notification) => {
-      store.dispatch(pushNotification({ notification, fromDappmanager: true }));
-    }
-  );
+  subscribe("pushNotification.dappmanager.dnp.dappnode.eth", notification => {
+    store.dispatch(pushNotification({ notification, fromDappmanager: true }));
+  });
 }
