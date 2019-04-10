@@ -1,65 +1,68 @@
 import React from "react";
 import { Route } from "react-router-dom";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 // Components
-import Home from "./components/Home";
+import NotificationsMain from "./components/NotificationsMain";
 import NonAdmin from "./components/NonAdmin";
-import NonAdminRedirector from "./components/NonAdminRedirector";
-import ErrorBoundary from "./components/ErrorBoundary";
-// Modules
-import dashboard from "./dashboard";
-import activity from "./activity";
-import devices from "./devices";
-import installer from "./installer";
-import packages from "./packages";
-import system from "./system";
-import navbar from "./navbar";
-import troubleshoot from "./troubleshoot";
-import sdk from "./sdk";
+import NoConnection from "components/NoConnection";
+import ErrorBoundary from "./components/generic/ErrorBoundary";
+import TopBar from "./components/navbar/TopBar";
+import SideBar from "./components/navbar/SideBar";
+import Loading from "components/generic/Loading";
+// Pages
+import pages from "./pages";
 // Redux
+import { getConnectionStatus } from "services/connectionStatus/selectors";
 import { ToastContainer } from "react-toastify";
 
-const modules = [
-  dashboard,
-  devices,
-  installer,
-  packages,
-  system,
-  activity,
-  troubleshoot,
-  sdk
-];
+if (typeof pages !== "object") throw Error("pages must be an object");
 
-export default class App extends React.Component {
+class App extends React.Component {
   // App is the parent container of any other component.
   // If this re-renders, the whole app will. So DON'T RERENDER APP!
   // Check ONCE what is the status of the VPN, then display the page for nonAdmin
   // Even make the non-admin a route and fore a redirect
 
   render() {
-    return (
-      <div className="wrapper fixed-nav">
-        <navbar.component />
-        <div className="content-wrapper dappnode-background">
-          <div className="container-fluid app-content">
+    const { isOpen, isNotAdmin, error } = this.props.connectionStatus || {};
+
+    if (isOpen) {
+      return (
+        <div className="body">
+          {/* SideNav expands on big screens, while content-wrapper moves left */}
+          <SideBar />
+          <TopBar />
+          <main>
             <ErrorBoundary>
-              {/* Home, exact path home */}
-              <Route exact path="/" component={Home} />
-              {/* Create a route for each module */}
-              {modules.map(_module => {
-                const RootComponent = _module.component;
-                const id = _module.constants.NAME;
-                return (
-                  <Route key={id} path={`/${id}`} component={RootComponent} />
-                );
-              })}
-              {/* Dedicated routes for non-module components */}
-              <Route path={"/nonadmin"} component={NonAdmin} />
+              <NotificationsMain />
             </ErrorBoundary>
-          </div>
+            <ErrorBoundary>
+              {Object.values(pages).map(({ RootComponent, rootPath }) => (
+                <Route
+                  key={rootPath}
+                  path={rootPath}
+                  exact={rootPath === "/"}
+                  component={RootComponent}
+                />
+              ))}
+            </ErrorBoundary>
+          </main>
+          <ToastContainer />
         </div>
-        <ToastContainer />
-        <NonAdminRedirector />
-      </div>
-    );
+      );
+    } else if (isNotAdmin) {
+      return <NonAdmin />;
+    } else if (error) {
+      return <NoConnection />;
+    } else {
+      return <Loading msg={`Openning connection...`} />;
+    }
   }
 }
+
+const mapStateToProps = createStructuredSelector({
+  connectionStatus: getConnectionStatus
+});
+
+export default connect(mapStateToProps)(App);

@@ -6,56 +6,60 @@
     "ansi_up": "^3.0.0",
     "autobahn-browser": "^18.3.2",
     "bootstrap": "^4.1.1",
-    "browser-ipfs": "0.0.6",
     "clipboard": "^2.0.1",
-    "connected-react-router": "^4.3.0",
     "deepmerge": "^2.1.1",
+    "ethereum-blockies-base64": "^1.0.2",
     "ethereum-ens": "^0.7.4",
     "file-saver": "^2.0.0",
-    "ipfs-mini": "^1.1.2",
+    "immutable": "^4.0.0-rc.12",
+    "is-ipfs": "^0.6.0",
     "jquery": "^3.3.1",
-    "lodash": "^4.17.10",
     "marked": "^0.5.2",
-    "npm": "^6.1.0",
     "popper.js": "^1.14.3",
-    "pubsub-js": "^1.6.0",
     "qrcode.react": "^0.8.0",
-    "react": "^16.8.1",
+    "re-reselect": "^3.0.0",
+    "react": "^16.8.5",
+    "react-bootstrap": "^1.0.0-beta.5",
     "react-confirm-alert": "^2.0.2",
     "react-dom": "^16.8.1",
+    "react-icons": "^3.5.0",
+    "react-linkify": "^0.2.2",
     "react-redux": "^5.0.7",
-    "react-router-dom": "^4.3.1",
+    "react-router-dom": "^5.0.0",
     "react-scripts": "^2.1.5",
     "react-toastify": "^4.1.0",
+    "reduce-reducers": "^1.0.1",
     "redux": "^4.0.0",
     "redux-devtools-extension": "^2.13.8",
-    "redux-saga": "^0.16.0",
+    "redux-saga": "^1.0.2",
     "redux-starter-kit": "^0.4.3",
     "reselect": "^3.0.1",
     "semver": "^5.5.0",
     "striptags": "^3.1.1",
+    "styled-components": "^4.2.0",
     "tether": "^1.4.4",
-    "urlencode": "^1.1.0",
     "uuid": "^3.2.1",
     "web3": "1.0.0-beta.33"
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "REACT_APP_MOCK_DATA=true yarn start",
     "build": "react-scripts build",
     "gzip": "gzip -r -k build",
     "test": "react-scripts test --env=jsdom",
+    "test:no-watch": "react-scripts test --env=jsdom --no-watch",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
     "analyze": "source-map-explorer build/static/js/main.*",
-    "lint": "npm run lint:javascript",
-    "lint:javascript": "eslint . --ext js --fix"
+    "lint": "./node_modules/.bin/eslint . --ext js --fix",
+    "pre-commit": "npm run lint && npm run test:no-watch"
   },
   "devDependencies": {
     "@types/react": "^16.8.1",
     "@types/react-dom": "^16.0.11",
     "coveralls": "^3.0.2",
-    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-prettier": "^4.1.0",
     "eslint-config-react-app": "^3.0.6",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-redux-saga": "^0.10.0",
@@ -64,6 +68,7 @@
     "pretty-quick": "^1.10.0",
     "react-hot-loader": "^4.3.3",
     "redux-mock-store": "^1.5.3",
+    "redux-saga-test-plan": "^4.0.0-beta.2",
     "source-map-explorer": "^1.6.0"
   },
   "browserslist": [
@@ -71,5 +76,16 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "jest": {
+    "watchPathIgnorePatterns": [
+      "/node_modules"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run pre-commit",
+      "pre-push": "npm run pre-commit"
+    }
+  }
 }

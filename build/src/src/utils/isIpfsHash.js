@@ -1,28 +1,26 @@
-// import multihash from 'multihashes'
-// import base58 from 'bs58'
+import isIPFS from "is-ipfs";
 
-// function isMultihash (hash) {
-//   try {
-//     const buffer = Buffer.from(base58.decode(hash))
-//     multihash.decode(buffer)
-//     return true
-//   } catch (e) {
-//     return false
-//   }
-// }
-
-function isMultihash (hash) {
-  if (!hash) return false
-  return hash.startsWith('Qm') && hash.length === 46
+function isMultihash(hash) {
+  return isIPFS.cid(hash);
 }
 
-export default function isIpfsHash(HASH) {
-  if (!HASH) return false;
+/**
+ * Checks if the given string is a valid IPFS CID or path
+ *
+ * isIPFS.cid('QmYjtig7VJQ6XsnUjqqJvj7QaMcCAwtrgNdahSiFofrE7o') // true (CIDv0)
+ * isIPFS.cid('zdj7WWeQ43G6JJvLWQWZpyHuAMq6uYWRjkBXFad11vE2LHhQ7') // true (CIDv1)
+ * isIPFS.cid('noop') // false
+ *
+ * @param {string} hash
+ * @returns {bool}
+ */
+export default function isIpfsHash(hash) {
+  if (!hash || typeof hash !== "string") return false;
   // Correct hash prefix
-  if (HASH.includes("ipfs/")) {
-    HASH = HASH.split("ipfs/")[1];
+  if (hash.includes("ipfs/")) {
+    hash = hash.split("ipfs/")[1];
   }
-  HASH.replace("/", "");
+  hash.replace("/", "");
   // Make sure hash if valid
-  return isMultihash(HASH);
+  return isMultihash(hash);
 }

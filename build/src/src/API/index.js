@@ -1,5 +1,7 @@
-import start from './start'
+import start from "./start";
+import calls from "./rpcMethods";
 
 export default {
-  start
-}
+  start,
+  calls
+};
