@@ -55,7 +55,7 @@ function InstallerInterface({
   useEffect(() => {
     if (stringIncludes(tag, "updated") && name)
       history.push(packagesRootPath + "/" + name);
-  }, tag);
+  }, [tag]);
 
   if (error && !manifest) return <Error msg={`Error: ${error}`} />;
   if (loading) return <Loading msg={"Loading DNP data..."} />;

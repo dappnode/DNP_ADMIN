@@ -42,7 +42,8 @@ function Logs({ id }) {
       try {
         const options = { timestamps, tail: lines };
         const logs = await api.logPackage({ id, options });
-        setLogs(logs.logs);
+        if (typeof logs !== "string") throw Error("Logs must be a string");
+        setLogs(logs);
         // Auto scroll to bottom (deffered after the paint)
         setTimeout(scrollToBottom, 10);
       } catch (e) {
@@ -65,7 +66,7 @@ function Logs({ id }) {
    * If the query returned no matching logs, display custom message
    * If the lines parameter is not valid, display custom message
    */
-  const logsArray = logs.split(/\r?\n/);
+  const logsArray = (logs || "").split(/\r?\n/);
   let logsFiltered = query
     ? logsArray.filter(line => stringIncludes(line, query)).join("\n")
     : logs;

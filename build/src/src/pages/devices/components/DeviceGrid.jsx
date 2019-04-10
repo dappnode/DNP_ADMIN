@@ -61,7 +61,7 @@ function DeviceGrid({
   return (
     <Card className="list-grid devices">
       <header>Name</header>
-      <header className="center">Link</header>
+      <header className="center">Share</header>
       <header>Admin</header>
       <header>Reset</header>
       <header>Remove</header>
@@ -74,7 +74,7 @@ function DeviceGrid({
                 <FaQrcode className="bigger" />
               </NavLink>
               <GoClippy className="copy" data-clipboard-text={url} />
-              <a href="google.com" {...newTabProps}>
+              <a href={url} {...newTabProps}>
                 <FaDownload className="smaller" />
               </a>
             </div>
@@ -83,7 +83,10 @@ function DeviceGrid({
           )}
           <Switch checked={admin} onToggle={() => toggleAdmin(id)} />
           <MdRefresh onClick={() => resetDeviceConfirm(id)} />
-          <MdDelete onClick={() => removeDeviceConfirm(id)} />
+          <MdDelete
+            className={admin ? "disabled" : ""}
+            onClick={() => (admin ? null : removeDeviceConfirm(id))}
+          />
           <hr />
         </React.Fragment>
       ))}

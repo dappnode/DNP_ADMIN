@@ -7,7 +7,6 @@ import {
 } from "services/dnpDirectory/selectors";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 import { getDappnodeParams } from "services/dappnodeStatus/selectors";
-import { getIsConnectionOpen } from "services/connectionStatus/selectors";
 // Parsers
 import {
   parseDefaultEnvs,
@@ -23,8 +22,6 @@ import stringifyUserSetVols from "./parsers/stringifyUserSetVols";
 import _ from "lodash";
 
 // #### EXTERNAL SELECTORS
-export const connectionOpen = getIsConnectionOpen;
-export const installedPackages = state => state.installedPackages || [];
 export const isSyncing = state => state.isSyncing;
 export const getShouldOpenPorts = createSelector(
   getDappnodeParams,
@@ -44,24 +41,21 @@ const getFromLocalFactory = key =>
 
 export const getSelectedTypes = getFromLocalFactory("selectedTypes");
 export const getInputValue = getFromLocalFactory("input");
-export const getIsInstalling = getFromLocalFactory("isInstalling");
-export const getProgressLogs = getFromLocalFactory("progressLogs");
 export const getUserSetEnvs = getFromLocalFactory("userSetEnvs");
 export const getUserSetPorts = getFromLocalFactory("userSetPorts");
 export const getUserSetVols = getFromLocalFactory("userSetVols");
 
-export const getIsInstallingById = createSelector(
-  getIsInstalling,
-  (_, id) => id,
-  (isInstalling, id) => isInstalling[id]
+/**
+ * Generate an object to test if a DNP is installed
+ * - Used by Ports.jsx and Vols.jsx to lock the variables if DNP is installed
+ */
+export const getIsInstalled = createSelector(
+  getDnpInstalled,
+  dnpInstalled =>
+    dnpInstalled.reduce((obj, dnp) => {
+      return { ...obj, [dnp.name]: true };
+    }, {})
 );
-
-// Generate an object to test if a DNP is installed
-export const getIsInstalled = state =>
-  installedPackages(state).reduce((obj, dnp) => {
-    obj[dnp.name] = true;
-    return obj;
-  }, {});
 
 /**
  * Gets the query id from the react-router injected props

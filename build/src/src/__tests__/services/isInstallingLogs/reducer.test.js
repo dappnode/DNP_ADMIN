@@ -20,7 +20,11 @@ describe("services > isInstallingLogs > reducer", () => {
 
     it("Should add a log - updateIsInstallingLog", () => {
       const firstLog = "starting...";
-      const action = a.updateIsInstallingLog(dnpName1, firstLog, dnpName1);
+      const action = a.updateIsInstallingLog({
+        id: dnpName1,
+        dnpName: dnpName1,
+        log: firstLog
+      });
       // it's empty on purpose because it's just starting to fetch posts
       state = reducer(state, action);
       expect(state).toEqual({
@@ -32,7 +36,11 @@ describe("services > isInstallingLogs > reducer", () => {
     });
 
     it("Should update the log - updateIsInstallingLog", () => {
-      const action = a.updateIsInstallingLog(dnpName1, log, dnpName1);
+      const action = a.updateIsInstallingLog({
+        id: dnpName1,
+        dnpName: dnpName1,
+        log
+      });
       // it's empty on purpose because it's just starting to fetch posts
       state = reducer(state, action);
       expect(state).toEqual({
@@ -40,19 +48,26 @@ describe("services > isInstallingLogs > reducer", () => {
           log,
           id: dnpName1
         }
-      }); // Util
-      const stripVersion = s => (s || "").split("@")[0];
+      });
     });
 
     it("Should add a second log - updateIsInstallingLog", () => {
-      const action = a.updateIsInstallingLog(dnpName2, log, dnpName1);
+      const action = a.updateIsInstallingLog({
+        id: dnpName1,
+        dnpName: dnpName2,
+        log
+      });
       // it's empty on purpose because it's just starting to fetch posts
       state = reducer(state, action);
       expect(state).toEqual(stateFull);
     });
 
     it("Should reject a log for the same dnpName but different id - updateIsInstallingLog", () => {
-      const action = a.updateIsInstallingLog(dnpName2, "Oh shiit", dnpName2);
+      const action = a.updateIsInstallingLog({
+        id: dnpName2,
+        dnpName: dnpName2,
+        log: "Oh shiit"
+      });
       // it's empty on purpose because it's just starting to fetch posts
       state = reducer(state, action);
       expect(state).toEqual(stateFull);

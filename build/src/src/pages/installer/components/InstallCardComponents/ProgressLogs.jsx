@@ -24,8 +24,8 @@ export default function ProgressLogs({ progressLogs }) {
         // Don't show "core.dnp.dappnode.eth" actual progress log information
         .filter(([dnpName]) => dnpName !== "core.dnp.dappnode.eth")
         .map(([dnpName, log]) => {
-          const progressing = log.includes("...");
           const percent = parsePercent(log);
+          const progressing = percent || log.includes("...");
           return (
             <div key={dnpName} className="row">
               <div className="col-6 text-truncate">
@@ -36,7 +36,7 @@ export default function ProgressLogs({ progressLogs }) {
                   now={percent || 100}
                   animated={progressing}
                   label={log}
-                  variant={progressing || percent ? "" : "success"}
+                  variant={progressing ? "" : "success"}
                 />
               </div>
             </div>

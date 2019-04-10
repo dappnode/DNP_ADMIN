@@ -14,6 +14,7 @@ import {
 // Selectors
 import { getUpnpAvailable } from "services/dappnodeStatus/selectors";
 import { getDnpDirectoryById } from "services/dnpDirectory/selectors";
+import { getIsInstallingByDnp } from "services/isInstallingLogs/selectors";
 // Utils
 import { assertAction, assertConnectionOpen } from "utils/redux";
 import { shortName } from "utils/format";
@@ -26,12 +27,12 @@ import uniqArray from "utils/uniqArray";
 export function* install({ id, options }) {
   try {
     // Prevent double installations: check if the package is in the blacklist
-    if (yield select(s.getIsInstallingById, id)) {
+    if (yield select(getIsInstallingByDnp, id)) {
       return console.error(`DNP ${id} is already installing`);
     }
 
     // Blacklist the current package, via starting the isInstallingLog
-    yield put(updateIsInstallingLog(id, "Starting...", id));
+    yield put(updateIsInstallingLog({ id, dnpName: id, log: "Starting..." }));
 
     /**
      * Formats userSet parameters to be send to the dappmanager

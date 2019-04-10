@@ -1,5 +1,6 @@
 import { mountPoint } from "./data";
 import { createSelector } from "reselect";
+import { stripVersion } from "./utils";
 
 // Service > isInstallingLogs
 
@@ -17,7 +18,7 @@ const getIsInstallingLogs = createSelector(
  */
 export const getIsInstallingByDnp = createSelector(
   getIsInstallingLogs,
-  (_, dnpName) => dnpName,
+  (_, dnpName) => stripVersion(dnpName),
   (isInstallingLogs, dnpName) => Boolean(isInstallingLogs[dnpName])
 );
 
@@ -33,7 +34,7 @@ export const getIsInstallingByDnp = createSelector(
  */
 export const getProgressLogsById = createSelector(
   getIsInstallingLogs,
-  (_, id) => id,
+  (_, id) => stripVersion(id),
   (isInstallingLogs, id) => gatherLogsById(isInstallingLogs, id)
 );
 
@@ -52,7 +53,7 @@ export const getProgressLogsById = createSelector(
  */
 export const getProgressLogsByDnp = createSelector(
   getIsInstallingLogs,
-  (_, dnpName) => dnpName,
+  (_, dnpName) => stripVersion(dnpName),
   (isInstallingLogs, dnpName) => {
     const id = (isInstallingLogs[dnpName] || {}).id;
     return id ? gatherLogsById(isInstallingLogs, id) : {};

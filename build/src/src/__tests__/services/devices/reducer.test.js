@@ -8,7 +8,7 @@ describe("services > devices > reducer", () => {
   let state = {};
 
   it("Should add devices, as an object", () => {
-    const action = a.updateDevices({ [device1]: { id: device1 } });
+    const action = a.updateDevices([{ id: device1 }]);
     state = reducer(state, action);
     expect(state).toEqual({
       [device1]: { id: device1 }

@@ -90,6 +90,9 @@ a.no-a-style:hover,
 /* react-bootstrap's ProgressBar */
 .progress-bar {
   background-color: var(--dappnode-color);
+  /* When the bar goes from full "starting" to downloading,
+     it moves too slow an looks wierd */
+  transition: none !important;
 }
 
 /* 
@@ -140,8 +143,12 @@ a.no-a-style:hover,
   opacity: 0.5;
   cursor: pointer;
 }
-.list-grid svg:hover {
+.list-grid :not(.disabled) svg:hover {
   opacity: 0.8;
+}
+.list-grid svg.disabled {
+  opacity: 0.15;
+  cursor: not-allowed;
 }
 .list-grid > hr {
   grid-column: 1 / -1;

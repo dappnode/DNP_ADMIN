@@ -52,7 +52,7 @@
   transition: 0.2s all;
 }
 .switch input:checked + label::before {
-  background-color: #08d;
+  background-color: var(--dappnode-color);
 }
 .switch input:checked + label::after {
   margin-left: calc(2.375rem * 0.8);

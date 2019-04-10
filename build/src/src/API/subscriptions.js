@@ -58,7 +58,7 @@ export default function subscriptions(session) {
    * }
    */
   subscribe("log.dappmanager.dnp.dappnode.eth", ({ id, name, message }) => {
-    store.dispatch(updateIsInstallingLog(id, name, message));
+    store.dispatch(updateIsInstallingLog({ id, dnpName: name, log: message }));
   });
 
   /**

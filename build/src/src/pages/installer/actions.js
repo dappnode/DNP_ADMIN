@@ -25,9 +25,10 @@ export const fetchPackageRequest = id => ({
   id
 });
 
-export const install = kwargs => ({
+export const install = (id, options) => ({
   type: t.INSTALL,
-  ...kwargs
+  id,
+  options
 });
 
 export const openPorts = ports => ({

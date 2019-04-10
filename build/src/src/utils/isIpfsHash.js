@@ -11,9 +11,9 @@
 //   }
 // }
 
-function isMultihash (hash) {
-  if (!hash) return false
-  return hash.startsWith('Qm') && hash.length === 46
+function isMultihash(hash) {
+  if (!hash) return false;
+  return hash.startsWith("Qm") && hash.length === 46;
 }
 
 export default function isIpfsHash(HASH) {

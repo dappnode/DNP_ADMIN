@@ -6,8 +6,8 @@ const NonAdmin = () => (
   <div className="standalone-container">
     <div className="title">Snap! You are not an admin</div>
     <div className="text">
-      This website is reserved to the DAppNode admin. Your VPN profile must have
-      admin priviledges. Please contact this DAppNode's admin to get access.
+      This website is reserved for this DAppNode's admin. Your VPN profile must
+      have admin priviledges.
     </div>
     <div className="separator" />
     <img className="logo" src={logo} alt="logo" />
