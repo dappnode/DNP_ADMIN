@@ -159,7 +159,7 @@ describe("pages > installer > selectors", () => {
           "8333:8333": { container: "8333", host: "8333", type: undefined }
         },
         "ln.dnp.dappnode.eth": {
-          "30303": { container: undefined, host: "30303", type: undefined },
+          "30303": { container: "30303", type: undefined },
           "30304/udp": "35354",
           "30304:30304/udp": { container: "30304", host: "30304", type: "udp" }
         }
