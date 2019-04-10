@@ -76,12 +76,10 @@ const getDiagnoseNoNatLoopback = onlyIfConnectionIsOpen(
 
 const getDiagnoseDappmanagerConnected = onlyIfConnectionIsOpen(
   createSelector(
-    getPingReturns,
-    pingReturns => ({
-      ok: pingReturns.dappmanager,
-      msg: pingReturns.dappmanager
-        ? "DAPPMANAGER is connected"
-        : "DAPPMANAGER is not connected",
+    getDappmanagerVersionData,
+    ok => ({
+      ok: Boolean(ok),
+      msg: ok ? "DAPPMANAGER is connected" : "DAPPMANAGER is not connected",
       solutions: [
         "Close your VPN connection and connect again",
         "If the problem persists, reset the DAppNode machine"
@@ -92,10 +90,10 @@ const getDiagnoseDappmanagerConnected = onlyIfConnectionIsOpen(
 
 const getDiagnoseVpnConnected = onlyIfConnectionIsOpen(
   createSelector(
-    getPingReturns,
-    pingReturns => ({
-      ok: pingReturns.vpn,
-      msg: pingReturns.vpn ? "VPN is connected" : "VPN is not connected",
+    getVpnVersionData,
+    ok => ({
+      ok: Boolean(ok),
+      msg: ok ? "VPN is connected" : "VPN is not connected",
       solutions: [
         "Close your VPN connection and connect again",
         "If the problem persists, reset the DAppNode machine"

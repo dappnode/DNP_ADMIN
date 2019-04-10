@@ -65,11 +65,32 @@ export function* pingDappnodeDnps() {
   try {
     yield call(assertConnectionOpen);
     for (const dnp of ["dappmanager", "vpn"]) {
-      const pingReturn = yield call(api[dnp].ping);
-      yield put(a.updatePingReturn(dnp, pingReturn));
+      try {
+        const pingReturn = yield call(api[dnp].ping);
+        yield put(a.updatePingReturn(dnp, Boolean(pingReturn)));
+      } catch (e) {
+        console.error(`Error on pingDappnodeDnps/${dnp}: ${e.stack}`);
+        yield put(a.updatePingReturn(dnp, false));
+      }
     }
   } catch (e) {
     console.error(`Error on pingDappnodeDnps: ${e.stack}`);
+  }
+}
+
+export function* getDnpsVersionData() {
+  try {
+    yield call(assertConnectionOpen);
+    for (const dnp of ["dappmanager", "vpn"]) {
+      try {
+        const versionData = yield call(api[dnp].getVersionData);
+        yield put(a.updateVersionData(dnp, versionData));
+      } catch (e) {
+        console.error(`Error on getDnpsVersionData/${dnp}: ${e.stack}`);
+      }
+    }
+  } catch (e) {
+    console.error(`Error on getDnpsVersionData: ${e.stack}`);
   }
 }
 
@@ -98,6 +119,7 @@ export function* fetchAllDappnodeStatus() {
       call(fetchDappnodeStats),
       call(fetchDappnodeDiagnose),
       call(pingDappnodeDnps),
+      call(getDnpsVersionData),
       call(checkIpfsConnectionStatus)
     ]);
   } catch (e) {

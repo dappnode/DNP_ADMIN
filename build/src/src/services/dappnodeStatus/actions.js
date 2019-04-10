@@ -25,6 +25,12 @@ export const updatePingReturn = (dnp, pingReturn) => ({
   pingReturn
 });
 
+export const updateVersionData = (dnp, versionData) => ({
+  type: t.UPDATE_VERSION_DATA,
+  dnp,
+  versionData
+});
+
 export const updateIpfsConnectionStatus = ipfsConnectionStatus => ({
   type: t.UPDATE_IPFS_CONNECTION_STATUS,
   ipfsConnectionStatus

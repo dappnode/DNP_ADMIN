@@ -9,6 +9,7 @@ const initialState = {
   stats: {},
   diagnose: {},
   pingReturns: {},
+  versionData: {},
   ipfsConnectionStatus: {}
 };
 
@@ -42,6 +43,16 @@ export default function(state = initialState, action) {
         pingReturns: {
           ...state.pingReturns,
           [action.dnp]: action.pingReturn
+        }
+      };
+
+    case t.UPDATE_VERSION_DATA:
+      assertAction(action, { dnp: "dnpName", versionData: {} });
+      return {
+        ...state,
+        versionData: {
+          ...state.versionData,
+          [action.dnp]: action.versionData
         }
       };
 

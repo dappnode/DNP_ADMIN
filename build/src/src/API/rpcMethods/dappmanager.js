@@ -13,14 +13,21 @@ export default {
    * [ping]
    * Default method to check if app is alive
    *
-   * @returns {object} Returns version data. #### TODO split into another call
-   * result: {
+   * @returns {*}
+   */
+  ping: {},
+
+  /**
+   * [getVersionData]
+   *  Returns version data
+   *
+   * @returns {object} versionData = {
    *   version: "0.1.21",
    *   branch: "master",
    *   commit: "ab991e1482b44065ee4d6f38741bd89aeaeb3cec"
    * }
    */
-  ping: {},
+  getVersionData: {},
 
   /**
    * [installPackage]
@@ -136,10 +143,7 @@ export default {
    * - timestamp {Bool}: Show timestamps
    * - tail {number}: Number of lines to return from bottom
    * options = { timestamp: true, tail: 200 }
-   * @returns {object} result = {
-   *   id: dnpName
-   *   logs: <string with escape codes>
-   * }
+   * @returns {string} logs: <string with escape codes>
    */
   logPackage: {
     manadatoryKwargs: ["id", "options"]
