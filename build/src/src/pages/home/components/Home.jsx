@@ -8,6 +8,8 @@ import "./home.css";
 
 const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
 
+if (!Array.isArray(sidenavItems)) throw Error("sidenavItems must be an array");
+
 export default class Home extends React.Component {
   render() {
     return (
@@ -30,7 +32,7 @@ export default class Home extends React.Component {
           </p>
         </div>
 
-        <div className="home-links">
+        <div className="home-links no-a-style">
           {sidenavItems.map(item => (
             <NavLink to={item.href} key={item.href}>
               <button

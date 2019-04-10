@@ -17,12 +17,13 @@ import "./details.css";
  * to the height of 4 lines in default font size.
  */
 function Details({ dnp }) {
-  const { manifest = {}, avatar = defaultAvatar, origin } = dnp;
-  const { description, author, version, image } = manifest;
-  const size = humanFileSize((image || {}).size || "");
+  const { manifest, avatar = defaultAvatar, origin } = dnp || {};
+  const { description, author, version, image } = manifest || {};
+  const { size } = image || {};
+
   const data = {
     "Developed by": author,
-    "Download size": size,
+    "Download size": humanFileSize(size),
     Version: `${version} ${origin || ""}`
   };
 

@@ -20,7 +20,7 @@ function From({ id }) {
       );
       if (!dataUri) return;
       const blob = dataUriToBlob(dataUri);
-      const fileName = fromPath.split("/")[fromPath.split("/").length - 1];
+      const fileName = parseFileName(fromPath);
       saveAs(blob, fileName);
     } catch (e) {
       console.error(`Error on copyFileFrom ${id} ${fromPath}: ${e.stack}`);
@@ -43,6 +43,12 @@ function From({ id }) {
       />
     </div>
   );
+}
+
+function parseFileName(path) {
+  if (!path || typeof path !== "string") return path;
+  const subPaths = path.split("/");
+  return subPaths[subPaths.length - 1];
 }
 
 From.propTypes = {

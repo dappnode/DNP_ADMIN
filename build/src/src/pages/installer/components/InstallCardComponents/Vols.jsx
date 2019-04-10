@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
@@ -63,6 +64,20 @@ function Vols({ vols, isInstalled, updateUserSetVols, hideCardHeaders }) {
  *     }
  *   }, ... }
  */
+Vols.propTypes = {
+  vols: PropTypes.objectOf(
+    PropTypes.objectOf(
+      PropTypes.shape({
+        host: PropTypes.string.isRequired,
+        container: PropTypes.string.isRequired,
+        accessMode: PropTypes.string
+      })
+    )
+  ).isRequired,
+  isInstalled: PropTypes.object.isRequired,
+  hideCardHeaders: PropTypes.bool.isRequired,
+  updateUserSetVols: PropTypes.func.isRequired
+};
 
 const mapStateToProps = createStructuredSelector({
   vols: selector.getVols,

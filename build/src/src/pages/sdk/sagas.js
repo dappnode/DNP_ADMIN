@@ -65,7 +65,7 @@ function* connectMetamask() {
   }
 }
 
-function getRegistryFromRepo(repoName) {
+function getRegistryFromRepo(repoName = "") {
   return repoName
     .split(".")
     .slice(1)

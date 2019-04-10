@@ -3,6 +3,7 @@ import { mountPoint } from "./data";
 import semver from "semver";
 import web3Utils from "web3-utils";
 import isIpfsHash from "utils/isIpfsHash";
+import { stringIncludes } from "utils/strings";
 import generatePublishTx from "./sagaUtils/generatePublishTx";
 
 // #### EXTERNAL
@@ -101,10 +102,9 @@ function getDnpNameInput(state) {
   const error = [],
     success = [];
   // Validation that don't require external calls
-  if (dnpName) {
-    if (dnpName && !(dnpName || "").includes("."))
-      error.push(`"${dnpName}" is not a valid ENS domain`);
-  }
+  if (dnpName && !dnpName.includes("."))
+    error.push(`"${dnpName}" is not a valid ENS domain`);
+
   // Validations that require external calls
   if (dnpName && repoInfo) {
     const { registryAddress, repoAddress, latestVersion } = repoInfo;
@@ -248,8 +248,8 @@ export function getButtonInput(state) {
     allowedAddress &&
     repoInfo.repoAddress &&
     userAddress &&
-    toLc(repoInfo.repoAddress) === toLc(allowedAddress.repoAddress) &&
-    toLc(userAddress) === toLc(allowedAddress.userAddress)
+    stringIncludes(repoInfo.repoAddress, allowedAddress.repoAddress) &&
+    stringIncludes(userAddress, allowedAddress.userAddress)
   ) {
     if (allowedAddress.isAllowed) {
       success.push(`Selected address ${userAddress} is allowed to publish`);
@@ -294,12 +294,7 @@ export function getTransactionPreview(state) {
   else return null;
 }
 
-// UTILS
-
-// To lowercase safe
-function toLc(s) {
-  return s && typeof s === "string" ? s.toLowerCase() : s;
-}
+// Utils
 
 function cleanArrays(obj) {
   for (const key of Object.keys(obj)) {

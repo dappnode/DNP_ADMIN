@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
@@ -13,7 +14,7 @@ import TableInputs from "components/TableInputs";
 
 function Envs({ envs, hideCardHeaders, updateUserSetEnvs }) {
   // If no envs, return null
-  if (!Object.keys(envs).length) return null;
+  if (!Object.keys(envs || {}).length) return null;
 
   return (
     <>
@@ -57,6 +58,12 @@ function Envs({ envs, hideCardHeaders, updateUserSetEnvs }) {
  *   }
  * }
  */
+
+Envs.propTypes = {
+  envs: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  hideCardHeaders: PropTypes.bool.isRequired,
+  updateUserSetEnvs: PropTypes.func.isRequired
+};
 
 const mapStateToProps = createStructuredSelector({
   envs: selector.getEnvs,

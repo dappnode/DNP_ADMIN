@@ -10,7 +10,7 @@ const Name = styled.span`
 
 const DnpName = ({ dnpName }) => {
   // Return no name if undefined
-  if (!dnpName) return <span>No name</span>;
+  if (!dnpName || typeof dnpName !== "string") return <span>No name</span>;
 
   // Split the name by "Vpn" and "dnp.dappnode.eth"
   const [shortName, domain] = dnpName.split(/\.(.+)/);

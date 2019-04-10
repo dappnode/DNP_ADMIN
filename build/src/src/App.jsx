@@ -16,6 +16,8 @@ import pages from "./pages";
 import { getConnectionStatus } from "services/connectionStatus/selectors";
 import { ToastContainer } from "react-toastify";
 
+if (typeof pages !== "object") throw Error("pages must be an object");
+
 class App extends React.Component {
   // App is the parent container of any other component.
   // If this re-renders, the whole app will. So DON'T RERENDER APP!

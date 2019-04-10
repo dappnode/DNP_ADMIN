@@ -1,16 +1,22 @@
 /**
- * Safe version of String.toLowercase
+ * Safe version of String.toLowerCase
  * @param {String} s
  * @returns {String}
  */
-export const toLowercase = s => (s ? s.toLowerCase() : s);
+export const toLowercase = s => {
+  if (!s || typeof s !== "string") return "";
+  return s.toLowerCase();
+};
 
 /**
  * Capitalizes a string
  * @param {String} string = "hello world"
  * @returns {String} "Hello world"
  */
-export const capitalize = (s = "") => s.charAt(0).toUpperCase() + s.slice(1);
+export const capitalize = s => {
+  if (!s || typeof s !== "string") return s;
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
 
 /**
  * Checks if string 1 includes string 2.
@@ -20,12 +26,17 @@ export const capitalize = (s = "") => s.charAt(0).toUpperCase() + s.slice(1);
  * @param {String} s2 = "lo"
  * @returns {Bool} = true
  */
-export const stringIncludes = (s1, s2) =>
-  !s1 || !s2 ? false : s1.toLowerCase().includes(s2.toLowerCase());
+export const stringIncludes = (s1, s2) => {
+  if (!s1 || typeof s1 !== "string") return false;
+  if (!s2 || typeof s2 !== "string") return false;
+  return s1.toLowerCase().includes(s2.toLowerCase());
+};
 
 /**
  * Converts constant case "SOME_BAR", to a sentence "Some bar"
  * @param {String} s
  */
-export const toSentence = (s = "") =>
-  capitalize(s.replace(new RegExp("_", "g"), " ").toLowerCase());
+export const toSentence = s => {
+  if (!s || typeof s !== "string") return s;
+  return capitalize(s.replace(new RegExp("_", "g"), " ").toLowerCase());
+};

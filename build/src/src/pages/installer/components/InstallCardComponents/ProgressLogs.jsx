@@ -1,21 +1,21 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 // Components
 import ProgressBar from "react-bootstrap/ProgressBar";
 import DnpName from "components/DnpName";
 import Card from "components/Card";
 
-function parsePercent(s) {
+function parsePercent(s = "") {
+  if (!s.includes("%")) return null;
   // Return string before the first "%" and after the last " "
-  if (s.includes("%")) {
-    return s
-      .split("%")[0]
-      .split(" ")
-      .slice(-1);
-  }
+  return s
+    .split("%")[0]
+    .split(" ")
+    .slice(-1);
 }
 
-export default function ProgressLogs({ progressLogs }) {
+function ProgressLogs({ progressLogs }) {
   if (isEmpty(progressLogs)) return null;
 
   return (
@@ -23,7 +23,7 @@ export default function ProgressLogs({ progressLogs }) {
       {Object.entries(progressLogs)
         // Don't show "core.dnp.dappnode.eth" actual progress log information
         .filter(([dnpName]) => dnpName !== "core.dnp.dappnode.eth")
-        .map(([dnpName, log]) => {
+        .map(([dnpName, log = ""]) => {
           const percent = parsePercent(log);
           const progressing = percent || log.includes("...");
           return (
@@ -45,3 +45,15 @@ export default function ProgressLogs({ progressLogs }) {
     </Card>
   );
 }
+
+/**
+ * @param {Object} progressLogs = {
+ *   "dnpName1.dnp.dappnode.eth": "Downloading 64%",
+ *   "dnpName2.dnp.dappnode.eth": "Loading...",
+ * }
+ */
+ProgressLogs.propTypes = {
+  progressLogs: PropTypes.objectOf(PropTypes.string.isRequired).isRequired
+};
+
+export default ProgressLogs;

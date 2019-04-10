@@ -1,11 +1,13 @@
 // Utils
 
 export function isIpfsHash(hash) {
+  if (!hash || typeof hash !== "string") return false;
   return hash.includes("/ipfs/") && isIpfsMultiHash(hash.split("/ipfs/")[1]);
 }
 
 export function isDnpDomain(id) {
-  if (!id || !id.includes(".")) return false;
+  if (!id || typeof id !== "string") return false;
+  if (!id.includes(".")) return false;
   const [, dnpTag, , extension] = id.split(".");
   return (
     dnpTag &&
@@ -16,6 +18,7 @@ export function isDnpDomain(id) {
 }
 
 export function isIpfsMultiHash(multiHash) {
+  if (!multiHash || typeof multiHash !== "string") return false;
   return (
     multiHash.startsWith("Qm") &&
     !multiHash.includes(".") &&
@@ -24,6 +27,7 @@ export function isIpfsMultiHash(multiHash) {
 }
 
 export function correctPackageName(req) {
+  if (!req || typeof req !== "string") return req;
   // First determine if it contains an ipfs hash
   if (req.startsWith("ipfs/") && isIpfsMultiHash(req.split("ipfs/")[1]))
     return "/" + req;
@@ -38,4 +42,7 @@ export function isEmpty(obj) {
   return true;
 }
 
-export const cleanDnpName = dnpName => (dnpName || "").split("@")[0];
+export function cleanDnpName(dnpName) {
+  if (!dnpName || typeof dnpName !== "string") return dnpName;
+  return (dnpName || "").split("@")[0];
+}

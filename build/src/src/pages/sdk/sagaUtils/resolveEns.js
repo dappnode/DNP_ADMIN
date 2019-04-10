@@ -1,4 +1,5 @@
 import ens from "./ens";
+import { stringIncludes } from "utils/strings";
 
 // Ens throws if a node is not found
 //
@@ -12,7 +13,7 @@ export default async function resolveEns(ensName) {
   try {
     return await ens.resolver(ensName).addr();
   } catch (e) {
-    if (e.message.includes("not found")) return null;
+    if (stringIncludes((e || {}).message, "not found")) return null;
     else throw e;
   }
 }

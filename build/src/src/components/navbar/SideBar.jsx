@@ -4,6 +4,9 @@ import { sidenavItems, fundedBy } from "./navbarItems";
 import logo from "img/dappnode-logo-wide-min.png";
 import "./sidebar.css";
 
+if (!Array.isArray(sidenavItems)) throw Error("sidenavItems must be an array");
+if (!Array.isArray(fundedBy)) throw Error("fundedBy must be an array");
+
 // The sidebar is kept exclusively in this component state
 // In order to avoid the App or redux to be aware of the
 // sidebar state while allowing the tobar to toggle the sidebar

@@ -1,6 +1,7 @@
 import registryContract from "contracts/registry.json";
 import web3 from "./web3";
 import web3Utils from "web3-utils";
+import { stringIncludes } from "utils/strings";
 
 /**
  * Fetches all repos from a registry.
@@ -38,14 +39,17 @@ async function getRegistry(registryAddress) {
   return newRepoEvents
     .filter(event => {
       // Ignore faulty deploy of telegram repo
+      const name = event.returnValues.name || "";
       if (
-        registryAddress.toLowerCase() ===
-          "0x266bfdb2124a68beb6769dc887bd655f78778923" &&
-        event.returnValues.name.includes(".")
+        stringIncludes(
+          registryAddress,
+          "0x266bfdb2124a68beb6769dc887bd655f78778923"
+        ) &&
+        name.includes(".")
       )
         return false;
       // ignore apm-registry apm-enssub apm-repo
-      if (event.returnValues.name.startsWith("apm-")) return false;
+      if (name.startsWith("apm-")) return false;
       return true;
     })
     .map(newRepoEvent => {

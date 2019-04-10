@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { fetchDappnodeStats } from "services/dappnodeStatus/actions";
@@ -74,6 +75,12 @@ function Dashboard({
     </>
   );
 }
+
+Dashboard.propTypes = {
+  chainData: PropTypes.array.isRequired,
+  dappnodeStats: PropTypes.object.isRequired,
+  dappnodeVolumes: PropTypes.array.isRequired
+};
 
 const mapStateToProps = createStructuredSelector({
   chainData: getChainData,

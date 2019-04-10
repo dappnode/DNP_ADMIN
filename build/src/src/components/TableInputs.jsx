@@ -1,6 +1,7 @@
 import React from "react";
 import Input from "components/Input";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 /**
  * Note to self:
@@ -20,6 +21,21 @@ const Header = styled.h6`
 `;
 
 function TableInputs({ headers, content }) {
+  if (!Array.isArray(headers)) {
+    console.error("headers must be an array");
+    return null;
+  }
+  if (!Array.isArray(content)) {
+    console.error("content must be an array");
+    return null;
+  }
+  content.forEach(row => {
+    if (!Array.isArray(row)) {
+      console.error("row must be an array");
+      return null;
+    }
+  });
+
   return (
     <TableXN>
       {headers.map((header, i) => (
@@ -31,5 +47,10 @@ function TableInputs({ headers, content }) {
     </TableXN>
   );
 }
+
+TableInputs.propTypes = {
+  headers: PropTypes.array.isRequired,
+  content: PropTypes.arrayOf(PropTypes.array).isRequired
+};
 
 export default TableInputs;

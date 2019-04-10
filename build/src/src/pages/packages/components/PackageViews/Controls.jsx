@@ -10,12 +10,8 @@ import confirmRemovePackage from "../confirmRemovePackage";
 import confirmRestartPackage from "../confirmRestartPackage";
 import { confirmAlert } from "react-confirm-alert"; // Import js
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
-import { shortName } from "utils/format";
-
-function shortNameCapitalized(name = "") {
-  const _name = shortName(name);
-  return _name.charAt(0).toUpperCase() + _name.slice(1);
-}
+import { shortNameCapitalized } from "utils/format";
+import { toLowercase } from "utils/strings";
 
 function PackageControls({
   dnp,
@@ -35,7 +31,7 @@ function PackageControls({
     });
   }
 
-  const state = (dnp.state || "").toLowerCase();
+  const state = toLowercase(dnp.state); // toLowercase always returns a string
 
   const actions = [
     {

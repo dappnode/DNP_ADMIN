@@ -15,6 +15,7 @@ import { pushNotification } from "services/notifications/actions";
 // Utilities
 import isSyncing from "utils/isSyncing";
 import { mapValues } from "lodash";
+import { stringIncludes } from "utils/strings";
 
 // Service > coreUpdate
 
@@ -77,7 +78,7 @@ function* fetchManifest(id) {
     return manifest;
   } catch (e) {
     // Check if the dappmanager says mainnet is still syncing
-    if (e.message.includes("Mainnet is still syncing"))
+    if (stringIncludes((e || {}).message, "Mainnet is still syncing"))
       yield call(putMainnetIsStillSyncing);
     console.error(`Error fetching manifest for ${id}, ${e.stack}`);
   }

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 // Components
 import CardList from "components/CardList";
 import SubTitle from "components/SubTitle";
@@ -16,12 +17,14 @@ function Dependencies({ request, resolving }) {
 
   if (!Object.keys(request || {}).length) return "Empty request";
 
-  const { success, alreadyUpdated, errors } = request || {};
+  const { success, alreadyUpdated, message } = request || {};
   const installedPackages = [];
 
   if (success) {
-    const dnps2 = { ...(alreadyUpdated || {}), ...(success || {}) };
-    const dnps = Object.entries(dnps2).map(([dnpName, version]) => {
+    const dnps = Object.entries({
+      ...(alreadyUpdated || {}),
+      ...(success || {})
+    }).map(([dnpName, version]) => {
       const dnp = installedPackages.find(dnp => dnp.name === dnpName);
       return {
         from: (dnp || {}).version || "",
@@ -32,23 +35,23 @@ function Dependencies({ request, resolving }) {
     });
     return (
       <>
-        <Ok ok={true} msg={"DNP is compatible with current DNPs"} />
+        <Ok ok={true} msg={`DNP is compatible: ${message}`} />
         <DependencyList deps={dnps} />
       </>
     );
+  } else {
+    return <Ok ok={false} msg={`DNP is not compatible: ${message}`} />;
   }
-
-  if (errors) {
-    return <Ok ok={false} msg={"Install request not compatible"} />;
-  }
-
-  return (
-    <Ok
-      ok={false}
-      msg={"Something went wrong, request = " + JSON.stringify(request)}
-    />
-  );
 }
+
+Dependencies.propTypes = {
+  request: PropTypes.shape({
+    success: PropTypes.any.isRequired,
+    alreadyUpdated: PropTypes.object,
+    message: PropTypes.string.isRequired
+  }),
+  resolving: PropTypes.bool
+};
 
 export default props => (
   <>

@@ -12,7 +12,7 @@ import { stringIncludes } from "utils/strings";
 function DnpStore({ directory, openDnp }) {
   return (
     <div className="dnp-cards">
-      {directory.map((dnp, i) => {
+      {directory.map(dnp => {
         const { manifest, error, avatar = defaultAvatar, origin, tag } =
           dnp || {};
         const { name, description, keywords = [] } = manifest || {};
@@ -23,7 +23,7 @@ function DnpStore({ directory, openDnp }) {
         const tagDisplay = tag === "INSTALL" ? "GET" : tag;
         return (
           <Card
-            key={name}
+            key={name + origin}
             className="dnp-card"
             shadow
             onClick={() => openDnp(dnp.name)}
@@ -33,7 +33,7 @@ function DnpStore({ directory, openDnp }) {
               <h5 className="title">{name}</h5>
               <div>{description}</div>
               <div className="keywords">
-                {origin ? (
+                {origin && typeof origin === "string" ? (
                   <div className="ipfs">
                     <img src={ipfsLogo} alt="ipfs" />
                     <span>{origin.replace("/ipfs/", "")}</span>

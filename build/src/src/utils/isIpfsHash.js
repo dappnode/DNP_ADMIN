@@ -16,13 +16,13 @@ function isMultihash(hash) {
   return hash.startsWith("Qm") && hash.length === 46;
 }
 
-export default function isIpfsHash(HASH) {
-  if (!HASH) return false;
+export default function isIpfsHash(hash) {
+  if (!hash || typeof hash !== "string") return false;
   // Correct hash prefix
-  if (HASH.includes("ipfs/")) {
-    HASH = HASH.split("ipfs/")[1];
+  if (hash.includes("ipfs/")) {
+    hash = hash.split("ipfs/")[1];
   }
-  HASH.replace("/", "");
+  hash.replace("/", "");
   // Make sure hash if valid
-  return isMultihash(HASH);
+  return isMultihash(hash);
 }

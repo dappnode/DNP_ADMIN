@@ -21,8 +21,14 @@ function TypeFilter({ types, onTypeChange }) {
   );
 }
 
+/**
+ * @param {object} types = {
+ *   "library": true,
+ *   "service": false
+ * }
+ */
 TypeFilter.protoTypes = {
-  types: PropTypes.objectOf(PropTypes.string).isRequired,
+  types: PropTypes.objectOf(PropTypes.bool.isRequired).isRequired,
   onTypeChange: PropTypes.func.isRequired
 };
 

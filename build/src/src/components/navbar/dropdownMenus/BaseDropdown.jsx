@@ -28,6 +28,11 @@ const BaseDropdown = ({
   offset,
   moreVisible
 }) => {
+  if (!Array.isArray(messages)) {
+    console.error("messages must be an array");
+    return null;
+  }
+
   let globalType = "light"; // Light is a white circle
   const messageTypes = messages
     .filter(message => !message.viewed)
@@ -62,8 +67,8 @@ const BaseDropdown = ({
         by placing them as right as possible */}
       <Dropdown.Menu>
         <Dropdown.Header>{name}</Dropdown.Header>
-        {messages.map(({ type, title, body, progress }) => (
-          <Dropdown.Item key={title || body}>
+        {messages.map(({ type, title, body, progress }, i) => (
+          <Dropdown.Item key={i}>
             {title ? <div className={`title text-${type}`}>{title}</div> : null}
             {body ? <div className="text">{body}</div> : null}
             {progress ? <ProgressBarWrapper progress={progress} /> : null}

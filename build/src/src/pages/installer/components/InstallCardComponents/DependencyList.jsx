@@ -45,6 +45,11 @@ const Badge = ({ text }) => (
 );
 
 function DependencyList({ deps }) {
+  if (!Array.isArray(deps)) {
+    console.error("deps must be an array");
+    return null;
+  }
+
   return (
     <>
       {deps.sort(byName).map(({ name, from, to, manifest }) => {
