@@ -31,7 +31,7 @@ function ProgressLogs({ progressLogs }) {
               <div className="col-6 text-truncate">
                 <DnpName dnpName={dnpName} />
               </div>
-              <div className="col-6 text-truncate" style={{ height: "28px" }}>
+              <div className="col-6 text-truncate center">
                 <ProgressBar
                   now={percent || 100}
                   animated={progressing}

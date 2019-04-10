@@ -5,6 +5,7 @@ a.no-a-style:hover,
 .no-a-style a,
 .no-a-style a:hover {
   color: inherit;
+  text-decoration: inherit;
 }
 
 /* General layout coloring */
@@ -94,6 +95,9 @@ a.no-a-style:hover,
      it moves too slow an looks wierd */
   transition: none !important;
 }
+.progress {
+  height: 1.1rem;
+}
 
 /* 
   Grid list
@@ -175,4 +179,11 @@ a.no-a-style:hover,
 
 .card-body.spacing > *:not(:last-child) {
   margin-bottom: var(--default-spacing);
+}
+
+/* Center bootstrap columns */
+
+.row > .center {
+  display: grid;
+  align-items: center;
 }
