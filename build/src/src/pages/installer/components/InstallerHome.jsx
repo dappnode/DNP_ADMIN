@@ -8,7 +8,9 @@ import { createStructuredSelector } from "reselect";
 // This page
 import * as a from "../actions";
 import * as s from "../selectors";
-import * as utils from "../utils";
+import isIpfsHash from "utils/isIpfsHash";
+import isDnpDomain from "utils/isDnpDomain";
+import { correctPackageName } from "../utils";
 import filterDirectory from "../helpers/filterDirectory";
 import { rootPath } from "../data";
 import NoPackageFound from "./NoPackageFound";
@@ -40,8 +42,7 @@ function InstallerHome({
 
   useEffect(() => {
     // If the packageLink is a valid IPFS hash preload it's info
-    if (utils.isIpfsHash(query) || utils.isDnpDomain(query))
-      fetchPackageData(query);
+    if (isIpfsHash(query) || isDnpDomain(query)) fetchPackageData(query);
   }, [query]);
 
   function openDnp(id) {
@@ -70,7 +71,7 @@ function InstallerHome({
    * 0. Else open the query
    */
   function runQuery() {
-    if (utils.isIpfsHash(query)) return openDnp(query);
+    if (isIpfsHash(query)) return openDnp(query);
     if (directoryFiltered.length === 1)
       return openDnp(directoryFiltered[0].name);
     else openDnp(query);
@@ -104,7 +105,7 @@ function InstallerHome({
       <Input
         placeholder="DNP's name or IPFS hash"
         value={query}
-        onValueChange={value => setQuery(utils.correctPackageName(value))}
+        onValueChange={value => setQuery(correctPackageName(value))}
         onEnterPress={runQuery}
         append={<ButtonLight onClick={runQuery}>Search</ButtonLight>}
       />

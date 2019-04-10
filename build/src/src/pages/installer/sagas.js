@@ -19,7 +19,7 @@ import { getIsInstallingByDnp } from "services/isInstallingLogs/selectors";
 import { assertAction, assertConnectionOpen } from "utils/redux";
 import { shortName } from "utils/format";
 import isSyncing from "utils/isSyncing";
-import { isIpfsHash } from "./utils";
+import isIpfsHash from "utils/isIpfsHash";
 import uniqArray from "utils/uniqArray";
 
 /***************************** Subroutines ************************************/
