@@ -96,7 +96,6 @@ export default {
    * [getParams]
    * Returns the current DAppNode identity
    *
-   * @param {string} id Device id name
    * @returns {object} result: {
    *   ip: '85.84.83.82',
    *   name: 'My-DAppNode',
@@ -111,37 +110,10 @@ export default {
   getParams: {},
 
   /**
-   * [toggleGuestUsers]
-   *
-   * [DEPRECATED]
-   */
-  toggleGuestUsers: {},
-
-  /**
-   * [resetGuestUsersPassword]
-   *
-   * [DEPRECATED]
-   */
-  resetGuestUsersPassword: {},
-
-  /**
-   * [statusUPnP]
-   *
-   * [DEPRECATED-INVESTIGATE]
-   *
-   * Returns the current upnp status
-   * @returns {object} result = {
-   *   openPorts: true, {bool} if ports have to be opened
-   *   upnpAvailable: true {bool}
-   * }
-   */
-  statusUPnP: {},
-
-  /**
    * [setStaticIp]
    * Sets the static IP
    *
-   * @param {(string|undefined)} staticIp New static
+   * @param {(string|null)} staticIp New static IP
    * - To enable: "85.84.83.82"
    * - To disable: null
    */

@@ -14,7 +14,7 @@ describe("service > dappnodeStatus > sagas", () => {
       const fakeRes = { name, staticIp, useless: "param" };
       const { storeState } = await expectSaga(fetchDappnodeParams)
         .withReducer(reducer)
-        .provide([[call(api.getParams), fakeRes], [call(api.statusUPnP), {}]])
+        .provide([[call(api.getParams), fakeRes]])
         .run();
       // The received store in the local store of this service
       expect(storeState.params).toEqual(fakeRes);

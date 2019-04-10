@@ -16,8 +16,7 @@ import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 export function* fetchDappnodeParams() {
   try {
     const dappnodeParams = yield call(api.getParams);
-    const statusUpnp = yield call(api.statusUPnP);
-    yield put(a.updateDappnodeParams({ ...dappnodeParams, ...statusUpnp }));
+    yield put(a.updateDappnodeParams(dappnodeParams));
   } catch (e) {
     console.error(`Error on fetchDappnodeParams: ${e.stack}`);
   }
