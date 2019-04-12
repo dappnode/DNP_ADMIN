@@ -18,18 +18,18 @@ import SubTitle from "components/SubTitle";
 import Title from "components/Title";
 
 /**
- * @param {Array} chainData = [{
+ * @param {array} chainData = [{
  *   name: "Mainnet",
  *   message: "Syncing 4785835/3748523",
  *   progress: 0.647234,
  *   syncing: true
  * }, ... ]
- * @param {Object} dappnodeStats = {
+ * @param {object} dappnodeStats = {
  *   cpu: 35%,
  *   disk: 86%,
  *   memory: 56%
  * }
- * @param {Array} dappnodeVolumes = [{
+ * @param {array} dappnodeVolumes = [{
  *   name: "Ethchain size",
  *   size: "53.45 GB"
  * }, ... ]

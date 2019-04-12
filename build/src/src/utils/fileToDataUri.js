@@ -1,8 +1,8 @@
 /**
  * Converts a file object to data URI
  *
- * @param {Object} file file object obtained from an <input type="file"/>
- * @return {String} data URI: data:application/zip;base64,UEsDBBQAAAg...
+ * @param {object} file file object obtained from an <input type="file"/>
+ * @returns {string} data URI: data:application/zip;base64,UEsDBBQAAAg...
  */
 export default function fileToDataUri(file) {
   return new Promise((resolve, reject) => {

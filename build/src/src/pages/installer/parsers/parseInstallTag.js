@@ -2,10 +2,10 @@ import shouldUpdate from "utils/shouldUpdate";
 
 /**
  * Returns the install tag for `/installer/`
- * @param {Object} dnpDirectory
- * @param {Array} dnpInstalled
- * @param {String} dnpName
- * @returns {String} "INSTALL", "UPDATE", "UPDATED"
+ * @param {object} dnpDirectory
+ * @param {array} dnpInstalled
+ * @param {string} dnpName
+ * @returns {string} "INSTALL", "UPDATE", "UPDATED"
  */
 export default function parseInstallTag(dnpDirectory, dnpInstalled, dnpName) {
   const installed = dnpInstalled.find(

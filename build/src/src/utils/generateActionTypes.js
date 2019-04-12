@@ -1,13 +1,13 @@
 /**
  * Utility to ease the addition of actionTypes
  *
- * @param {String} moduleId = 'moduleName', name of the module
- * @param {Array} actionTypes = [
+ * @param {string} moduleId = 'moduleName', name of the module
+ * @param {array} actionTypes = [
  *   "UPDATE_DAPPNODE_IDENTITY",
  *   "PUSH_NOTIFICATION",
  *   ...
  * ]
- * @returns {Object} actionTypes object = {
+ * @returns {object} actionTypes object = {
  *   UPDATE_DAPPNODE_IDENTITY: "moduleName/UPDATE_DAPPNODE_IDENTITY",
  *   PUSH_NOTIFICATION: "moduleName/PUSH_NOTIFICATION",
  *   ...

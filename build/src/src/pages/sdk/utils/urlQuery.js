@@ -4,8 +4,8 @@
  * - timeapp.public.dappnode.eth
  * - 0.1.16
  * - /ipfs/QmSDgpiHco5yXdyVTfhKxr3aiJ82ynz8V14QcGKicM3rVh
- * @param {String} params
- * @returns {Object}
+ * @param {string} params
+ * @returns {object}
  */
 export const parseUrlQuery = (params = "") =>
   params.split("&").reduce((obj, pair) => {
@@ -17,8 +17,8 @@ export const parseUrlQuery = (params = "") =>
 /**
  * Reverse of parseUrlQuery, such that:
  *   params = stringifyUrlQuery(parseUrlQuery(params))
- * @param {Object} obj
- * @returns {String} params
+ * @param {object} obj
+ * @returns {string} params
  */
 export const stringifyUrlQuery = obj =>
   Object.keys(obj)

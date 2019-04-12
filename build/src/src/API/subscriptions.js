@@ -52,9 +52,9 @@ export default function subscriptions(session) {
   /**
    * DNP installation progress log
    * @param {object} logData = {
-   *   id: "ln.dnp.dappnode.eth@/ipfs/Qmabcdf", {String} overall log id (to bundle multiple logs)
-   *   name: "bitcoin.dnp.dappnode.eth", {String} dnpName the log is referring to
-   *   message: "Downloading 75%", {String} log message
+   *   id: "ln.dnp.dappnode.eth@/ipfs/Qmabcdf", {string} overall log id (to bundle multiple logs)
+   *   name: "bitcoin.dnp.dappnode.eth", {string} dnpName the log is referring to
+   *   message: "Downloading 75%", {string} log message
    * }
    */
   subscribe("log.dappmanager.dnp.dappnode.eth", ({ id, name, message }) => {
@@ -99,12 +99,12 @@ export default function subscriptions(session) {
    * Periodic updates of the state of all chains bundled together
    * `chainData` is an array and is sent as an `arg` not `kwarg`
    * @param {array} chainData = [{
-   *     syncing: true, {Bool}
-   *     message: "Blocks synced: 543000 / 654000", {String}
+   *     syncing: true, {bool}
+   *     message: "Blocks synced: 543000 / 654000", {string}
    *     progress: 0.83027522935,
    *   }, {
-   *     message: "Could not connect to RPC", {String}
-   *     error: true {Bool},
+   *     message: "Could not connect to RPC", {string}
+   *     error: true {bool},
    *   }, ... ]
    */
   subscribe("chainData.dappmanager.dnp.dappnode.eth", chainData => {

@@ -4,8 +4,8 @@ import repo from "contracts/repository.json";
 /**
  * Get the lastest version of an APM repo contract for an ENS domain.
  *
- * @param {String} ensName: "admin.dnp.dappnode.eth"
- * @return {String} latest semver version = '0.1.0'
+ * @param {string} ensName: "admin.dnp.dappnode.eth"
+ * @returns {string} latest semver version = '0.1.0'
  */
 async function getLatestVersion(repoAddress) {
   const repoInstance = new web3.eth.Contract(repo.abi, repoAddress);

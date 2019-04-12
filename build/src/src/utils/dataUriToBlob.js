@@ -1,8 +1,8 @@
 /**
  * Converts a data URI feeded from the server to a downloadable blob
  *
- * @param {String} dataURI = data:application/zip;base64,UEsDBBQAAAg...
- * @return {Blob} ready to be used with "file-saver"
+ * @param {string} dataURI = data:application/zip;base64,UEsDBBQAAAg...
+ * @returns {Blob} ready to be used with "file-saver"
  *   import { saveAs } from "file-saver";
  *   const blob = dataUriToBlob(fileContent);
  *   saveAs(blob, file.name);

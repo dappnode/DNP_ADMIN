@@ -3,15 +3,15 @@
  * 1. Search bar. If search bar is empty, return all
  * 2. Selected types: If no types selected, return all
  *
- * @param {Array} directory = [{
+ * @param {array} directory = [{
  *   name: "bitcoin.dnp.dappnode.eth",
  *   version: "0.1.0",
  *   manifest: <manifestObj>,
  *   whitelisted: true
  * }, ... ]
- * @param {String} query = "bitco"
- * @param {Object} selectedTypes = { library: false, service: true }
- * @return {Array} some elements of directory
+ * @param {string} query = "bitco"
+ * @param {object} selectedTypes = { library: false, service: true }
+ * @returns {array} some elements of directory
  * [Tested]
  */
 export default function filterDirectory({ directory, query, selectedTypes }) {
@@ -32,9 +32,9 @@ export default function filterDirectory({ directory, query, selectedTypes }) {
  * Tests inclusion of a string in an object.
  * In case of error, returns true
  *
- * @param {Object} sourceObj = { hello: "world" }
- * @param {String} target = "hell"
- * @return {Boolean} = true
+ * @param {object} sourceObj = { hello: "world" }
+ * @param {string} target = "hell"
+ * @returns {Boolean} = true
  * [Tested]
  */
 function includesSafe(sourceObj, target) {

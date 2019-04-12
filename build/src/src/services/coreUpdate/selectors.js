@@ -16,7 +16,7 @@ export const getUpdatingCore = createSelector(
 );
 
 /**
- * @returns {Array} = [{
+ * @returns {array} = [{
  *   name: "admin.dnp.dappnode.eth",
  *   from: "0.1.2",
  *   to: "0.1.3",

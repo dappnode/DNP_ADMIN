@@ -2,9 +2,9 @@ const semver = require("semver");
 
 /**
  *
- * @param {String} v1 currentVersion
- * @param {String} v2 newVersion
- * @return {Bool}
+ * @param {string} v1 currentVersion
+ * @param {string} v2 newVersion
+ * @returns {bool}
  */
 function shouldUpdate(v1, v2) {
   // Deal with a double IPFS hash case

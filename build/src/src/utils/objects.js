@@ -7,9 +7,9 @@
 
 /**
  * Ease way to assert styles in an obj
- * @param {Object} obj = { address: "0x12345" }
- * @param {Object} referenceTypes = { address: "0x" }
- * @param {String} id: to make errors more comprehensive
+ * @param {object} obj = { address: "0x12345" }
+ * @param {object} referenceTypes = { address: "0x" }
+ * @param {string} id: to make errors more comprehensive
  */
 export function assertObjTypes(obj, referenceTypes, id = "Obj") {
   Object.keys(referenceTypes).forEach(key => {
@@ -24,11 +24,11 @@ export function assertObjTypes(obj, referenceTypes, id = "Obj") {
 }
 
 /**
- * @param {Array} array of objects: [ {id: 1}, {id: 2} ]
+ * @param {array} array of objects: [ {id: 1}, {id: 2} ]
  * @param {Function} key: Can be:
  * 1. The key of the item to become the id
  * 2. Function to get the id from each item: (item) => item.id
- * @return {Object} resulting object: { 1: {id: 1}, 2: {id: 2} }
+ * @returns {object} resulting object: { 1: {id: 1}, 2: {id: 2} }
  */
 export const arrayToObj = (array, key) => {
   if (typeof key === "string") {
@@ -48,7 +48,7 @@ export const arrayToObj = (array, key) => {
 
 /**
  * Safe version of JSON.stringify. On error returns an error string
- * @param {Object} obj
+ * @param {object} obj
  */
 export function stringifyObjSafe(obj) {
   try {
@@ -61,16 +61,16 @@ export function stringifyObjSafe(obj) {
 /**
  * Keeps the unique items of an array of objects.
  * To compare equality, stringifies the item and compares the strings
- * @param {Array} array
- * @returns {Array} uniqueArray
+ * @param {array} array
+ * @returns {array} uniqueArray
  */
 export const uniqueArrayOfObjects = array =>
   [...new Set(array.map(o => JSON.stringify(o)))].map(o => JSON.parse(o));
 
 /**
  * Immutable clean of empty values
- * @param {Object} obj
- * @returns {Object}
+ * @param {object} obj
+ * @returns {object}
  */
 export function cleanObj(obj) {
   const newObj = {};

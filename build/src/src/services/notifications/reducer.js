@@ -65,8 +65,8 @@ export default function(state = {}, action) {
  * - `viewed`: controls the display of the color circle
  * - `timestamp`: use for ordering
  * - `id`: prevent duplicate notifications
- * @param {Object} notification
- * @returns {Object}
+ * @param {object} notification
+ * @returns {object}
  */
 function formatNotification(notification, fromDappmanager) {
   return {

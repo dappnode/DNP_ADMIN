@@ -20,8 +20,8 @@ export function* assertConnectionOpen() {
  *   case t.MY_ACTION:
  *     assertAction(action, { id: "someId", data: {} });
  *     return { ...state, [action.id]: action.data };
- * @param {Object} action
- * @param {Object} referenceTypes
+ * @param {object} action
+ * @param {object} referenceTypes
  */
 export function assertAction(action, referenceTypes) {
   assertObjTypes(action, referenceTypes, `action ${action.type}`);

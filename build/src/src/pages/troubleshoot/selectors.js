@@ -24,8 +24,8 @@ import {
  *
  * {
  *   ok: {Boolean},
- *   msg: {String} (short description),
- *   solutions: {Array}
+ *   msg: {string} (short description),
+ *   solutions: {array}
  * }
  *
  * can also return null, and that diagnose will be ignored
@@ -139,9 +139,9 @@ export const getDiagnoses = createSelector(
  * Must return an object as:
  *
  * {
- *   name: {String},
- *   result: {String}, (or)
- *   error: {String}
+ *   name: {string},
+ *   result: {string}, (or)
+ *   error: {string}
  * }
  */
 
@@ -263,7 +263,7 @@ export const getIssueUrlRaw = () => issueBaseUrl;
  * To be composed with `createSelector`
  * If connection is not open, the selector returns null
  * @param {Function} selector
- * @return {Function}
+ * @returns {Function}
  */
 function onlyIfConnectionIsOpen(selector) {
   return createSelector(

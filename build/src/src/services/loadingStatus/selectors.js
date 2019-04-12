@@ -13,7 +13,7 @@ export const getLoadingStatuses = createSelector(
  * never changes on the lifetime of the components consuming it
  *
  * Returns true if the data has never been loaded and if is loading now
- * @param {String} loadingId
+ * @param {string} loadingId
  * [Tested]
  */
 export const getIsLoadingById = loadingId => {
@@ -32,7 +32,7 @@ export const getIsLoadingById = loadingId => {
  * never changes on the lifetime of the components consuming it
  *
  * Returns true if the data has is loading now, EVEN if it has loaded in the past
- * @param {String} loadingId
+ * @param {string} loadingId
  */
 export const getIsLoadingStrictById = loadingId => {
   return createSelector(

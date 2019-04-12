@@ -37,7 +37,7 @@ export const getVpnVersionData = createSelectorSubProp(getVersionData, "vpn");
 
 /**
  * Returns the DAppNode "network" identity to be shown in the TopBar
- * @returns {Object} params = {
+ * @returns {object} params = {
  *   name: "MyDappNode",
  *   staticIp: "85.84.83.82" (optional)
  *   domain: "ab318d2.dyndns.io" (optional, if no staticIp)

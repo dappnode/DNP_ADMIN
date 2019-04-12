@@ -10,7 +10,7 @@ import { assertAction } from "utils/redux";
  * - The whole list is always updated entirely
  * The dnps state should be an array
  *
- * @param {Array} state = dnps = [
+ * @param {array} state = dnps = [
  *   {
  *     id: '927623894...',
  *     isDNP: true, (boolean),

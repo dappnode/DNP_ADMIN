@@ -4,8 +4,8 @@
  * - On success but parsing error returns true
  * - On error returns false
  *
- * @param {Object} session, session object of crossbar's autobahn
- * @param {String} packageName = 'dappmanager', shortName of a DNP package
+ * @param {object} session, session object of crossbar's autobahn
+ * @param {string} packageName = 'dappmanager', shortName of a DNP package
  * @returns {Bool | Object} connected, returns true if the ping call was successful and false otherwise
  */
 export default function pingPackage(session, packageName) {

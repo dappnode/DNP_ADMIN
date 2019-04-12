@@ -12,7 +12,7 @@ const getIsInstallingLogs = createSelector(
 /**
  * Returns true if the DNP is being installed
  *
- * @param {String} id: "ln.dnp.dappnode.eth"
+ * @param {string} id: "ln.dnp.dappnode.eth"
  * @returns {Boolean}
  * [Tested]
  */
@@ -25,8 +25,8 @@ export const getIsInstallingByDnp = createSelector(
 /**
  * Gets the progressLogs of an installation id
  *
- * @param {String} id: "ln.dnp.dappnode.eth"
- * @returns {Object} progressLogs = {
+ * @param {string} id: "ln.dnp.dappnode.eth"
+ * @returns {object} progressLogs = {
  *   "bitcoin.dnp.dappnode.eth": "Loading...",
  *   "ln.dnp.dappnode.eth": "Downloading 46%"
  * }
@@ -44,8 +44,8 @@ export const getProgressLogsById = createSelector(
  * - Old: logId = "834d5e59-664b-46b9-8906-fbc5341d1acf"
  * - New: logId = "ln.dnp.dappnode.eth"
  *
- * @param {String} dnpName: "bitcoin.dnp.dappnode.eth"
- * @returns {Object} progressLogs = {
+ * @param {string} dnpName: "bitcoin.dnp.dappnode.eth"
+ * @returns {object} progressLogs = {
  *   "bitcoin.dnp.dappnode.eth": "Loading...",
  *   "ln.dnp.dappnode.eth": "Downloading 46%"
  * }
@@ -64,8 +64,8 @@ export const getProgressLogsByDnp = createSelector(
 
 /**
  * Same as getProgressLogsById
- * @param {Object} logs
- * @param {String} id
+ * @param {object} logs
+ * @param {string} id
  */
 function gatherLogsById(logs, id) {
   return Object.entries(logs).reduce((obj, [dnpName, log]) => {

@@ -47,7 +47,7 @@ function ProgressLogs({ progressLogs }) {
 }
 
 /**
- * @param {Object} progressLogs = {
+ * @param {object} progressLogs = {
  *   "dnpName1.dnp.dappnode.eth": "Downloading 64%",
  *   "dnpName2.dnp.dappnode.eth": "Loading...",
  * }

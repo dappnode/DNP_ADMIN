@@ -48,7 +48,7 @@ export default {
    * concatenated with the device id.
    *
    * @param {string} id Device id name
-   * @returns {Object} result = {
+   * @returns {object} result = {
    *   filename: "", {string}
    *   key: "" {string}
    * }

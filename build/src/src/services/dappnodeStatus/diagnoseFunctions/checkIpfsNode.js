@@ -33,7 +33,7 @@ function fetchWithTimeout(url, options, timeout = 3000) {
 
 /**
  * Attempts to cat a common IPFS hash.
- * @returns {Object}
+ * @returns {object}
  * - If the cat succeeds, returns { resolves: true }
  * - On error, returns { resolves: false, error: e.message }
  */
