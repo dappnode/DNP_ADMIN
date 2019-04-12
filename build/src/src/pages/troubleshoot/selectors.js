@@ -208,7 +208,7 @@ export const getIssueBody = createSelector(
       {
         title: "Core DNPs versions",
         items: dnps
-          .filter(dnp => dnp.isCORE)
+          .filter(dnp => dnp.isCore)
           .map(({ name, version, branch, commit }) => ({
             name,
             data:

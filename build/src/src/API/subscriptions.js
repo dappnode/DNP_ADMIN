@@ -64,7 +64,7 @@ export default function subscriptions(session) {
   /**
    * @param {array} dnpList = res.result = [{
    *   id: '927623894...',
-   *   isDNP: true,
+   *   isDnp: true,
    *   name: otpweb.dnp.dappnode.eth,
    *   ... (see `api/rpcMethods/dappmanager#listPackages` for more details)
    * }, ... ]
