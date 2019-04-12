@@ -89,7 +89,10 @@ function InstallerInterface({
           </Button>
         )}
       </Card>
-      <Dependencies request={requestResult} resolving={resolving} />
+      <Dependencies
+        request={requestResult || {}}
+        resolving={resolving || false}
+      />
       <SpecialPermissions />
       {showSettings ? (
         <>

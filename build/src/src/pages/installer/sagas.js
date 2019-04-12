@@ -73,7 +73,7 @@ export function* install({ id, options }) {
 
 /**
  *
- * @param {Object} kwargs { ports:
+ * @param {object} kwargs { ports:
  *   [ { number: 30303, type: TCP }, ...]
  * }
  */
@@ -129,16 +129,30 @@ export function* fetchPackageRequest({ id }) {
     // Resolve the request to install
     const { name, version } = manifest;
     yield put(updateDnpDirectoryById(id, { resolving: true }));
-    const requestResult = yield call(api.resolveRequest, {
-      req: { name, ver: isIpfsHash(id) ? id : version }
-    });
-    yield put(updateDnpDirectoryById(id, { resolving: false, requestResult }));
-
-    // Fetch package data of the dependencies. fetchPackageData updates the store
-    const deps = (requestResult || {}).success || {};
-    for (const depName of Object.keys((requestResult || {}).success || {})) {
-      if (depName === name) continue; // Don't refetch requested DNP
-      yield put(a.fetchPackageData(`${depName}@${deps[depName]}`));
+    try {
+      const { state, alreadyUpdated } = yield call(api.resolveRequest, {
+        req: { name, ver: isIpfsHash(id) ? id : version }
+      });
+      const dnps = { ...(state || {}), ...(alreadyUpdated || {}) };
+      yield put(
+        updateDnpDirectoryById(id, {
+          resolving: false,
+          requestResult: { dnps, error: null }
+        })
+      );
+      // Fetch package data of the dependencies. fetchPackageData updates the store
+      for (const [depName, depVersion] of Object.entries(state)) {
+        if (depName === name) continue; // Don't refetch requested DNP
+        yield put(a.fetchPackageData(`${depName}@${depVersion}`));
+      }
+    } catch (e) {
+      // if api.resolveRequest fails, it will throw. Display this error in the UI
+      yield put(
+        updateDnpDirectoryById(id, {
+          resolving: false,
+          requestResult: { error: e.message }
+        })
+      );
     }
   } catch (e) {
     console.error(`Èrror on fetchPackageRequest(${id}): ${e.stack}`);

@@ -17,40 +17,37 @@ function Dependencies({ request, resolving }) {
 
   if (!Object.keys(request || {}).length) return "Empty request";
 
-  const { success, alreadyUpdated, message } = request || {};
+  const { dnps, error } = request || {};
   const installedPackages = [];
 
-  if (success) {
-    const dnps = Object.entries({
-      ...(alreadyUpdated || {}),
-      ...(success || {})
-    }).map(([dnpName, version]) => {
-      const dnp = installedPackages.find(dnp => dnp.name === dnpName);
-      return {
-        from: (dnp || {}).version || "",
-        to: version,
-        name: dnpName,
-        manifest: {}
-      };
-    });
+  if (error) {
+    return <Ok ok={false} msg={`DNP is not compatible: ${error}`} />;
+  } else {
     return (
       <>
-        <Ok ok={true} msg={`DNP is compatible: ${message}`} />
-        <DependencyList deps={dnps} />
+        <Ok ok={true} msg={`DNP is compatible`} />
+        <DependencyList
+          deps={Object.entries(dnps).map(([dnpName, version]) => {
+            const dnp = installedPackages.find(dnp => dnp.name === dnpName);
+            return {
+              from: (dnp || {}).version || "",
+              to: version,
+              name: dnpName,
+              manifest: {}
+            };
+          })}
+        />
       </>
     );
-  } else {
-    return <Ok ok={false} msg={`DNP is not compatible: ${message}`} />;
   }
 }
 
 Dependencies.propTypes = {
   request: PropTypes.shape({
-    success: PropTypes.any.isRequired,
-    alreadyUpdated: PropTypes.object,
-    message: PropTypes.string.isRequired
-  }),
-  resolving: PropTypes.bool
+    dnps: PropTypes.object.isRequired,
+    error: PropTypes.string
+  }).isRequired,
+  resolving: PropTypes.bool.isRequired
 };
 
 export default props => (
