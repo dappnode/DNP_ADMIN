@@ -4,7 +4,7 @@ import { shortNameCapitalized } from "utils/format";
 
 export default function confirmPackageRestart(id, cb) {
   confirmAlert({
-    title: `Removing ${shortNameCapitalized(id)}`,
+    title: `Restarting ${shortNameCapitalized(id)}`,
     message: `This action cannot be undone. If this DNP holds state, it may be lost.`,
     buttons: [
       { label: "Cancel", onClick: () => {} },

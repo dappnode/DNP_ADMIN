@@ -1,7 +1,7 @@
 /**
  * Parse the ports of a manifest object
- * @param {Object} manifest
- * @return {Object} ports = {containerAndType: hostPort}
+ * @param {object} manifest
+ * @returns {object} ports = {containerAndType: hostPort}
  */
 export default function parseManifestPorts(manifest = {}) {
   const portsArray = (manifest.image || {}).ports || [];

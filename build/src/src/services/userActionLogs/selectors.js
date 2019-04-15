@@ -4,7 +4,7 @@ import { createSelector } from "reselect";
 // Service > userActionLogs
 
 /**
- * @param {Array} userActionLogs = [{
+ * @param {array} userActionLogs = [{
  *   event: "installPackage.dappmanager.dnp.dappnode.eth",
  *   kwargs: {
  *     id: "rinkeby.dnp.dappnode.eth",

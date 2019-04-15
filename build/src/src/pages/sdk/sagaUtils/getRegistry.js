@@ -7,8 +7,8 @@ import { stringIncludes } from "utils/strings";
  * Fetches all repos from a registry.
  * This call may take a long while (10-30 seconds)
  *
- * @param {String} registryAddress = '0x266bfdb2124a68beb6769dc887bd655f78778923'
- * @return {Object} of repos: {
+ * @param {string} registryAddress = '0x266bfdb2124a68beb6769dc887bd655f78778923'
+ * @returns {object} of repos: {
  *   timenode: {
  *     id: "0x6a5699a502e5914239605cde5bd114545c56cef63bbac3a3f5783844226a99a9"
  *     name: "timenode"

@@ -22,7 +22,8 @@ const ChainData = ({ chainData }) => {
           title: name,
           body: message,
           type: error ? "danger" : syncing ? "warning" : "success",
-          progress: progress
+          progress: progress,
+          showProgress: syncing
         })
       )}
       Icon={() => <FiBox size={"1.4em"} />}

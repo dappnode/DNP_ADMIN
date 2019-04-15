@@ -11,7 +11,7 @@ function ChainCard({ name, message, progress, error, syncing }) {
 
       {syncing ? (
         <ProgressBar
-          now={progressPercent || 100}
+          now={progressPercent}
           animated={true}
           label={`${progressPercent}%`}
         />

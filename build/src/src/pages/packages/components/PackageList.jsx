@@ -28,7 +28,7 @@ const PackagesList = ({ dnps = [], restartPackage, moduleName, coreDnps }) => {
       <header>Open</header>
       <header>Restart</header>
       {dnps
-        .filter(dnp => xnor(coreDnps, dnp.isCore || dnp.isCORE))
+        .filter(dnp => xnor(coreDnps, dnp.isCore))
         .map(({ name, state }) => (
           <React.Fragment key={name}>
             <StateBadge state={state} />

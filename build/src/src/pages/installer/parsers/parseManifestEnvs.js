@@ -1,7 +1,7 @@
 /**
  * Parse the ENVs of a manifest object
- * @param {Object} manifest
- * @return {Object} envs = {ENV_NAME: "ENV_VALUE"}
+ * @param {object} manifest
+ * @returns {object} envs = {ENV_NAME: "ENV_VALUE"}
  */
 export default function parseManifestEnvs(manifest = {}) {
   const envsArray = (manifest.image || {}).environment || [];

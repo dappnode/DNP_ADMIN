@@ -77,9 +77,7 @@ function PackageControls({
       <SubTitle>Controls</SubTitle>
       <CardList>
         {actions
-          .filter(
-            action => action.availableForCore || !(dnp.isCore || dnp.isCORE)
-          )
+          .filter(action => action.availableForCore || !dnp.isCore)
           .map(({ name, text, type, action }) => (
             <div key={name} className="control-item">
               <div>

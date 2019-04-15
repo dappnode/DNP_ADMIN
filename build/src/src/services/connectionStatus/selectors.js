@@ -4,7 +4,7 @@ import { createSelector } from "reselect";
 // Service > connectionStatus
 
 /**
- * @returns {Object} connectionStatus = {
+ * @returns {object} connectionStatus = {
  *   isOpen: false,
  *   error: "Unreachable",
  *   session: "WAMP session object",

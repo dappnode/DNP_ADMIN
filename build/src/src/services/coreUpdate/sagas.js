@@ -53,13 +53,11 @@ function* putMainnetIsStillSyncing() {
     yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
     yield put(
       pushNotification({
-        notification: {
-          id: "mainnetStillSyncing",
-          type: "warning",
-          title: "System update available",
-          body:
-            "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
-        }
+        id: "mainnetStillSyncing",
+        type: "warning",
+        title: "System update available",
+        body:
+          "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
       })
     );
   } catch (e) {
@@ -70,7 +68,7 @@ function* putMainnetIsStillSyncing() {
 /**
  * Wrapper to fetch a DNP's manifest. If there is an error because the chain is syncing,
  * update the App state to so it knows that the chain is syncing
- * @param {String} id = "core.dnp.dappnode.eth@latest"
+ * @param {string} id = "core.dnp.dappnode.eth@latest"
  */
 function* fetchManifest(id) {
   try {
@@ -104,11 +102,11 @@ export function* checkCoreUpdate() {
      *   vpn.dnp.dappnode.eth: "/ipfs/QmPPmuD55aSHQfvgjGMDZLsfY2ykcr54Sab9BoSXKFQZEv",
      *   ... }
      */
-    const { success } = yield call(api.resolveRequest, {
+    const { state } = yield call(api.resolveRequest, {
       req: { name: coreName, ver: coreVersion },
       options: { BYPASS_RESOLVER: true }
     });
-    const { [coreName]: _, ...deps } = success;
+    const { [coreName]: _, ...deps } = state;
     yield put(a.updateCoreDeps(mapValues(deps, version => ({ version }))));
 
     /* Try to get all core dependencies manifests. If it fails, don't stop the update 

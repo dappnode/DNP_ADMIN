@@ -59,13 +59,13 @@ function assertKwargs(kwargs = {}, keys = []) {
 /**
  * Wrapper for WAMP RPC calls
  *
- * @param {Object}
+ * @param {object}
  * - event: logPackage.dappmanager.dnp.dappnode.eth
  * - args: Array of arguments
  * - kwargs: Object of arguments
  * - options:
- *   - toastMessage: {String} Triggers a pending toast
- *   - toastOnError: {Bool} Triggers a toast on error only
+ *   - toastMessage: {string} Triggers a pending toast
+ *   - toastOnError: {bool} Triggers a toast on error only
  */
 async function wrapCall({ event, args = [], kwargs = {}, options = {} }) {
   // Toast visualization options

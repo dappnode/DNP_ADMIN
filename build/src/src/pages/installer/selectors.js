@@ -61,7 +61,7 @@ export const getIsInstalled = createSelector(
  * Gets the query id from the react-router injected props
  * - The url path is: /installer/:id
  * - Must be decoded to be compatible with IPFS paths
- * @returns {String}
+ * @returns {string}
  */
 export const getQueryId = createSelector(
   (_, ownProps) => (ownProps.match || {}).params.id,
@@ -96,8 +96,8 @@ export const getQueryIdOrName = createSelector(
  * 1. Manifest variables (default)
  * 2. Variables already set on the DNP (applies to updates)
  * 3. User set variables for this specific installation
- * @param {String} varId = "envs", "ports" or "vols"
- * @returns {Object} Always ordered by DNP id = {
+ * @param {string} varId = "envs", "ports" or "vols"
+ * @returns {object} Always ordered by DNP id = {
  *   dnpName.dnp.dappnode.eth: {
  *     "FOO": "BAR"
  *   },
@@ -166,7 +166,7 @@ export const getVols = getVarFactory("vols");
 /**
  * Format userSet parameters to be send to the dappmanager
  * Used in saga installer/install
- * @returns {Object} userSetFormatted = {
+ * @returns {object} userSetFormatted = {
  *   userSetEnvs = {
  *     "kovan.dnp.dappnode.eth": {
  *       "ENV_NAME": "VALUE1"
@@ -199,7 +199,7 @@ export const getUserSetFormatted = createSelector(
 /**
  * Logic to show or hide internal card headers.
  * - Only if envs, ports and vols only have one DNP and is the query
- * @returns {Bool} true = hide headers
+ * @returns {bool} true = hide headers
  * Used in: Envs.jsx, Ports.jsx, Vols.jsx
  * [Tested]
  */
@@ -221,24 +221,27 @@ export const getHideCardHeaders = createSelector(
 
 /**
  * Append the install tag to each DNP aggregating the dnpDirectory and the dnpInstalled
- * @returns {Object}
+ * - Order DNPs by directoryId in descending order (latest on top)
+ * @returns {object}
  * [Tested]
  */
 const getDnpDirectoryWithTags = createSelector(
   getDnpDirectoryWhitelisted,
   getDnpInstalled,
   (dnpDirectory, dnpInstalled) => {
-    return Object.entries(dnpDirectory).map(([dnpName, dnp]) => {
-      const tag = parseInstallTag(dnpDirectory, dnpInstalled, dnpName);
-      return { ...dnp, tag };
-    });
+    return Object.entries(dnpDirectory)
+      .map(([dnpName, dnp]) => {
+        const tag = parseInstallTag(dnpDirectory, dnpInstalled, dnpName);
+        return { ...dnp, tag };
+      })
+      .sort((dnpA, dnpB) => dnpB.directoryId - dnpA.directoryId);
   }
 );
 
 /**
  * Filter directory by DNPs that are not `type: "dncore"`
  * - If a DNP is broken and has no type, display it
- * @returns {Array}
+ * @returns {array}
  * [Tested]
  */
 export const getDnpDirectoryWithTagsNonCores = createSelector(

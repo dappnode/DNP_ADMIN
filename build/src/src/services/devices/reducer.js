@@ -1,6 +1,8 @@
 import * as t from "./actionTypes";
 import { assertAction } from "utils/redux";
 import { arrayToObj } from "utils/objects";
+import * as schemas from "schemas";
+import Joi from "joi";
 
 // Service > devices
 
@@ -16,13 +18,19 @@ import { arrayToObj } from "utils/objects";
  */
 
 export default function(state = {}, action) {
+  const assertActionSchema = obj => assertAction(action, Joi.object(obj));
   switch (action.type) {
     case t.UPDATE_DEVICES:
-      assertAction(action, { devices: [] });
+      assertActionSchema({
+        devices: schemas.devices.required()
+      });
       return arrayToObj(action.devices, "id");
 
     case t.UPDATE_DEVICE:
-      assertAction(action, { id: "Mike", data: {} });
+      assertActionSchema({
+        id: Joi.string().required(),
+        data: Joi.object().required()
+      });
       if (!state[action.id]) {
         console.error(`Attempting to update non-existant device ${action.id}`);
         return state;

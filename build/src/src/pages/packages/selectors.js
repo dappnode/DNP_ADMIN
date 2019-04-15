@@ -42,11 +42,11 @@ export const getFilteredPackages = createSelector(
 );
 export const getCorePackages = createSelector(
   getDnpInstalled,
-  _packages => _packages.filter(p => p.isCORE)
+  _packages => _packages.filter(p => p.isCore)
 );
 export const getDnpPackages = createSelector(
   getDnpInstalled,
-  _packages => _packages.filter(p => p.isDNP)
+  _packages => _packages.filter(p => p.isDnp)
 );
 export const getDnp = createSelector(
   getUrlId,

@@ -1,7 +1,7 @@
 /**
  * Parse the vols of a manifest object
- * @param {Object} manifest
- * @return {Object} vols = {containerAndAccessmode: hostPath}
+ * @param {object} manifest
+ * @returns {object} vols = {containerAndAccessmode: hostPath}
  */
 export default function parseManifestVols(manifest = {}) {
   // HOST:CONTAINER:accessMode, return [HOST, CONTAINER:accessMode]

@@ -1,5 +1,6 @@
 import * as t from "./actionTypes";
 import { assertAction } from "utils/redux";
+import Joi from "joi";
 
 // Service > connectionStatus
 
@@ -15,9 +16,12 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
+  const assertActionSchema = obj => assertAction(action, Joi.object(obj));
   switch (action.type) {
     case t.CONNECTION_OPEN:
-      assertAction(action, { session: {} });
+      assertActionSchema({
+        session: Joi.object().required()
+      });
       return {
         ...state,
         isOpen: true,
@@ -27,7 +31,11 @@ export default function(state = initialState, action) {
       };
 
     case t.CONNECTION_CLOSE:
-      assertAction(action, { session: {}, error: "error", isNotAdmin: true });
+      assertActionSchema({
+        session: Joi.object().required(),
+        error: Joi.string().required(),
+        isNotAdmin: Joi.boolean().required()
+      });
       return {
         ...state,
         isOpen: false,

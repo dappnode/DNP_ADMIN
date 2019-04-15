@@ -1,6 +1,8 @@
 import * as t from "./actionTypes";
 import { assertAction } from "utils/redux";
 import parseChainDataMessages from "./parsers/parseChainDataMessages";
+import * as schemas from "schemas";
+import Joi from "joi";
 
 // Service > chainData
 
@@ -17,7 +19,12 @@ import parseChainDataMessages from "./parsers/parseChainDataMessages";
 export default function(state = [], action) {
   switch (action.type) {
     case t.UPDATE_CHAIN_DATA:
-      assertAction(action, { chainData: [] });
+      assertAction(
+        action,
+        Joi.object({
+          chainData: schemas.chainData.required()
+        })
+      );
       // Format chain data before commiting to the store
       return action.chainData.map(parseChainDataMessages);
 

@@ -11,7 +11,14 @@ describe("service > dappnodeStatus > sagas", () => {
     it("Should return a clean dappnodeParams object", async () => {
       const name = "MyDappnode";
       const staticIp = "85.84.83.82";
-      const fakeRes = { name, staticIp, useless: "param" };
+      const fakeRes = {
+        name,
+        staticIp,
+        upnpAvailable: false,
+        noNatLoopback: false,
+        alertToOpenPorts: false,
+        internalIp: "192.168.0.1"
+      };
       const { storeState } = await expectSaga(fetchDappnodeParams)
         .withReducer(reducer)
         .provide([[call(api.getParams), fakeRes]])

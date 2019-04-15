@@ -5,9 +5,8 @@ import isIpfsHash from "utils/isIpfsHash";
 export function correctPackageName(req) {
   if (!req || typeof req !== "string") return req;
   // First determine if it contains an ipfs hash
-  if (req.startsWith("ipfs/") && isIpfsHash(req.split("ipfs/")[1]))
-    return "/" + req;
-  else if (isIpfsHash(req)) return "/ipfs/" + req;
+  const hash = req.split("ipfs/")[1] || req;
+  if (isIpfsHash(req)) return "/ipfs/" + hash;
   else return req;
 }
 

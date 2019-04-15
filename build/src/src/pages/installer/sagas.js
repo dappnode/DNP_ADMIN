@@ -20,6 +20,7 @@ import { assertAction, assertConnectionOpen } from "utils/redux";
 import { shortName } from "utils/format";
 import isSyncing from "utils/isSyncing";
 import isIpfsHash from "utils/isIpfsHash";
+import isEnsDomain from "utils/isEnsDomain";
 import uniqArray from "utils/uniqArray";
 
 /***************************** Subroutines ************************************/
@@ -31,8 +32,28 @@ export function* install({ id, options }) {
       return console.error(`DNP ${id} is already installing`);
     }
 
+    // Deal with IPFS DNP by retrieving the actual DNP
+    const dnp = yield select(getDnpDirectoryById, id);
+    let idToInstall;
+    if (isIpfsHash(id)) {
+      if (!dnp || !dnp.name) throw Error(`No DNP found for IPFS hash ${id}`);
+      idToInstall = `${dnp.name}@${id}`;
+    } else if (isEnsDomain(id)) {
+      idToInstall = id;
+    } else {
+      throw Error(
+        `id to install: "${id}" must be an ENS domain or an IPFS hash`
+      );
+    }
+
     // Blacklist the current package, via starting the isInstallingLog
-    yield put(updateIsInstallingLog({ id, dnpName: id, log: "Starting..." }));
+    yield put(
+      updateIsInstallingLog({
+        id: idToInstall,
+        dnpName: idToInstall.split("@")[0],
+        log: "Starting..."
+      })
+    );
 
     /**
      * Formats userSet parameters to be send to the dappmanager
@@ -54,15 +75,15 @@ export function* install({ id, options }) {
     const userSetFormatted = yield select(s.getUserSetFormatted);
 
     // Fire call
-    const toastMessage = `Adding ${shortName(id)}...`;
+    const toastMessage = `Adding ${shortName(idToInstall)}...`;
     yield call(
       api.installPackage,
-      { id, ...userSetFormatted, options },
+      { id: idToInstall, ...userSetFormatted, options },
       { toastMessage }
     );
 
     // Clear progressLogs, + Removes DNP from blacklist
-    yield put(clearIsInstallingLogsById(id));
+    yield put(clearIsInstallingLogsById(idToInstall));
 
     // Fetch directory
     yield put(actionFetchDnpDirectory);
@@ -73,7 +94,7 @@ export function* install({ id, options }) {
 
 /**
  *
- * @param {Object} kwargs { ports:
+ * @param {object} kwargs { ports:
  *   [ { number: 30303, type: TCP }, ...]
  * }
  */
@@ -129,16 +150,30 @@ export function* fetchPackageRequest({ id }) {
     // Resolve the request to install
     const { name, version } = manifest;
     yield put(updateDnpDirectoryById(id, { resolving: true }));
-    const requestResult = yield call(api.resolveRequest, {
-      req: { name, ver: isIpfsHash(id) ? id : version }
-    });
-    yield put(updateDnpDirectoryById(id, { resolving: false, requestResult }));
-
-    // Fetch package data of the dependencies. fetchPackageData updates the store
-    const deps = (requestResult || {}).success || {};
-    for (const depName of Object.keys((requestResult || {}).success || {})) {
-      if (depName === name) continue; // Don't refetch requested DNP
-      yield put(a.fetchPackageData(`${depName}@${deps[depName]}`));
+    try {
+      const { state, alreadyUpdated } = yield call(api.resolveRequest, {
+        req: { name, ver: isIpfsHash(id) ? id : version }
+      });
+      const dnps = { ...(state || {}), ...(alreadyUpdated || {}) };
+      yield put(
+        updateDnpDirectoryById(id, {
+          resolving: false,
+          requestResult: { dnps, error: null }
+        })
+      );
+      // Fetch package data of the dependencies. fetchPackageData updates the store
+      for (const [depName, depVersion] of Object.entries(state)) {
+        if (depName === name) continue; // Don't refetch requested DNP
+        yield put(a.fetchPackageData(`${depName}@${depVersion}`));
+      }
+    } catch (e) {
+      // if api.resolveRequest fails, it will throw. Display this error in the UI
+      yield put(
+        updateDnpDirectoryById(id, {
+          resolving: false,
+          requestResult: { error: e.message }
+        })
+      );
     }
   } catch (e) {
     console.error(`Èrror on fetchPackageRequest(${id}): ${e.stack}`);

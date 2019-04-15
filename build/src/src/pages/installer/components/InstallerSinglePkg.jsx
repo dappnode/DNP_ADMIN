@@ -89,7 +89,10 @@ function InstallerInterface({
           </Button>
         )}
       </Card>
-      <Dependencies request={requestResult} resolving={resolving} />
+      <Dependencies
+        request={requestResult || {}}
+        resolving={resolving || false}
+      />
       <SpecialPermissions />
       {showSettings ? (
         <>
@@ -118,7 +121,7 @@ const mapStateToProps = createStructuredSelector({
   id: s.getQueryId,
   dnp: s.getQueryDnp,
   progressLogs: (state, ownProps) =>
-    getProgressLogsByDnp(state, s.getQueryId(state, ownProps)),
+    getProgressLogsByDnp(state, s.getQueryIdOrName(state, ownProps)),
   // For the withTitle HOC
   subtitle: s.getQueryIdOrName
 });

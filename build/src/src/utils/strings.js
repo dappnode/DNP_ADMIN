@@ -1,7 +1,7 @@
 /**
  * Safe version of String.toLowerCase
- * @param {String} s
- * @returns {String}
+ * @param {string} s
+ * @returns {string}
  */
 export const toLowercase = s => {
   if (!s || typeof s !== "string") return "";
@@ -10,8 +10,8 @@ export const toLowercase = s => {
 
 /**
  * Capitalizes a string
- * @param {String} string = "hello world"
- * @returns {String} "Hello world"
+ * @param {string} string = "hello world"
+ * @returns {string} "Hello world"
  */
 export const capitalize = s => {
   if (!s || typeof s !== "string") return s;
@@ -22,9 +22,9 @@ export const capitalize = s => {
  * Checks if string 1 includes string 2.
  * - If string 1 or string 2 are undefined, returns false
  * - Does the check in lowerCase
- * @param {String} s1 = "HeLLo"
- * @param {String} s2 = "lo"
- * @returns {Bool} = true
+ * @param {string} s1 = "HeLLo"
+ * @param {string} s2 = "lo"
+ * @returns {bool} = true
  */
 export const stringIncludes = (s1, s2) => {
   if (!s1 || typeof s1 !== "string") return false;
@@ -34,7 +34,7 @@ export const stringIncludes = (s1, s2) => {
 
 /**
  * Converts constant case "SOME_BAR", to a sentence "Some bar"
- * @param {String} s
+ * @param {string} s
  */
 export const toSentence = s => {
   if (!s || typeof s !== "string") return s;

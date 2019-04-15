@@ -5,7 +5,6 @@ import {
   getDappnodeParams,
   getDappnodeStats,
   getDappnodeDiagnose,
-  getPingReturns,
   getDappmanagerVersionData,
   getVpnVersionData,
   getIpfsConnectionStatus
@@ -24,8 +23,8 @@ import {
  *
  * {
  *   ok: {Boolean},
- *   msg: {String} (short description),
- *   solutions: {Array}
+ *   msg: {string} (short description),
+ *   solutions: {array}
  * }
  *
  * can also return null, and that diagnose will be ignored
@@ -139,9 +138,9 @@ export const getDiagnoses = createSelector(
  * Must return an object as:
  *
  * {
- *   name: {String},
- *   result: {String}, (or)
- *   error: {String}
+ *   name: {string},
+ *   result: {string}, (or)
+ *   error: {string}
  * }
  */
 
@@ -167,22 +166,24 @@ const getDnpInstalledWithVersionData = createSelector(
 /**
  * Agreggates single info selectors with info comming from the DAPPMANAGER
  *
- * dappmanagerDiagnoses = {
+ * @param {object} dappmanagerDiagnoses = {
  *   dockerVersion: {
  *     name: 'docker version',
  *     result: 'Docker version 18.06.1-ce, build e68fc7a' <or>
  *     error: 'sh: docker: not found'
  *   }, ... }
+ *
+ * 1. Merges the infoObjects selectors (computed in the UI) with the one from the DAPPMANAGER
+ * 2. Filters null infoObjects
+ * 3. Extends the infoObject with the id for react purposes
  */
 const getSystemInfo = createSelector(
-  createStructuredSelector({
-    ...getDappnodeDiagnose,
-    getDiskUsageInfo
-  }),
-  infoObjects =>
-    Object.keys(infoObjects)
-      .filter(id => infoObjects[id])
-      .map(id => ({ ...infoObjects[id], id }))
+  getDappnodeDiagnose,
+  createStructuredSelector({ getDiskUsageInfo }),
+  (dappmanagerDiagnoses, infoObjects) =>
+    Object.entries({ ...dappmanagerDiagnoses, ...infoObjects })
+      .filter(([_, value]) => value)
+      .map(([id, infoObject]) => ({ ...infoObject, id }))
 );
 
 /**
@@ -208,7 +209,7 @@ export const getIssueBody = createSelector(
       {
         title: "Core DNPs versions",
         items: dnps
-          .filter(dnp => dnp.isCORE)
+          .filter(dnp => dnp.isCore)
           .map(({ name, version, branch, commit }) => ({
             name,
             data:
@@ -263,7 +264,7 @@ export const getIssueUrlRaw = () => issueBaseUrl;
  * To be composed with `createSelector`
  * If connection is not open, the selector returns null
  * @param {Function} selector
- * @return {Function}
+ * @returns {Function}
  */
 function onlyIfConnectionIsOpen(selector) {
   return createSelector(
