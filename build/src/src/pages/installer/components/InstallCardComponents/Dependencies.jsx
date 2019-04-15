@@ -15,14 +15,12 @@ function Dependencies({ request, resolving }) {
       </div>
     );
 
-  if (!Object.keys(request || {}).length) return "Empty request";
-
   const { dnps, error } = request || {};
   const installedPackages = [];
 
   if (error) {
     return <Ok ok={false} msg={`DNP is not compatible: ${error}`} />;
-  } else {
+  } else if (dnps) {
     return (
       <>
         <Ok ok={true} msg={`DNP is compatible`} />
@@ -39,12 +37,14 @@ function Dependencies({ request, resolving }) {
         />
       </>
     );
+  } else {
+    return <Ok ok={false} msg={`Request in unkown state`} />;
   }
 }
 
 Dependencies.propTypes = {
   request: PropTypes.shape({
-    dnps: PropTypes.object.isRequired,
+    dnps: PropTypes.object,
     error: PropTypes.string
   }).isRequired,
   resolving: PropTypes.bool.isRequired

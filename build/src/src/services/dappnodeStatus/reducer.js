@@ -41,7 +41,7 @@ export default function(state = initialState, action) {
     case t.UPDATE_DAPPNODE_DIAGNOSE:
       assertActionSchema({
         diagnose: Joi.array()
-          .items(schemas.diagnose.required())
+          .items(schemas.diagnose)
           .required()
       });
       return merge(state, {

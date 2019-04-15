@@ -29,7 +29,7 @@ export default (state = {}, action) => {
     case t.UPDATE_DNP_DIRECTORY:
       assertActionSchema({
         dnps: Joi.array()
-          .items(schemas.dnpDirectoryItem.required())
+          .items(schemas.dnpDirectoryItem)
           .required()
       });
       /**

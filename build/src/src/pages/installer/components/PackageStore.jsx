@@ -39,7 +39,7 @@ function DnpStore({ directory, openDnp }) {
                     <span>{origin.replace("/ipfs/", "")}</span>
                   </div>
                 ) : (
-                  keywords.join(", ") || "no-keywords"
+                  keywords.join(", ") || "DAppNode package"
                 )}
               </div>
               <Button variant="dappnode" pill disabled={disabled}>

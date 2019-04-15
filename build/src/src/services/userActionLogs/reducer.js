@@ -34,7 +34,9 @@ export default function(state = [], action) {
   switch (action.type) {
     case t.UPDATE_USER_ACTION_LOGS:
       assertActionSchema({
-        userActionLogs: Joi.array().items(userActionLogExtended.required())
+        userActionLogs: Joi.array()
+          .items(userActionLogExtended)
+          .required()
       });
       return action.userActionLogs;
 

@@ -8,13 +8,12 @@ import shouldUpdate from "utils/shouldUpdate";
  * @returns {string} "INSTALL", "UPDATE", "UPDATED"
  */
 export default function parseInstallTag(dnpDirectory, dnpInstalled, dnpName) {
-  const installed = dnpInstalled.find(
+  const installedDnp = dnpInstalled.find(
     dnp => dnp.origin === dnpName || dnp.name === dnpName
   );
-  if (!installed) return "INSTALL";
-  const latestVersion =
-    dnpDirectory[dnpName].version ||
-    (dnpDirectory[dnpName].manifest || {}).version;
-  const currentVersion = installed.version;
+  if (!installedDnp) return "INSTALL";
+  const dnp = dnpDirectory[dnpName] || {};
+  const latestVersion = dnp.version || (dnp.manifest || {}).version;
+  const currentVersion = installedDnp.version;
   return shouldUpdate(currentVersion, latestVersion) ? "UPDATE" : "UPDATED";
 }

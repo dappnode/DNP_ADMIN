@@ -5,7 +5,6 @@ import {
   getDappnodeParams,
   getDappnodeStats,
   getDappnodeDiagnose,
-  getPingReturns,
   getDappmanagerVersionData,
   getVpnVersionData,
   getIpfsConnectionStatus
@@ -167,22 +166,24 @@ const getDnpInstalledWithVersionData = createSelector(
 /**
  * Agreggates single info selectors with info comming from the DAPPMANAGER
  *
- * dappmanagerDiagnoses = {
+ * @param {object} dappmanagerDiagnoses = {
  *   dockerVersion: {
  *     name: 'docker version',
  *     result: 'Docker version 18.06.1-ce, build e68fc7a' <or>
  *     error: 'sh: docker: not found'
  *   }, ... }
+ *
+ * 1. Merges the infoObjects selectors (computed in the UI) with the one from the DAPPMANAGER
+ * 2. Filters null infoObjects
+ * 3. Extends the infoObject with the id for react purposes
  */
 const getSystemInfo = createSelector(
-  createStructuredSelector({
-    ...getDappnodeDiagnose,
-    getDiskUsageInfo
-  }),
-  infoObjects =>
-    Object.keys(infoObjects)
-      .filter(id => infoObjects[id])
-      .map(id => ({ ...infoObjects[id], id }))
+  getDappnodeDiagnose,
+  createStructuredSelector({ getDiskUsageInfo }),
+  (dappmanagerDiagnoses, infoObjects) =>
+    Object.entries({ ...dappmanagerDiagnoses, ...infoObjects })
+      .filter(([_, value]) => value)
+      .map(([id, infoObject]) => ({ ...infoObject, id }))
 );
 
 /**

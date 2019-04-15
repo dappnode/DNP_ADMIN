@@ -221,6 +221,7 @@ export const getHideCardHeaders = createSelector(
 
 /**
  * Append the install tag to each DNP aggregating the dnpDirectory and the dnpInstalled
+ * - Order DNPs by directoryId in descending order (latest on top)
  * @returns {object}
  * [Tested]
  */
@@ -228,10 +229,12 @@ const getDnpDirectoryWithTags = createSelector(
   getDnpDirectoryWhitelisted,
   getDnpInstalled,
   (dnpDirectory, dnpInstalled) => {
-    return Object.entries(dnpDirectory).map(([dnpName, dnp]) => {
-      const tag = parseInstallTag(dnpDirectory, dnpInstalled, dnpName);
-      return { ...dnp, tag };
-    });
+    return Object.entries(dnpDirectory)
+      .map(([dnpName, dnp]) => {
+        const tag = parseInstallTag(dnpDirectory, dnpInstalled, dnpName);
+        return { ...dnp, tag };
+      })
+      .sort((dnpA, dnpB) => dnpB.directoryId - dnpA.directoryId);
   }
 );
 

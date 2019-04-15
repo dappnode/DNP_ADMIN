@@ -82,7 +82,10 @@ function DeviceGrid({
             <MdShare onClick={() => getDeviceCredentials(id)} />
           )}
           <Switch checked={admin} onToggle={() => toggleAdmin(id)} />
-          <MdRefresh onClick={() => resetDeviceConfirm(id)} />
+          <MdRefresh
+            className={admin ? "disabled" : ""}
+            onClick={() => (admin ? null : resetDeviceConfirm(id))}
+          />
           <MdDelete
             className={admin ? "disabled" : ""}
             onClick={() => (admin ? null : removeDeviceConfirm(id))}

@@ -7,7 +7,7 @@ const ProgressBarWrapper = ({ progress }) => {
   const progressPercent = Math.floor(100 * progress);
   return (
     <ProgressBar
-      now={progressPercent || 100}
+      now={progressPercent}
       animated={true}
       label={`${progressPercent}%`}
     />
@@ -67,11 +67,11 @@ const BaseDropdown = ({
         by placing them as right as possible */}
       <Dropdown.Menu>
         <Dropdown.Header>{name}</Dropdown.Header>
-        {messages.map(({ type, title, body, progress }, i) => (
+        {messages.map(({ type, title, body, progress, showProgress }, i) => (
           <Dropdown.Item key={i}>
             {title ? <div className={`title text-${type}`}>{title}</div> : null}
             {body ? <div className="text">{body}</div> : null}
-            {progress ? <ProgressBarWrapper progress={progress} /> : null}
+            {showProgress ? <ProgressBarWrapper progress={progress} /> : null}
           </Dropdown.Item>
         ))}
       </Dropdown.Menu>

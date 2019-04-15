@@ -19,10 +19,10 @@ export const manifest = Joi.object({
     hash: Joi.string().required(),
     size: Joi.number().required(),
     restart: Joi.string(),
-    ports: Joi.array().items(Joi.string().required()),
-    volumes: Joi.array().items(Joi.string().required()),
-    external_vol: Joi.array().items(Joi.string().required()),
-    environment: Joi.array().items(Joi.string().required()),
+    ports: Joi.array().items(Joi.string()),
+    volumes: Joi.array().items(Joi.string()),
+    external_vol: Joi.array().items(Joi.string()),
+    environment: Joi.array().items(Joi.string()),
     ipv4_address: Joi.string(),
     subnet: Joi.string(),
     privileged: Joi.boolean(),
@@ -32,7 +32,7 @@ export const manifest = Joi.object({
     network_mode: Joi.string(),
     command: Joi.string(),
     // Some are wrong
-    keywords: Joi.array().items(Joi.string().required()),
+    keywords: Joi.array().items(Joi.string()),
     // #### Backwards compatibility
     name: Joi.string(), // #### Backwards compatibility
     version: Joi.string() // #### Backwards compatibility
@@ -45,8 +45,8 @@ export const manifest = Joi.object({
   origin: Joi.string(),
   // Metadata
   author: Joi.string(),
-  contributors: Joi.array().items(Joi.string().required()),
-  keywords: Joi.array().items(Joi.string().required()),
+  contributors: Joi.array().items(Joi.string()),
+  keywords: Joi.array().items(Joi.string()),
   homepage: Joi.object(),
   repository: Joi.object(),
   bugs: Joi.object(),
@@ -65,7 +65,7 @@ export const chainData = Joi.array()
       syncing: Joi.boolean(),
       progress: Joi.number(),
       error: Joi.boolean()
-    }).required()
+    })
   )
   .required();
 
@@ -114,7 +114,7 @@ export const device = Joi.object({
 }).required();
 
 export const devices = Joi.array()
-  .items(device.required())
+  .items(device)
   .required();
 
 // Service > dnpDirectory
@@ -122,10 +122,11 @@ export const devices = Joi.array()
 export const dnpDirectoryItem = Joi.object({
   name: Joi.string().required(),
   status: Joi.string(),
+  directoryId: Joi.number(),
   manifest: manifest,
   avatar: Joi.string().dataUri()
 });
-export const dnpDirectory = Joi.array().items(dnpDirectoryItem.required());
+export const dnpDirectory = Joi.array().items(dnpDirectoryItem);
 
 // Service > dnpInstalled
 
@@ -154,7 +155,7 @@ export const dnpInstalledItem = Joi.object({
 });
 
 export const dnpInstalled = Joi.array()
-  .items(dnpInstalledItem.required())
+  .items(dnpInstalledItem)
   .required();
 
 // Service > isInstallingLogs
