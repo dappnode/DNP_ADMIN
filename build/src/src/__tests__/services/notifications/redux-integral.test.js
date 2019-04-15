@@ -6,45 +6,38 @@ import * as s from "../../../services/notifications/selectors";
 describe("services > notifications, integral redux test", () => {
   let state = {};
 
-  const notifications = {
-    id1: { id: "id1", timestamp: "0" },
-    id2: { id: "id2", timestamp: "0" }
-  };
-  const stateFull = {
-    id1: { id: "id1", timestamp: "0", viewed: false, fromDappmanager: true },
-    id2: { id: "id2", timestamp: "0", viewed: false, fromDappmanager: true }
-  };
-  const stateViewed = {
-    id1: { id: "id1", timestamp: "0", viewed: true, fromDappmanager: true },
-    id2: { id: "id2", timestamp: "0", viewed: true, fromDappmanager: true }
-  };
-  const stateRemove = {
-    id1: { id: "id1", timestamp: "0", viewed: false },
-    id2: { id: "id2", timestamp: "0", viewed: false }
+  const sampleNotification = {
+    type: "danger",
+    title: "Title",
+    body: "Description",
+    timestamp: "1555000000"
   };
 
-  it("Should add notifications, and retrieve them", () => {
-    state = reducer(
-      state,
-      a.pushNotifications({ notifications, fromDappmanager: true })
-    );
-    expect(state).toEqual(stateFull);
-  });
+  const notifications = {
+    id1: { id: "id1", ...sampleNotification },
+    id2: { id: "id2", ...sampleNotification }
+  };
+  const stateFull = {
+    id1: { ...notifications["id1"], viewed: false, fromDappmanager: true },
+    id2: { ...notifications["id2"], viewed: false, fromDappmanager: true }
+  };
+  const stateViewed = {
+    id1: { ...notifications["id1"], viewed: true, fromDappmanager: true },
+    id2: { ...notifications["id2"], viewed: true, fromDappmanager: true }
+  };
+  const stateRemove = {
+    id1: { ...notifications["id1"], viewed: false },
+    id2: { ...notifications["id2"], viewed: false }
+  };
 
   it("Should add two single notifications, and retrieve them", () => {
     state = reducer(
       state,
-      a.pushNotification({
-        notification: notifications["id1"],
-        fromDappmanager: true
-      })
+      a.pushNotificationFromDappmanager(notifications["id1"])
     );
     state = reducer(
       state,
-      a.pushNotification({
-        notification: notifications["id2"],
-        fromDappmanager: true
-      })
+      a.pushNotificationFromDappmanager(notifications["id2"])
     );
     expect(state).toEqual(stateFull);
   });

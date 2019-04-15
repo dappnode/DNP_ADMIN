@@ -2,6 +2,8 @@ import * as t from "./actionTypes";
 import merge from "deepmerge";
 import { assertAction } from "utils/redux";
 import { arrayToObj } from "utils/objects";
+import * as schemas from "schemas";
+import Joi from "joi";
 
 // Service > dnpDirectory
 
@@ -22,22 +24,28 @@ const mergeOverwriteArrays = (a, b) =>
   merge(a, b, { arrayMerge: overwriteMerge });
 
 export default (state = {}, action) => {
+  const assertActionSchema = obj => assertAction(action, Joi.object(obj));
   switch (action.type) {
     case t.UPDATE_DNP_DIRECTORY:
-      // Patch to ensure action.dnps is an object, if it is an array
-      action.dnps = Array.isArray(action.dnps)
-        ? arrayToObj(action.dnps, "name")
-        : action.dnps;
-      // Assuming this function is only called to fetch the DNPs from the DAPPMANAGER
-      // DNPs will be whitelisted
-      assertAction(action, { dnps: {} });
-      Object.keys(action.dnps).forEach(key => {
-        action.dnps[key].whitelisted = true;
+      assertActionSchema({
+        dnps: Joi.array()
+          .items(schemas.dnpDirectoryItem.required())
+          .required()
       });
-      return mergeOverwriteArrays(state, action.dnps);
+      /**
+       * - Extend the dnp objects assuming this function is only called
+       *   to fetch the DNPs from the DAPPMANAGER, whitelist them
+       * - Convert the array of dnps to an object using the key `name`
+       */
+      const dnps = action.dnps.map(dnp => ({ ...dnp, whitelisted: true }));
+      return mergeOverwriteArrays(state, arrayToObj(dnps, "name"));
 
     case t.UPDATE_DNP_DIRECTORY_BY_ID:
-      assertAction(action, { id: "dnp", dnp: {} });
+      // #### TODO: the dnp object changes way too much
+      assertActionSchema({
+        id: Joi.string().required(),
+        dnp: Joi.object().required()
+      });
       return mergeOverwriteArrays(state, { [action.id]: action.dnp });
 
     default:

@@ -3,9 +3,10 @@ import { rootWatcher } from "utils/redux";
 import api from "API/rpcMethods";
 import * as a from "./actions";
 import * as t from "./actionTypes";
-import { assertConnectionOpen } from "utils/redux";
 import checkIpfsConnection from "./diagnoseFunctions/checkIpfsNode";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
+// Utils
+import { assertConnectionOpen } from "utils/redux";
 
 // Service > dappnodeStatus
 

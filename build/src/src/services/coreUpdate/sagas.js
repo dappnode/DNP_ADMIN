@@ -53,13 +53,11 @@ function* putMainnetIsStillSyncing() {
     yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
     yield put(
       pushNotification({
-        notification: {
-          id: "mainnetStillSyncing",
-          type: "warning",
-          title: "System update available",
-          body:
-            "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
-        }
+        id: "mainnetStillSyncing",
+        type: "warning",
+        title: "System update available",
+        body:
+          "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
       })
     );
   } catch (e) {

@@ -20,20 +20,22 @@ function* fetchNotifications() {
     yield put(updateIsLoading(loadingId));
     const notifications = yield call(api.notificationsGet);
     yield put(updateIsLoaded(loadingId));
+
+    // #### Log for debuging purposes. Do it before the put in case the validators fail
+    console.log("Initial notifications", notifications);
+
     /**
-     * @param notifications = {
-     *   "notificiation-id": {
+     * @param notifications = [{
      *     id: "diskSpaceRanOut-stoppedPackages",
      *     type: "danger",
      *     title: "Disk space ran out, stopped packages",
      *     body: "Available disk space is less than a safe ...",
-     *   }, ... }
+     *   }, ... ]
      */
 
-    yield put(a.pushNotifications({ notifications, fromDappmanager: true }));
-
-    // #### Log for debuging purposes
-    console.log("Initial notifications", notifications);
+    for (const notification of notifications) {
+      yield put(a.pushNotificationFromDappmanager(notification));
+    }
   } catch (e) {
     console.error(`Error on fetchNotifications: ${e.stack}`);
   }

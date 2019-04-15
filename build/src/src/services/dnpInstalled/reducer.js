@@ -1,5 +1,7 @@
 import * as t from "./actionTypes";
 import { assertAction } from "utils/redux";
+import * as schemas from "schemas";
+import Joi from "joi";
 
 // Service > dnpInstalled
 
@@ -48,7 +50,12 @@ import { assertAction } from "utils/redux";
 export default function(state = [], action) {
   switch (action.type) {
     case t.UPDATE_DNP_INSTALLED:
-      assertAction(action, { dnps: [] });
+      assertAction(
+        action,
+        Joi.object({
+          dnps: schemas.dnpInstalled.required()
+        })
+      );
       return action.dnps;
 
     default:

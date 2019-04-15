@@ -7,18 +7,21 @@
 
 /**
  * Ease way to assert styles in an obj
+ * - Supports nested objects
  * @param {object} obj = { address: "0x12345" }
  * @param {object} referenceTypes = { address: "0x" }
  * @param {string} id: to make errors more comprehensive
  */
 export function assertObjTypes(obj, referenceTypes, id = "Obj") {
-  Object.keys(referenceTypes).forEach(key => {
-    if (!sameType(obj[key], referenceTypes[key])) {
+  Object.entries(referenceTypes).forEach(([key, value]) => {
+    if (!sameType(obj[key], value)) {
       throw Error(
-        `${id} prop ${key} must be like ${referenceTypes[key]} (${typeOf(
-          referenceTypes[key]
+        `${id} prop ${key} must be like ${value} (${typeOf(
+          value
         )}), instead is: ${obj[key]} (${typeOf(obj[key])})`
       );
+    } else if (typeof value === "object" && !Array.isArray(value)) {
+      assertObjTypes(obj[key], referenceTypes[key], `${id}.${key}`);
     }
   });
 }

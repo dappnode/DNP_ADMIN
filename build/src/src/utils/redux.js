@@ -1,4 +1,4 @@
-import { assertObjTypes } from "./objects";
+import Joi from "joi";
 import { select, take, takeEvery, throttle, all } from "redux-saga/effects";
 import { getIsConnectionOpen } from "services/connectionStatus/selectors";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
@@ -23,8 +23,9 @@ export function* assertConnectionOpen() {
  * @param {object} action
  * @param {object} referenceTypes
  */
-export function assertAction(action, referenceTypes) {
-  assertObjTypes(action, referenceTypes, `action ${action.type}`);
+export function assertAction(action, schema) {
+  const { type, ...actionWithoutType } = action;
+  Joi.assert(actionWithoutType, schema, `action ${type}`);
 }
 
 /**

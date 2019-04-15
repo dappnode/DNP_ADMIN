@@ -1,6 +1,10 @@
 import * as t from "./actionTypes";
 import merge from "deepmerge";
+import * as schemas from "schemas";
+import Joi from "joi";
+// Utils
 import { assertAction } from "utils/redux";
+import { arrayToObj } from "utils/objects";
 
 // Service > dappnodeStatus
 
@@ -14,9 +18,12 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
+  const assertActionSchema = obj => assertAction(action, Joi.object(obj));
   switch (action.type) {
     case t.UPDATE_DAPPNODE_PARAMS:
-      assertAction(action, { params: {} });
+      assertActionSchema({
+        params: schemas.params.required()
+      });
       // Replaces all params on each update
       return {
         ...state,
@@ -24,20 +31,29 @@ export default function(state = initialState, action) {
       };
 
     case t.UPDATE_DAPPNODE_STATS:
-      assertAction(action, { stats: {} });
+      assertActionSchema({
+        stats: schemas.stats.required()
+      });
       return merge(state, {
         stats: action.stats
       });
 
     case t.UPDATE_DAPPNODE_DIAGNOSE:
-      assertAction(action, { diagnose: {} });
+      assertActionSchema({
+        diagnose: Joi.array()
+          .items(schemas.diagnose.required())
+          .required()
+      });
       return merge(state, {
-        diagnose: action.diagnose
+        diagnose: arrayToObj(action.diagnose, "name")
       });
 
     case t.UPDATE_PING_RETURN:
       // pingReturn can be an Object, String or null
-      assertAction(action, { dnp: "dnpName" });
+      assertActionSchema({
+        dnp: Joi.string().required(),
+        pingReturn: Joi.any()
+      });
       return {
         ...state,
         pingReturns: {
@@ -47,7 +63,10 @@ export default function(state = initialState, action) {
       };
 
     case t.UPDATE_VERSION_DATA:
-      assertAction(action, { dnp: "dnpName", versionData: {} });
+      assertActionSchema({
+        dnp: Joi.string().required(),
+        versionData: schemas.versionData.required()
+      });
       return {
         ...state,
         versionData: {
@@ -57,7 +76,6 @@ export default function(state = initialState, action) {
       };
 
     case t.UPDATE_IPFS_CONNECTION_STATUS:
-      assertAction(action, { ipfsConnectionStatus: {} });
       return {
         ...state,
         ipfsConnectionStatus: action.ipfsConnectionStatus

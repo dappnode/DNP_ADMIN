@@ -22,13 +22,11 @@ function* setStaticIp({ staticIp }) {
     // Show notification to upgrade VPN profiles
     yield put(
       pushNotification({
-        notification: {
-          id: "staticIpUpdated",
-          type: "warning",
-          title: "Update connection profiles",
-          body:
-            "Your static IP was changed, please download and install your VPN connection profile again. Instruct your users to do so also."
-        }
+        id: "staticIpUpdated",
+        type: "warning",
+        title: "Update connection profiles",
+        body:
+          "Your static IP was changed, please download and install your VPN connection profile again. Instruct your users to do so also."
       })
     );
 

@@ -1,4 +1,4 @@
-import { arrayToObj } from "../../utils/objects";
+import { assertObjTypes, arrayToObj } from "../../utils/objects";
 
 describe("utils > objects", () => {
   describe("arrayToObj", () => {
@@ -15,6 +15,44 @@ describe("utils > objects", () => {
         id_a: { id: "a" },
         id_b: { id: "b" }
       });
+    });
+  });
+
+  describe("assertObjTypes", () => {
+    it("should parse a simple object", () => {
+      expect(() => {
+        assertObjTypes({ a: 1 }, { a: 0 });
+      }).not.toThrow();
+    });
+
+    it("should parse a simple bad object, and throw", () => {
+      expect(() => {
+        assertObjTypes({ a: "ops" }, { a: 0 });
+      }).toThrow(
+        "Obj prop a must be like 0 (number), instead is: ops (string)"
+      );
+    });
+
+    it("should parse a nested object", () => {
+      const obj = {
+        a: {
+          ab: {
+            abc: "ops"
+          }
+        }
+      };
+      const reference = {
+        a: {
+          ab: {
+            abc: 0
+          }
+        }
+      };
+      expect(() => {
+        assertObjTypes(obj, reference);
+      }).toThrow(
+        "Obj.a.ab prop abc must be like 0 (number), instead is: ops (string)"
+      );
     });
   });
 });

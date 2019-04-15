@@ -6,16 +6,16 @@ import * as t from "./actionTypes";
  * Using a `kwargs` form to make the `fromDappmanager` argument explicit
  * [Tested]
  */
-export const pushNotification = ({ notification, fromDappmanager }) => ({
+export const pushNotification = notification => ({
   type: t.PUSH_NOTIFICATION,
   notification,
-  fromDappmanager: fromDappmanager || false
+  fromDappmanager: false
 });
 
-export const pushNotifications = ({ notifications, fromDappmanager }) => ({
-  type: t.PUSH_NOTIFICATIONS,
-  notifications,
-  fromDappmanager: fromDappmanager || false
+export const pushNotificationFromDappmanager = notification => ({
+  type: t.PUSH_NOTIFICATION,
+  notification,
+  fromDappmanager: true
 });
 
 export const viewedNotifications = () => ({

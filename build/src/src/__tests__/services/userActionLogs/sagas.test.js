@@ -9,15 +9,22 @@ import reducer from "../../../services/userActionLogs/reducer";
 describe("service > userActionLogs > sagas", () => {
   describe("fetchUserActionLogs", () => {
     it("Should return parsed and ordered action logs", async () => {
+      const log = {
+        message: "Some error",
+        kwargs: {},
+        stack: "Some error \n line 123 index.js"
+      };
       const log1 = {
-        event: "installPackage.dappmanager.dnp.dappnode.eth",
         level: "error",
-        timestamp: "2019-01-01T00:00:00.000Z"
+        event: "installPackage.dappmanager.dnp.dappnode.eth",
+        timestamp: "2019-01-01T00:00:00.000Z",
+        ...log
       };
       const log2 = {
-        event: "removePackage.dappmanager.dnp.dappnode.eth",
         level: "error",
-        timestamp: "2019-01-01T01:00:00.000Z"
+        event: "removePackage.dappmanager.dnp.dappnode.eth",
+        timestamp: "2019-01-01T01:00:00.000Z",
+        ...log
       };
       const fakeRes = [JSON.stringify(log1), JSON.stringify(log2)].join("\n");
       const { storeState } = await expectSaga(fetchUserActionLogs)
