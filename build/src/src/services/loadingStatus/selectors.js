@@ -1,5 +1,7 @@
 import { mountPoint } from "./data";
 import { createSelector } from "reselect";
+import { mapValues } from "lodash";
+import * as loadingIds from "./loadingIds";
 
 // Service > loadingStatus
 
@@ -40,3 +42,5 @@ export const getIsLoadingStrictById = loadingId => {
     loadingStatuses => Boolean((loadingStatuses[loadingId] || {}).isLoading)
   );
 };
+
+export const getIsLoading = mapValues(loadingIds, id => getIsLoadingById(id));

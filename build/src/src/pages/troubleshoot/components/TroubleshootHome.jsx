@@ -35,10 +35,10 @@ function TroubleshootHome({
       {/* Auto diagnose section */}
       <SubTitle>Auto diagnose</SubTitle>
       <Card>
-        {diagnoses.map(({ ok, msg, solutions }, i) => (
+        {diagnoses.map(({ loading, ok, msg, solutions }, i) => (
           <div key={i}>
-            <Ok {...{ ok, msg }} />
-            {!ok && solutions ? (
+            <Ok {...{ msg, ok, loading }} />
+            {!ok && !loading && solutions ? (
               <ul>
                 {solutions.map((item, j) => (
                   <li key={j}>{item}</li>

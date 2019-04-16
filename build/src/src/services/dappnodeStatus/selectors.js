@@ -22,7 +22,7 @@ export const getLocal = createSelector(
 export const getDappnodeParams = createSelectorSubProp(getLocal, "params");
 export const getDappnodeStats = createSelectorSubProp(getLocal, "stats");
 export const getDappnodeDiagnose = createSelectorSubProp(getLocal, "diagnose");
-export const getPingReturns = createSelectorSubProp(getLocal, "pingReturns");
+export const getPing = createSelectorSubProp(getLocal, "pingReturns");
 export const getVersionData = createSelectorSubProp(getLocal, "versionData");
 export const getIpfsConnectionStatus = createSelectorSubProp(
   getLocal,
@@ -34,6 +34,8 @@ export const getDappmanagerVersionData = createSelectorSubProp(
   "dappmanager"
 );
 export const getVpnVersionData = createSelectorSubProp(getVersionData, "vpn");
+export const getDappmanagerPing = createSelectorSubProp(getPing, "dappmanager");
+export const getVpnPing = createSelectorSubProp(getPing, "vpn");
 
 /**
  * Returns the DAppNode "network" identity to be shown in the TopBar

@@ -7,6 +7,8 @@ import {
   getDappnodeDiagnose,
   getDappmanagerVersionData,
   getVpnVersionData,
+  getDappmanagerPing,
+  getVpnPing,
   getIpfsConnectionStatus
 } from "services/dappnodeStatus/selectors";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
@@ -14,6 +16,7 @@ import {
   getConnectionStatus,
   getIsConnectionOpen
 } from "services/connectionStatus/selectors";
+import { getIsLoading } from "services/loadingStatus/selectors";
 
 /**
  * Diagnose selectors
@@ -75,10 +78,16 @@ const getDiagnoseNoNatLoopback = onlyIfConnectionIsOpen(
 
 const getDiagnoseDappmanagerConnected = onlyIfConnectionIsOpen(
   createSelector(
-    getDappmanagerVersionData,
-    ok => ({
-      ok: Boolean(ok),
-      msg: ok ? "DAPPMANAGER is connected" : "DAPPMANAGER is not connected",
+    getDappmanagerPing,
+    getIsLoading.pingDappnodeDnps,
+    (ok, loading) => ({
+      loading,
+      ok,
+      msg: loading
+        ? "Checking if DAPPMANAGER is connected"
+        : ok
+        ? "DAPPMANAGER is connected"
+        : "DAPPMANAGER is not connected",
       solutions: [
         "Close your VPN connection and connect again",
         "If the problem persists, reset the DAppNode machine"
@@ -89,10 +98,16 @@ const getDiagnoseDappmanagerConnected = onlyIfConnectionIsOpen(
 
 const getDiagnoseVpnConnected = onlyIfConnectionIsOpen(
   createSelector(
-    getVpnVersionData,
-    ok => ({
-      ok: Boolean(ok),
-      msg: ok ? "VPN is connected" : "VPN is not connected",
+    getVpnPing,
+    getIsLoading.pingDappnodeDnps,
+    (ok, loading) => ({
+      loading,
+      ok,
+      msg: loading
+        ? "Checking if VPN is connected"
+        : ok
+        ? "VPN is connected"
+        : "VPN is not connected",
       solutions: [
         "Close your VPN connection and connect again",
         "If the problem persists, reset the DAppNode machine"
@@ -103,14 +118,83 @@ const getDiagnoseVpnConnected = onlyIfConnectionIsOpen(
 
 const getDiagnoseIpfs = createSelector(
   getIpfsConnectionStatus,
-  ({ resolves, error }) => ({
+  getIsLoading.ipfsConnectionStatus,
+  ({ resolves, error }, loading) => ({
+    loading,
     ok: resolves,
-    msg: resolves ? "IPFS resolves" : "IPFS is not resolving: " + error,
+    msg: loading
+      ? "Checking if IPFS resolves..."
+      : resolves
+      ? "IPFS resolves"
+      : "IPFS is not resolving: " + error,
     solutions: [
       `Go to the system tab and make sure IPFS is running. Otherwise open the package and click 'restart'`,
       `If the problem persist make sure your disk has not run of space; IPFS may malfunction in that case.`
     ]
   })
+);
+
+const getDiagnoseDiskSpace = createSelector(
+  getDappnodeStats,
+  getIsLoading.dappnodeStats,
+  ({ disk }, loading) => {
+    if (loading) return { loading, msg: "Checking disk usage..." };
+    if (!disk) return null;
+    const ok = parseInt(disk) < 95;
+    return {
+      ok,
+      msg: ok ? "Disk usage is ok (<95%)" : "Disk usage is over 95%",
+      solutions: [
+        "If the disk usage gets to 100%, DAppNode will stop working. Please empty some disk space",
+        "Locate DNPs with big volumes such as blockchain nodes and remove their data"
+      ]
+    };
+  }
+);
+
+const getDiagnoseCoreDnpsRunning = createSelector(
+  getDnpInstalled,
+  getIsLoading.dnpInstalled,
+  (dnpInstalled, isLoading) => {
+    if (isLoading)
+      return {
+        loading: true,
+        msg: "Verifying installed core DNPs..."
+      };
+
+    const mandatoryCoreDnps = [
+      "dappmanager.dnp.dappnode.eth",
+      "vpn.dnp.dappnode.eth",
+      "admin.dnp.dappnode.eth",
+      "ipfs.dnp.dappnode.eth",
+      "ethchain.dnp.dappnode.eth",
+      "ethforward.dnp.dappnode.eth",
+      "wamp.dnp.dappnode.eth",
+      "bind.dnp.dappnode.eth"
+    ];
+    const notFound = [];
+    const notRunning = [];
+    for (const coreDnpName of mandatoryCoreDnps) {
+      const coreDnp = dnpInstalled.find(({ name }) => name === coreDnpName);
+      if (!coreDnp) notFound.push(coreDnpName);
+      else if (!coreDnp.running) notRunning.push(coreDnpName);
+    }
+
+    const ok = !notFound.length && !notRunning.length;
+    let errorMsg = "";
+    if (!ok && notFound.length)
+      errorMsg += `Core DNPs ${notFound.join(", ")} are not found. `;
+    if (!ok && notRunning.length)
+      errorMsg += `Core DNPs ${notFound.join(", ")} are not running.`;
+    return {
+      ok,
+      msg: ok ? "All core DNPs are running" : errorMsg,
+      solutions: [
+        "Make sure the disk is not too full. If so DAppNode automatically stops the ethchain.dnp.dappnode.eth and ipfs.dnp.dappnode.eth DNPs to prevent it from becoming un-usable",
+        "Go to the System tab and restart each stopped DNP. Please inspect the logs to understand cause and report it if it was not expected"
+      ]
+    };
+  }
 );
 
 // Add diagnose getters here to be reflected on the App
@@ -121,14 +205,16 @@ export const getDiagnoses = createSelector(
     getDiagnoseNoNatLoopback,
     getDiagnoseDappmanagerConnected,
     getDiagnoseVpnConnected,
-    getDiagnoseIpfs
+    getDiagnoseIpfs,
+    getDiagnoseDiskSpace,
+    getDiagnoseCoreDnpsRunning
   }),
   diagnoseObjects =>
-    Object.keys(diagnoseObjects)
+    Object.entries(diagnoseObjects)
       // Filter out null diagnoses
-      .filter(id => diagnoseObjects[id])
+      .filter(([_, diagnose]) => diagnose)
       // The id is used by react as key={id}
-      .map(id => ({ ...diagnoseObjects[id], id }))
+      .map(([id, diagnose]) => ({ ...diagnose, id }))
 );
 
 /**
