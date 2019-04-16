@@ -6,7 +6,8 @@ import * as t from "./actionTypes";
 import { loadingId } from "./data";
 import {
   updateIsLoading,
-  updateIsLoaded
+  updateIsLoaded,
+  updateLoading
 } from "services/loadingStatus/actions";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 
@@ -19,6 +20,7 @@ function* fetchDnpDirectory() {
     yield put(a.updateDnpDirectory(dnps));
     yield put(updateIsLoaded(loadingId));
   } catch (e) {
+    yield put(updateLoading(loadingId, false));
     console.error(`Error on fetchDnpDirectory: ${e.stack}`);
   }
 }

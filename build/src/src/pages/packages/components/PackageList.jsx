@@ -9,6 +9,9 @@ import { NavLink } from "react-router-dom";
 import NoPackagesYet from "./NoPackagesYet";
 import StateBadge from "./PackageViews/StateBadge";
 import Card from "components/Card";
+import Loading from "components/generic/Loading";
+// Selectors
+import { getIsLoading } from "services/loadingStatus/selectors";
 // Utils
 import confirmRestartPackage from "./confirmRestartPackage";
 // Icons
@@ -18,7 +21,14 @@ import "./packages.css";
 
 const xnor = (a, b) => Boolean(a) === Boolean(b);
 
-const PackagesList = ({ dnps = [], restartPackage, moduleName, coreDnps }) => {
+const PackagesList = ({
+  dnps = [],
+  moduleName,
+  coreDnps,
+  loadingDnps,
+  restartPackage
+}) => {
+  if (loadingDnps) return <Loading msg="Loading installed DNPs..." />;
   if (!dnps.length) return <NoPackagesYet />;
 
   return (
@@ -51,13 +61,15 @@ const PackagesList = ({ dnps = [], restartPackage, moduleName, coreDnps }) => {
 PackagesList.propTypes = {
   dnps: PropTypes.array.isRequired,
   moduleName: PropTypes.string.isRequired,
-  coreDnps: PropTypes.bool
+  coreDnps: PropTypes.bool,
+  loadingDnps: PropTypes.bool.isRequired
 };
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  dnps: s.getFilteredPackages
+  dnps: s.getFilteredPackages,
+  loadingDnps: getIsLoading.dnpInstalled
 });
 
 const mapDispatchToProps = {

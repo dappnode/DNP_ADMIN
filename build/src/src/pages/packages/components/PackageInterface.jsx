@@ -10,9 +10,19 @@ import Envs from "./PackageViews/Envs";
 import FileManager from "./PackageViews/FileManager";
 import Controls from "./PackageViews/Controls";
 import NoDnpInstalled from "./NoDnpInstalled";
+// Components
 import Title from "components/Title";
+import Loading from "components/generic/Loading";
+// Selectors
+import { getIsLoading } from "services/loadingStatus/selectors";
 
-const PackageInterface = ({ dnp, id, moduleName, areThereDnps }) => (
+const PackageInterface = ({
+  dnp,
+  id,
+  moduleName,
+  areThereDnps,
+  loadingDnps
+}) => (
   <>
     <Title title={moduleName} subtitle={id} />
 
@@ -24,6 +34,8 @@ const PackageInterface = ({ dnp, id, moduleName, areThereDnps }) => (
         <FileManager dnp={dnp} />
         <Logs id={dnp.name} />
       </>
+    ) : loadingDnps ? (
+      <Loading msg="Loading installed DNPs..." />
     ) : areThereDnps ? (
       <NoDnpInstalled id={id} moduleName={moduleName} />
     ) : null}
@@ -43,7 +55,8 @@ const mapStateToProps = createStructuredSelector({
   // id and moduleName are parsed from the url at the selector (with the router state)
   id: s.getUrlId,
   moduleName: s.getModuleName,
-  areThereDnps: s.areThereDnps
+  areThereDnps: s.areThereDnps,
+  loadingDnps: getIsLoading.dnpInstalled
 });
 
 const mapDispatchToProps = null;

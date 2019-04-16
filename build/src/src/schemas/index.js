@@ -8,50 +8,63 @@ window.test2 = value => Joi.assert(value, schema);
 
 export const depsObject = Joi.object({}).pattern(/.*/, Joi.string().required());
 
+// Semi-strict manifest check
+
+// export const manifest = Joi.object({
+//   name: Joi.string().required(),
+//   version: Joi.string().required(),
+//   description: Joi.string().allow(""),
+//   avatar: Joi.string().allow(""),
+//   type: Joi.string(),
+//   image: Joi.object({
+//     path: Joi.string().required(),
+//     hash: Joi.string().required(),
+//     size: Joi.number().required(),
+//     restart: Joi.string(),
+//     ports: Joi.array().items(Joi.string()),
+//     volumes: Joi.array().items(Joi.string()),
+//     external_vol: Joi.array().items(Joi.string()),
+//     environment: Joi.array().items(Joi.string()),
+//     ipv4_address: Joi.string(),
+//     subnet: Joi.string(),
+//     privileged: Joi.boolean(),
+//     labels: Joi.array(),
+//     cap_add: Joi.string(),
+//     cap_drop: Joi.string(),
+//     network_mode: Joi.string(),
+//     command: Joi.string(),
+//     // Some are wrong
+//     keywords: Joi.array().items(Joi.string()),
+//     // #### Backwards compatibility
+//     name: Joi.string(), // #### Backwards compatibility
+//     version: Joi.string() // #### Backwards compatibility
+//   }).required(),
+//   dependencies: Joi.object(),
+//   chain: Joi.string(),
+//   changelog: Joi.string(),
+//   warnings: Joi.object(),
+//   fromIpfs: Joi.string(),
+//   origin: Joi.string(),
+//   // Metadata
+//   author: Joi.string(),
+//   contributors: Joi.array().items(Joi.string()),
+//   keywords: Joi.array().items(Joi.string()),
+//   homepage: Joi.object(),
+//   repository: Joi.object(),
+//   bugs: Joi.object(),
+//   license: Joi.string().allow("")
+// });
+
+// Minimal (very relaxed) manifest check
 export const manifest = Joi.object({
   name: Joi.string().required(),
   version: Joi.string().required(),
-  description: Joi.string().required(),
-  avatar: Joi.string(),
-  type: Joi.string(),
   image: Joi.object({
-    path: Joi.string().required(),
-    hash: Joi.string().required(),
-    size: Joi.number().required(),
-    restart: Joi.string(),
-    ports: Joi.array().items(Joi.string()),
-    volumes: Joi.array().items(Joi.string()),
-    external_vol: Joi.array().items(Joi.string()),
-    environment: Joi.array().items(Joi.string()),
-    ipv4_address: Joi.string(),
-    subnet: Joi.string(),
-    privileged: Joi.boolean(),
-    labels: Joi.array(),
-    cap_add: Joi.string(),
-    cap_drop: Joi.string(),
-    network_mode: Joi.string(),
-    command: Joi.string(),
-    // Some are wrong
-    keywords: Joi.array().items(Joi.string()),
-    // #### Backwards compatibility
-    name: Joi.string(), // #### Backwards compatibility
-    version: Joi.string() // #### Backwards compatibility
-  }).required(),
-  dependencies: Joi.object(),
-  chain: Joi.string(),
-  changelog: Joi.string(),
-  warnings: Joi.object(),
-  fromIpfs: Joi.string(),
-  origin: Joi.string(),
-  // Metadata
-  author: Joi.string(),
-  contributors: Joi.array().items(Joi.string()),
-  keywords: Joi.array().items(Joi.string()),
-  homepage: Joi.object(),
-  repository: Joi.object(),
-  bugs: Joi.object(),
-  license: Joi.string().allow("")
-});
+    path: Joi.string().required()
+  })
+    .pattern(/./, Joi.any())
+    .required()
+}).pattern(/./, Joi.any());
 
 export const alertType = Joi.string().valid("danger", "warning", "success");
 
@@ -151,7 +164,7 @@ export const dnpInstalledItem = Joi.object({
   portsToClose: Joi.array(),
   // Appended later
   envs: Joi.object(),
-  manifest: manifest
+  manifest: Joi.object() // #### Don't check this manifest at all
 });
 
 export const dnpInstalled = Joi.array()

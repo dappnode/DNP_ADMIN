@@ -4,7 +4,8 @@ import * as a from "./actions";
 import * as t from "./actionTypes";
 import {
   updateIsLoading,
-  updateIsLoaded
+  updateIsLoaded,
+  updateLoading
 } from "services/loadingStatus/actions";
 import * as loadingIds from "services/loadingStatus/loadingIds";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
@@ -21,6 +22,7 @@ function* fetchDnpInstalled() {
     yield put(a.updateDnpInstalled(dnps));
     yield put(updateIsLoaded(loadingIds.dnpInstalled));
   } catch (e) {
+    yield put(updateLoading(loadingIds.dnpInstalled, false));
     console.error(`Error on fetchDnpInstalled: ${e.stack}`);
   }
 }

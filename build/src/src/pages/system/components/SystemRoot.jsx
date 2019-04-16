@@ -5,7 +5,6 @@ import { title, rootPath, updatePath } from "../data";
 import SystemHome from "./SystemHome";
 import SystemUpdate from "./SystemUpdate";
 import packages from "pages/packages";
-import withLoading from "components/hoc/withLoading";
 // Styles
 import "./system.css";
 
@@ -28,4 +27,4 @@ const SystemRoot = () => (
 // Container
 
 // Use `compose` from "redux" if you need multiple HOC
-export default withLoading("dnpInstalled", "installed DNPs")(SystemRoot);
+export default SystemRoot;
