@@ -12,16 +12,12 @@ const Notifications = ({ notifications, viewedNotifications }) => {
   return (
     <BaseDropdown
       name="Notifications"
-      messages={
-        notifications.length
-          ? notifications
-          : [{ body: "No notifications yet" }]
-      }
+      messages={notifications}
       Icon={Bell}
       onClick={viewedNotifications}
       moreVisible={true}
-      // Right position of the dropdown to prevent clipping on small screens
-      offset={"-59px"}
+      className={"notifications"}
+      placeholder="No notifications yet"
     />
   );
 };

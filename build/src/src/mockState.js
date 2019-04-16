@@ -113,7 +113,7 @@ export const mockState = {
       id: "diskSpaceRanOut-stoppedPackages",
       type: "danger",
       title: "Disk space ran out, stopped packages",
-      body: "Available disk space is less than a safe ...",
+      body: "Available disk space gone wrong ".repeat(10),
       timestamp: 153834824,
       viewed: false,
       fromDappmanager: true

@@ -23,10 +23,10 @@ const TopBar = () => (
     {/* Right justified items */}
     <div className="right">
       <DappnodeIdentity />
-      <div className="dropdown-menu-separator" />
+      <div className="topnav-icon-separator" />
       <ChainData />
       <Notifications />
-      <div className="dropdown-menu-separator" />
+      <div className="topnav-icon-separator" />
       <Report />
     </div>
   </div>

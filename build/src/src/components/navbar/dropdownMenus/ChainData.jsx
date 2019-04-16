@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
 import { getChainData } from "services/chainData/selectors";
 // Icons
-import Link from "Icons/Link";
 import { FiBox } from "react-icons/fi";
 
 const ChainData = ({ chainData }) => {
@@ -27,8 +26,8 @@ const ChainData = ({ chainData }) => {
         })
       )}
       Icon={() => <FiBox size={"1.4em"} />}
-      // Right position of the dropdown to prevent clipping on small screens
-      offset={"-99px"}
+      className={"chainstatus"}
+      placeholder="Mainnet chain state is not available, click the report icon"
     />
   );
 };

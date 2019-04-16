@@ -6,6 +6,28 @@ import BaseDropdown from "./BaseDropdown";
 import makeBlockie from "ethereum-blockies-base64";
 import { getDappnodeIdentityClean } from "services/dappnodeStatus/selectors";
 
+/**
+ * Patch to fix the visual issue of the domain being too long.
+ * With the <wbr> (word break opportunity) the domain will be shown as:
+ *  12ab34ab12ab23ab
+ *  .dyndns.dappnode.io
+ * @param {string} key
+ * @param {string} value
+ */
+function parseIdentityKeyValue(key, value) {
+  if (key.includes("domain")) {
+    const [hex, rootDomain] = value.split(/\.(.+)/);
+    return (
+      <>
+        {hex}
+        <wbr />.{rootDomain}
+      </>
+    );
+  } else {
+    return value;
+  }
+}
+
 const DappnodeIdentity = ({ dappnodeIdentity = {} }) => {
   if (typeof dappnodeIdentity !== "object") {
     console.error("dappnodeIdentity must be an object");
@@ -31,12 +53,14 @@ const DappnodeIdentity = ({ dappnodeIdentity = {} }) => {
   return (
     <BaseDropdown
       name="DAppNode Identity"
-      messages={Object.values(dappnodeIdentity).map(value => ({
-        title: value
-      }))}
+      messages={Object.entries(dappnodeIdentity)
+        .filter(([_, value]) => value)
+        .map(([key, value]) => {
+          return { title: parseIdentityKeyValue(key, value) };
+        })}
       Icon={Icon}
-      // Right position of the dropdown to prevent clipping on small screens
-      offset={"-157px"}
+      className={"dappnodeidentity"}
+      placeholder="No identity available, click the report icon"
     />
   );
 };
