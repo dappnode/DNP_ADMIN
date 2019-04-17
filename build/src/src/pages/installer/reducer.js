@@ -2,6 +2,7 @@
 import * as t from "./actionTypes";
 import merge from "deepmerge";
 import { assertAction } from "utils/redux";
+import Joi from "joi";
 
 /**
  * @param userSetEnvs = {
@@ -29,22 +30,35 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
+  const assertActionSchema = obj => assertAction(action, Joi.object(obj));
   switch (action.type) {
     case t.UPDATE_SELECTED_TYPES:
-      assertAction(action, { payload: {} });
+      assertActionSchema({ payload: Joi.object().required() });
       return merge(state, {
         selectedTypes: action.payload
       });
 
     case t.UPDATE_INPUT:
-      assertAction(action, { payload: "dnp" });
+      assertActionSchema({
+        payload: Joi.string()
+          .allow("")
+          .required()
+      });
       return merge(state, {
         input: action.payload
       });
 
     // User set
     case t.UPDATE_USERSET_ENVS:
-      assertAction(action, { dnpName: "dnp", key: "FOO", value: "BAR" });
+      assertActionSchema({
+        dnpName: Joi.string().required(),
+        key: Joi.string()
+          .allow("")
+          .required(),
+        value: Joi.string()
+          .allow("")
+          .required()
+      });
       return merge(state, {
         userSetEnvs: {
           [action.dnpName]: {
@@ -54,7 +68,11 @@ export default function(state = initialState, action) {
       });
 
     case t.UPDATE_USERSET_PORTS:
-      assertAction(action, { dnpName: "dnp", id: "30303", values: {} });
+      assertActionSchema({
+        dnpName: Joi.string().required(),
+        id: Joi.string().required(),
+        values: Joi.object().required()
+      });
       return merge(state, {
         userSetPorts: {
           [action.dnpName]: {
@@ -64,7 +82,11 @@ export default function(state = initialState, action) {
       });
 
     case t.UPDATE_USERSET_VOLS:
-      assertAction(action, { dnpName: "dnp", id: "dnp_data", values: {} });
+      assertActionSchema({
+        dnpName: Joi.string().required(),
+        id: Joi.string().required(),
+        values: Joi.object().required()
+      });
       return merge(state, {
         userSetVols: {
           [action.dnpName]: {

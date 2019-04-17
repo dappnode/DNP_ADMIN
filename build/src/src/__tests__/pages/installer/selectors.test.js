@@ -17,7 +17,7 @@ describe("pages > installer > selectors", () => {
               }
             },
             requestResult: {
-              success: { "bitcoin.dnp.dappnode.eth": "0.1.1" }
+              dnps: { "bitcoin.dnp.dappnode.eth": "0.1.1" }
             }
           },
           "bitcoin.dnp.dappnode.eth": {
@@ -72,7 +72,7 @@ describe("pages > installer > selectors", () => {
               }
             },
             requestResult: {
-              success: {
+              dnps: {
                 "ethchain.dnp.dappnode.eth":
                   "/ipfs/QmPi32MzYBMWgsqVaWeLB728rJqyZwcZBwwoJjd8dTyqte",
                 "dep.dnp.dappnode.eth":
@@ -132,7 +132,7 @@ describe("pages > installer > selectors", () => {
               image: { ports: ["30303", "30304:30304/udp"] }
             },
             requestResult: {
-              success: { "bitcoin.dnp.dappnode.eth": "0.1.1" }
+              dnps: { "bitcoin.dnp.dappnode.eth": "0.1.1" }
             }
           },
           "bitcoin.dnp.dappnode.eth": {
@@ -178,7 +178,7 @@ describe("pages > installer > selectors", () => {
               image: { volumes: ["ln_data:/data/.var/chain"] }
             },
             requestResult: {
-              success: { "bitcoin.dnp.dappnode.eth": "0.1.1" }
+              dnps: { "bitcoin.dnp.dappnode.eth": "0.1.1" }
             }
           },
           "bitcoin.dnp.dappnode.eth": {

@@ -35,7 +35,6 @@ function InstallerInterface({
   install,
   clearUserSet,
   fetchPackageRequest,
-  fetchPackageData,
   // Extra
   history
 }) {
@@ -45,7 +44,6 @@ function InstallerInterface({
   useEffect(() => {
     clearUserSet();
     fetchPackageRequest(id);
-    fetchPackageData(id);
   }, [id]);
 
   const { loading, resolving, error, manifest, requestResult, tag } = dnp || {};
@@ -130,8 +128,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = {
   install: a.install,
   clearUserSet: a.clearUserSet,
-  fetchPackageRequest: a.fetchPackageRequest,
-  fetchPackageData: a.fetchPackageData
+  fetchPackageRequest: a.fetchPackageRequest
 };
 
 export default compose(

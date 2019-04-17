@@ -10,8 +10,9 @@ import parseManifestVols from "./parseManifestVols";
 export function parseDepsFromDnp(dnp) {
   // Packages that are part of the dependency tree but are already updated
   // will not appear in the success object
-  const { success, alreadyUpdated } = (dnp || {}).requestResult || {};
-  return merge(alreadyUpdated || {}, success || {});
+  // #### How to centralize object definitions so if requestResult changes, this code doesn't break
+  const { dnps } = (dnp || {}).requestResult || {};
+  return dnps || {};
 }
 
 function parseInstalledDnp(dnpInstalled, dnpName) {

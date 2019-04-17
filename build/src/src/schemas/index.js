@@ -43,7 +43,6 @@ export const depsObject = Joi.object({}).pattern(/.*/, Joi.string().required());
 //   chain: Joi.string(),
 //   changelog: Joi.string(),
 //   warnings: Joi.object(),
-//   fromIpfs: Joi.string(),
 //   origin: Joi.string(),
 //   // Metadata
 //   author: Joi.string(),

@@ -35,14 +35,16 @@ function InstallerHome({
   isLoading,
   history,
   // Actions
-  fetchPackageData
+  fetchPackageData,
+  fetchPackageDataFromQuery
 }) {
   const [query, setQuery] = useState("");
   const [selectedTypes, setSelectedTypes] = useState({});
 
   useEffect(() => {
     // If the packageLink is a valid IPFS hash preload it's info
-    if (isIpfsHash(query) || isDnpDomain(query)) fetchPackageData(query);
+    if (isIpfsHash(query) || isDnpDomain(query))
+      fetchPackageDataFromQuery(query);
   }, [query]);
 
   function openDnp(id) {
@@ -126,7 +128,8 @@ InstallerHome.propTypes = {
   mainnet: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
   // Dispatch -> props
-  fetchPackageData: PropTypes.func.isRequired
+  fetchPackageData: PropTypes.func.isRequired,
+  fetchPackageDataFromQuery: PropTypes.func.isRequired
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -139,7 +142,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = {
-  fetchPackageData: a.fetchPackageData
+  fetchPackageData: a.fetchPackageData,
+  fetchPackageDataFromQuery: a.fetchPackageDataFromQuery
 };
 
 export default compose(

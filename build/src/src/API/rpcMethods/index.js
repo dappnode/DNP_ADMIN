@@ -1,4 +1,3 @@
-import uuidv4 from "uuid/v4";
 import { getSession } from "../start";
 import Toast from "components/toast/Toast";
 // Modules
@@ -78,8 +77,6 @@ async function wrapCall({ event, args = [], kwargs = {}, options = {} }) {
     : null;
 
   try {
-    // Generate a taskid
-    if (!kwargs.logId) kwargs.logId = uuidv4();
     // Get session
     const session = getSession();
     // If session is not available, fail gently

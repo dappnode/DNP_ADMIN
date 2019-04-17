@@ -1,5 +1,4 @@
 import { call, put, select } from "redux-saga/effects";
-import { rootWatcher } from "utils/redux";
 import api from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
@@ -16,12 +15,13 @@ import { getUpnpAvailable } from "services/dappnodeStatus/selectors";
 import { getDnpDirectoryById } from "services/dnpDirectory/selectors";
 import { getIsInstallingByDnp } from "services/isInstallingLogs/selectors";
 // Utils
-import { assertAction, assertConnectionOpen } from "utils/redux";
+import { rootWatcher, assertAction, assertConnectionOpen } from "utils/redux";
 import { shortName } from "utils/format";
 import isSyncing from "utils/isSyncing";
 import isIpfsHash from "utils/isIpfsHash";
 import isEnsDomain from "utils/isEnsDomain";
 import uniqArray from "utils/uniqArray";
+import Joi from "joi";
 
 /***************************** Subroutines ************************************/
 
@@ -100,7 +100,13 @@ export function* install({ id, options }) {
  */
 export function* managePorts({ action, ports = [] }) {
   try {
-    assertAction(action, { action: "open", ports: [] });
+    assertAction(
+      action,
+      Joi.object({
+        action: Joi.string().required(),
+        ports: Joi.any().required() // ##### TODO
+      })
+    );
     // Remove duplicates
     ports = uniqArray(ports);
     // Only open ports if necessary
@@ -180,11 +186,19 @@ export function* fetchPackageRequest({ id }) {
   }
 }
 
-export function* fetchPackageData({ id }) {
+/**
+ * [dontLogError] Is a special feature so the UI can instruct the DAPPMANAGER to
+ * suppress noisy errors on recurring calls.
+ * This is necessary for the fetchPackageData while the user is typing a name} param0
+ */
+export function* fetchPackageData({ id, dontLogError }) {
   try {
     // If connection is not open yet, wait for it to open.
     yield call(assertConnectionOpen);
-    const { manifest, avatar } = yield call(api.fetchPackageData, { id });
+    const { manifest, avatar } = yield call(api.fetchPackageData, {
+      id,
+      ...(dontLogError ? { dontLogError } : {})
+    });
     if (!manifest) {
       throw Error(`Missing manifest for fetchPackageData: ${id}`);
     }

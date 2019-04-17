@@ -13,7 +13,7 @@ function Activity({ userActionLogs }) {
   function download() {
     var dataStr =
       "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(this.props.userActionLogs, null, 2));
+      encodeURIComponent(JSON.stringify(userActionLogs, null, 2));
     var dlAnchorElem = document.getElementById("downloadAnchorElem");
     dlAnchorElem.setAttribute("href", dataStr);
     dlAnchorElem.setAttribute("download", "DAppNodeLogs.json");

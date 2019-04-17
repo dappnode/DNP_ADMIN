@@ -20,6 +20,14 @@ export const fetchPackageData = id => ({
   id
 });
 
+// Special action that uses a feature to suppress errors on
+// DAPPMANAGER internal and userActionLogs
+export const fetchPackageDataFromQuery = query => ({
+  type: t.FETCH_PACKAGE_DATA,
+  id: query,
+  dontLogError: true
+});
+
 export const fetchPackageRequest = id => ({
   type: t.FETCH_PACKAGE_REQUEST,
   id
