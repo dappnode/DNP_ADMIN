@@ -37,16 +37,19 @@ class App extends React.Component {
             <ErrorBoundary>
               <NotificationsMain />
             </ErrorBoundary>
-            <ErrorBoundary>
-              {Object.values(pages).map(({ RootComponent, rootPath }) => (
-                <Route
-                  key={rootPath}
-                  path={rootPath}
-                  exact={rootPath === "/"}
-                  component={RootComponent}
-                />
-              ))}
-            </ErrorBoundary>
+
+            {Object.values(pages).map(({ RootComponent, rootPath }) => (
+              <Route
+                key={rootPath}
+                path={rootPath}
+                exact={rootPath === "/"}
+                render={props => (
+                  <ErrorBoundary>
+                    <RootComponent {...props} />
+                  </ErrorBoundary>
+                )}
+              />
+            ))}
           </main>
           <ToastContainer />
         </div>
