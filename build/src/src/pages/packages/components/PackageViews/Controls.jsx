@@ -8,8 +8,7 @@ import Button from "components/Button";
 // Confirm UI
 import confirmRemovePackage from "../confirmRemovePackage";
 import confirmRestartPackage from "../confirmRestartPackage";
-import { confirmAlert } from "react-confirm-alert"; // Import js
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { confirm } from "components/ConfirmDialog";
 import { shortNameCapitalized } from "utils/format";
 import { toLowercase } from "utils/strings";
 
@@ -21,13 +20,11 @@ function PackageControls({
   removePackage
 }) {
   function confirmRemovePackageVolumes(id) {
-    confirmAlert({
+    confirm({
       title: `Removing ${shortNameCapitalized(id)} data`,
-      message: `This action cannot be undone. If this DNP is a blockchain, it will lose all the chain data and start syncing from scratch.`,
-      buttons: [
-        { label: "Cancel", onClick: () => {} },
-        { label: "Remove volumes", onClick: () => restartPackageVolumes(id) }
-      ]
+      text: `This action cannot be undone. If this DNP is a blockchain, it will lose all the chain data and start syncing from scratch.`,
+      label: "Remove volumes",
+      onClick: () => restartPackageVolumes(id)
     });
   }
 

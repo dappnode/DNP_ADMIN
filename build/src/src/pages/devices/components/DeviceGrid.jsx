@@ -2,12 +2,11 @@ import React, { useEffect } from "react";
 import ClipboardJS from "clipboard";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
-// Confirm
-import { confirmAlert } from "react-confirm-alert"; // Import
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { superAdminId } from "services/devices/data";
 // Components
 import Card from "components/Card";
 import Switch from "components/Switch";
+import { confirm } from "components/ConfirmDialog";
 // Helpers
 // import downloadVpnCredentials from "../helpers/downloadVpnCredentials";
 // Utils
@@ -31,26 +30,33 @@ function DeviceGrid({
   }, []);
 
   function removeDeviceConfirm(id) {
-    confirmAlert({
-      title: "Removing " + id + " device",
-      message: "Are you sure?",
-      buttons: [
-        { label: "Yes", onClick: () => removeDevice(id) },
-        { label: "No", onClick: () => {} }
-      ]
+    confirm({
+      title: `Removing ${id} device`,
+      text: "The user using this device will lose access to this DAppNode ",
+      label: "Remove",
+      onClick: () => removeDevice(id)
     });
   }
 
   function resetDeviceConfirm(id) {
-    confirmAlert({
-      title: "Reseting " + id + " device",
-      message:
-        "All profiles and links pointing to this device will no longer be valid. Are you sure?",
-      buttons: [
-        { label: "Yes", onClick: () => resetDevice(id) },
-        { label: "No", onClick: () => {} }
-      ]
-    });
+    const numOfAdmins = devices.filter(({ admin }) => admin).length;
+    if (id === superAdminId || numOfAdmins === 1) {
+      confirm({
+        title: `WARNING! Reseting super admin`,
+        text:
+          "You should only reset the credentials of the super admin if you suspect an unwanted party gained access to this credentials. If that is the case, reset the credentials, BUT download and install the new credentials IMMEDIATELY. Otherwise, you will lose access to your DAppNode when this connection stops",
+        label: `Reset ${id}`,
+        onClick: () => resetDevice(id)
+      });
+    } else {
+      confirm({
+        title: `Reseting ${id} device`,
+        text:
+          "All profiles and links pointing to this device will no longer be valid",
+        label: "Reset",
+        onClick: () => resetDevice(id)
+      });
+    }
   }
 
   // function download(id) {
@@ -82,10 +88,7 @@ function DeviceGrid({
             <MdShare onClick={() => getDeviceCredentials(id)} />
           )}
           <Switch checked={admin} onToggle={() => toggleAdmin(id)} />
-          <MdRefresh
-            className={admin ? "disabled" : ""}
-            onClick={() => (admin ? null : resetDeviceConfirm(id))}
-          />
+          <MdRefresh onClick={() => resetDeviceConfirm(id)} />
           <MdDelete
             className={admin ? "disabled" : ""}
             onClick={() => (admin ? null : removeDeviceConfirm(id))}
