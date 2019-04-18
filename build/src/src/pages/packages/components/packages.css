@@ -17,8 +17,6 @@
 .list-grid.dnps a:hover {
   color: var(--dappnode-color);
   text-decoration: none;
-  -webkit-transition: color 0.2s ease;
-  -ms-transition: color 0.2s ease;
   transition: color 0.2s ease;
 }
 /* Width must be 100% for proper hidding on small screens */

@@ -84,8 +84,6 @@ body,
   height: 100vh;
   width: var(--sidenav-width);
   transition: width 0.25s;
-  -webkit-transition: width 0.25s;
-  -moz-transition: width 0.25s;
   /* When the sidenav collapses, hidde its content */
   overflow: hidden;
   /* While the sidenav is collapsing, make sure the content stays straight */

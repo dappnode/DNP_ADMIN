@@ -24,9 +24,6 @@
 .sidenav-item.selectable {
   cursor: pointer;
   /* All transitions have to be specified with commas in a single transition property */
-  -webkit-transition: background 150ms ease, color 150ms ease, border 150ms ease;
-  -moz-transition: background 150ms ease, color 150ms ease, border 150ms ease;
-  -o-transition: background 150ms ease, color 150ms ease, border 150ms ease;
   transition: background 150ms ease, color 150ms ease, border 150ms ease;
 }
 .sidenav-item.selectable:hover,
@@ -66,9 +63,6 @@
 }
 .funded-by-logo {
   opacity: 0.15;
-  -webkit-transition: opacity 500ms ease;
-  -moz-transition: opacity 500ms ease;
-  -o-transition: opacity 500ms ease;
   transition: opacity 500ms ease;
 }
 .funded-by-logo:hover {

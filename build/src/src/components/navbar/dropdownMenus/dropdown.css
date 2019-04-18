@@ -6,8 +6,6 @@
   /* flex automatically centers the toggle icons */
   display: flex;
   opacity: 0.6;
-  -webkit-transition: opacity 150ms;
-  -ms-transition: opacity 150ms;
   transition: opacity 150ms;
   cursor: pointer;
 }
