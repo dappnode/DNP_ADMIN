@@ -9,28 +9,39 @@ import { ButtonLight } from "components/Button";
 import fileToDataUri from "utils/fileToDataUri";
 import humanFileSize from "utils/humanFileSize";
 
+const fileSizeWarning = 1e6;
+
 function To({ id, copyFileTo }) {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     selectedFile: null,
-  //     toPath: null,
-  //     fromPath: null
-  //   };
-  // }
   const [file, setFile] = useState(null);
   const [toPath, setToPath] = useState("");
+
+  const { name, size } = file || {};
 
   async function uploadFile() {
     try {
       const dataUri = await fileToDataUri(file);
-      copyFileTo({ id, dataUri, toPath });
+      /**
+       * [copyFileTo]
+       * Copy file to a DNP
+       *
+       * @param {string} id DNP .eth name
+       * @param {string} dataUri = "data:application/zip;base64,UEsDBBQAAAg..."
+       * @param {string} filename name of the uploaded file.
+       * - MUST NOT be a path: "/app", "app/", "app/file.txt"
+       * @param {string} toPath path to copy a file to
+       * - If path = path to a file: "/usr/src/app/config.json".
+       *   Copies the contents of dataUri to that file, overwritting it if necessary
+       * - If path = path to a directory: "/usr/src/app".
+       *   Copies the contents of dataUri to ${dir}/${filename}
+       * - If path = relative path: "config.json".
+       *   Path becomes $WORKDIR/config.json, then copies the contents of dataUri there
+       *   Same for relative paths to directories.
+       */
+      copyFileTo({ id, dataUri, filename: name, toPath });
     } catch (e) {
       console.error(`Error on copyFileFrom ${id} ${toPath}: ${e.stack}`);
     }
   }
-
-  const { name, size } = file || {};
 
   return (
     <div className="card-subgroup">
@@ -49,6 +60,14 @@ function To({ id, copyFileTo }) {
           </label>
         </div>
       </div>
+
+      {name && size > fileSizeWarning && (
+        <div className="alert alert-secondary">
+          Note that this tool is not meant for large file transfers. Expect
+          unstable behaviour.
+        </div>
+      )}
+
       {/* TO, choose destination path */}
       <Input
         placeholder="Container destination path"

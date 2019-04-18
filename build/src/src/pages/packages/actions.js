@@ -47,8 +47,8 @@ export const removePackage = (id, deleteVolumes) => () =>
 
 // File manager
 
-export const copyFileTo = ({ id, dataUri, toPath }) => () =>
+export const copyFileTo = ({ id, dataUri, filename, toPath }) => () =>
   api.copyFileTo(
-    { id, dataUri, toPath },
-    { toastMessage: `Copying file to ${sn(id)} ${toPath}...` }
+    { id, dataUri, filename, toPath },
+    { toastMessage: `Copying file ${filename} to ${sn(id)} ${toPath}...` }
   );

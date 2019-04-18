@@ -192,7 +192,7 @@ export const userActionLog = Joi.object({
   message: Joi.string().required(),
   timestamp: Joi.string().required(),
   kwargs: Joi.object().required(),
-  result: Joi.object(),
+  result: Joi.any(),
   stack: Joi.string(),
   name: Joi.string() // #### Backwards compatibility
 });
