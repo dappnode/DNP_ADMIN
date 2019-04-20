@@ -1,3 +1,8 @@
+#sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Sidenav-item
    ============
  */
@@ -67,4 +72,12 @@
 }
 .funded-by-logo:hover {
   opacity: 0.5;
+}
+
+/* Spacer
+   ======
+   To generate a responsive design with flexbox 
+*/
+#sidebar > .spacer {
+  flex: auto;
 }

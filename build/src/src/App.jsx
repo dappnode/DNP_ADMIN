@@ -33,7 +33,7 @@ class App extends React.Component {
           {/* SideNav expands on big screens, while content-wrapper moves left */}
           <SideBar />
           <TopBar />
-          <main>
+          <div id="main">
             <ErrorBoundary>
               <NotificationsMain />
             </ErrorBoundary>
@@ -50,7 +50,7 @@ class App extends React.Component {
                 )}
               />
             ))}
-          </main>
+          </div>
           <ToastContainer />
         </div>
       );

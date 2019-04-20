@@ -1,7 +1,8 @@
 :root {
   --sidebar-breakpoint: 40rem;
   --sidenav-width: 12.5rem;
-  --topbar-width: 3.5rem;
+  --transition-time: 0.25s;
+  --topbar-height: 3.5rem;
   --container-padding: 1.5rem;
   --color-white: white;
   --color-border: #e5e5e5;
@@ -50,10 +51,6 @@ body,
   margin: 0;
   padding: 0;
   height: 100%;
-  /* On really small screens when the sidebar opens the whole page clips
-     prevent the appearing scrollbars by hidding the overflow
-   */
-  overflow: hidden;
 }
 
 /*****
@@ -65,11 +62,6 @@ body,
 */
 .body {
   height: 100vh;
-  display: grid;
-  grid-template:
-    "sidebar topbar" var(--topbar-width)
-    "sidebar main" auto
-    / auto 1fr;
 }
 
 /********
@@ -79,11 +71,13 @@ body,
   The responsiveness is controlled by making the width = 0 
 */
 #sidebar {
-  grid-area: sidebar;
   /* Basic sizing */
-  height: 100vh;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
   width: var(--sidenav-width);
-  transition: width 0.25s;
+  transition: width var(--transition-time);
   /* When the sidenav collapses, hidde its content */
   overflow: hidden;
   /* While the sidenav is collapsing, make sure the content stays straight */
@@ -94,14 +88,10 @@ body,
   box-shadow: rgba(0, 0, 0, 0.1) 1px 0px 15px;
   /* place sidebar on top of the header and content */
   z-index: 2;
-  /* Nested grid */
-  display: grid;
-  align-items: start;
-  grid-template-rows: var(--topbar-width) auto min-content;
 }
 /* SIDEBAR > TOP */
 #sidebar .top {
-  height: var(--topbar-width);
+  height: var(--topbar-height);
   border-bottom: var(--border-style);
 }
 .sidebar-logo {
@@ -128,13 +118,6 @@ body,
   grid-column: 2/4;
 }
 
-@media only screen and (max-width: 40rem) {
-  #sidebar.collapsed {
-    width: 0;
-    border-right-width: 0;
-  }
-}
-
 /* Styles below apply when screen width big */
 @media (min-width: 40rem) {
   .sidenav-toggler {
@@ -148,7 +131,11 @@ body,
   The topbar will always be visible and fixed on the top of the screen
 */
 #topbar {
-  grid-area: topbar;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-height);
   /* Postion left and right divs on each side + security gap margin */
   display: grid;
   grid-template-columns: auto auto;
@@ -189,15 +176,40 @@ body,
   Holds the app content. Content should be responsive on the x axis
   Overflow on the y axis is expected and will be scrollable
 */
-main {
-  grid-area: main;
-  overflow: auto;
+#main {
+  position: relative;
+  margin-top: var(--topbar-height);
+  margin-left: var(--sidenav-width);
   background-color: var(--color-background);
   padding: var(--container-padding);
+  /* So the topbar dropdown menus are shown properly */
+  z-index: -1;
 }
 
-main > div {
+#main > div {
   margin-bottom: var(--default-spacing);
+}
+
+/********************
+  RESPONSIVENESS
+  **************
+  Safari has been reported to cause issues with a grid-area 
+  responsive layout. When react re-painted the DOM, some
+  node's scroll position was reseted.
+*/
+#main,
+#topbar {
+  transition: margin-left var(--transition-time);
+}
+@media only screen and (max-width: 40rem) {
+  #sidebar.collapsed {
+    width: 0;
+    border-right-width: 0;
+  }
+  #main,
+  #topbar {
+    margin-left: 0;
+  }
 }
 
 /********************

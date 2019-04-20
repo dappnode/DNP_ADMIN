@@ -81,6 +81,8 @@ export default class SideBar extends React.Component {
           ))}
         </div>
 
+        <div className="spacer" />
+
         {/* mt-auto will push the div to the bottom */}
         <div className="funded-by">
           <div className="funded-by-text">SUPPORTED BY</div>
