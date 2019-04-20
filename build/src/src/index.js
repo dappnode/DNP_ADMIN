@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-// ##### Investigate if HashRouter is really required
+// ##### TODO: Investigate if HashRouter is really required
 import { HashRouter as Router } from "react-router-dom";
 
 import store from "./store";

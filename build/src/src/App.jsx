@@ -10,6 +10,7 @@ import ErrorBoundary from "./components/generic/ErrorBoundary";
 import TopBar from "./components/navbar/TopBar";
 import SideBar from "./components/navbar/SideBar";
 import Loading from "components/generic/Loading";
+import ScrollToTop from "components/ScrollToTop";
 // Pages
 import pages from "./pages";
 // Redux
@@ -51,7 +52,10 @@ class App extends React.Component {
               />
             ))}
           </div>
+
+          {/* Place here non-page components */}
           <ToastContainer />
+          <ScrollToTop />
         </div>
       );
     } else if (isNotAdmin) {
