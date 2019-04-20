@@ -30,6 +30,8 @@ body {
   /* Just by declaring flex the inner items (the svg) is centered vertically */
   display: flex;
   opacity: 0.7;
+  /* Increase clickable area */
+  min-height: calc(var(--topbar-height) / 2);
 }
 .sidenav-toggler:hover {
   opacity: 1;
@@ -144,6 +146,8 @@ body,
   background-color: var(--color-white);
   border-bottom: var(--border-style);
   padding: 0 var(--container-padding);
+  /* place topbar between the sidebar (2) and the main (0) */
+  z-index: 1;
 }
 #topbar .right,
 #topbar .left {
@@ -182,8 +186,6 @@ body,
   margin-left: var(--sidenav-width);
   background-color: var(--color-background);
   padding: var(--container-padding);
-  /* So the topbar dropdown menus are shown properly */
-  z-index: -1;
 }
 
 #main > div {
