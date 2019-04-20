@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { sidenavItems, fundedBy } from "./navbarItems";
 import logo from "img/dappnode-logo-wide-min.png";
@@ -16,93 +16,98 @@ export function toggleSideNav() {
   window.dispatchEvent(new Event(toggleSideNavEvent));
 }
 
-export default class SideBar extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      sidenavCollapsed: true,
-      width: window.innerWidth,
-      breakPointPx: getBreakPointPx()
+export default function SideBar() {
+  const [collapsed, setCollapsed] = useState(true);
+  const [width, setWidth] = useState(window.innerWidth);
+
+  const sidebarEl = useRef(null);
+
+  function toggleSideNav() {
+    setCollapsed(!collapsed);
+  }
+  function collapseSideNav() {
+    setCollapsed(true);
+  }
+
+  useEffect(() => {
+    window.addEventListener(toggleSideNavEvent, toggleSideNav);
+    return () => {
+      window.removeEventListener(toggleSideNavEvent, toggleSideNav);
     };
-    this.onWindowResize = this.onWindowResize.bind(this);
-    this.toggleSideNav = this.toggleSideNav.bind(this);
-    this.collapseSideNav = this.collapseSideNav.bind(this);
-  }
+  }, []);
 
-  componentDidMount() {
-    window.addEventListener(toggleSideNavEvent, this.toggleSideNav);
-    window.addEventListener("resize", this.onWindowResize);
-  }
-  componentWillUnmount() {
-    window.removeEventListener(toggleSideNavEvent, this.toggleSideNav);
-    window.removeEventListener("resize", this.onWindowResize);
-  }
-
-  toggleSideNav() {
-    this.setState({ sidenavCollapsed: !this.state.sidenavCollapsed });
-  }
-  collapseSideNav() {
-    this.setState({ sidenavCollapsed: true });
-  }
-
-  // Always collapse the navbar when crossing the breakpoint, going from big to small
-  onWindowResize() {
-    const breakPointPx = getBreakPointPx();
-    if (this.state.width > breakPointPx && window.innerWidth <= breakPointPx) {
-      this.collapseSideNav();
+  useEffect(() => {
+    // Always collapse the navbar when crossing the breakpoint, going from big to small
+    function onWindowResize() {
+      const breakPointPx = getBreakPointPx();
+      if (width > breakPointPx && window.innerWidth <= breakPointPx)
+        collapseSideNav();
+      setWidth(window.innerWidth);
     }
-    this.setState({ width: window.innerWidth });
-  }
+    window.addEventListener("resize", onWindowResize);
+    return () => {
+      window.removeEventListener("resize", onWindowResize);
+    };
+  }, []);
 
-  render() {
-    const collapsed = this.state.sidenavCollapsed;
-    const collapseSideNav = this.collapseSideNav;
-    return (
-      <div id="sidebar" className={collapsed ? "collapsed" : ""}>
-        <NavLink className="top sidenav-item" to={"/"}>
-          <img className="sidebar-logo header" src={logo} alt="logo" />
-        </NavLink>
+  useEffect(() => {
+    if (collapsed) return; // Prevent unnecessary listeners
+    function handleMouseDown(e) {
+      if (!sidebarEl.current.contains(e.target)) setCollapsed(true);
+    }
+    document.addEventListener("mousedown", handleMouseDown);
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+    };
+  }, [collapsed]);
 
-        <div className="nav">
-          <div className="sidenav-item">
-            <div className="subheader">ADMIN UI</div>
-          </div>
+  return (
+    <div id="sidebar" ref={sidebarEl} className={collapsed ? "collapsed" : ""}>
+      <NavLink className="top sidenav-item" to={"/"} onClick={collapseSideNav}>
+        <img className="sidebar-logo header" src={logo} alt="logo" />
+      </NavLink>
 
-          {sidenavItems.map(item => (
-            <NavLink
-              key={item.name}
-              className="sidenav-item selectable"
-              onClick={collapseSideNav}
-              to={item.href}
-            >
-              <item.icon scale={0.8} />
-              <span className="name svg-text">{item.name}</span>
-            </NavLink>
+      <div className="nav">
+        <div className="sidenav-item">
+          <div className="subheader">ADMIN UI</div>
+        </div>
+
+        {sidenavItems.map(item => (
+          <NavLink
+            key={item.name}
+            className="sidenav-item selectable"
+            onClick={collapseSideNav}
+            to={item.href}
+          >
+            <item.icon scale={0.8} />
+            <span className="name svg-text">{item.name}</span>
+          </NavLink>
+        ))}
+      </div>
+
+      {/* spacer keeps the funded-by section at the bottom (if possible) */}
+      <div className="spacer" />
+
+      <div className="funded-by">
+        <div className="funded-by-text">SUPPORTED BY</div>
+        <div className="funded-by-logos">
+          {fundedBy.map((item, i) => (
+            <a key={i} href={item.link}>
+              <img
+                src={item.logo}
+                className="img-fluid funded-by-logo"
+                alt="logo"
+                data-toggle="tooltip"
+                data-placement="top"
+                title={item.text}
+                data-delay="300"
+              />
+            </a>
           ))}
         </div>
-
-        {/* mt-auto will push the div to the bottom */}
-        <div className="funded-by">
-          <div className="funded-by-text">SUPPORTED BY</div>
-          <div className="funded-by-logos">
-            {fundedBy.map((item, i) => (
-              <a key={i} href={item.link}>
-                <img
-                  src={item.logo}
-                  className="img-fluid funded-by-logo"
-                  alt="logo"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title={item.text}
-                  data-delay="300"
-                />
-              </a>
-            ))}
-          </div>
-        </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 // Utility
