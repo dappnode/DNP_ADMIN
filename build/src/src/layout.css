@@ -13,35 +13,11 @@
 }
 
 /* 
-  !!!!!!!!!!!
-   Move this
-  !!!!!!!!!!!
-
   TEXT STYLES 
 */
 body {
   font-family: overpass, sans-serif !important;
 }
-.sidenav-toggler {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  /* Just by declaring flex the inner items (the svg) is centered vertically */
-  display: flex;
-  opacity: 0.7;
-  /* Increase clickable area */
-  min-height: calc(var(--topbar-height) / 2);
-}
-.sidenav-toggler:hover {
-  opacity: 1;
-}
-
-/* 
-  !!!!!!!!!!!
-      end
-  !!!!!!!!!!!
-*/
 
 /* Reset margins and underlying sizes. 
    The height 100% is necessary so child elements have a reference to be full width
@@ -80,8 +56,11 @@ body,
   left: 0;
   width: var(--sidenav-width);
   transition: width var(--transition-time);
-  /* When the sidenav collapses, hidde its content */
-  overflow: hidden;
+  /* When the screen height is really small, show scrolling
+     When the sidenav collapses, hide its content
+   */
+  overflow-y: auto;
+  overflow-x: hidden;
   /* While the sidenav is collapsing, make sure the content stays straight */
   white-space: nowrap;
   /* Colors */
@@ -89,26 +68,27 @@ body,
   border-right: var(--border-style);
   box-shadow: rgba(0, 0, 0, 0.1) 1px 0px 15px;
   /* place sidebar on top of the header and content */
-  z-index: 2;
+  z-index: 2000;
 }
-/* SIDEBAR > TOP */
-#sidebar .top {
-  height: var(--topbar-height);
-  border-bottom: var(--border-style);
-}
+
 .sidebar-logo {
   width: calc(0.7 * var(--sidenav-width));
 }
 /* SIDEBAR > NAV */
-#sidebar .nav {
+#sidebar > .nav {
   padding: 0.8rem 0;
+  flex: none;
 }
 .sidenav-item {
   display: grid;
   grid-template-columns: 1rem 2rem auto;
-  grid-gap: 10px;
+  grid-gap: 0.6rem;
   place-items: center start;
   transition: all 0.5s;
+  width: 100%;
+}
+.sidenav-item:not(.top) {
+  height: 2.5rem;
 }
 .sidenav-item .icon,
 .sidenav-item svg {
@@ -118,6 +98,20 @@ body,
 .sidenav-item .header,
 .sidenav-item .subheader {
   grid-column: 2/4;
+}
+/* Make this section dissapear small heights */
+#sidebar > .funded-by {
+  width: 100%;
+  flex: 0 1 auto;
+  overflow: hidden;
+}
+
+/* SIDEBAR > TOP */
+.sidenav-item.top {
+  height: var(--topbar-height);
+  border-bottom: var(--border-style);
+  /* Prevent the item from shrinking */
+  flex-shrink: 0;
 }
 
 /* Styles below apply when screen width big */
@@ -147,7 +141,7 @@ body,
   border-bottom: var(--border-style);
   padding: 0 var(--container-padding);
   /* place topbar between the sidebar (2) and the main (0) */
-  z-index: 1;
+  z-index: 1000;
 }
 #topbar .right,
 #topbar .left {

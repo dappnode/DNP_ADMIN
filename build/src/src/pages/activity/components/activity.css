@@ -30,6 +30,12 @@
 .user-log > div {
   padding: var(--default-spacing);
 }
+.user-log > .show {
+  padding-top: 0;
+}
+.user-log > .hide {
+  display: none;
+}
 
 /* Control styling and opacity */
 

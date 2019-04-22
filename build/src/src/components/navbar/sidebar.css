@@ -9,8 +9,6 @@
 
 /* Remember specificity order rules to override bootstrap */
 .sidenav-item {
-  height: 40px;
-  width: 100%;
   border-left: 5px solid transparent;
   color: black;
   text-decoration: none;
@@ -47,10 +45,6 @@
 /* Funded-by
    =========
  */
-.funded-by {
-  /* This prevents the section from skrinking ackwardly when the sidebar collapses */
-  width: var(--sidenav-width);
-}
 
 .funded-by-text {
   opacity: 0.3;

@@ -63,7 +63,7 @@ export default function SideBar() {
 
   return (
     <div id="sidebar" ref={sidebarEl} className={collapsed ? "collapsed" : ""}>
-      <NavLink className="top sidenav-item" to={"/"} onClick={collapseSideNav}>
+      <NavLink className="sidenav-item top" to={"/"} onClick={collapseSideNav}>
         <img className="sidebar-logo header" src={logo} alt="logo" />
       </NavLink>
 
