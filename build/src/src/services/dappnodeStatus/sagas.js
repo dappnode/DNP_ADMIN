@@ -5,30 +5,12 @@ import * as a from "./actions";
 import * as t from "./actionTypes";
 import checkIpfsConnection from "./diagnoseFunctions/checkIpfsNode";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
-import * as updateLoading from "services/loadingStatus/actionsById";
+import { wrapErrorsAndLoading } from "services/loadingStatus/sagas";
+import * as loadingIds from "services/loadingStatus/loadingIds";
 // Utils
 import { assertConnectionOpen } from "utils/redux";
 
 // Service > dappnodeStatus
-
-/**
- * [NOTE] Using updateLoadingById to get immediate errors if the loadingId does not match
- * @param {string} id
- * @param {function} fn
- */
-function wrapErrors(id, fn) {
-  if (!updateLoading[id]) throw Error(`No loadingId for ${id}`);
-  return function*(action) {
-    try {
-      yield put(updateLoading[id](true));
-      yield call(fn, action);
-      yield put(updateLoading[id](false));
-    } catch (e) {
-      yield put(updateLoading[id](false));
-      console.error(`Error on check${id}: ${e.stack}`);
-    }
-  };
-}
 
 // It's okay, because all non-handled sagas are wrapped on a try/catch
 /* eslint-disable redux-saga/no-unhandled-errors */
@@ -37,10 +19,13 @@ function wrapErrors(id, fn) {
  * Fetches the DAppNode params and statusUpnp from the VPN
  * [Tested]
  */
-export const fetchDappnodeParams = wrapErrors("dappnodeParams", function*() {
-  const dappnodeParams = yield call(api.getParams);
-  yield put(a.updateDappnodeParams(dappnodeParams));
-});
+export const fetchDappnodeParams = wrapErrorsAndLoading(
+  loadingIds.dappnodeParams,
+  function*() {
+    const dappnodeParams = yield call(api.getParams);
+    yield put(a.updateDappnodeParams(dappnodeParams));
+  }
+);
 
 /**
  * Calls getStats. The DAPPMANAGER will return the machine stats
@@ -50,20 +35,26 @@ export const fetchDappnodeParams = wrapErrors("dappnodeParams", function*() {
  *   disk: "86%""
  * }
  */
-const fetchDappnodeStats = wrapErrors("dappnodeStats", function*() {
-  const dappnodeStats = yield call(api.getStats);
-  yield put(a.updateDappnodeStats(dappnodeStats));
-});
+const fetchDappnodeStats = wrapErrorsAndLoading(
+  loadingIds.dappnodeStats,
+  function*() {
+    const dappnodeStats = yield call(api.getStats);
+    yield put(a.updateDappnodeStats(dappnodeStats));
+  }
+);
 
 /**
  * Calls diagnose. The DAPPMANAGER will return various information about it:
  * - docker version
  * - docker-compose version
  */
-const fetchDappnodeDiagnose = wrapErrors("dappnodeDiagnose", function*() {
-  const dappnoseDiagnose = yield call(api.diagnose);
-  yield put(a.updateDappnodeDiagnose(dappnoseDiagnose));
-});
+const fetchDappnodeDiagnose = wrapErrorsAndLoading(
+  loadingIds.dappnodeDiagnose,
+  function*() {
+    const dappnoseDiagnose = yield call(api.diagnose);
+    yield put(a.updateDappnodeDiagnose(dappnoseDiagnose));
+  }
+);
 
 /**
  * Calls each DNP's WAMP method `ping`
@@ -71,31 +62,37 @@ const fetchDappnodeDiagnose = wrapErrors("dappnodeDiagnose", function*() {
  * - On error, returns null
  * Should never throw
  */
-const pingDappnodeDnps = wrapErrors("pingDappnodeDnps", function*() {
-  yield call(assertConnectionOpen);
-  for (const dnp of ["dappmanager", "vpn"]) {
-    try {
-      yield call(api[dnp].ping, { test: "test-ping" });
-      // If the previous call does not throw, the ping was successful
-      yield put(a.updatePingReturn(dnp, true));
-    } catch (e) {
-      console.error(`Error on pingDappnodeDnps/${dnp}: ${e.stack}`);
-      yield put(a.updatePingReturn(dnp, false));
+const pingDappnodeDnps = wrapErrorsAndLoading(
+  loadingIds.pingDappnodeDnps,
+  function*() {
+    yield call(assertConnectionOpen);
+    for (const dnp of ["dappmanager", "vpn"]) {
+      try {
+        yield call(api[dnp].ping, { test: "test-ping" });
+        // If the previous call does not throw, the ping was successful
+        yield put(a.updatePingReturn(dnp, true));
+      } catch (e) {
+        console.error(`Error on pingDappnodeDnps/${dnp}: ${e.stack}`);
+        yield put(a.updatePingReturn(dnp, false));
+      }
     }
   }
-});
+);
 
-const getDnpsVersionData = wrapErrors("versionData", function*() {
-  yield call(assertConnectionOpen);
-  for (const dnp of ["dappmanager", "vpn"]) {
-    try {
-      const versionData = yield call(api[dnp].getVersionData);
-      yield put(a.updateVersionData(dnp, versionData));
-    } catch (e) {
-      console.error(`Error on getDnpsVersionData/${dnp}: ${e.stack}`);
+const getDnpsVersionData = wrapErrorsAndLoading(
+  loadingIds.versionData,
+  function*() {
+    yield call(assertConnectionOpen);
+    for (const dnp of ["dappmanager", "vpn"]) {
+      try {
+        const versionData = yield call(api[dnp].getVersionData);
+        yield put(a.updateVersionData(dnp, versionData));
+      } catch (e) {
+        console.error(`Error on getDnpsVersionData/${dnp}: ${e.stack}`);
+      }
     }
   }
-});
+);
 
 /**
  * Calls checkIpfsConnection: Attempts to cat a common IPFS hash
@@ -103,8 +100,8 @@ const getDnpsVersionData = wrapErrors("versionData", function*() {
  * - On error, returns { resolves: false, error: e.message }
  * Should never throw
  */
-const checkIpfsConnectionStatus = wrapErrors(
-  "ipfsConnectionStatus",
+const checkIpfsConnectionStatus = wrapErrorsAndLoading(
+  loadingIds.ipfsConnectionStatus,
   function*() {
     const { resolves, error } = yield call(checkIpfsConnection);
     yield put(a.updateIpfsConnectionStatus({ resolves, error }));

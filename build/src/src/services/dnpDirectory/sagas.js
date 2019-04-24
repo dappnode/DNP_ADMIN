@@ -3,27 +3,25 @@ import { rootWatcher } from "utils/redux";
 import APIcall from "API/rpcMethods";
 import * as a from "./actions";
 import * as t from "./actionTypes";
-import { loadingId } from "./data";
-import {
-  updateIsLoading,
-  updateIsLoaded,
-  updateLoading
-} from "services/loadingStatus/actions";
+import { wrapErrorsAndLoading } from "services/loadingStatus/sagas";
+import * as loadingIds from "services/loadingStatus/loadingIds";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 
 // Service > dnpDirectory
 
-function* fetchDnpDirectory() {
-  try {
-    yield put(updateIsLoading(loadingId));
-    const dnps = yield call(APIcall.fetchDirectory, { toastOnError: true });
+// It's okay, because all non-handled sagas are wrapped on a try/catch
+/* eslint-disable redux-saga/no-unhandled-errors */
+
+const fetchDnpDirectory = wrapErrorsAndLoading(
+  loadingIds.dnpDirectory,
+  function*() {
+    const dnps = yield call(APIcall.fetchDirectory, {
+      toastOnError: true,
+      throw: true
+    });
     yield put(a.updateDnpDirectory(dnps));
-    yield put(updateIsLoaded(loadingId));
-  } catch (e) {
-    yield put(updateLoading(loadingId, false));
-    console.error(`Error on fetchDnpDirectory: ${e.stack}`);
   }
-}
+);
 
 /******************************* Watchers *************************************/
 

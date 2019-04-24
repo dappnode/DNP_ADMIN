@@ -2,10 +2,11 @@ import * as t from "./actionTypes";
 
 // Service > loadingStatus
 
-export const updateLoading = (id, loading) => ({
+export const updateLoading = (id, loading, error) => ({
   type: t.UPDATE_LOADING,
   id,
-  loading
+  loading,
+  error
 });
 
 export const updateIsLoading = id => ({

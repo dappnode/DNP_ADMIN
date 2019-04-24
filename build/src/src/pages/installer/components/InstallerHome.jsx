@@ -20,9 +20,13 @@ import PackageStore from "./PackageStore";
 import Input from "components/Input";
 import { ButtonLight } from "components/Button";
 import Loading from "components/generic/Loading";
+import Error from "components/generic/Error";
 // Selectors
 import { getMainnet } from "services/chainData/selectors";
-import { getIsLoadingById } from "services/loadingStatus/selectors";
+import {
+  getIsLoading,
+  getLoadingError
+} from "services/loadingStatus/selectors";
 import { rootPath as packagesRootPath } from "pages/packages/data";
 // Styles
 import "./installer.css";
@@ -32,7 +36,8 @@ function InstallerHome({
   // variables
   directory,
   mainnet,
-  isLoading,
+  loading,
+  error,
   history,
   // Actions
   fetchPackageData,
@@ -98,7 +103,8 @@ function InstallerHome({
     if (directory.length && !directoryFiltered.length)
       return <NoPackageFound query={query} />;
     if (mainnet.syncing) return <IsSyncing {...mainnet} />;
-    if (isLoading && !directory.length) return <Loading />;
+    if (error) return <Error msg={`Error loading DNPs: ${error}`} />;
+    if (loading && !directory.length) return <Loading msg="Loading DNPs..." />;
     return <PackageStore directory={directoryFiltered} openDnp={openDnp} />;
   }
 
@@ -126,7 +132,8 @@ InstallerHome.propTypes = {
   inputValue: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
   mainnet: PropTypes.object.isRequired,
-  isLoading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  error: PropTypes.string.isRequired,
   // Dispatch -> props
   fetchPackageData: PropTypes.func.isRequired,
   fetchPackageDataFromQuery: PropTypes.func.isRequired
@@ -138,7 +145,8 @@ const mapStateToProps = createStructuredSelector({
   selectedTypes: s.getSelectedTypes,
   inputValue: s.getInputValue,
   mainnet: getMainnet,
-  isLoading: getIsLoadingById("dnpDirectory")
+  loading: getIsLoading.dnpDirectory,
+  error: getLoadingError.dnpDirectory
 });
 
 const mapDispatchToProps = {

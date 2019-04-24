@@ -13,15 +13,20 @@ import NoDnpInstalled from "./NoDnpInstalled";
 // Components
 import Title from "components/Title";
 import Loading from "components/generic/Loading";
+import Error from "components/generic/Error";
 // Selectors
-import { getIsLoading } from "services/loadingStatus/selectors";
+import {
+  getIsLoading,
+  getLoadingError
+} from "services/loadingStatus/selectors";
 
 const PackageInterface = ({
   dnp,
   id,
   moduleName,
   areThereDnps,
-  loadingDnps
+  loading,
+  error
 }) => (
   <>
     <Title title={moduleName} subtitle={id} />
@@ -34,8 +39,10 @@ const PackageInterface = ({
         <FileManager dnp={dnp} />
         <Logs id={dnp.name} />
       </>
-    ) : loadingDnps ? (
+    ) : loading ? (
       <Loading msg="Loading installed DNPs..." />
+    ) : error ? (
+      <Error msg={`Error loading installed DNPs: ${error}`} />
     ) : areThereDnps ? (
       <NoDnpInstalled id={id} moduleName={moduleName} />
     ) : null}
@@ -45,7 +52,9 @@ const PackageInterface = ({
 PackageInterface.propTypes = {
   dnp: PropTypes.object,
   id: PropTypes.string,
-  moduleName: PropTypes.string.isRequired
+  moduleName: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
+  error: PropTypes.string.isRequired
 };
 
 // Container
@@ -56,7 +65,9 @@ const mapStateToProps = createStructuredSelector({
   id: s.getUrlId,
   moduleName: s.getModuleName,
   areThereDnps: s.areThereDnps,
-  loadingDnps: getIsLoading.dnpInstalled
+  loadingDnps: getIsLoading.dnpInstalled,
+  loading: getIsLoading.dnpInstalled,
+  error: getLoadingError.dnpInstalled
 });
 
 const mapDispatchToProps = null;

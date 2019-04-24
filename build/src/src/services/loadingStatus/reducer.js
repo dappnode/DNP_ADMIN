@@ -8,7 +8,8 @@ import Joi from "joi";
  * @param state = {
  *   "loading-id": {
  *     isLoading: true,
- *     isLoaded: false
+ *     isLoaded: false,
+ *     error: "RPC refused to connect"
  *   }, ... }
  * [Tested]
  */
@@ -20,14 +21,16 @@ export default function(state = {}, action) {
         action,
         Joi.object({
           id: Joi.string().required(),
-          loading: Joi.boolean().required()
+          loading: Joi.boolean().required(),
+          error: Joi.string()
         })
       );
       return {
         ...state,
         [action.id]: {
           ...(state[action.id] || {}),
-          isLoading: action.loading
+          isLoading: action.loading,
+          error: action.error
         }
       };
     case t.UPDATE_IS_LOADING:

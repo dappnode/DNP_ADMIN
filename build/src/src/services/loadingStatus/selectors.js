@@ -33,6 +33,21 @@ export const getIsLoadingById = loadingId => {
  * The `loadingId` variable is constant,
  * never changes on the lifetime of the components consuming it
  *
+ * Returns true if the data has never been loaded and if is loading now
+ * @param {string} loadingId
+ * [Tested]
+ */
+export const getLoadingErrorById = loadingId => {
+  return createSelector(
+    getLoadingStatuses,
+    loadingStatuses => (loadingStatuses[loadingId] || {}).error || ""
+  );
+};
+
+/**
+ * The `loadingId` variable is constant,
+ * never changes on the lifetime of the components consuming it
+ *
  * Returns true if the data has is loading now, EVEN if it has loaded in the past
  * @param {string} loadingId
  */
@@ -44,3 +59,6 @@ export const getIsLoadingStrictById = loadingId => {
 };
 
 export const getIsLoading = mapValues(loadingIds, id => getIsLoadingById(id));
+export const getLoadingError = mapValues(loadingIds, id =>
+  getLoadingErrorById(id)
+);
