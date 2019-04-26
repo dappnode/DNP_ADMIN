@@ -29,7 +29,7 @@ jobs:
       script:
         - npm install -g @dappnode/dappnodesdk
         - docker-compose build
-        - TYPE=${PUBLISH:-patch}
+        - TYPE=${PUBLISH:-minor}
         - dappnodesdk publish ${TYPE} -p infura
       node_js: lts/*
       before_deploy:
@@ -47,7 +47,6 @@ jobs:
         name: "$TRAVIS_TAG"
         body: "# Changelog"
         on:
-          branch: master
           tags: true
           condition: "$TRAVIS_TAG =~ ^release*$"
       after_deploy:
