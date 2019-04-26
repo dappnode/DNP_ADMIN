@@ -34,8 +34,10 @@ function From({ id }) {
         { toastMessage: `Copying file from ${shortName(id)} ${fromPath}...` }
       );
       if (!dataUri) return;
+
       const blob = dataUriToBlob(dataUri);
-      const fileName = parseFileName(fromPath);
+      const fileName = parseFileName(fromPath, blob.type);
+
       saveAs(blob, fileName);
     } catch (e) {
       console.error(`Error on copyFileFrom ${id} ${fromPath}: ${e.stack}`);
@@ -60,10 +62,20 @@ function From({ id }) {
   );
 }
 
-function parseFileName(path) {
+function parseFileName(path, mimeType) {
   if (!path || typeof path !== "string") return path;
   const subPaths = path.split("/");
-  return subPaths[subPaths.length - 1];
+  let fileName = subPaths[subPaths.length - 1] || "";
+
+  // Add extension in case it is a compressed directory
+  if (
+    (mimeType === "application/gzip" && !fileName.endsWith(".gzip")) ||
+    !fileName.endsWith(".gz") ||
+    !fileName.endsWith(".tar.gz")
+  )
+    fileName = `${fileName}.tar.gz`;
+
+  return fileName;
 }
 
 From.propTypes = {
