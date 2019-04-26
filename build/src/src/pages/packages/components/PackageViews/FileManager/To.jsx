@@ -70,14 +70,10 @@ function To({ id, copyFileTo }) {
 
       {/* TO, choose destination path */}
       <Input
-        placeholder="Container destination path"
+        placeholder="Defaults to $WORKDIR/"
         value={toPath}
         onValueChange={setToPath}
-        append={
-          <ButtonLight onClick={uploadFile} disabled={!toPath}>
-            Upload
-          </ButtonLight>
-        }
+        append={<ButtonLight onClick={uploadFile}>Upload</ButtonLight>}
       />
     </div>
   );
