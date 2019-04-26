@@ -31,7 +31,7 @@ jobs:
         - docker-compose build
         - TYPE=${PUBLISH:-minor}
         - dappnodesdk publish ${TYPE} -p infura
-      node_js: lts/*
+      node_js: "10.15.3"
       before_deploy:
         - wget https://raw.githubusercontent.com/dappnode/DAppNode/master/scripts/before_deploy.sh
         - source before_deploy.sh

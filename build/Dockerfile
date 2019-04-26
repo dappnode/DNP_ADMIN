@@ -1,4 +1,4 @@
-FROM node as build-deps-adminui
+FROM node:10.15.3 as build-deps-adminui
 WORKDIR /usr/src/app
 # ensuring both package.json AND package-lock.json are copied
 COPY build/src/package.json ./
@@ -14,7 +14,7 @@ ADD dappnode_package.json .
 RUN ./getVersionData.sh
 RUN yarn run build
 
-FROM node as build-deps-openvpn
+FROM node:10.15.3 as build-deps-openvpn
 WORKDIR /usr/src/app
 # ensuring both package.json AND package-lock.json are copied
 COPY build/src_openvpn/package*.json ./
