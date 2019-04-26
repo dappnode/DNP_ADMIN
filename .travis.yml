@@ -4,9 +4,9 @@ sudo: required
 
 stages:
   - name: build-test
-    if: tag != "release"
+    if: tag =~ /^(?!release\/).*/
   - name: release
-    if: tag = "release"
+    if: tag =~ /^release\/(major|minor|patch)$/
 
 jobs:
   include:
