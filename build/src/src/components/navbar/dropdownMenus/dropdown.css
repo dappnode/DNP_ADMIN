@@ -33,7 +33,7 @@
 }
 
 .tn-dropdown > .menu {
-  z-index: 1000;
+  /* Does not need a z-index, it has the topbar z-index */
   background-color: white;
   border: var(--border-style);
   border-radius: 0.25rem;
