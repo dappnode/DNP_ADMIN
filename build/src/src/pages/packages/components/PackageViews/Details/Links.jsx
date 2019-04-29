@@ -8,7 +8,7 @@ import newTabProps from "utils/newTabProps";
 function Links({ dnp }) {
   const { manifest = {} } = dnp;
   // In the manifest, homepage = {userui: "http://some.link"}
-  const linksObj = manifest.homepage || {};
+  const linksObj = manifest.links || manifest.homepage || {};
   const links =
     typeof linksObj === "object"
       ? Object.keys(linksObj).map(name => ({
