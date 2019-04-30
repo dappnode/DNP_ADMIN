@@ -8,6 +8,7 @@
     "path": "",
     "hash": "",
     "size": "",
+    "volumes": ["vpndnpdappnodeeth_shared:/usr/www/openvpn/cred"],
     "ports": ["8090:8090"],
     "restart": "always",
     "subnet": "172.33.0.0/16",
