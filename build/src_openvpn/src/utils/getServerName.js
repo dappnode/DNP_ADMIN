@@ -11,4 +11,11 @@ function getServerName(str) {
     return str;
 }
 
-export default getServerName
+// Remove all non-alphanumeric characters (including space)
+// In some Linux distributions it may cause problems
+function getCleanServerName(str) {
+  const serverName = getServerName(str) || "";
+  return serverName.replace(/\W/g, "");
+}
+
+export default getCleanServerName;
