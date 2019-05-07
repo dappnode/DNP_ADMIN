@@ -46,6 +46,7 @@ jobs:
       services:
         - docker
       script:
+        - sudo sysctl -w fs.file-max=6000000
         - npm install -g @dappnode/dappnodesdk
         - docker-compose build
         - "TYPE=${TRAVIS_TAG##*/}"
