@@ -1,154 +1,107 @@
-/* DAppNode colored round button */
-
-.dappnode-pill {
-  color: white;
-  background-color: #2fbcb2;
-  font-weight: 500;
-  width: 92px;
-  padding: 3px 8px !important;
-  border-radius: 50px !important;
-  /* Borrowed from bootstrap v4 btn class */
-  display: inline-block;
-  text-align: center;
-  vertical-align: middle;
-  user-select: none;
-  border: 1px solid transparent;
-  font-size: 1rem;
-  line-height: 1.5;
-  -webkit-transition: color 0.15s ease-in-out,
-    background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
-    -webkit-box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-  -o-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
-    -webkit-box-shadow 0.15s ease-in-out;
-}
-.dappnode-pill:hover {
-  color: white;
-  background-color: #218a82;
-}
-.dappnode-pill:disabled {
-  color: white;
-  background-color: #868e8e;
+:root {
+  --dappnode-white-color: #fff;
+  --dappnode-strong-main-color: #2fbcb2;
+  --dappnode-darker-main-color: #218a82;
+  --dappnode-shadow-main-color: #218a8280;
+  --dappnode-light-main-color: #a0bdbb;
+  --dappnode-gray-main-color: #93a5a5;
+  --border-color: #e5e5e5;
+  --danger-color: #d9534f;
+  --warning-color: #f0ad4e;
+  --success-color: #5cb85c;
+  /* Shortcuts */
+  --dappnode-color: var(--dappnode-strong-main-color);
 }
 
-/* DAppNode colored normal button */
+/* btn styles - extend bootstrap v4. Use with:
+   class="btn btn-dappnode"
+ */
 
-.dappnode-btn {
-  color: white;
-  border: 0px solid #2fbcb2 !important;
-  background-color: #2fbcb2;
-  /* Borrowed from bootstrap v4 btn class */
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.25rem;
-  text-decoration: none;
-  -webkit-text-decoration-skip: objects;
-  display: inline-block;
-  text-align: center;
-  vertical-align: middle;
-  user-select: none;
-  font-size: 1rem;
-  line-height: 1.5;
-  -webkit-transition: color 0.15s ease-in-out,
-    background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
-    -webkit-box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-  -o-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
-    -webkit-box-shadow 0.15s ease-in-out;
-}
-.dappnode-btn:hover {
-  color: white;
-  border: 0px solid #218a82;
-  background-color: #218a82;
-  text-decoration: none;
-  -webkit-text-decoration-skip: objects;
-}
-.dappnode-btn:disabled {
-  color: white;
-  border: 0px solid #9cc7c4;
-  background-color: #9cc7c4;
+.btn-dappnode {
+  color: var(--dappnode-white-color);
+  background-color: var(--dappnode-strong-main-color);
+  border-color: var(--dappnode-strong-main-color);
 }
 
-.dappnode-btn-outline {
-  color: #2fbcb2;
-  border: 1px solid #2fbcb2 !important;
+.btn-dappnode:hover {
+  color: var(--dappnode-white-color);
+  background-color: var(--dappnode-darker-main-color);
+  border-color: var(--dappnode-darker-main-color);
+}
+
+.btn-dappnode:focus,
+.btn-dappnode.focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.btn-dappnode.disabled,
+.btn-dappnode:disabled {
+  color: var(--dappnode-white-color);
+  background-color: var(--dappnode-gray-main-color);
+  border-color: var(--dappnode-gray-main-color);
+}
+
+.btn-dappnode:not(:disabled):not(.disabled):active,
+.btn-dappnode:not(:disabled):not(.disabled).active,
+.show > .btn-dappnode.dropdown-toggle {
+  color: var(--dappnode-white-color);
+  background-color: var(--dappnode-darker-main-color);
+  border-color: var(--dappnode-darker-main-color);
+}
+
+.btn-outline-dappnode {
+  color: var(--dappnode-strong-main-color);
   background-color: transparent;
-  /* Borrowed from bootstrap v4 btn class */
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.25rem;
-  text-decoration: none;
-  -webkit-text-decoration-skip: objects;
-  display: inline-block;
-  text-align: center;
-  vertical-align: middle;
-  user-select: none;
-  font-size: 1rem;
-  line-height: 1.5;
-  -webkit-transition: color 0.15s ease-in-out,
-    background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
-    -webkit-box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-  -o-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
-    -webkit-box-shadow 0.15s ease-in-out;
-}
-.dappnode-btn-outline:hover {
-  color: #218a82;
-  border: 0px solid #218a82;
-  text-decoration: none;
-  -webkit-text-decoration-skip: objects;
-}
-.dappnode-btn-outline:disabled {
-  color: #9cc7c4;
-  border: 0px solid #9cc7c4;
+  background-image: none;
+  border-color: var(--dappnode-strong-main-color) !important;
 }
 
-/* DAppNode pill grey */
+.btn-outline-dappnode:hover {
+  color: var(--dappnode-white-color);
+  background-color: var(--dappnode-darker-main-color);
+  border-color: var(--dappnode-darker-main-color);
+}
 
-.dappnode-pill-gray {
-  color: #c2c1c1;
+.btn-outline-dappnode:focus,
+.btn-outline-dappnode.focus {
+  box-shadow: 0 0 0 0.2rem var(--dappnode-shadow-main-color);
+}
+
+.btn-outline-dappnode.disabled,
+.btn-outline-dappnode:disabled {
+  color: var(--dappnode-strong-main-color);
   background-color: transparent;
-  border: 1px solid #c2c1c1;
-  width: max-content;
-  padding: 3px 8px !important;
-  border-radius: 50px !important;
-  /* Borrowed from bootstrap v4 btn class */
-  display: inline-block;
-  text-align: center;
-  vertical-align: middle;
-  user-select: none;
-  font-size: 1rem;
-  line-height: 1.5;
-  text-transform: capitalize;
-  -webkit-transition: color 0.15s ease-in-out, color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-  -o-transition: color 0.15s ease-in-out, color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
-    -webkit-box-shadow 0.15s ease-in-out;
 }
-.dappnode-pill-gray:hover {
-  color: #797979;
-  border-color: #797979;
+
+.btn-outline-dappnode:not(:disabled):not(.disabled):active,
+.btn-outline-dappnode:not(:disabled):not(.disabled).active,
+.show > .btn-outline-dappnode.dropdown-toggle {
+  color: var(--dappnode-white-color);
+  background-color: var(--dappnode-strong-main-color);
+  border-color: var(--dappnode-strong-main-color);
+}
+
+.btn-outline-dappnode:not(:disabled):not(.disabled):active:focus,
+.btn-outline-dappnode:not(:disabled):not(.disabled).active:focus,
+.show > .btn-outline-dappnode.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem var(--dappnode-shadow-main-color);
+}
+
+/* Pill variation - only shape */
+
+.btn.pill {
+  border-radius: 10rem;
+  padding: 0.25rem 1.2rem;
+}
+
+/* Toast variations, now they match the bootstrap color scheme */
+
+.Toastify__toast--success {
+  background: var(--success-color);
+}
+.Toastify__toast--warning {
+  background: var(--warning-color);
+}
+.Toastify__toast--error {
+  background: var(--danger-color);
 }

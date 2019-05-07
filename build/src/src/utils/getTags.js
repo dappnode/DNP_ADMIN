@@ -1,4 +1,5 @@
 import semver from "semver";
+import { toLowercase } from "utils/strings";
 
 export default function getTags(pkg) {
   let tag = pkg.manifest
@@ -6,9 +7,9 @@ export default function getTags(pkg) {
     : "loading";
 
   let tagStyle = "";
-  if (tag.toLowerCase() === "install") tagStyle = "active";
-  if (tag.toLowerCase() === "update") tagStyle = "active";
-  if (tag.toLowerCase() === "installed") tagStyle = "unactive";
+  if (toLowercase(tag) === "install") tagStyle = "active";
+  if (toLowercase(tag) === "update") tagStyle = "active";
+  if (toLowercase(tag) === "installed") tagStyle = "unactive";
 
   return {
     tag,

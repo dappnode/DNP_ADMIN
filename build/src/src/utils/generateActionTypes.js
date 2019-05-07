@@ -1,23 +1,23 @@
 /**
  * Utility to ease the addition of actionTypes
  *
- * @param {String} NAME = 'navbar', name of the module
- * @param {Array} actionTypes = [
+ * @param {string} moduleId = 'moduleName', name of the module
+ * @param {array} actionTypes = [
  *   "UPDATE_DAPPNODE_IDENTITY",
  *   "PUSH_NOTIFICATION",
  *   ...
  * ]
- * @returns {Object} actionTypes object = {
- *   UPDATE_DAPPNODE_IDENTITY: "navbar/UPDATE_DAPPNODE_IDENTITY",
- *   PUSH_NOTIFICATION: "navbar/PUSH_NOTIFICATION",
+ * @returns {object} actionTypes object = {
+ *   UPDATE_DAPPNODE_IDENTITY: "moduleName/UPDATE_DAPPNODE_IDENTITY",
+ *   PUSH_NOTIFICATION: "moduleName/PUSH_NOTIFICATION",
  *   ...
  * }
  */
-export default function generateActionTypes(NAME, actionTypes) {
+export default function generateActionTypes(moduleId, actionTypes) {
   const obj = {};
   actionTypes.forEach(actionType => {
     // prefixing each type with the module name helps preventing name collisions
-    obj[actionType] = NAME + "/" + actionType;
+    obj[actionType] = moduleId + "/" + actionType;
   });
   return obj;
 }

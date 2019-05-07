@@ -1,5 +1,10 @@
 const Web3 = require("web3");
-const web3 = new Web3("http://my.ethchain.dnp.dappnode.eth:8545");
+
+let web3;
+function getWeb3() {
+  if (!web3) web3 = new Web3("http://my.ethchain.dnp.dappnode.eth:8545");
+  return web3;
+}
 
 const blockDiff = 50;
 const cacheTime = 120 * 1000; // ms
@@ -11,12 +16,12 @@ const cacheTime = 120 * 1000; // ms
  * Each call takes ~600ms (500ms minimum, 1500ms maximum observed)
  * Using this raw methodology to avoid expensive libraries (web3)
  *
- * @return {Bool} Returns true if it's syncing and the blockDiff
+ * @returns {bool} Returns true if it's syncing and the blockDiff
  * is big enough. Returns false otherwise
  */
 const isSyncingRpcCall = () =>
-  web3.eth
-    .isSyncing()
+  getWeb3()
+    .eth.isSyncing()
     .then(res => {
       if (!res) return false;
       const currentBlock = parseInt(res.currentBlock, 10);
@@ -44,9 +49,12 @@ const isSyncingCache = {
  * is happening, future calls will still get the old value, but this
  * ensures the minimum number of calls
  *
- * @return {Bool} isSyncing: true / false
+ * @returns {bool} isSyncing: true / false
  */
 async function isSyncingWrap() {
+  // Prevent logging errors on offline development
+  if (process.env.REACT_APP_MOCK_DATA) return false;
+
   if (Date.now() - isSyncingCache.lastCheck > cacheTime) {
     isSyncingCache.lastCheck = Date.now();
     isSyncingCache.res = await isSyncingRpcCall();

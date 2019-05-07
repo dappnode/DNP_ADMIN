@@ -7,7 +7,7 @@ import newTabProps from "utils/newTabProps";
 
 const TextWithUrls = ({ text }) => {
   try {
-    if (!text) return null
+    if (!text || typeof text !== "string") return null;
     var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
     var regex = new RegExp(expression);
     // s = 'oh my http://google.com ddddd http://dappnode.io'
@@ -28,8 +28,10 @@ const TextWithUrls = ({ text }) => {
     });
     return elements;
   } catch (e) {
-    console.error(`Error on TextWithUrls, returned original text as fallback, e: ${e.stack}`)
-    return text || null
+    console.error(
+      `Error on TextWithUrls, returned original text as fallback, e: ${e.stack}`
+    );
+    return text || null;
   }
 };
 

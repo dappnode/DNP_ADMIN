@@ -26,3 +26,7 @@ The administrative user interface allows users to control and monitor their DApp
 The [`src/API` directory](./src/API) handles the communication with the DAppNode's WAMP. It uses the [`autobahn`](https://github.com/crossbario/autobahn-js) library to connect to the DAppNode's `crossbar` instance.
 
 User action trigger a RPC, which are defined in [`src/API/rpcMethods`](./src/API/rpcMethods). Typically actions cause a change in the destination DNP state which emits its new state through `crossbar`'s pubsub, so multiple instances of the admin console observe the same state.
+
+## General developer /style notes
+
+- Do not use CSS prefixes. Create react app will add the necessary prefixes with the [CSS post-processor Autoprefixer](https://facebook.github.io/create-react-app/docs/post-processing-css)

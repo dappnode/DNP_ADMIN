@@ -1,0 +1,87 @@
+.tn-dropdown {
+  position: relative;
+}
+
+.tn-dropdown-toggle {
+  /* flex automatically centers the toggle icons */
+  display: flex;
+  opacity: 0.6;
+  transition: opacity 150ms;
+  cursor: pointer;
+}
+.tn-dropdown-toggle:hover {
+  opacity: 1;
+}
+
+.tn-dropdown .icon-bubble {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  background: transparent;
+  border-radius: var(--bubble-size);
+  height: var(--bubble-size);
+  width: var(--bubble-size);
+}
+.tn-dropdown .icon-bubble.success {
+  background: var(--success-color);
+}
+.tn-dropdown .icon-bubble.warning {
+  background: var(--warning-color);
+}
+.tn-dropdown .icon-bubble.danger {
+  background: var(--danger-color);
+}
+
+.tn-dropdown > .menu {
+  /* Does not need a z-index, it has the topbar z-index */
+  background-color: white;
+  border: var(--border-style);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0;
+  /* Positioning */
+  position: absolute;
+  top: 2rem;
+  /* Display control */
+  display: none;
+  /* Sizing */
+  width: 22.5rem;
+  max-height: 30rem;
+}
+.tn-dropdown > .menu.show {
+  display: block;
+}
+/* Right position of the dropdown to prevent clipping on small screens */
+.tn-dropdown.notifications > .menu {
+  right: -3.9rem;
+}
+.tn-dropdown.chainstatus > .menu {
+  right: -6.4rem;
+}
+.tn-dropdown.dappnodeidentity > .menu {
+  right: -10rem;
+}
+/* 22 * 90% = 19.8 (the min-width specified above) */
+@media (max-width: 25rem) {
+  .tn-dropdown > .menu {
+    width: 90vw;
+  }
+}
+
+/* Menu items */
+.tn-dropdown > .menu > div {
+  padding: 0.5rem 1rem;
+  overflow-wrap: break-word;
+}
+.tn-dropdown > .menu > div:not(:last-child) {
+  border-bottom: var(--border-style);
+}
+.tn-dropdown > .menu > .header {
+  color: #6c757d;
+}
+.tn-dropdown > .menu > .placeholder {
+  color: #6c757d;
+  opacity: 0.8;
+}
+.tn-dropdown > .menu .progress {
+  margin: 0.25rem 0;
+}

@@ -1,6 +1,6 @@
 {
   "name": "admin.dnp.dappnode.eth",
-  "version": "0.1.18",
+  "version": "0.2.0",
   "description": "Dappnode package responsible for providing the administrative user interface",
   "avatar": "/ipfs/QmP7rbBLMfKTHpVQwfmgrenYuuUkVw5CXDfzJSoPBiJuNj",
   "type": "dncore",
@@ -8,22 +8,20 @@
     "path": "",
     "hash": "",
     "size": "",
+    "volumes": ["vpndnpdappnodeeth_shared:/usr/www/openvpn/cred"],
+    "ports": ["8090:8090"],
     "restart": "always",
     "subnet": "172.33.0.0/16",
     "ipv4_address": "172.33.1.9"
   },
-  "author": "DAppLion <dapplion@giveth.io> (https://github.com/dapplion)",
+  "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
   "contributors": [
+    "DAppLion <dapplion@giveth.io> (https://github.com/dapplion)",
     "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
   ],
-  "keywords": [
-    "DAppNodeCore",
-    "DAPP",
-    "ui",
-    "admin"
-  ],
-  "homepage": {
-    "adminui": "http://my.admin.dnp.dappnode.eth",
+  "keywords": ["DAppNodeCore", "UI", "Admin"],
+  "links": {
+    "ui": "http://my.dappnode/",
     "homepage": "https://github.com/dappnode/DNP_ETHCHAIN#readme"
   },
   "repository": {

@@ -2,9 +2,9 @@ import semver from "semver";
 
 /**
  * Compute the release type: major, minor, patch
- * @param {String} from 0.1.21
- * @param {String} to 0.2.0
- * @return {String} release type: major, minor, patch
+ * @param {string} from 0.1.21
+ * @param {string} to 0.2.0
+ * @returns {string} release type: major, minor, patch
  */
 function computeSemverUpdateType(from, to) {
   if (!semver.valid(from) || !semver.valid(to)) return;
