@@ -46,6 +46,7 @@
   /* Sizing */
   width: 22.5rem;
   max-height: 30rem;
+  overflow-y: auto;
 }
 .tn-dropdown > .menu.show {
   display: block;

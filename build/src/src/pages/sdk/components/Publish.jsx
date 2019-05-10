@@ -153,7 +153,11 @@ class Publish extends React.Component {
                   </a>
                   <Link
                     style={{ color: "inherit", textDecoration: "inherit" }}
-                    to={installerRootPath + "/ipfs:" + manifestHash}
+                    to={
+                      installerRootPath +
+                      "/" +
+                      encodeURIComponent("/ipfs/" + manifestHash)
+                    }
                   >
                     <button className="btn btn-outline-dappnode">
                       Install DNP

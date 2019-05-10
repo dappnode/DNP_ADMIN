@@ -6,7 +6,7 @@
   --container-padding: 1.5rem;
   --color-white: white;
   --color-border: #e5e5e5;
-  --color-background: #f7f9f9a8;
+  --color-background: #f7f9f9;
   --border-size: 0.08rem;
   --border-style: var(--border-size) solid var(--color-border);
   --default-spacing: 1.25rem;
@@ -49,6 +49,7 @@ body,
 */
 .body {
   height: 100vh;
+  background-color: var(--color-background);
 }
 
 /********
