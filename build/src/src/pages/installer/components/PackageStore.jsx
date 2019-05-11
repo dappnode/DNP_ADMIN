@@ -7,7 +7,7 @@ import defaultAvatar from "img/defaultAvatar.png";
 // Utility components
 import Card from "components/Card";
 import Button from "components/Button";
-import { stringIncludes } from "utils/strings";
+import { stringIncludes, capitalize } from "utils/strings";
 
 function DnpStore({ directory, openDnp }) {
   return (
@@ -21,6 +21,11 @@ function DnpStore({ directory, openDnp }) {
         /* Rename tag from "install" to "get" because there were too many "install" tags 
            Cannot change the actual tag because it is used for logic around the installer */
         const tagDisplay = tag === "INSTALL" ? "GET" : tag;
+        const nameFormated = capitalize(name || "").replace(
+          ".dnp.dappnode.eth",
+          ""
+        );
+
         return (
           <Card
             key={name + origin}
@@ -30,7 +35,7 @@ function DnpStore({ directory, openDnp }) {
           >
             <img src={error ? errorAvatar : avatar} alt="avatar" />
             <div className="info">
-              <h5 className="title">{name}</h5>
+              <h5 className="title">{nameFormated}</h5>
               <div>{description}</div>
               <div className="keywords">
                 {origin && typeof origin === "string" ? (

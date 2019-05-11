@@ -22,7 +22,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  text-transform: capitalize;
 }
 .dnp-card > .info > button {
   margin-top: 0.5rem;

@@ -69,9 +69,9 @@ function parseFileName(path, mimeType) {
 
   // Add extension in case it is a compressed directory
   if (
-    (mimeType === "application/gzip" && !fileName.endsWith(".gzip")) ||
-    !fileName.endsWith(".gz") ||
-    !fileName.endsWith(".tar.gz")
+    mimeType === "application/gzip" &&
+    !fileName.endsWith(".gzip") &&
+    !fileName.endsWith(".gz")
   )
     fileName = `${fileName}.tar.gz`;
 
