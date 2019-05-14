@@ -16,8 +16,6 @@ import {
   getIsLoading,
   getLoadingError
 } from "services/loadingStatus/selectors";
-// Utils
-import confirmRestartPackage from "./confirmRestartPackage";
 // Icons
 import { MdRefresh, MdOpenInNew } from "react-icons/md";
 // Styles
@@ -54,9 +52,7 @@ const PackagesList = ({
           <NavLink className="open" to={`/${moduleName}/${name}`}>
             <MdOpenInNew />
           </NavLink>
-          <MdRefresh
-            onClick={() => confirmRestartPackage(name, restartPackage)}
-          />
+          <MdRefresh onClick={() => restartPackage(name)} />
           <hr />
         </React.Fragment>
       ))}
