@@ -4,7 +4,8 @@ import { createStructuredSelector } from "reselect";
 // Own module
 import DeviceGrid from "./DeviceGrid";
 import * as a from "../actions";
-import { title } from "../data";
+import { title, maxIdLength } from "../data";
+import coerceDeviceName from "../helpers/coerceDeviceName";
 // Services
 import { getDevices } from "services/devices/selectors";
 // Components
@@ -29,7 +30,7 @@ const DevicesHome = ({
         placeholder="Device's unique name"
         value={id}
         // Ensure id contains only alphanumeric characters
-        onValueChange={value => setId((value || "").replace(/\W/g, ""))}
+        onValueChange={value => setId(coerceDeviceName(value))}
         onEnterPress={() => {
           addDevice(id);
           setId("");
@@ -38,6 +39,12 @@ const DevicesHome = ({
           <ButtonLight onClick={() => addDevice(id)}>Add device</ButtonLight>
         }
       />
+
+      {id.length === maxIdLength ? (
+        <div className="alert alert-warning">
+          Device name must be shorter than {maxIdLength} characters
+        </div>
+      ) : null}
 
       <DeviceGrid
         devices={deviceList}
