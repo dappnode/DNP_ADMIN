@@ -6,3 +6,4 @@ export const title = "Devices";
 // Additional data
 export const guestsName = "Guests";
 export const guestsIpRange = "172.33.200.1-172.33.255.254";
+export const maxIdLength = 80;
