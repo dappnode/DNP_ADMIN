@@ -55,7 +55,7 @@ function* putMainnetIsStillSyncing() {
       pushNotification({
         id: "mainnetStillSyncing",
         type: "warning",
-        title: "System update available",
+        title: "Mainnet is still syncing",
         body:
           "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
       })
