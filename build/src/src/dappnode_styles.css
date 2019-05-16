@@ -3,7 +3,9 @@
 a.no-a-style,
 a.no-a-style:hover,
 .no-a-style a,
-.no-a-style a:hover {
+.no-a-style a:hover,
+button.no-a-style,
+button.no-a-style:hover {
   color: inherit;
   text-decoration: inherit;
 }

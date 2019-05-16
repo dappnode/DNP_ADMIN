@@ -48,8 +48,8 @@ export const mockState = {
 
   /* devices */
   [devicesMountPoint]: [
-    { id: "test-name", isAdmin: true },
-    { id: "other-user", isAdmin: false, url: "link-to-otp/?id=617824#hdfuisf" }
+    { id: "test-name", admin: true },
+    { id: "other-user", admin: false, url: "link-to-otp/?id=617824#hdfuisf" }
   ],
 
   /* dnpDirectory */
