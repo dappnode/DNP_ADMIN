@@ -10,7 +10,7 @@ import coerceDeviceName from "../helpers/coerceDeviceName";
 import { getDevices } from "services/devices/selectors";
 // Components
 import Input from "components/Input";
-import { ButtonLight } from "components/Button";
+import Button from "components/Button";
 import Title from "components/Title";
 
 const DevicesHome = ({
@@ -18,10 +18,10 @@ const DevicesHome = ({
   addDevice,
   removeDevice,
   resetDevice,
-  toggleAdmin,
-  getDeviceCredentials
+  toggleAdmin
 }) => {
   const [id, setId] = useState("");
+  const idTooLong = id.length === maxIdLength;
   return (
     <>
       <Title title={title} />
@@ -36,12 +36,18 @@ const DevicesHome = ({
           setId("");
         }}
         append={
-          <ButtonLight onClick={() => addDevice(id)}>Add device</ButtonLight>
+          <Button
+            variant="dappnode"
+            onClick={() => addDevice(id)}
+            disabled={idTooLong}
+          >
+            Add device
+          </Button>
         }
       />
 
-      {id.length === maxIdLength ? (
-        <div className="alert alert-warning">
+      {idTooLong ? (
+        <div className="color-danger">
           Device name must be shorter than {maxIdLength} characters
         </div>
       ) : null}
@@ -51,7 +57,6 @@ const DevicesHome = ({
         removeDevice={removeDevice}
         resetDevice={resetDevice}
         toggleAdmin={toggleAdmin}
-        getDeviceCredentials={getDeviceCredentials}
       />
     </>
   );
@@ -63,7 +68,6 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = {
   addDevice: a.addDevice,
-  getDeviceCredentials: a.getDeviceCredentials,
   removeDevice: a.removeDevice,
   resetDevice: a.resetDevice,
   toggleAdmin: a.toggleAdmin

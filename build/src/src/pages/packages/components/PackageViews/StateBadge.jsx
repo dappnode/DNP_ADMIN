@@ -1,19 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { colors } from "utils/format";
 
 function StateBadge({ state }) {
+  const styleColor =
+    state === "running"
+      ? "success"
+      : state === "exited"
+      ? "danger"
+      : "secondary";
   return (
     <span
-      className="stateBadge center"
-      style={{
-        backgroundColor:
-          state === "running"
-            ? colors.success
-            : state === "exited"
-            ? colors.error
-            : colors.default
-      }}
+      className={`stateBadge center badge-${styleColor}`}
+      style={{ opacity: 0.85 }}
     >
       {state}
     </span>

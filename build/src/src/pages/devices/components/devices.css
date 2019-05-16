@@ -9,7 +9,7 @@
    */
   grid-template-columns:
     minmax(4rem, auto)
-    min-content
+    minmax(2.5rem, min-content)
     minmax(2.5rem, min-content)
     minmax(calc(var(--icon-size) / 2), min-content)
     minmax(calc(var(--icon-size) / 2), min-content);
@@ -20,7 +20,6 @@
   display: grid;
   grid-auto-flow: column;
   grid-gap: var(--grid-spacing);
-  align-items: normal;
 }
 /* Make it slightly bigger to compensate the svg path being smaller */
 .list-grid.devices svg.bigger {
@@ -30,6 +29,14 @@
 .list-grid.devices svg.smaller {
   height: calc(var(--icon-size) - 0.05rem);
   width: calc(var(--icon-size) - 0.1rem);
+}
+.list-grid.devices .get-link {
+  border-color: var(--border-color);
+}
+@media (min-width: 28rem) {
+  .list-grid.devices .get-link::after {
+    content: " link";
+  }
 }
 
 /* Center the button inside the NavLink */
@@ -53,7 +60,31 @@
   justify-content: space-between;
   grid-template-columns: minmax(4rem, auto) min-content;
   grid-gap: var(--default-spacing);
+  align-items: center;
+}
+.device-settings > header > .card-title {
+  margin-bottom: 0;
+}
+.device-settings > .help {
+  color: gray;
+  font-size: 90%;
 }
 .device-settings > .alert {
   margin: 0;
+}
+/* The svg are not centered so the custom padding 
+   helps the icons look like they are centered  */
+.device-settings .link-display {
+  background-color: var(--color-background) !important;
+}
+.device-settings .device-url-copy {
+  padding: 4px 9px 0px 11px;
+  font-size: 1.3rem;
+}
+.device-settings .device-url-open {
+  padding: 0px 9px 0px 10px;
+  font-size: 1.3rem;
+}
+.device-settings .device-url-open > a {
+  display: flex;
 }
