@@ -36,14 +36,29 @@ function TableInputs({ headers, content }) {
     }
   });
 
+  /**
+   * Using css Grid all elements are at the same level.
+   * This is why the content is flatten with `content.flat()`
+   * To ensure that their order is correct a key must exist,
+   * which also enforces order. An example of row array = [
+   *   { key: id + "left" },
+   *   { key: id + "right" }
+   * ]
+   * Since "left" > "right", this naming ensures that the first
+   * element is placed on the left and the other on the right
+   */
+
   return (
     <TableXN>
-      {headers.map((header, i) => (
-        <Header key={i}>{header}</Header>
+      {headers.map(header => (
+        <Header key={header}>{header}</Header>
       ))}
-      {content.map((row, i) =>
-        row.map((col, j) => <Input key={`${i}${j}`} {...col} />)
-      )}
+      {content
+        .flat()
+        .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0))
+        .map(({ key, ...props }) => (
+          <Input key={key} {...props} />
+        ))}
     </TableXN>
   );
 }

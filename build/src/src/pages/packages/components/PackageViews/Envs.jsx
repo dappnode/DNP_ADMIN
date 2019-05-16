@@ -32,12 +32,17 @@ function Envs({ dnp, updateEnvs }) {
       <Card spacing>
         <TableInputs
           headers={["Name", "Value"]}
-          content={Object.entries(envs).map(([key, value]) => [
-            { lock: true, value: key },
+          content={Object.entries(envs).map(([envName, envValue]) => [
             {
-              placeholder: "enter value...",
-              value: value || "",
-              onValueChange: value => setEnvs({ ...envs, [key]: value })
+              key: envName + "left",
+              lock: true,
+              value: envName
+            },
+            {
+              key: envName + "right",
+              placeholder: "empty",
+              value: envValue || "",
+              onValueChange: value => setEnvs({ ...envs, [envName]: value })
             }
           ])}
         />

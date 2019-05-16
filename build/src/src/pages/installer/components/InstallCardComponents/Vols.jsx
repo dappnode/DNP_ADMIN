@@ -30,6 +30,7 @@ function Vols({ vols, isInstalled, updateUserSetVols, hideCardHeaders }) {
               headers={["Host path", "Container path (:ro)"]}
               content={Object.entries(dnpVols).map(([id, vol]) => [
                 {
+                  key: id + "left",
                   disabled: isInstalled[dnpName],
                   placeholder: "enter volume path...",
                   value: vol.host || "",
@@ -37,6 +38,7 @@ function Vols({ vols, isInstalled, updateUserSetVols, hideCardHeaders }) {
                     updateUserSetVols({ ...vol, id, dnpName, host: value })
                 },
                 {
+                  key: id + "right",
                   disabled: true,
                   value:
                     vol.container + (vol.accessMode ? ":" + vol.accessMode : "")

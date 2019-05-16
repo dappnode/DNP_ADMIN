@@ -12,6 +12,13 @@ import Card from "components/Card";
 import SubTitle from "components/SubTitle";
 import TableInputs from "components/TableInputs";
 
+function sortedEntries(obj) {
+  return Object.entries(obj).sort((obj1, obj2) => {
+    const idx = 1;
+    return obj1[idx] < obj2[idx] ? -1 : obj1[idx] > obj2[idx] ? 1 : 0;
+  });
+}
+
 function Envs({ envs, hideCardHeaders, updateUserSetEnvs }) {
   // If no envs, return null
   if (!Object.keys(envs || {}).length) return null;
@@ -20,7 +27,7 @@ function Envs({ envs, hideCardHeaders, updateUserSetEnvs }) {
     <>
       <SubTitle>Enviroment variables</SubTitle>
       <Card>
-        {Object.entries(envs).map(([dnpName, dnpEnvs]) => (
+        {sortedEntries(envs).map(([dnpName, dnpEnvs]) => (
           <div key={dnpName} className="card-subgroup">
             {/* Only display the name of the DNP if there are more than one */}
             {!hideCardHeaders && (
@@ -28,13 +35,15 @@ function Envs({ envs, hideCardHeaders, updateUserSetEnvs }) {
             )}
             <TableInputs
               headers={["Name", "Value"]}
-              content={Object.entries(dnpEnvs).map(([envName, envValue]) => [
+              content={sortedEntries(dnpEnvs).map(([envName, envValue]) => [
                 {
+                  key: envName + "left",
                   disabled: true,
                   value: envName
                 },
                 {
-                  placeholder: "enter value...",
+                  key: envName + "right",
+                  placeholder: "empty",
                   value: envValue || "",
                   onValueChange: value =>
                     updateUserSetEnvs({ value: value, key: envName, dnpName })
