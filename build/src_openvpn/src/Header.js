@@ -5,7 +5,7 @@ class Header extends Component {
   render() {
     return (
       <nav className="navbar navbar-dark bg-dark">
-        <div className="container">
+        <div className="container" style={{ overflow: "hidden" }}>
           <div className="row">
             <span className="navbar-brand">
               <img

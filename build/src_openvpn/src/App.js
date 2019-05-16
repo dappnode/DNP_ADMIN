@@ -16,6 +16,7 @@ import getParamsFromUrl from "./utils/getParamsFromUrl";
 import isBase64 from "./utils/isBase64";
 import decrypt from "./utils/decrypt";
 import getServerName from "./utils/getServerName";
+import isClientOnSameNetwork from "./utils/isClientOnSameNetwork";
 // Logos
 import errorLogo from "./img/error.png";
 import okLogo from "./img/ok.png";
@@ -78,7 +79,10 @@ const options = [
   }
 ];
 
-const baseUrl = window.location.origin;
+const natLoopbackDisabledUrl =
+  "https://dappnode.github.io/DAppNodeDocs/troubleshooting/#nat-loopback-disabled";
+
+const { origin, hostname } = window.location;
 const ovpnType = "application/x-openvpn-profile";
 const fileExtension = "ovpn";
 
@@ -88,7 +92,8 @@ export default class App extends Component {
     this.state = {
       loading: false,
       error: null,
-      file: null
+      file: null,
+      fileSameNetwork: null
     };
   }
 
@@ -96,14 +101,20 @@ export default class App extends Component {
     try {
       // 1. Get params from url
       this.setState({ loading: true });
-      const { key, id, name, dev } = getParamsFromUrl();
-      const url = `${baseUrl}/cred/${id}?id=${id}`;
+      const { key, id, name, dev, intip } = getParamsFromUrl();
+      const url = `${origin}/cred/${id}?id=${id}`;
 
       // Dev param to be able to work on the UI
       if (dev) {
+        if (dev === "error") this.setState({ loading: false, error: "error" });
         if (dev === "loading") this.setState({ loading: true });
         if (dev === "success") this.setState({ loading: false, file: "file" });
-        if (dev === "error") this.setState({ loading: false, error: "error" });
+        if (dev === "success-intip")
+          this.setState({
+            loading: false,
+            file: "file",
+            fileSameNetwork: "file-same-network"
+          });
         return console.warn(`dev parameter set, dev: ${dev}`);
       }
 
@@ -123,6 +134,16 @@ export default class App extends Component {
           ).substring(0, 100)}...\n`
         );
       const file = decrypt(encryptedFile, key);
+
+      // 4. If noNatLoopback = true, check if the user is at the same network as the DAppNode
+      if (intip && (await isClientOnSameNetwork({ id })))
+        if (file.includes(hostname))
+          // Substitute the profile's domain or IP with the internal IP
+          this.setState({ fileSameNetwork: file.replace(hostname, intip) });
+        else
+          console.error(`Credentials do not contain the hostname ${hostname}`);
+
+      // 5. Store the resulting file in the App's state
       this.setState({ loading: false, file, name });
     } catch (err) {
       this.setState({
@@ -133,10 +154,24 @@ export default class App extends Component {
     }
   }
 
+  download({ sameNetwork }) {
+    const { file, fileSameNetwork, name } = this.state;
+    // customize file for the same network case
+    const serverName =
+      getServerName(name) + (sameNetwork ? "_same_network" : "");
+    const fileToBlob = sameNetwork ? fileSameNetwork : file;
+    // saveAs standard code
+    const blob = new Blob([fileToBlob], { type: ovpnType });
+    const filename = `${serverName}.${fileExtension}`;
+    saveAs(blob, filename);
+  }
+
+  downloadSameNetwork() {
+    this.download({ sameNetwork: true });
+  }
+
   render() {
-    const { file, name, error, loading } = this.state;
-    const blob = new Blob([file], { type: ovpnType });
-    const filename = `${getServerName(name)}.${fileExtension}`;
+    const { file, fileSameNetwork, error, loading } = this.state;
 
     if (error) {
       return (
@@ -167,12 +202,41 @@ export default class App extends Component {
                 />
                 Successfully decrypted .ovpn file
               </h6>
-              <button
-                className="btn btn-primary dappnode-background-color"
-                onClick={saveAs.bind(this, blob, filename)}
-              >
-                Download
-              </button>
+
+              {fileSameNetwork ? (
+                <div>
+                  <div
+                    className="alert alert-warning"
+                    style={{ marginTop: "1rem" }}
+                  >
+                    Warning! You may need a different VPN profiles because Nat
+                    Loopback is disabled. Please, use the profile below to
+                    connect to your DAppNode when you are in its same network.{" "}
+                    <a href={natLoopbackDisabledUrl}>Read more</a>.
+                  </div>
+                  <button
+                    className="btn btn-primary dappnode-background-color"
+                    onClick={this.download.bind(this)}
+                    style={{ marginRight: "1rem", marginBottom: "1rem" }}
+                  >
+                    Download
+                  </button>
+                  <button
+                    className="btn btn-primary dappnode-background-color"
+                    onClick={this.downloadSameNetwork.bind(this)}
+                    style={{ marginBottom: "1rem" }}
+                  >
+                    Download - on same network
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="btn btn-primary dappnode-background-color"
+                  onClick={this.download.bind(this)}
+                >
+                  Download
+                </button>
+              )}
             </div>
           </div>
           <div className="jumbotron-area">
