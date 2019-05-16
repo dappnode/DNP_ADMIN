@@ -158,7 +158,7 @@ button.no-a-style:hover {
 }
 .list-grid > hr {
   grid-column: 1 / -1;
-  border-bottom: var(--border-style);
+  border-top: var(--border-style);
   width: 100%;
   margin: 0;
   padding: 0;
