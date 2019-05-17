@@ -51,6 +51,7 @@ export default {
    * @returns {object} result = {
    *   filename: "", {string}
    *   key: "" {string}
+   *   url: `http://${hostname}:${credentialsPort}/?id=${filename}#${encodeURIComponent(key)}`;
    * }
    */
   getDeviceCredentials: {

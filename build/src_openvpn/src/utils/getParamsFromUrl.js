@@ -13,11 +13,11 @@ export default function getParamsFromUrl() {
   // Dev param to be able to work on the UI
   if (urlParams.dev) return { dev: urlParams.dev };
 
-  const { id, name, intip } = urlParams;
+  const { id, name, intip, ip } = urlParams;
   const key = decodeURIComponent(clean(window.location.hash));
   if (!id) throw Error("No valid id provided. Url must be " + urlTemplate);
   if (!key) throw Error("No valid key provided. Url must be " + urlTemplate);
-  return { key, id, name, intip };
+  return { key, id, name, intip, ip };
 }
 
 function parseUrlParams(str) {

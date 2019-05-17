@@ -10,7 +10,7 @@ import Joi from "joi";
  * @param state = devices = {
  *   "MyPhone": {
  *     id: "MyPhone",
- *     isAdmin: false,
+ *     admin: false,
  *     url: "link-to-otp/?id=617824#hdfuisf" (optional),
  *     ip: 172.44.12.4 (optional)
  *   }, ... }

@@ -1,6 +1,6 @@
 import isIp from "./isIp";
 
-async function isClientOnSameNetwork({ id }) {
+async function isClientOnSameNetwork({ id, ip }) {
   const { origin, hostname } = window.location;
 
   try {
@@ -11,6 +11,8 @@ async function isClientOnSameNetwork({ id }) {
     // Fetch the dappnode's IP only if necessary
     const dappnodeIp = isIp(hostname)
       ? hostname
+      : isIp(ip)
+      ? ip
       : await fetch(`https://api.exana.io/dns/${hostname}/a`)
           .then(res => res.json())
           .then(data => data.answer[0].name.trim());

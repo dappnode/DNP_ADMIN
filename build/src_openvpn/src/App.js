@@ -101,7 +101,7 @@ export default class App extends Component {
     try {
       // 1. Get params from url
       this.setState({ loading: true });
-      const { key, id, name, dev, intip } = getParamsFromUrl();
+      const { key, id, name, dev, intip, ip } = getParamsFromUrl();
       const url = `${origin}/cred/${id}?id=${id}`;
 
       // Dev param to be able to work on the UI
@@ -136,7 +136,7 @@ export default class App extends Component {
       const file = decrypt(encryptedFile, key);
 
       // 4. If noNatLoopback = true, check if the user is at the same network as the DAppNode
-      if (intip && (await isClientOnSameNetwork({ id })))
+      if (intip && (await isClientOnSameNetwork({ id, ip })))
         if (file.includes(hostname))
           // Substitute the profile's domain or IP with the internal IP
           this.setState({ fileSameNetwork: file.replace(hostname, intip) });
@@ -209,7 +209,7 @@ export default class App extends Component {
                     className="alert alert-warning"
                     style={{ marginTop: "1rem" }}
                   >
-                    Warning! You may need a different VPN profiles because Nat
+                    Warning! You may need different VPN profiles because Nat
                     Loopback is disabled. Please, use the profile below to
                     connect to your DAppNode when you are in its same network.{" "}
                     <a href={natLoopbackDisabledUrl}>Read more</a>.

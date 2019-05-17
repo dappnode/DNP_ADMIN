@@ -94,7 +94,7 @@ export default function subscriptions(session) {
   /**
    * @param {array} devices = [{
    *   id: "MyPhone",
-   *   isAdmin: false
+   *   admin: false
    * }, ... ]
    */
   subscribe("devices.vpn.dnp.dappnode.eth", devices => {
