@@ -29,7 +29,7 @@ function DeviceDetails({ device, getDeviceCredentials }) {
 
   // Activate the copy functionality
   useEffect(() => {
-    new ClipboardJS(".copy");
+    new ClipboardJS(".copy-input-copy");
   }, []);
 
   return (

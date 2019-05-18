@@ -42,6 +42,7 @@ const ipfsApiUrl = "http://ipfs.dappnode:5001/api/v0";
 function IpfsDnpDappnodeEth({ dappnodeParams }) {
   const { staticIp, domain } = dappnodeParams || {};
 
+  const [navPage, setNavPage] = useState(0);
   const [peerId, setPeerId] = useState("");
   useEffect(() => {}, [
     fetch(`${ipfsApiUrl}/id`)
@@ -51,16 +52,17 @@ function IpfsDnpDappnodeEth({ dappnodeParams }) {
 
   // Activate the copy functionality
   useEffect(() => {
-    new ClipboardJS(".copy");
+    new ClipboardJS(".copy-input-copy");
   }, []);
 
   let peerMultiAddress;
   if (peerId && (staticIp || domain)) {
-    const origin = staticIp ? `/ip4/${staticIp}` : `/dnsaddr/${domain}`;
+    const origin = staticIp ? `/ip4/${staticIp}` : `/dns4/${domain}`;
     peerMultiAddress = `${origin}/tcp/4001/ipfs/${peerId}`;
   }
 
-  const addMyPeerUrl = `${ipfsApiUrl}/bootstrap/add?arg=${peerMultiAddress}`;
+  const addMyPeerUrlBootstrap = `${ipfsApiUrl}/bootstrap/add?arg=${peerMultiAddress}`;
+  const addMyPeerUrlSwarm = `${ipfsApiUrl}/swarm/connect?arg=${peerMultiAddress}`;
 
   return (
     <>
@@ -71,14 +73,40 @@ function IpfsDnpDappnodeEth({ dappnodeParams }) {
           peer-connect your two IPFS nodes. Use this resource to mitigate slow
           IPFS propagation
         </div>
+
+        <div className="help-text" style={{ marginBottom: "0.5rem" }}>
+          <strong>Bootstrap link: </strong> Add your peer as a bootstrap node.
+          It does not take effect until the node is reseted but it will persist.
+        </div>
         <Input
           disabled={true}
-          value={addMyPeerUrl || ""}
+          value={addMyPeerUrlBootstrap || ""}
           className="copy-input"
           append={
             <Button
               className="copy-input-copy"
-              data-clipboard-text={addMyPeerUrl}
+              data-clipboard-text={addMyPeerUrlBootstrap}
+            >
+              <GoClippy />
+            </Button>
+          }
+        />
+
+        <div
+          className="help-text"
+          style={{ marginBottom: "0.5rem", marginTop: "1rem" }}
+        >
+          <strong>Connect Immediately link: </strong>Immediately add your peer
+          but it will not persist after an IPFS reset.
+        </div>
+        <Input
+          disabled={true}
+          value={addMyPeerUrlSwarm || ""}
+          className="copy-input"
+          append={
+            <Button
+              className="copy-input-copy"
+              data-clipboard-text={addMyPeerUrlSwarm}
             >
               <GoClippy />
             </Button>
