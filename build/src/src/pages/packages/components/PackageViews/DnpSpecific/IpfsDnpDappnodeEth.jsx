@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import ClipboardJS from "clipboard";
+// Pages
+import { rootPath as systemRootPath, addIpfsPeerPath } from "pages/system/data";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
@@ -42,7 +44,6 @@ const ipfsApiUrl = "http://ipfs.dappnode:5001/api/v0";
 function IpfsDnpDappnodeEth({ dappnodeParams }) {
   const { staticIp, domain } = dappnodeParams || {};
 
-  const [navPage, setNavPage] = useState(0);
   const [peerId, setPeerId] = useState("");
   useEffect(() => {}, [
     fetch(`${ipfsApiUrl}/id`)
@@ -61,9 +62,10 @@ function IpfsDnpDappnodeEth({ dappnodeParams }) {
     peerMultiAddress = `${origin}/tcp/4001/ipfs/${peerId}`;
   }
 
-  const addMyPeerUrlBootstrap = `${ipfsApiUrl}/bootstrap/add?arg=${peerMultiAddress}`;
-  const addMyPeerUrlSwarm = `${ipfsApiUrl}/swarm/connect?arg=${peerMultiAddress}`;
-
+  // http://my.dappnode/#/system/add-ipfs-peer/%2Fip4%2F1.9.207.246%2Ftcp%2F4001%2Fipfs%2FQmQnwHU6nj1v47mZQWeej4rBtYYTPrMJft88vKp9BAV38L
+  const addMyPeerUrl = `http://my.dappnode${systemRootPath}/${addIpfsPeerPath}/${encodeURIComponent(
+    peerMultiAddress
+  )}`;
   return (
     <>
       <SubTitle>Connect with peers</SubTitle>
@@ -74,39 +76,14 @@ function IpfsDnpDappnodeEth({ dappnodeParams }) {
           IPFS propagation
         </div>
 
-        <div className="help-text" style={{ marginBottom: "0.5rem" }}>
-          <strong>Bootstrap link: </strong> Add your peer as a bootstrap node.
-          It does not take effect until the node is reseted but it will persist.
-        </div>
         <Input
           disabled={true}
-          value={addMyPeerUrlBootstrap || ""}
+          value={addMyPeerUrl || ""}
           className="copy-input"
           append={
             <Button
               className="copy-input-copy"
-              data-clipboard-text={addMyPeerUrlBootstrap}
-            >
-              <GoClippy />
-            </Button>
-          }
-        />
-
-        <div
-          className="help-text"
-          style={{ marginBottom: "0.5rem", marginTop: "1rem" }}
-        >
-          <strong>Connect Immediately link: </strong>Immediately add your peer
-          but it will not persist after an IPFS reset.
-        </div>
-        <Input
-          disabled={true}
-          value={addMyPeerUrlSwarm || ""}
-          className="copy-input"
-          append={
-            <Button
-              className="copy-input-copy"
-              data-clipboard-text={addMyPeerUrlSwarm}
+              data-clipboard-text={addMyPeerUrl}
             >
               <GoClippy />
             </Button>

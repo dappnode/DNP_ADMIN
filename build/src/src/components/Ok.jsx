@@ -2,7 +2,7 @@ import React from "react";
 import { MdCheck, MdClose } from "react-icons/md";
 import "./loader-icon.css";
 
-const style = {
+const styleIcon = {
   width: "1.35rem",
   height: "1.35rem",
   marginRight: "0.3rem"
@@ -18,16 +18,16 @@ function LoaderIcon() {
   );
 }
 
-export default function Ok({ msg, ok, loading }) {
+export default function Ok({ msg, ok, loading, style, ...props }) {
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", ...style }} {...props}>
       <span>
         {ok ? (
-          <MdCheck style={style} color="#1ccec0" />
+          <MdCheck style={styleIcon} color="#1ccec0" />
         ) : loading ? (
           <LoaderIcon />
         ) : (
-          <MdClose style={style} color="#ff0000" />
+          <MdClose style={styleIcon} color="#ff0000" />
         )}
       </span>
       <span>{msg}</span>
