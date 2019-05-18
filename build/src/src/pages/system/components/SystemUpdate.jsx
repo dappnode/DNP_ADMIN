@@ -12,14 +12,14 @@ import SystemUpdateDetails from "./SystemUpdateDetails";
 import Title from "components/Title";
 
 const SystemUpdate = ({ coreProgressLogs }) => (
-  <React.Fragment>
+  <>
     <Title title={title} subtitle={"Update"} />
 
     {/* This component will automatically hide if logs are empty */}
     <installer.components.ProgressLogs progressLogs={coreProgressLogs} />
 
     <SystemUpdateDetails />
-  </React.Fragment>
+  </>
 );
 
 // Container

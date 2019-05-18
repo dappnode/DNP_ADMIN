@@ -189,3 +189,27 @@ button.no-a-style:hover {
   display: grid;
   align-items: center;
 }
+
+/* Help text */
+.help-text {
+  color: gray;
+  font-size: 90%;
+}
+
+/* Copy text with input display
+   The svg are not centered so the custom padding 
+   helps the icons look like they are centered  */
+.copy-input {
+  background-color: var(--color-background) !important;
+}
+.copy-input-copy {
+  padding: 4px 9px 0px 11px;
+  font-size: 1.3rem;
+}
+.copy-input-open {
+  padding: 0px 9px 0px 10px;
+  font-size: 1.3rem;
+}
+.copy-input-open > a {
+  display: flex;
+}

@@ -5,6 +5,7 @@ import { createStructuredSelector } from "reselect";
 import PropTypes from "prop-types";
 // Components
 import Details from "./PackageViews/Details";
+import DnpSpecific from "./PackageViews/DnpSpecific";
 import Logs from "./PackageViews/Logs";
 import Envs from "./PackageViews/Envs";
 import FileManager from "./PackageViews/FileManager";
@@ -34,6 +35,7 @@ const PackageInterface = ({
     {dnp ? (
       <>
         <Details dnp={dnp} />
+        <DnpSpecific dnp={dnp} />
         <Controls dnp={dnp} />
         <Envs dnp={dnp} />
         <FileManager dnp={dnp} />

@@ -29,7 +29,7 @@ function DeviceDetails({ device, getDeviceCredentials }) {
 
   // Activate the copy functionality
   useEffect(() => {
-    new ClipboardJS(".copy");
+    new ClipboardJS(".copy-input-copy");
   }, []);
 
   return (
@@ -51,7 +51,7 @@ function DeviceDetails({ device, getDeviceCredentials }) {
         </span>
       )}
 
-      <div className="help">
+      <div className="help-text">
         Open the link below to get access to this device's credentials. You can
         share it with external users to give them access to your DAppNode.
       </div>
@@ -59,13 +59,13 @@ function DeviceDetails({ device, getDeviceCredentials }) {
       <Input
         disabled={true}
         value={url || ""}
-        className="link-display"
+        className="copy-input"
         append={
           <>
-            <Button className="copy device-url-copy" data-clipboard-text={url}>
+            <Button className="copy-input-copy" data-clipboard-text={url}>
               <GoClippy />
             </Button>
-            <Button className="device-url-open">
+            <Button className="copy-input-open">
               <a href={url} {...newTabProps} className="no-a-style">
                 <MdOpenInNew />
               </a>

@@ -39,6 +39,8 @@ const PackagesList = ({
   const filteredDnps = dnps.filter(dnp => xnor(coreDnps, dnp.isCore));
   if (!filteredDnps.length) return <NoPackagesYet />;
 
+  const modulePath = moduleName.toLowerCase();
+
   return (
     <Card className="list-grid dnps no-a-style">
       <header className="center">Status</header>
@@ -48,10 +50,10 @@ const PackagesList = ({
       {filteredDnps.map(({ name, state }) => (
         <React.Fragment key={name}>
           <StateBadge state={state} />
-          <NavLink className="name" to={`/${moduleName}/${name}`}>
+          <NavLink className="name" to={`/${modulePath}/${name}`}>
             {name}
           </NavLink>
-          <NavLink className="open" to={`/${moduleName}/${name}`}>
+          <NavLink className="open" to={`/${modulePath}/${name}`}>
             <MdOpenInNew />
           </NavLink>
           <MdRefresh
