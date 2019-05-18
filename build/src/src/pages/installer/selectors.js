@@ -16,6 +16,7 @@ import {
   parseDepsFromDnp
 } from "./parsers";
 import parseInstallTag from "./parsers/parseInstallTag";
+import stringifyUserSetEnvs from "./parsers/stringifyUserSetEnvs";
 import stringifyUserSetPorts from "./parsers/stringifyUserSetPorts";
 import stringifyUserSetVols from "./parsers/stringifyUserSetVols";
 // Utils
@@ -162,6 +163,31 @@ const getVarFactory = varId => {
 export const getEnvs = getVarFactory("envs");
 export const getPorts = getVarFactory("ports");
 export const getVols = getVarFactory("vols");
+export const getEnvsArray = getVarToArray(getEnvs);
+export const getPortsArray = getVarToArray(getPorts);
+export const getVolsArray = getVarToArray(getVols);
+
+function getVarToArray(selector) {
+  return createSelector(
+    selector,
+    varObj =>
+      Object.entries(varObj)
+        .map(([dnpName, dnpVars]) => ({
+          dnpName,
+          values: Object.entries(dnpVars)
+            .map(([id, value]) => ({
+              id,
+              ...value
+            }))
+            .sort(sortBy("index"))
+        }))
+        .sort(sortBy("dnpName"))
+  );
+}
+
+function sortBy(prop) {
+  return (a, b) => (a[prop] > b[prop] ? 1 : -1);
+}
 
 /**
  * Format userSet parameters to be send to the dappmanager
@@ -190,7 +216,7 @@ export const getUserSetFormatted = createSelector(
   getUserSetPorts,
   getUserSetVols,
   (envs, ports, vols) => ({
-    userSetEnvs: envs,
+    userSetEnvs: stringifyUserSetEnvs(envs),
     userSetPorts: stringifyUserSetPorts(ports),
     userSetVols: stringifyUserSetVols(vols)
   })
