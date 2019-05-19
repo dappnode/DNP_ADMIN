@@ -1,5 +1,6 @@
-import { mountPoint } from "./data";
+import { mountPoint, coreName } from "./data";
 import { createSelector } from "reselect";
+import semver from "semver";
 // Selectors
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 
@@ -40,10 +41,36 @@ export const getCoreDeps = createSelector(
   }
 );
 
+/**
+ * Appends property `updateType` to the manifest
+ * updateType = "major, minor, patch"
+ */
 export const getCoreManifest = createSelector(
   getLocalState,
   localState => localState.coreManifest
 );
+
+/**
+ * Gets the core update message, computing the current update jump
+ */
+export const getCoreUpdateAlerts = createSelector(
+  getCoreManifest,
+  getDnpInstalled,
+  (coreManifest, dnpInstalled) => {
+    const dnpCore = dnpInstalled.find(dnp => dnp.name === coreName);
+    const from = (dnpCore || {}).version;
+    const to = (coreManifest || {}).version;
+    const { updateAlerts = [] } = coreManifest || {};
+    return updateAlerts.filter(
+      updateAlert =>
+        updateAlert.message &&
+        updateAlert.from &&
+        semver.satisfies(from, updateAlert.from) &&
+        semver.satisfies(to, updateAlert.to || "*")
+    );
+  }
+);
+
 export const getCoreUpdateAvailable = createSelector(
   getCoreDeps,
   coreDeps => Boolean(coreDeps.length)
