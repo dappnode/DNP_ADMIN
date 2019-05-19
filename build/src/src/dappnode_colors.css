@@ -128,3 +128,8 @@
 .badge-success {
   background-color: var(--success-color);
 }
+.alert-warning {
+  color: #433c1d;
+  background-color: #ffeda6;
+  border-color: #ffeda6;
+}

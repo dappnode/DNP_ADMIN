@@ -124,7 +124,10 @@ export function* checkCoreUpdate() {
     yield put(a.updateCoreDeps(depManifests));
     yield put(updateIsLoaded(loadingId));
     /* Log out current state */
-    console.log(`DAppNode ${coreId} deps`, deps);
+    console.log(`DAppNode ${coreId} (${coreManifest.version}) deps`, {
+      deps,
+      coreManifest
+    });
   } catch (e) {
     console.error(`Error on checkCoreUpdate: ${e.stack}`);
   }
