@@ -33,7 +33,7 @@ export const getCoreDeps = createSelector(
       const dnp = dnpInstalled.find(_dnp => _dnp.name === name);
       return {
         name,
-        from: (dnp || {}).version,
+        from: (dnp || {}).version || "",
         to: (manifest || {}).version,
         manifest
       };

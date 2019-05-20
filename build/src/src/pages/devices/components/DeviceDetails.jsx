@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
@@ -22,7 +22,7 @@ import { GoClippy } from "react-icons/go";
 
 function DeviceDetails({ device, getDeviceCredentials }) {
   const { id, url, admin } = device;
-  console.log({ device });
+
   useEffect(() => {
     if (!url && id) getDeviceCredentials(id);
   }, [url, id]);
@@ -31,6 +31,8 @@ function DeviceDetails({ device, getDeviceCredentials }) {
   useEffect(() => {
     new ClipboardJS(".copy-input-copy");
   }, []);
+
+  const [showQr, setShowQr] = useState(false);
 
   return (
     <Card className="device-settings">
@@ -74,12 +76,16 @@ function DeviceDetails({ device, getDeviceCredentials }) {
         }
       />
 
-      <QrCode url={url} width={"400px"} />
-
       <div className="alert alert-secondary" role="alert">
         Beware of shoulder surfing attacks (unsolicited observers), This QR code
         will grant them access to your DAppNode
       </div>
+
+      <Button onClick={() => setShowQr(!showQr)}>
+        {showQr ? "Hide" : "Show"} QR code
+      </Button>
+
+      {showQr && <QrCode url={url} width={"400px"} />}
     </Card>
   );
 }

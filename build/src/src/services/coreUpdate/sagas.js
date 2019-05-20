@@ -12,6 +12,7 @@ import {
 } from "services/loadingStatus/actions";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 import { pushNotification } from "services/notifications/actions";
+import { clearIsInstallingLogsById } from "services/isInstallingLogs/actions";
 // Utilities
 import isSyncing from "utils/isSyncing";
 import { mapValues } from "lodash";
@@ -148,6 +149,7 @@ function* updateCore() {
 
     // blacklist the current package
     yield put(a.updateUpdatingCore(true));
+
     yield call(
       api.installPackageSafe,
       { id: coreId, options: { BYPASS_CORE_RESTRICTION: true } },
@@ -155,6 +157,9 @@ function* updateCore() {
     );
     // Remove package from blacklist
     yield put(a.updateUpdatingCore(false));
+
+    // Clear progressLogs, + Removes DNP from blacklist
+    yield put(clearIsInstallingLogsById(coreName));
 
     // Call checkCoreUpdate to compute hide the "Update" warning and buttons
     yield call(checkCoreUpdate);

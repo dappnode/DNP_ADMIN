@@ -7,8 +7,10 @@
   --dappnode-gray-main-color: #93a5a5;
   --dappnode-complimentary-color: #bc2f39;
   --border-color: #e5e5e5;
+  /* Danger color from the complimentary color of #2fbcb2 (dappnode-color) */
+  /* Warning color from From https://www.colorcombos.com/color-schemes/429/ColorCombo429.html */
   --danger-color: var(--dappnode-complimentary-color);
-  --warning-color: #f0ad4e;
+  --warning-color: #ffcc00;
   --success-color: var(--dappnode-strong-main-color);
   /* Shortcuts */
   --dappnode-color: var(--dappnode-strong-main-color);

@@ -148,8 +148,9 @@ button.no-a-style:hover {
   width: var(--icon-size);
   opacity: 0.5;
   cursor: pointer;
+  transition: opacity 0.2s ease;
 }
-.list-grid :not(.disabled) svg:hover {
+.list-grid svg:hover:not(.disabled) {
   opacity: 0.8;
 }
 .list-grid svg.disabled {

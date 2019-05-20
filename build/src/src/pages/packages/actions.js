@@ -1,6 +1,9 @@
 // INSTALLER
-import { shortName as sn } from "utils/format";
+import { confirm } from "components/ConfirmDialog";
+import { shortNameCapitalized as sn } from "utils/format";
 import api from "API/rpcMethods";
+// Selectors
+import { getDnpInstalledById } from "services/dnpInstalled/selectors";
 
 /* Notice: togglePackage, restartPackage, etc use redux-thunk
    Since there is no return value, and the state change
@@ -26,24 +29,64 @@ export const updatePackageEnv = (id, envs) => () =>
 export const togglePackage = id => () =>
   api.togglePackage({ id }, { toastMessage: `Toggling ${sn(id)}...` });
 
-export const restartPackage = id => () =>
-  api.restartPackage({ id }, { toastMessage: `Restarting ${sn(id)}...` });
+export const restartPackage = id => (_, getState) => {
+  const restartPackageCallback = () =>
+    api.restartPackage({ id }, { toastMessage: `Restarting ${sn(id)}...` });
 
-export const restartPackageVolumes = id => () =>
-  api.restartPackageVolumes(
-    { id },
-    { toastMessage: `Restarting ${sn(id)} volumes...` }
-  );
+  // If the DNP is gracefully stopped, do not ask for confirmation to reset
+  const dnp = getDnpInstalledById(getState(), id);
+  if (dnp && !dnp.running && dnp.state === "exited")
+    return restartPackageCallback();
 
-export const removePackage = (id, deleteVolumes) => () =>
-  api.removePackage(
-    { id, deleteVolumes },
-    {
-      toastMessage: `Removing ${sn(id)} ${
-        deleteVolumes ? " and volumes" : ""
-      }...`
-    }
-  );
+  // Display a dialog to confirm restart
+  confirm({
+    title: `Restarting ${sn(id)}`,
+    text: `This action cannot be undone. If this DNP holds state, it may be lost.`,
+    label: "Restart",
+    onClick: restartPackageCallback
+  });
+};
+
+export const restartPackageVolumes = id => (_, getState) => {
+  // Make sure there are no colliding volumes with this DNP
+
+  // If there are NOT conflicting volumes,
+  // Display a dialog to confirm volumes reset
+  confirm({
+    title: `Removing ${sn(id)} data`,
+    text: `This action cannot be undone. If this DNP is a blockchain node, it will lose all the chain data and start syncing from scratch.`,
+    label: "Remove volumes",
+    onClick: () =>
+      api.restartPackageVolumes(
+        { id },
+        { toastMessage: `Restarting ${sn(id)} volumes...` }
+      )
+  });
+};
+
+export const removePackage = id => (_, getState) => {
+  // Dialog to confirm remove + USER INPUT for delete volumes
+  const removePackageCallback = deleteVolumes =>
+    api.removePackage(
+      { id, deleteVolumes },
+      {
+        toastMessage: `Removing ${sn(id)} ${
+          deleteVolumes ? " and volumes" : ""
+        }...`
+      }
+    );
+  confirm({
+    title: `Removing ${sn(id)}`,
+    text: `This action cannot be undone. If you do NOT want to keep ${id}'s data, remove it permanently clicking the "Remove DNP + data" option.`,
+    buttons: [
+      { label: "Remove", onClick: () => removePackageCallback(false) },
+      {
+        label: "Remove DNP + data",
+        onClick: () => removePackageCallback(true)
+      }
+    ]
+  });
+};
 
 // File manager
 

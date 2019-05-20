@@ -14,11 +14,12 @@ const NotificationsView = ({ coreUpdateAvailable, updatingCore }) => {
   const systemUpdateNotification = (
     <div
       id={systemUpdateNotificationId}
-      className="alert alert-secondary alert-dismissible show"
+      className="alert alert-warning alert-dismissible show"
       role="alert"
     >
       <Link
-        className="btn btn-secondary float-right"
+        className="btn btn-warning float-right"
+        style={{ marginLeft: "0.5rem" }}
         to={systemRootPath + "/" + updatePath}
       >
         Update

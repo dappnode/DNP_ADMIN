@@ -16,12 +16,10 @@ import {
   getIsLoading,
   getLoadingError
 } from "services/loadingStatus/selectors";
-// Utils
-import confirmRestartPackage from "./confirmRestartPackage";
 // Icons
 import { MdRefresh, MdOpenInNew } from "react-icons/md";
-// Styles
-import "./packages.css";
+// Utils
+import sortByProp from "utils/sortByProp";
 
 const xnor = (a, b) => Boolean(a) === Boolean(b);
 
@@ -47,7 +45,7 @@ const PackagesList = ({
       <header>Name</header>
       <header>Open</header>
       <header>Restart</header>
-      {filteredDnps.map(({ name, state }) => (
+      {filteredDnps.sort(sortByProp("name")).map(({ name, state }) => (
         <React.Fragment key={name}>
           <StateBadge state={state} />
           <NavLink className="name" to={`/${modulePath}/${name}`}>
@@ -57,7 +55,8 @@ const PackagesList = ({
             <MdOpenInNew />
           </NavLink>
           <MdRefresh
-            onClick={() => confirmRestartPackage(name, restartPackage)}
+            style={{ fontSize: "1.05rem" }}
+            onClick={() => restartPackage(name)}
           />
           <hr />
         </React.Fragment>

@@ -33,8 +33,7 @@ const SystemUpdateDetails = ({
   /* If no deps, don't show the card */
   if (!coreDeps.length) return null;
 
-  const { changelog, updateType } = coreManifest || {};
-  console.log({ updateType, coreUpdateAlerts });
+  const { changelog } = coreManifest || {};
 
   return (
     <Card className="system-update-grid">

@@ -89,7 +89,6 @@ function Publish({ match }) {
       <Card className="publish-grid">
         {fields.map(
           ({ name, value, onValueChange, placeholder, validations, help }) => {
-            console.log(validations);
             return (
               <React.Fragment key={name}>
                 <div>{name}</div>

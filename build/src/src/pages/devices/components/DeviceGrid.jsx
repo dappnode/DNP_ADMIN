@@ -31,7 +31,10 @@ function DeviceGrid({ devices, removeDevice, resetDevice, toggleAdmin }) {
           </NavLink>
 
           <Switch checked={admin} onToggle={() => toggleAdmin(id)} />
-          <MdRefresh onClick={() => resetDevice(id)} />
+          <MdRefresh
+            style={{ fontSize: "1.05rem" }}
+            onClick={() => resetDevice(id)}
+          />
           <MdDelete
             className={admin ? "disabled" : ""}
             onClick={() => (admin ? null : removeDevice(id))}
