@@ -20,6 +20,7 @@ import stringifyUserSetEnvs from "./parsers/stringifyUserSetEnvs";
 import stringifyUserSetPorts from "./parsers/stringifyUserSetPorts";
 import stringifyUserSetVols from "./parsers/stringifyUserSetVols";
 // Utils
+import sortByProp from "utils/sortByProp";
 import _ from "lodash";
 
 // #### EXTERNAL SELECTORS
@@ -179,14 +180,10 @@ function getVarToArray(selector) {
               id,
               ...value
             }))
-            .sort(sortBy("index"))
+            .sort(sortByProp("index"))
         }))
-        .sort(sortBy("dnpName"))
+        .sort(sortByProp("dnpName"))
   );
-}
-
-function sortBy(prop) {
-  return (a, b) => (a[prop] > b[prop] ? 1 : -1);
 }
 
 /**

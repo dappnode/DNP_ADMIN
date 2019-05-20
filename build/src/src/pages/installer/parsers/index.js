@@ -2,6 +2,7 @@ import merge from "deepmerge";
 import parseManifestEnvs from "./parseManifestEnvs";
 import parseManifestPorts from "./parseManifestPorts";
 import parseManifestVols from "./parseManifestVols";
+import parseInstalledDnpEnvs from "./parseInstalledDnpEnvs";
 
 /**
  * Generic helpers for getUser
@@ -17,20 +18,6 @@ export function parseDepsFromDnp(dnp) {
 
 function parseInstalledDnp(dnpInstalled, dnpName) {
   return dnpInstalled.find(({ name }) => name === dnpName) || {};
-}
-
-/**
- * @param {object} dnp = { envs: { "ENV_NAME": "ENV_VALUE" } }
- * @return {object} envs = {
- *   "ENV_NAME": { name: "ENV_NAME", value: "ENV_VALUE" }
- * }
- */
-function parseInstalledDnpEnvs(dnp) {
-  const envs = (dnp || {}).envs || {};
-  return Object.entries(envs).reduce((obj, [name, value]) => {
-    obj[name] = { name, value };
-    return obj;
-  }, {});
 }
 
 export function parseDnpFromDirectory(directory, dnpName, dnpVersion) {
