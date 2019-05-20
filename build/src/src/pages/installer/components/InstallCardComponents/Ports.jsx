@@ -20,7 +20,7 @@ function Ports({ ports, isInstalled, hideCardHeaders, updateUserSetPorts }) {
     <>
       <SubTitle>Ports</SubTitle>
       <Card>
-        {Object.entries(ports).map(([dnpName, dnpVols]) => (
+        {ports.map(({ dnpName, values }) => (
           <div key={dnpName} className="card-subgroup">
             {/* Only display the name of the DNP if there are more than one */}
             {!hideCardHeaders && (
@@ -28,7 +28,7 @@ function Ports({ ports, isInstalled, hideCardHeaders, updateUserSetPorts }) {
             )}
             <TableInputs
               headers={["Host port", "Package port / type"]}
-              content={Object.entries(dnpVols).map(([id, port]) => [
+              content={values.map(({ id, ...port }) => [
                 {
                   disabled: isInstalled[dnpName],
                   placeholder: "ephemeral port (32768-65535)",
@@ -55,23 +55,29 @@ function Ports({ ports, isInstalled, hideCardHeaders, updateUserSetPorts }) {
  *   "30303:30303/udp": {
  *     host: "30304",
  *     container: "30303",
- *     type: "udp"
+ *     type: "udp",
+ *     index: 0,
  *   },
  *   "8333:8333": {
- *     host: "8444"
- *     container: "8333"
+ *     host: "8444",
+ *     container: "8333",
+ *     index: 1
  *   }
  * }, ... }
  */
 Ports.propTypes = {
-  ports: PropTypes.objectOf(
-    PropTypes.objectOf(
-      PropTypes.shape({
-        host: PropTypes.string.isRequired,
-        container: PropTypes.string.isRequired,
-        type: PropTypes.string
-      })
-    )
+  ports: PropTypes.arrayOf(
+    PropTypes.shape({
+      dnpName: PropTypes.string.isRequired,
+      values: PropTypes.arrayOf(
+        PropTypes.shape({
+          host: PropTypes.string.isRequired,
+          container: PropTypes.string.isRequired,
+          type: PropTypes.string,
+          index: PropTypes.number.isRequired
+        })
+      ).isRequired
+    })
   ).isRequired,
   isInstalled: PropTypes.object.isRequired,
   hideCardHeaders: PropTypes.bool.isRequired,
@@ -79,7 +85,7 @@ Ports.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  ports: selector.getPorts,
+  ports: selector.getPortsArray,
   isInstalled: selector.getIsInstalled,
   hideCardHeaders: selector.getHideCardHeaders
 });

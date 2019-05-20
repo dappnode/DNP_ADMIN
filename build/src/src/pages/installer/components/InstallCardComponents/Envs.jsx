@@ -20,7 +20,7 @@ function Envs({ envs, hideCardHeaders, updateUserSetEnvs }) {
     <>
       <SubTitle>Enviroment variables</SubTitle>
       <Card>
-        {Object.entries(envs).map(([dnpName, dnpEnvs]) => (
+        {envs.map(({ dnpName, values }) => (
           <div key={dnpName} className="card-subgroup">
             {/* Only display the name of the DNP if there are more than one */}
             {!hideCardHeaders && (
@@ -28,16 +28,16 @@ function Envs({ envs, hideCardHeaders, updateUserSetEnvs }) {
             )}
             <TableInputs
               headers={["Name", "Value"]}
-              content={Object.entries(dnpEnvs).map(([envName, envValue]) => [
+              content={values.map(({ id, ...env }) => [
                 {
                   disabled: true,
-                  value: envName
+                  value: env.name
                 },
                 {
                   placeholder: "enter value...",
-                  value: envValue || "",
+                  value: env.value || "",
                   onValueChange: value =>
-                    updateUserSetEnvs({ value: value, key: envName, dnpName })
+                    updateUserSetEnvs({ ...env, id, value: value, dnpName })
                 }
               ])}
             />
@@ -51,22 +51,41 @@ function Envs({ envs, hideCardHeaders, updateUserSetEnvs }) {
 /**
  * @param envs = {
  *   dnp-a.dnp.dappnode.eth: {
- *     "ENV_NAME1": "1"
+ *     "ENV_NAME1": {
+ *       name: "ENV_NAME1",
+ *       value: "1",
+ *       index: 0
+ *     }
  *   },
  *   dnp-b.dnp.dappnode.eth: {
- *     "ENV_NAME2": "2"
+ *     "ENV_NAME2": {
+ *       name: "ENV_NAME2",
+ *       value: "2",
+ *       index: 1
+ *     }
  *   }
  * }
  */
 
 Envs.propTypes = {
-  envs: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  envs: PropTypes.arrayOf(
+    PropTypes.shape({
+      dnpName: PropTypes.string.isRequired,
+      values: PropTypes.arrayOf(
+        PropTypes.shape({
+          name: PropTypes.string.isRequired,
+          value: PropTypes.string,
+          index: PropTypes.number.isRequired
+        })
+      ).isRequired
+    })
+  ).isRequired,
   hideCardHeaders: PropTypes.bool.isRequired,
   updateUserSetEnvs: PropTypes.func.isRequired
 };
 
 const mapStateToProps = createStructuredSelector({
-  envs: selector.getEnvs,
+  envs: selector.getEnvsArray,
   hideCardHeaders: selector.getHideCardHeaders
 });
 

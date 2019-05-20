@@ -20,7 +20,7 @@ function Vols({ vols, isInstalled, updateUserSetVols, hideCardHeaders }) {
     <>
       <SubTitle>Volumes</SubTitle>
       <Card>
-        {Object.entries(vols).map(([dnpName, dnpVols]) => (
+        {vols.map(({ dnpName, values }) => (
           <div key={dnpName} className="card-subgroup">
             {/* Only display the name of the DNP if there are more than one */}
             {!hideCardHeaders && (
@@ -28,7 +28,7 @@ function Vols({ vols, isInstalled, updateUserSetVols, hideCardHeaders }) {
             )}
             <TableInputs
               headers={["Host path", "Container path (:ro)"]}
-              content={Object.entries(dnpVols).map(([id, vol]) => [
+              content={values.map(({ id, ...vol }) => [
                 {
                   disabled: isInstalled[dnpName],
                   placeholder: "enter volume path...",
@@ -56,23 +56,29 @@ function Vols({ vols, isInstalled, updateUserSetVols, hideCardHeaders }) {
  *     "/usr/src/config:/data/.chain/config:ro": {
  *       host: "/usr/src/config",
  *       container: "/data/.chain/config",
- *       accessMode: "ro"
+ *       accessMode: "ro",
+ *       index: 0
  *     },
  *     "bitcoin_data:/data/.chain/var": {
  *       container: "/data/.chain/var",
- *       host: "bitcoin_data"
+ *       host: "bitcoin_data",
+ *       index: 1
  *     }
  *   }, ... }
  */
 Vols.propTypes = {
-  vols: PropTypes.objectOf(
-    PropTypes.objectOf(
-      PropTypes.shape({
-        host: PropTypes.string.isRequired,
-        container: PropTypes.string.isRequired,
-        accessMode: PropTypes.string
-      })
-    )
+  vols: PropTypes.arrayOf(
+    PropTypes.shape({
+      dnpName: PropTypes.string.isRequired,
+      values: PropTypes.arrayOf(
+        PropTypes.shape({
+          host: PropTypes.string.isRequired,
+          container: PropTypes.string.isRequired,
+          accessMode: PropTypes.string,
+          index: PropTypes.number.isRequired
+        })
+      ).isRequired
+    })
   ).isRequired,
   isInstalled: PropTypes.object.isRequired,
   hideCardHeaders: PropTypes.bool.isRequired,
@@ -80,7 +86,7 @@ Vols.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  vols: selector.getVols,
+  vols: selector.getVolsArray,
   isInstalled: selector.getIsInstalled,
   hideCardHeaders: selector.getHideCardHeaders
 });

@@ -52,17 +52,13 @@ export default function(state = initialState, action) {
     case t.UPDATE_USERSET_ENVS:
       assertActionSchema({
         dnpName: Joi.string().required(),
-        key: Joi.string()
-          .allow("")
-          .required(),
-        value: Joi.string()
-          .allow("")
-          .required()
+        id: Joi.string().required(),
+        values: Joi.object().required()
       });
       return merge(state, {
         userSetEnvs: {
           [action.dnpName]: {
-            [action.key]: action.value
+            [action.id]: action.values
           }
         }
       });
