@@ -28,6 +28,15 @@ export default {
   },
 
   /**
+   * [cleanCache]
+   * Cleans the cache files of the DAPPMANAGER:
+   * - local DB
+   * - user action logs
+   * - temp transfer folder
+   */
+  cleanCache: {},
+
+  /**
    * [copyFileFrom]
    * Copy file from a DNP and download it on the client
    *

@@ -34,9 +34,11 @@ const PackageInterface = ({
 
     {dnp ? (
       <>
+        {/* Views that are always visible */}
         <Details dnp={dnp} />
-        <DnpSpecific dnp={dnp} />
         <Controls dnp={dnp} />
+        {/* Dynamic views */}
+        <DnpSpecific dnp={dnp} />
         <Envs dnp={dnp} />
         <FileManager dnp={dnp} />
         <Logs id={dnp.name} />

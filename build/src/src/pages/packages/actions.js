@@ -95,3 +95,13 @@ export const copyFileTo = ({ id, dataUri, filename, toPath }) => () =>
     { id, dataUri, filename, toPath },
     { toastMessage: `Copying file ${filename} to ${sn(id)} ${toPath}...` }
   );
+
+// DAPPMANAGER dedicated cleanCache RPC
+
+export const cleanCache = () => () =>
+  confirm({
+    title: `Deleting cache`,
+    text: `This action cannot be undone. You should only clean the cache in response to a problem.`,
+    label: "Clean cache",
+    onClick: () => api.cleanCache({}, { toastMessage: `Cleaning cache...` })
+  });
