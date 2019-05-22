@@ -63,8 +63,13 @@ function FileExplorer({ containerName, path, setPath, setFileName }) {
   function navigateBack() {
     if (loading) return;
     const parts = path.split("/").filter(part => part);
-    if (parts.length > 1)
-      setPathForce(parts.slice(0, parts.length - 1).join("/"));
+    if (parts.length > 1) {
+      const newPath = parts.slice(0, parts.length - 1).join("/");
+      if (path.startsWith("/") && !newPath.startsWith("/"))
+        setPathForce("/" + newPath);
+      else setPathForce(newPath);
+    }
+    setPathForce();
     if (parts.length === 1) setPathForce("/");
   }
 
