@@ -40,7 +40,10 @@ describe("pages > installer > selectors", () => {
         [mountPoint]: {
           userSetEnvs: {
             "ln.dnp.dappnode.eth": {
-              ENV_NAME2: "user_set"
+              ENV_NAME2: {
+                name: "ENV_NAME2",
+                value: "user_set"
+              }
             }
           }
         }
@@ -50,12 +53,28 @@ describe("pages > installer > selectors", () => {
       };
       expect(s.getEnvs(state, ownProps)).toEqual({
         "ln.dnp.dappnode.eth": {
-          ENV_NAME1: "ENV_VALUE1",
-          ENV_NAME2: "user_set"
+          ENV_NAME1: {
+            name: "ENV_NAME1",
+            value: "ENV_VALUE1",
+            index: 0
+          },
+          ENV_NAME2: {
+            name: "ENV_NAME2",
+            value: "user_set",
+            index: 1
+          }
         },
         "bitcoin.dnp.dappnode.eth": {
-          ENV_NAME1: "ENV_VALUE1",
-          ENV_NAME2: "set_on_installation"
+          ENV_NAME1: {
+            name: "ENV_NAME1",
+            value: "ENV_VALUE1",
+            index: 0
+          },
+          ENV_NAME2: {
+            name: "ENV_NAME2",
+            value: "set_on_installation",
+            index: 1
+          }
         }
       });
     });
@@ -97,7 +116,12 @@ describe("pages > installer > selectors", () => {
         ],
         [mountPoint]: {
           userSetEnvs: {
-            "ethchain.dnp.dappnode.eth": { ENV_NAME2: "user_set" }
+            "ethchain.dnp.dappnode.eth": {
+              ENV_NAME2: {
+                name: "ENV_NAME2",
+                value: "user_set"
+              }
+            }
           }
         }
       };
@@ -110,12 +134,28 @@ describe("pages > installer > selectors", () => {
       };
       expect(s.getEnvs(state, ownProps)).toEqual({
         "ethchain.dnp.dappnode.eth": {
-          ENV_NAME1: "ENV_VALUE1",
-          ENV_NAME2: "user_set"
+          ENV_NAME1: {
+            name: "ENV_NAME1",
+            value: "ENV_VALUE1",
+            index: 0
+          },
+          ENV_NAME2: {
+            name: "ENV_NAME2",
+            value: "user_set",
+            index: 1
+          }
         },
         "dep.dnp.dappnode.eth": {
-          ENV_NAME1: "ENV_VALUE1",
-          ENV_NAME2: "set_on_installation"
+          ENV_NAME1: {
+            name: "ENV_NAME1",
+            value: "ENV_VALUE1",
+            index: 0
+          },
+          ENV_NAME2: {
+            name: "ENV_NAME2",
+            value: "set_on_installation",
+            index: 1
+          }
         }
       });
     });
@@ -156,12 +196,22 @@ describe("pages > installer > selectors", () => {
       };
       expect(s.getPorts(state, ownProps)).toEqual({
         "bitcoin.dnp.dappnode.eth": {
-          "8333:8333": { container: "8333", host: "8333", type: undefined }
+          "8333:8333": {
+            container: "8333",
+            host: "8333",
+            type: undefined,
+            index: 0
+          }
         },
         "ln.dnp.dappnode.eth": {
-          "30303": { container: "30303", type: undefined },
+          "30303": { container: "30303", type: undefined, index: 0 },
           "30304/udp": "35354",
-          "30304:30304/udp": { container: "30304", host: "30304", type: "udp" }
+          "30304:30304/udp": {
+            container: "30304",
+            host: "30304",
+            type: "udp",
+            index: 1
+          }
         }
       });
     });
@@ -212,18 +262,21 @@ describe("pages > installer > selectors", () => {
         "ln.dnp.dappnode.eth": {
           "ln_data:/data/.var/chain": {
             container: "/data/.var/chain",
-            host: "ln_data2"
+            host: "ln_data2",
+            index: 0
           }
         },
         "bitcoin.dnp.dappnode.eth": {
+          "bitcoin_data:/data/.chain/var": {
+            container: "/data/.chain/var",
+            host: "bitcoin_data",
+            index: 0
+          },
           "/usr/src/config:/data/.chain/config:ro": {
             host: "/usr/src/config",
             container: "/data/.chain/config",
-            accessMode: "ro"
-          },
-          "bitcoin_data:/data/.chain/var": {
-            container: "/data/.chain/var",
-            host: "bitcoin_data"
+            accessMode: "ro",
+            index: 1
           }
         }
       });
@@ -235,18 +288,26 @@ describe("pages > installer > selectors", () => {
       const state = {
         [mountPoint]: {
           userSetEnvs: {
-            "ln.dnp.dappnode.eth": { FOO: "BAR" }
+            "ln.dnp.dappnode.eth": {
+              FOO: {
+                name: "FOO",
+                value: "BAR",
+                index: 0
+              }
+            }
           },
           userSetPorts: {
             "ln.dnp.dappnode.eth": {
               "30303:30303/udp": {
                 container: "30303",
                 host: null,
-                type: "udp"
+                type: "udp",
+                index: 0
               },
               "30304": {
                 container: "30304",
-                host: "8001"
+                host: "8001",
+                index: 1
               }
             }
           },
@@ -254,12 +315,14 @@ describe("pages > installer > selectors", () => {
             "ln.dnp.dappnode.eth": {
               "ln_data:/data/.var/chain": {
                 container: "/data/.var/chain",
-                host: "ln_data2"
+                host: "ln_data2",
+                index: 0
               },
               "/usr/src/config:/data/.var/config:ro": {
                 container: "/data/.var/config",
                 host: "/usr/src/dappnode/config",
-                accessMode: "ro"
+                accessMode: "ro",
+                index: 1
               }
             }
           }

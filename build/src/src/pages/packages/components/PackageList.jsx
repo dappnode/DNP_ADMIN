@@ -16,12 +16,10 @@ import {
   getIsLoading,
   getLoadingError
 } from "services/loadingStatus/selectors";
-// Utils
-import confirmRestartPackage from "./confirmRestartPackage";
 // Icons
 import { MdRefresh, MdOpenInNew } from "react-icons/md";
-// Styles
-import "./packages.css";
+// Utils
+import sortByProp from "utils/sortByProp";
 
 const xnor = (a, b) => Boolean(a) === Boolean(b);
 
@@ -39,23 +37,26 @@ const PackagesList = ({
   const filteredDnps = dnps.filter(dnp => xnor(coreDnps, dnp.isCore));
   if (!filteredDnps.length) return <NoPackagesYet />;
 
+  const modulePath = moduleName.toLowerCase();
+
   return (
     <Card className="list-grid dnps no-a-style">
       <header className="center">Status</header>
       <header>Name</header>
       <header>Open</header>
       <header>Restart</header>
-      {filteredDnps.map(({ name, state }) => (
+      {filteredDnps.sort(sortByProp("name")).map(({ name, state }) => (
         <React.Fragment key={name}>
           <StateBadge state={state} />
-          <NavLink className="name" to={`/${moduleName}/${name}`}>
+          <NavLink className="name" to={`/${modulePath}/${name}`}>
             {name}
           </NavLink>
-          <NavLink className="open" to={`/${moduleName}/${name}`}>
+          <NavLink className="open" to={`/${modulePath}/${name}`}>
             <MdOpenInNew />
           </NavLink>
           <MdRefresh
-            onClick={() => confirmRestartPackage(name, restartPackage)}
+            style={{ fontSize: "1.05rem" }}
+            onClick={() => restartPackage(name)}
           />
           <hr />
         </React.Fragment>

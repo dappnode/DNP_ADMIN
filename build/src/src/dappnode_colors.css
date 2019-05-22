@@ -5,12 +5,19 @@
   --dappnode-shadow-main-color: #218a8280;
   --dappnode-light-main-color: #a0bdbb;
   --dappnode-gray-main-color: #93a5a5;
+  --dappnode-complimentary-color: #bc2f39;
   --border-color: #e5e5e5;
-  --danger-color: #d9534f;
-  --warning-color: #f0ad4e;
-  --success-color: #5cb85c;
+  /* Danger color from the complimentary color of #2fbcb2 (dappnode-color) */
+  /* Warning color from From https://www.colorcombos.com/color-schemes/429/ColorCombo429.html */
+  --danger-color: var(--dappnode-complimentary-color);
+  --warning-color: #ffcc00;
+  --success-color: var(--dappnode-strong-main-color);
   /* Shortcuts */
   --dappnode-color: var(--dappnode-strong-main-color);
+}
+
+.color-danger {
+  color: var(--danger-color);
 }
 
 /* btn styles - extend bootstrap v4. Use with:
@@ -104,4 +111,27 @@
 }
 .Toastify__toast--error {
   background: var(--danger-color);
+}
+
+/* Edit bootstrap styles */
+
+.text-danger {
+  color: var(--danger-color) !important;
+}
+.text-warning {
+  color: var(--warning-color) !important;
+}
+.text-success {
+  color: var(--success-color) !important;
+}
+.badge-danger {
+  background-color: var(--danger-color);
+}
+.badge-success {
+  background-color: var(--success-color);
+}
+.alert-warning {
+  color: #433c1d;
+  background-color: #ffeda6;
+  border-color: #ffeda6;
 }

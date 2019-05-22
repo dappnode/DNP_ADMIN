@@ -12,6 +12,7 @@ import {
 } from "services/loadingStatus/actions";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 import { pushNotification } from "services/notifications/actions";
+import { clearIsInstallingLogsById } from "services/isInstallingLogs/actions";
 // Utilities
 import isSyncing from "utils/isSyncing";
 import { mapValues } from "lodash";
@@ -55,7 +56,7 @@ function* putMainnetIsStillSyncing() {
       pushNotification({
         id: "mainnetStillSyncing",
         type: "warning",
-        title: "System update available",
+        title: "Mainnet is still syncing",
         body:
           "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
       })
@@ -124,7 +125,10 @@ export function* checkCoreUpdate() {
     yield put(a.updateCoreDeps(depManifests));
     yield put(updateIsLoaded(loadingId));
     /* Log out current state */
-    console.log(`DAppNode ${coreId} deps`, deps);
+    console.log(`DAppNode ${coreId} (${coreManifest.version}) deps`, {
+      deps,
+      coreManifest
+    });
   } catch (e) {
     console.error(`Error on checkCoreUpdate: ${e.stack}`);
   }
@@ -145,6 +149,7 @@ function* updateCore() {
 
     // blacklist the current package
     yield put(a.updateUpdatingCore(true));
+
     yield call(
       api.installPackageSafe,
       { id: coreId, options: { BYPASS_CORE_RESTRICTION: true } },
@@ -152,6 +157,9 @@ function* updateCore() {
     );
     // Remove package from blacklist
     yield put(a.updateUpdatingCore(false));
+
+    // Clear progressLogs, + Removes DNP from blacklist
+    yield put(clearIsInstallingLogsById(coreName));
 
     // Call checkCoreUpdate to compute hide the "Update" warning and buttons
     yield call(checkCoreUpdate);

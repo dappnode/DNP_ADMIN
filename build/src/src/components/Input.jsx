@@ -8,12 +8,13 @@ const Input = ({
   lock,
   prepend,
   append,
+  className,
   ...props
 }) => {
   const input = (
     <input
       type="text"
-      className="form-control"
+      className={`form-control ${className}`}
       onChange={e => onValueChange(e.target.value)}
       onKeyPress={onEnterKey(onEnterPress)}
       // Lock props

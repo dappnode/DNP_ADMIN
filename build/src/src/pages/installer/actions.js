@@ -45,11 +45,17 @@ export const openPorts = ports => ({
   ports
 });
 
-export const updateUserSetEnvs = ({ dnpName, key, value }) => ({
+// "bitcoin.dnp.dappnode.eth": {
+//   "ENV_NAME": {
+//     name: "ENV_NAME",
+//     value: "ENV_VALUE"
+//   }
+// }
+export const updateUserSetEnvs = ({ dnpName, id, name, value }) => ({
   type: t.UPDATE_USERSET_ENVS,
   dnpName,
-  key,
-  value
+  id,
+  values: { name, value }
 });
 
 // "bitcoin.dnp.dappnode.eth": {

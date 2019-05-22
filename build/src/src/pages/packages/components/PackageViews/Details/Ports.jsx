@@ -51,7 +51,7 @@ Ports.propTypes = {
     ).isRequired,
     portsToClose: PropTypes.arrayOf(
       PropTypes.shape({
-        number: PropTypes.string.isRequired,
+        number: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         type: PropTypes.string.isRequired
       })
     ).isRequired

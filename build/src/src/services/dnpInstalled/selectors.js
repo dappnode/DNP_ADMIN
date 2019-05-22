@@ -8,6 +8,9 @@ export const getDnpInstalled = createSelector(
   dnps => dnps
 );
 
+export const getDnpInstalledById = (state, id) =>
+  getDnpInstalled(state).find(({ name }) => name === id);
+
 /**
  * Returns the volume sizes of the `ethchain` and `ipfs` DNPs
  * - ethchain.dnp.dappnode.eth > dncore_ethchaindnpdappnodeeth_data

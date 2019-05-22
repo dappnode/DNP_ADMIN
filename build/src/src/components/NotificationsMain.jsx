@@ -19,6 +19,7 @@ const NotificationsView = ({ coreUpdateAvailable, updatingCore }) => {
     >
       <Link
         className="btn btn-warning float-right"
+        style={{ marginLeft: "0.5rem" }}
         to={systemRootPath + "/" + updatePath}
       >
         Update

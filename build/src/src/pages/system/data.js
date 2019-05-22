@@ -6,3 +6,4 @@ export const title = "System";
 
 // Aditional data
 export const updatePath = "update";
+export const addIpfsPeerPath = "add-ipfs-peer";

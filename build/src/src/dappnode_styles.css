@@ -3,7 +3,9 @@
 a.no-a-style,
 a.no-a-style:hover,
 .no-a-style a,
-.no-a-style a:hover {
+.no-a-style a:hover,
+button.no-a-style,
+button.no-a-style:hover {
   color: inherit;
   text-decoration: inherit;
 }
@@ -146,8 +148,9 @@ a.no-a-style:hover,
   width: var(--icon-size);
   opacity: 0.5;
   cursor: pointer;
+  transition: opacity 0.2s ease;
 }
-.list-grid :not(.disabled) svg:hover {
+.list-grid svg:hover:not(.disabled) {
   opacity: 0.8;
 }
 .list-grid svg.disabled {
@@ -156,7 +159,7 @@ a.no-a-style:hover,
 }
 .list-grid > hr {
   grid-column: 1 / -1;
-  border-bottom: var(--border-style);
+  border-top: var(--border-style);
   width: 100%;
   margin: 0;
   padding: 0;
@@ -186,4 +189,28 @@ a.no-a-style:hover,
 .row > .center {
   display: grid;
   align-items: center;
+}
+
+/* Help text */
+.help-text {
+  color: gray;
+  font-size: 90%;
+}
+
+/* Copy text with input display
+   The svg are not centered so the custom padding 
+   helps the icons look like they are centered  */
+.copy-input {
+  background-color: var(--color-background) !important;
+}
+.copy-input-copy {
+  padding: 4px 9px 0px 11px;
+  font-size: 1.3rem;
+}
+.copy-input-open {
+  padding: 0px 9px 0px 10px;
+  font-size: 1.3rem;
+}
+.copy-input-open > a {
+  display: flex;
 }

@@ -1,7 +1,7 @@
 {
   "name": "adminui",
   "version": "0.1.0",
-  "private": true,
+  "license": "GPL-3.0",
   "dependencies": {
     "ansi_up": "^3.0.0",
     "autobahn-browser": "^18.3.2",
@@ -26,7 +26,7 @@
     "react-linkify": "^0.2.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "^2.1.5",
+    "react-scripts": "^3.0.0",
     "react-toastify": "^4.1.0",
     "reduce-reducers": "^1.0.1",
     "redux": "^4.0.0",
@@ -46,13 +46,12 @@
     "build": "react-scripts build",
     "gzip": "gzip -r -k build",
     "test": "react-scripts test --env=jsdom",
-    "test:no-watch": "react-scripts test --env=jsdom --no-watch",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
     "analyze": "source-map-explorer build/static/js/main.*",
     "lint": "./node_modules/.bin/eslint . --ext js --fix",
-    "pre-commit": "npm run lint && npm run test:no-watch"
+    "pre-commit": "yarn lint && CI=true yarn test"
   },
   "devDependencies": {
     "@types/react": "^16.8.1",
@@ -83,8 +82,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run pre-commit",
-      "pre-push": "npm run pre-commit"
+      "pre-commit": "npm run pre-commit"
     }
   }
 }

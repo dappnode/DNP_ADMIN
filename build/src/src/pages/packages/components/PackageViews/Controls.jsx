@@ -5,11 +5,7 @@ import * as action from "../../actions";
 import CardList from "components/CardList";
 import SubTitle from "components/SubTitle";
 import Button from "components/Button";
-// Confirm UI
-import confirmRemovePackage from "../confirmRemovePackage";
-import confirmRestartPackage from "../confirmRestartPackage";
-import { confirm } from "components/ConfirmDialog";
-import { shortNameCapitalized } from "utils/format";
+// Utils
 import { toLowercase } from "utils/strings";
 
 function PackageControls({
@@ -19,15 +15,6 @@ function PackageControls({
   restartPackageVolumes,
   removePackage
 }) {
-  function confirmRemovePackageVolumes(id) {
-    confirm({
-      title: `Removing ${shortNameCapitalized(id)} data`,
-      text: `This action cannot be undone. If this DNP is a blockchain, it will lose all the chain data and start syncing from scratch.`,
-      label: "Remove volumes",
-      onClick: () => restartPackageVolumes(id)
-    });
-  }
-
   const state = toLowercase(dnp.state); // toLowercase always returns a string
 
   const actions = [
@@ -43,7 +30,7 @@ function PackageControls({
       name: "Restart",
       text:
         "Restarting a package will interrupt the service during 1-10s but preserve its data",
-      action: () => confirmRestartPackage(dnp.name, restartPackage),
+      action: () => restartPackage(dnp.name),
       availableForCore: true,
       type: "secondary"
     },
@@ -55,14 +42,14 @@ function PackageControls({
               ? " WARNING! The mainnet chain will have to resync and may take a few days."
               : ""
           }`,
-      action: () => confirmRemovePackageVolumes(dnp.name),
+      action: () => restartPackageVolumes(dnp.name),
       availableForCore: true,
       type: "danger"
     },
     {
       name: "Remove ",
       text: "Deletes a package permanently.",
-      action: () => confirmRemovePackage(dnp.name, removePackage),
+      action: () => removePackage(dnp.name),
       availableForCore: false,
       type: "danger"
     }

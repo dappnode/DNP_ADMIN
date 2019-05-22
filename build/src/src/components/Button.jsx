@@ -1,8 +1,10 @@
 import React from "react";
 
-const Button = ({ variant, children, pill, ...props }) => (
+const Button = ({ variant, children, pill, className, ...props }) => (
   <button
-    className={`btn btn-${variant} ${pill ? "pill" : ""}`}
+    className={`btn btn-${variant || "outline-secondary"} ${
+      pill ? "pill" : ""
+    } ${className || ""}`}
     type="button"
     {...props}
   >

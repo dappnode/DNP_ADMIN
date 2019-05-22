@@ -2,6 +2,7 @@ import merge from "deepmerge";
 import parseManifestEnvs from "./parseManifestEnvs";
 import parseManifestPorts from "./parseManifestPorts";
 import parseManifestVols from "./parseManifestVols";
+import parseInstalledDnpEnvs from "./parseInstalledDnpEnvs";
 
 /**
  * Generic helpers for getUser
@@ -37,7 +38,7 @@ export function parseDefaultEnvs(
   return merge(
     parseManifestEnvs(dnp.manifest),
     // The key .envs already contains ENVs as an object
-    parseInstalledDnp(dnpInstalled, dnpName).envs || {}
+    parseInstalledDnpEnvs(parseInstalledDnp(dnpInstalled, dnpName))
   );
 }
 

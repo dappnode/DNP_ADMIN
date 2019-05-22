@@ -4,7 +4,8 @@ import { rootPath } from "../data";
 // Components
 import PackagesHome from "./PackagesHome";
 import PackageInterface from "./PackageInterface";
-// Logic
+// Styles
+import "./packages.css";
 
 const PackagesRoot = () => (
   <>
