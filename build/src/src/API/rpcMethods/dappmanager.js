@@ -17,6 +17,43 @@ export default {
    */
   ping: {},
 
+  // ##### TEMP
+  /**
+   * Cleans the cache files of the DAPPMANAGER:
+   * - local DB
+   * - user action logs
+   * - temp transfer folder
+   *
+   * @param {string} containerName  "DAppNodePackage-ropsten.dnp.dappnode.eth"
+   * @param {string} path
+   * @param {bool} showAll Show hidden files
+   * @returns {array} contents = [{
+   *   isDirectory: false,
+   *   permissions: "-rwxr-xr-x",
+   *   numOfLinks: "2",
+   *   ownerName: "root",
+   *   ownerGroup: "root",
+   *   size: "2745",
+   *   month: "May",
+   *   day: "9",
+   *   time: "20:49",
+   *   name: "Eth config.json"
+   * }, ... ]
+   */
+  fileBrowser: {
+    manadatoryKwargs: ["containerName", "path"]
+  },
+
+  /**
+   * Gets a container's workingDir
+   *
+   * @param {string} containerName "DAppNodePackage-ropsten.dnp.dappnode.eth"
+   * @returns {string} workingDir = "/usr/app/dnp"
+   */
+  getContainerWorkingDir: {
+    manadatoryKwargs: ["containerName"]
+  },
+
   /**
    * Does a backup of a DNP and sends it to the client for download.
    *

@@ -4,7 +4,7 @@ import onEnterKey from "utils/onEnterKey";
 import "./input.css";
 
 const Input = ({
-  onEnterPress,
+  onEnterPress = () => {},
   onValueChange,
   lock,
   prepend,

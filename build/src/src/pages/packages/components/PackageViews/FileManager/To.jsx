@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as a from "../../../actions";
+import api from "API/rpcMethods";
 // Components
 import Input from "components/Input";
 import { ButtonLight } from "components/Button";
@@ -11,9 +12,13 @@ import humanFileSize from "utils/humanFileSize";
 
 const fileSizeWarning = 1e6;
 
-function To({ id, copyFileTo }) {
+function To({ id, path, setPath, copyFileTo }) {
   const [file, setFile] = useState(null);
   const [toPath, setToPath] = useState("");
+
+  useEffect(() => {
+    setToPath(path);
+  }, [path]);
 
   const { name, size } = file || {};
 
@@ -37,7 +42,11 @@ function To({ id, copyFileTo }) {
        *   Path becomes $WORKDIR/config.json, then copies the contents of dataUri there
        *   Same for relative paths to directories.
        */
-      copyFileTo({ id, dataUri, filename: name, toPath });
+      await api.copyFileTo(
+        { id, dataUri, filename: name, toPath },
+        { toastMessage: `Copying file ${name} to ${id} ${toPath}...` }
+      );
+      setPath(_path => _path + " ");
     } catch (e) {
       console.error(`Error on copyFileFrom ${id} ${toPath}: ${e.stack}`);
     }

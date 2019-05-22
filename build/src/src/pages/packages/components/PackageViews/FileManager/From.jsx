@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import api from "API/rpcMethods";
 // Components
@@ -9,8 +9,16 @@ import { shortName } from "utils/format";
 import dataUriToBlob from "utils/dataUriToBlob";
 import { saveAs } from "file-saver";
 
-function From({ id }) {
+function From({ id, path, filename }) {
   const [fromPath, setFromPath] = useState("");
+
+  useEffect(() => {
+    setFromPath(path);
+  }, [path]);
+
+  useEffect(() => {
+    setFromPath([(path || "").replace(/\/+$/, ""), filename].join("/"));
+  }, [filename]);
 
   async function downloadFile() {
     try {
