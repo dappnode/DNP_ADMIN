@@ -29,10 +29,12 @@ RUN node injectToHtml
 
 FROM nginx:1.12-alpine
 RUN mkdir -p /usr/www/adminui && mkdir -p /usr/www/openvpn && mkdir -p /usr/www/openvpn/cred
+RUN apk update && apk add --no-cache socat
 COPY --from=build-deps-adminui /usr/src/app/build /usr/www/adminui
 COPY --from=build-deps-openvpn /usr/src/app/build /usr/www/openvpn
 COPY build/nginx.conf /etc/nginx/nginx.conf
+COPY build/init.sh .
 
 EXPOSE 80
 EXPOSE 8090
-CMD ["nginx", "-c", "/etc/nginx/nginx.conf", "-g", "daemon off;"]
+CMD ["./init.sh"]
