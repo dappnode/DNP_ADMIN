@@ -63,7 +63,7 @@ class App extends React.Component {
     } else if (error) {
       return <NoConnection />;
     } else {
-      return <Loading msg={`Openning connection...`} />;
+      return <Loading msg={`Opening connection...`} />;
     }
   }
 }
