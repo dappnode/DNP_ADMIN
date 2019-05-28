@@ -51,10 +51,10 @@ const getDiagnoseOpenPorts = onlyIfConnectionIsOpen(
     ({ alertToOpenPorts }) => ({
       ok: !alertToOpenPorts,
       msg: alertToOpenPorts
-        ? "Ports have to be openned and there is no UPnP device available"
+        ? "Ports have to be opened and there is no UPnP device available"
         : "No ports have to be opened OR the router has UPnP enabled",
       solutions: [
-        "If you are capable of openning ports manually, please ignore this error",
+        "If you are capable of opening ports manually, please ignore this error",
         "Your router may have UPnP but it is not turned on yet. Please research if your specific router has UPnP and turn it on"
       ]
     })
