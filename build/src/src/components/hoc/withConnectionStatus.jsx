@@ -17,7 +17,7 @@ export default function withConnectionStatus(WrappedComponent) {
       } else if (error) {
         return <Error msg={`Èrror connecting to DAppNode: ${error}`} />;
       } else {
-        return <Loading msg={`Openning connection...`} />;
+        return <Loading msg={`Opening connection...`} />;
       }
     }
   }
