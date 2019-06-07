@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import computeSemverUpdateType from "utils/computeSemverUpdateType";
 import DnpName from "components/DnpName";
-import Linkify from "react-linkify";
+import ReactMarkdown from "react-markdown";
 import styled from "styled-components";
 
 const InfoContainer = styled.div`
@@ -27,7 +27,7 @@ function OnInstallAlert({ manifest }) {
   if (!onInstall) return null;
   return (
     <div className="alert alert-warning" style={{ margin: "12px 0 6px 0" }}>
-      <Linkify>{onInstall}</Linkify>
+      <ReactMarkdown source={onInstall} />
     </div>
   );
 }
