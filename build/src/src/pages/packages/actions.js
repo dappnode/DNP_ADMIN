@@ -59,7 +59,7 @@ export const restartPackageVolumes = id => (_, getState) => {
     onClick: () =>
       api.restartPackageVolumes(
         { id },
-        { toastMessage: `Restarting ${sn(id)} volumes...` }
+        { toastMessage: `Removing volumes of ${sn(id)}...` }
       )
   });
 };

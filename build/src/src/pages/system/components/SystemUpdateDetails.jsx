@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import DependencyList from "pages/installer/components/InstallCardComponents/DependencyList";
-import Linkify from "react-linkify";
+import ReactMarkdown from "react-markdown";
 // Actions
 import { updateCore } from "services/coreUpdate/actions";
 // Selectors
@@ -39,7 +39,7 @@ const SystemUpdateDetails = ({
     <Card className="system-update-grid">
       <div>
         <div className="section-card-subtitle">Core {coreManifest.version}</div>
-        {changelog && <Linkify>{changelog}</Linkify>}
+        {changelog && <ReactMarkdown source={changelog} />}
 
         {coreUpdateAlerts.map(updateAlert => (
           <div
@@ -53,7 +53,7 @@ const SystemUpdateDetails = ({
                 <FaArrowRight style={{ fontSize: ".7rem" }} /> {updateAlert.to}
               </div>
             )}
-            <Linkify>{updateAlert.message}</Linkify>
+            <ReactMarkdown source={updateAlert.message} />
           </div>
         ))}
       </div>

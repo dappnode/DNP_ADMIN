@@ -15,7 +15,7 @@ const NoConnection = () => (
       problems persist, please reach us via{" "}
       <a href="https://riot.im/app/#/room/#DAppNode:matrix.org">Riot</a> or{" "}
       <a href="https://github.com/dappnode/DAppNode/issues/new">
-        openning a Github issue
+        opening a Github issue
       </a>
       .
     </div>

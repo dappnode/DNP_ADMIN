@@ -1,4 +1,5 @@
 import React from "react";
+import ReactMarkdown from "react-markdown";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
@@ -26,7 +27,7 @@ function PackageDetails({ dnp }) {
           <header>
             <strong>Description</strong>
           </header>
-          {description}
+          <ReactMarkdown source={description} />
         </ReadMore>
 
         <div>
