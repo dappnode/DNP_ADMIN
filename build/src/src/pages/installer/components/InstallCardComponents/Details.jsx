@@ -1,6 +1,7 @@
 import React from "react";
 import defaultAvatar from "img/defaultAvatar.png";
 import humanFileSize from "utils/humanFileSize";
+import ReactMarkdown from "react-markdown";
 // Icons
 import ReadMore from "components/ReadMore";
 // Styles
@@ -33,7 +34,7 @@ function Details({ dnp }) {
       <div>
         <ReadMore>
           <header>About this DNP</header>
-          {description}
+          <ReactMarkdown source={description} />
         </ReadMore>
 
         <div className="data">
