@@ -1,5 +1,9 @@
 // INSTALLER
 import * as t from "./actionTypes";
+import { confirm } from "components/ConfirmDialog";
+import { shortNameCapitalized as sn } from "utils/format";
+// Selectors
+import { getDnpDirectoryById } from "services/dnpDirectory/selectors";
 
 export const updateInput = id => ({
   type: t.UPDATE_INPUT,
@@ -33,11 +37,23 @@ export const fetchPackageRequest = id => ({
   id
 });
 
-export const install = (id, options) => ({
-  type: t.INSTALL,
-  id,
-  options
-});
+export const install = (id, options) => (dispatch, getState) => {
+  const installCallback = () => dispatch({ type: t.INSTALL, id, options });
+  // Dialog to accept the disclaimer if any
+  const dnp = getDnpDirectoryById(getState(), id);
+  const disclaimer = (dnp.manifest || {}).disclaimer;
+  if (disclaimer) {
+    confirm({
+      title: `${sn(id)} disclaimer`,
+      text: disclaimer.message,
+      label: "Accept",
+      onClick: installCallback,
+      variant: "dappnode"
+    });
+  } else {
+    installCallback();
+  }
+};
 
 export const openPorts = ports => ({
   type: t.MANAGE_PORTS,
