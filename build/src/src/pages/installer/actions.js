@@ -4,6 +4,8 @@ import { confirm } from "components/ConfirmDialog";
 import { shortNameCapitalized as sn } from "utils/format";
 // Selectors
 import { getDnpDirectoryById } from "services/dnpDirectory/selectors";
+// Parsers
+import parseSpecialPermissions from "./parsers/parseSpecialPermissions";
 
 export const updateInput = id => ({
   type: t.UPDATE_INPUT,
@@ -37,22 +39,40 @@ export const fetchPackageRequest = id => ({
   id
 });
 
-export const install = (id, options) => (dispatch, getState) => {
-  const installCallback = () => dispatch({ type: t.INSTALL, id, options });
-  // Dialog to accept the disclaimer if any
+export const install = (id, options) => async (dispatch, getState) => {
   const dnp = getDnpDirectoryById(getState(), id);
+
+  // Special permissions
+  const specialPermissions = parseSpecialPermissions(dnp.manifest);
+  if (specialPermissions.length)
+    await new Promise(resolve =>
+      confirm({
+        title: `Special permissions`,
+        text: `${id} needs:`,
+        list: specialPermissions.map(({ name, details }) => ({
+          title: name,
+          body: details
+        })),
+        label: "Accept",
+        onClick: resolve,
+        variant: "dappnode"
+      })
+    );
+
+  // Dialog to accept the disclaimer if any
   const disclaimer = (dnp.manifest || {}).disclaimer;
-  if (disclaimer) {
-    confirm({
-      title: `${sn(id)} disclaimer`,
-      text: disclaimer.message,
-      label: "Accept",
-      onClick: installCallback,
-      variant: "dappnode"
-    });
-  } else {
-    installCallback();
-  }
+  if (disclaimer)
+    await new Promise(resolve =>
+      confirm({
+        title: `${sn(id)} disclaimer`,
+        text: disclaimer.message,
+        label: "Accept",
+        onClick: resolve,
+        variant: "dappnode"
+      })
+    );
+
+  dispatch({ type: t.INSTALL, id, options });
 };
 
 export const openPorts = ports => ({
