@@ -26,7 +26,12 @@ const pendingElement = message => (
   </div>
 );
 
-export default function Toast({ message, pending = false, success }) {
+export default function Toast({
+  message,
+  pending = false,
+  success,
+  hideDetailsButton
+}) {
   const { SUCCESS, ERROR } = toast.TYPE;
   const position = toast.POSITION.BOTTOM_RIGHT;
   const autoClose = 5000;
@@ -44,7 +49,8 @@ export default function Toast({ message, pending = false, success }) {
       type: SUCCESS
     });
   } else {
-    toast(errorElement(message), {
+    // set hideDetailsButton = true to NOT show the "details" button
+    toast(hideDetailsButton ? message : errorElement(message), {
       position,
       autoClose,
       type: ERROR

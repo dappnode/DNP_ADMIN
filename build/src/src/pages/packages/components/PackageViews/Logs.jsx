@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import api from "API/rpcMethods";
+import { toast } from "react-toastify";
+import Toast from "components/toast/Toast";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
@@ -63,14 +65,24 @@ function Logs({ id }) {
   }, [autoRefresh, timestamps, lines, id]);
 
   async function downloadAll() {
-    setDownloading(true);
-    const logs = await api.logPackage({ id, options: { timestamps } });
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(logs);
-    var dlAnchorElem = document.getElementById("downloadAnchorElem");
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", `DAppNodeLogs-${id}.txt`);
-    dlAnchorElem.click();
-    setDownloading(false);
+    try {
+      setDownloading(true);
+      const logs = await api.logPackage({ id, options: { timestamps } });
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(logs);
+      var dlAnchorElem = document.getElementById("downloadAnchorElem");
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `DAppNodeLogs-${id}.txt`);
+      dlAnchorElem.click();
+    } catch (e) {
+      console.error(`Error downloading logs: ${e.stack}`);
+      Toast({
+        message: `Error downloading logs: ${e.message}`,
+        success: false,
+        hideDetailsButton: true
+      });
+    } finally {
+      setDownloading(false);
+    }
   }
 
   /**
