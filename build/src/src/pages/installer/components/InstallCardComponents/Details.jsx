@@ -2,6 +2,8 @@ import React from "react";
 import defaultAvatar from "img/defaultAvatar.png";
 import humanFileSize from "utils/humanFileSize";
 import ReactMarkdown from "react-markdown";
+// Utils
+import getRepoSlugFromManifest from "utils/getRepoSlugFromManifest";
 // Icons
 import ReadMore from "components/ReadMore";
 // Styles
@@ -21,15 +23,28 @@ function Details({ dnp }) {
   const { manifest, avatar = defaultAvatar, origin } = dnp || {};
   const { description, author, version, image } = manifest || {};
   const { size } = image || {};
+  const repoSlug = getRepoSlugFromManifest(manifest);
 
   const data = {
-    "Developed by": author,
+    "Developed by": <ReactMarkdown className="no-p-style" source={author} />,
     "Download size": humanFileSize(size),
-    Version: `${version} ${origin || ""}`
+    Version: (
+      <span>
+        {version} {origin || ""}
+        {Boolean(repoSlug && version && !origin) && (
+          <>
+            {" - "}
+            <a href={`https://github.com/dappnode/${repoSlug}/tag/v${version}`}>
+              changelog
+            </a>
+          </>
+        )}
+      </span>
+    )
   };
 
   return (
-    <div className="installer-details">
+    <div className="installer-details dappnode-links">
       <img src={avatar} alt="Avatar" />
       <div>
         <ReadMore>
