@@ -1,7 +1,7 @@
 import React from "react";
 // Dedicated Components
-import IpfsDnpDappnodeEth from "./IpfsDnpDappnodeEth";
 import DappmanagerDnpDappnodeEth from "./DappmanagerDnpDappnodeEth";
+import IpfsDnpDappnodeEth from "./IpfsDnpDappnodeEth";
 
 const Components = {
   "dappmanager.dnp.dappnode.eth": DappmanagerDnpDappnodeEth,

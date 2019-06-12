@@ -53,3 +53,8 @@ export const getDnp = createSelector(
   getDnpInstalled,
   (id, dnps) => dnps.find(dnp => dnp.name === id)
 );
+export const getDnpById = createSelector(
+  getDnpInstalled,
+  (_, id) => id,
+  (dnps, id) => dnps.find(dnp => dnp.name === id)
+);
