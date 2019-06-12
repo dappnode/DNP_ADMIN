@@ -71,6 +71,7 @@ function InstallerInterface({
   return (
     <>
       <ProgressLogs progressLogs={progressLogs} />
+
       <Card className="installer-header">
         <Details dnp={dnp} />
         {availableOptions.map(option => (
@@ -87,11 +88,14 @@ function InstallerInterface({
           </Button>
         )}
       </Card>
+
       <Dependencies
         request={requestResult || {}}
         resolving={resolving || false}
       />
-      <SpecialPermissions />
+
+      <SpecialPermissions dnp={dnp} />
+
       {showSettings ? (
         <>
           <Envs />

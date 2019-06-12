@@ -27,7 +27,7 @@ function OnInstallAlert({ manifest }) {
   if (!onInstall) return null;
   return (
     <div className="alert alert-warning" style={{ margin: "12px 0 6px 0" }}>
-      <ReactMarkdown source={onInstall} />
+      <ReactMarkdown className="no-p-style" source={onInstall} />
     </div>
   );
 }
