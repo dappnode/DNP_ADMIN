@@ -10,6 +10,12 @@ button.no-a-style:hover {
   text-decoration: inherit;
 }
 
+/* Change default <p> margin-bottom */
+.no-p-style p,
+p.no-p-style {
+  margin-bottom: 0;
+}
+
 /* General layout coloring */
 
 .vertical-container-centered {

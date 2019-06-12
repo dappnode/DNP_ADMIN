@@ -34,7 +34,7 @@ function Details({ dnp }) {
       <div>
         <ReadMore>
           <header>About this DNP</header>
-          <ReactMarkdown source={description} />
+          <ReactMarkdown className="no-p-style" source={description} />
         </ReadMore>
 
         <div className="data">

@@ -27,7 +27,7 @@ function PackageDetails({ dnp }) {
           <header>
             <strong>Description</strong>
           </header>
-          <ReactMarkdown source={description} />
+          <ReactMarkdown className="no-p-style" source={description} />
         </ReadMore>
 
         <div>
