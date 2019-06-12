@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import api from "API/rpcMethods";
+import { toast } from "react-toastify";
+import Toast from "components/toast/Toast";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
 import Switch from "components/Switch";
 import Input from "components/Input";
+import Button from "components/Button";
 import Terminal from "./Terminal";
 // Utils
 import { stringIncludes } from "utils/strings";
@@ -23,6 +26,7 @@ function Logs({ id }) {
   const [lines, setLines] = useState(200);
   // Fetched data
   const [logs, setLogs] = useState("");
+  const [downloading, setDownloading] = useState(false);
 
   /**
    * This use effect fetches the logs again everytime any of this variables changes:
@@ -60,6 +64,27 @@ function Logs({ id }) {
     }
   }, [autoRefresh, timestamps, lines, id]);
 
+  async function downloadAll() {
+    try {
+      setDownloading(true);
+      const logs = await api.logPackage({ id, options: { timestamps } });
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(logs);
+      var dlAnchorElem = document.getElementById("downloadAnchorElem");
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `DAppNodeLogs-${id}.txt`);
+      dlAnchorElem.click();
+    } catch (e) {
+      console.error(`Error downloading logs: ${e.stack}`);
+      Toast({
+        message: `Error downloading logs: ${e.message}`,
+        success: false,
+        hideDetailsButton: true
+      });
+    } finally {
+      setDownloading(false);
+    }
+  }
+
   /**
    * Filter the logs text by lines that contain the query
    * If the query is empty, skip the filter
@@ -87,7 +112,6 @@ function Logs({ id }) {
             label="Auto-refresh logs"
             id="switch-ar"
           />
-
           <Switch
             checked={timestamps}
             onToggle={setTimestamps}
@@ -97,21 +121,30 @@ function Logs({ id }) {
         </div>
 
         <Input
-          prepend="Lines"
           placeholder="Number of lines to display..."
           value={lines}
           onValueChange={setLines}
           type="number"
+          prepend="Lines"
+          append={
+            <Button disabled={downloading} onClick={downloadAll}>
+              Download all
+            </Button>
+          }
         />
 
         <Input
-          prepend="Search"
           placeholder="Filter by..."
           value={query}
           onValueChange={setQuery}
+          prepend="Search"
         />
 
         <Terminal text={terminalText} id={terminalID} />
+
+        <a id="downloadAnchorElem" style={{ display: "none" }} href="/">
+          Download Anchor
+        </a>
       </Card>
     </>
   );
