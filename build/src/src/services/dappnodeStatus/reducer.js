@@ -14,7 +14,8 @@ const initialState = {
   diagnose: {},
   pingReturns: {},
   versionData: {},
-  ipfsConnectionStatus: {}
+  ipfsConnectionStatus: {},
+  wifiStatus: {}
 };
 
 export default function(state = initialState, action) {
@@ -79,6 +80,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         ipfsConnectionStatus: action.ipfsConnectionStatus
+      };
+
+    case t.UPDATE_WIFI_STATUS:
+      return {
+        ...state,
+        wifiStatus: action.wifiStatus
       };
 
     default:

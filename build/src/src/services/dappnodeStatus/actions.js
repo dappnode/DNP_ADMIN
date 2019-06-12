@@ -36,6 +36,11 @@ export const updateIpfsConnectionStatus = ipfsConnectionStatus => ({
   ipfsConnectionStatus
 });
 
+export const updateWifiStatus = wifiStatus => ({
+  type: t.UPDATE_WIFI_STATUS,
+  wifiStatus
+});
+
 // Fetch
 
 export const fetchAllDappnodeStatus = () => ({

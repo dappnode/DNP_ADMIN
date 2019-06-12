@@ -109,6 +109,23 @@ const checkIpfsConnectionStatus = wrapErrorsAndLoading(
 );
 
 /**
+ * Get the logs of the WIFI package to check if it's running or not
+ * `[Warning] No interface found. Entering sleep mode.`
+ */
+const checkWifiStatus = wrapErrorsAndLoading(
+  loadingIds.wifiStatus,
+  function*() {
+    const logs = yield call(api.logPackage, {
+      id: "wifi.dnp.dappnode.eth",
+      options: {}
+    });
+    const firstLogLine = logs.trim().split("\n")[0];
+    const running = !firstLogLine.includes("No interface found");
+    yield put(a.updateWifiStatus({ running }));
+  }
+);
+
+/**
  * Aggregates all previous data fetches
  */
 function* fetchAllDappnodeStatus() {
@@ -119,7 +136,8 @@ function* fetchAllDappnodeStatus() {
       call(fetchDappnodeDiagnose),
       call(pingDappnodeDnps),
       call(getDnpsVersionData),
-      call(checkIpfsConnectionStatus)
+      call(checkIpfsConnectionStatus),
+      call(checkWifiStatus)
     ]);
   } catch (e) {
     console.error(`Error on fetchAllDappnodeStatus: ${e.stack}`);
