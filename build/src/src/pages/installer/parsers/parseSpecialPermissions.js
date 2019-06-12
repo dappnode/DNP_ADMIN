@@ -1,6 +1,6 @@
 /**
  * - Usage of an external volume
- * - Priviledged
+ * - Privileged
  * @param {object} manifest
  * @returns {array} permissions = [{
  *   name: "Short description",
@@ -29,22 +29,20 @@ function parseSpecialPermissions(manifest = {}) {
       });
   }
 
-  const priviledgedDetails =
-    "Allows the DNP to manipulate and read any installed DNP and install additional packages. Allows the DNP to fully interact with the host system";
-
   if (
     manifest.type === "dncore" ||
     privileged ||
     (cap_add || []).includes("ALL")
   )
     specialPermissions.push({
-      name: "Priviledged access to the system host",
-      details: priviledgedDetails
+      name: "Privileged access to the system host",
+      details:
+        "Allows the DNP to manipulate and read any installed DNP and install additional packages. Allows the DNP to fully interact with the host system"
     });
 
   if (manifest.type === "dncore" && ipv4_address)
     specialPermissions.push({
-      name: "Admin priviledges in DAppNode's WAMP",
+      name: "Admin privileges in DAppNode's WAMP",
       details:
         "Allows the DNP to call any WAMP method of any DNP restricted to admin users"
     });
@@ -52,7 +50,7 @@ function parseSpecialPermissions(manifest = {}) {
   for (const cap of cap_add || []) {
     if (cap !== "ALL")
       specialPermissions.push({
-        name: `Priviledged system capability ${cap}`,
+        name: `Privileged system capability ${cap}`,
         details: `See docker docs for more information https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities`
       });
   }
@@ -61,7 +59,7 @@ function parseSpecialPermissions(manifest = {}) {
     specialPermissions.push({
       name: `Access to the host network`,
       details:
-        "Allows the DNP connect directly to the host's network. It can bind its open ports directly to the host's IP address"
+        "Allows the DNP to connect directly to the host's network. It can bind its open ports directly to the host's IP address"
     });
 
   return specialPermissions;
