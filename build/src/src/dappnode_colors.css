@@ -5,6 +5,8 @@
   --dappnode-shadow-main-color: #218a8280;
   --dappnode-light-main-color: #a0bdbb;
   --dappnode-gray-main-color: #93a5a5;
+  --dappnode-links-color: #0eaba0;
+  --dappnode-links-darker-color: #058078;
   --dappnode-complimentary-color: #bc2f39;
   --border-color: #e5e5e5;
   /* Danger color from the complimentary color of #2fbcb2 (dappnode-color) */

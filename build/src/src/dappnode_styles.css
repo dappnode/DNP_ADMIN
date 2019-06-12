@@ -10,6 +10,15 @@ button.no-a-style:hover {
   text-decoration: inherit;
 }
 
+a {
+  color: var(--dappnode-links-color);
+  text-decoration: inherit;
+  transition: color ease 150ms;
+}
+a:hover {
+  color: var(--dappnode-links-darker-color);
+}
+
 /* Change default <p> margin-bottom */
 .no-p-style p,
 p.no-p-style {

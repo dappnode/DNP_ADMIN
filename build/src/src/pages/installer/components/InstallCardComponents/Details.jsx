@@ -44,7 +44,7 @@ function Details({ dnp }) {
   };
 
   return (
-    <div className="installer-details dappnode-links">
+    <div className="installer-details">
       <img src={avatar} alt="Avatar" />
       <div>
         <ReadMore>
