@@ -63,8 +63,12 @@ export const restartPackageVolumes = id => async (_, getState) => {
    * DNPs are users, they will be removed by the DAPPMANAGER.
    * Alert the user about this fact
    */
-  const dnpsToRemoveWarning = getDnpsToRemoveWarning(dnp);
-  if (dnpsToRemoveWarning) list.push(dnpsToRemoveWarning);
+  const dnpsToRemove = getDnpsToRemove(dnp);
+  if (dnpsToRemove)
+    list.push({
+      title: "Warning! DNPs to be removed",
+      body: `${dnpsToRemove} will be reseted in order to remove the volumes`
+    });
 
   // If there are NOT conflicting volumes,
   // Display a dialog to confirm volumes reset
@@ -99,13 +103,18 @@ export const removePackage = id => async (_, getState) => {
     })
   );
 
-  const dnpsToRemoveWarning = getDnpsToRemoveWarning(dnp);
-  if (dnpsToRemoveWarning)
+  const dnpsToRemove = getDnpsToRemove(dnp);
+  if (dnpsToRemove)
     await new Promise(resolve =>
       confirm({
         title: `Removing ${sn(id)} data`,
         text: `This action cannot be undone.`,
-        list: [dnpsToRemoveWarning],
+        list: [
+          {
+            title: "Warning! DNPs to be removed",
+            body: `${dnpsToRemove} will be removed as well because they are dependent on ${id} volumes`
+          }
+        ],
         label: "Remove DNP and volumes",
         onClick: resolve
       })
@@ -148,18 +157,11 @@ export const cleanCache = () => () =>
  * DNPs are users, they will be removed by the DAPPMANAGER.
  * Alert the user about this fact
  */
-function getDnpsToRemoveWarning(dnp) {
+function getDnpsToRemove(dnp) {
   const dnpsToRemoveObj = {};
   for (const vol of dnp.volumes || [])
     if (vol.name && vol.isOwner && vol.users.length > 1)
       for (const dnpName of vol.users)
         if (dnpName !== dnp.name) dnpsToRemoveObj[dnpName] = true;
-  const dnpsToRemove = Object.keys(dnpsToRemoveObj);
-  if (dnpsToRemove.length) {
-    const dnpNames = dnpsToRemove.join(", ");
-    return {
-      title: "Warning! DNPs to be removed",
-      body: `${dnpNames} will be reseted in order to remove the volumes`
-    };
-  }
+  return Object.keys(dnpsToRemoveObj).join(", ");
 }
