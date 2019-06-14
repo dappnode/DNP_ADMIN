@@ -93,6 +93,21 @@ export const getQueryIdOrName = createSelector(
   (name, id) => name || id
 );
 
+export const getIsQueryDnpUpdated = createSelector(
+  getQueryDnp,
+  getDnpInstalled,
+  (queryDnp, dnpInstalled) => {
+    const { name, version } = (queryDnp || {}).manifest || {};
+    const queryVersion = queryDnp.origin || version;
+    const installedDnp = dnpInstalled.find(_dnp => _dnp.name === name);
+    const installedVersion =
+      (installedDnp || {}).origin || (installedDnp || {}).version;
+    return (
+      queryVersion && installedVersion && queryVersion === installedVersion
+    );
+  }
+);
+
 /**
  * Selector factory to merge the parameters with a priority order:
  * 1. Manifest variables (default)

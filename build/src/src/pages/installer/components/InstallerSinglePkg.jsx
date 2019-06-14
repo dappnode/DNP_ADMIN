@@ -5,7 +5,7 @@ import withTitle from "components/hoc/withTitle";
 import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
 import PropTypes from "prop-types";
-import { toSentence, stringIncludes } from "utils/strings";
+import { toSentence } from "utils/strings";
 import { isEmpty } from "lodash";
 // This module
 import * as s from "../selectors";
@@ -30,6 +30,7 @@ import Switch from "components/Switch";
 function InstallerInterface({
   id,
   dnp,
+  isQueryDnpUpdated,
   progressLogs,
   // Actions
   install,
@@ -51,8 +52,7 @@ function InstallerInterface({
 
   // When the DNP is updated (finish installation), redirect to /packages
   useEffect(() => {
-    if (stringIncludes(tag, "updated") && name)
-      history.push(packagesRootPath + "/" + name);
+    if (isQueryDnpUpdated && name) history.push(packagesRootPath + "/" + name);
   }, [tag]);
 
   if (error && !manifest) return <Error msg={`Error: ${error}`} />;
@@ -122,6 +122,7 @@ InstallerInterface.propTypes = {
 const mapStateToProps = createStructuredSelector({
   id: s.getQueryId,
   dnp: s.getQueryDnp,
+  isQueryDnpUpdated: s.getIsQueryDnpUpdated,
   progressLogs: (state, ownProps) =>
     getProgressLogsByDnp(state, s.getQueryIdOrName(state, ownProps)),
   // For the withTitle HOC
