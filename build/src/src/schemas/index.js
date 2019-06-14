@@ -148,7 +148,7 @@ export const dnpInstalledItem = Joi.object({
   version: Joi.string().required(),
   isDnp: Joi.boolean().required(),
   isCore: Joi.boolean().required(),
-  created: Joi.string().required(),
+  created: [Joi.number(), Joi.string()],
   image: Joi.string().required(),
   name: Joi.string().required(),
   shortName: Joi.string(), // ###### TODO: remove

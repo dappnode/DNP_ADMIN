@@ -57,7 +57,7 @@ function Modal({
         {Array.isArray(list) && (
           <div className="list">
             {list.map((item, i) => (
-              <div key={item || i} className="list-item">
+              <div key={i} className="list-item">
                 <strong>{item.title}</strong>
                 <div className="text">
                   {typeof item.body === "string" ? (
