@@ -48,7 +48,7 @@ function Details({ dnp }) {
       <img src={avatar} alt="Avatar" />
       <div>
         <ReadMore>
-          <header>About this DNP</header>
+          <header>About this DAppNode Package</header>
           <ReactMarkdown className="no-p-style" source={description} />
         </ReadMore>
 
