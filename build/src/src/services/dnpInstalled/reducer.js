@@ -39,7 +39,7 @@ import Joi from "joi";
  *   origin: "/ipfs/Qmabcd...", {string}
  *   chain: "ethereum", {string}
  *   dependencies: { dependency.dnp.dappnode.eth: "0.1.8" }, {object}
- *   portsToClose: [ {number: 30303, type: 'UDP'}, ...], {array}
+ *   portsToClose: [{ portNumber: 30303, protocol: "UDP" }, ...], {array}
  *
  *   // Appended on RPC call
  *   envs: { ENV_NAME: "ENV_VALUE" }, {object}

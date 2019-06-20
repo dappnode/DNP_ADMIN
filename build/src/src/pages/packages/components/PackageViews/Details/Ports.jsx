@@ -19,7 +19,8 @@ function Ports({ dnp }) {
         .map(portObj => {
           const locked = Boolean(
             (portsToClose || []).find(
-              _portObj => String(_portObj.number) === String(portObj.PublicPort)
+              _portObj =>
+                String(_portObj.portNumber) === String(portObj.PublicPort)
             )
           );
           return { ...portObj, locked };
@@ -36,8 +37,8 @@ function Ports({ dnp }) {
 
 /**
  * PORTS
- * dnp.ports = [{IP: "0.0.0.0", PrivatePort: 30304, PublicPort: 32770, Type: "tcp"}, ...]
- * dnp.portsToClose = [{number: 32771, type: "TCP"}, ...]
+ * dnp.ports = [{ IP: "0.0.0.0", PrivatePort: 30304, PublicPort: 32770, Type: "tcp" }, ...]
+ * dnp.portsToClose = [{ portNumber: 32771, protocol: "TCP" }, ...]
  */
 
 Ports.propTypes = {
@@ -51,8 +52,8 @@ Ports.propTypes = {
     ).isRequired,
     portsToClose: PropTypes.arrayOf(
       PropTypes.shape({
-        number: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        type: PropTypes.string.isRequired
+        portNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        protocol: PropTypes.string.isRequired
       })
     ).isRequired
   }).isRequired

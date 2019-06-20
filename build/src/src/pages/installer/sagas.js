@@ -95,7 +95,7 @@ export function* install({ id, options }) {
 /**
  *
  * @param {object} kwargs { ports:
- *   [ { number: 30303, type: TCP }, ...]
+ *   [ { portNumber: 30303, protocol: TCP }, ...]
  * }
  */
 export function* managePorts({ action, ports = [] }) {
@@ -113,7 +113,7 @@ export function* managePorts({ action, ports = [] }) {
     const upnpAvailable = yield select(getUpnpAvailable);
     if (upnpAvailable && ports.length > 0) {
       const toastMessage = `${action} ports ${ports
-        .map(p => `${p.number} ${p.type}`)
+        .map(p => `${p.portNumber} ${p.protocol}`)
         .join(", ")}...`;
       yield call(api.managePorts, { action, ports }, { toastMessage });
     }
