@@ -45,10 +45,11 @@ function PackageControls({
   const actions = [
     {
       name:
-        state === "running" ? "Pause" : state === "exited" ? "Start" : "Toggle",
+        state === "running" ? "Stop" : state === "exited" ? "Start" : "Toggle",
       text: "Toggle the state of the package from running to paused",
       action: () => togglePackage(dnp.name),
       availableForCore: false,
+      whitelist: ["wifi.dnp.dappnode.eth"],
       type: "secondary"
     },
     {
@@ -94,7 +95,12 @@ function PackageControls({
       <SubTitle>Controls</SubTitle>
       <CardList>
         {actions
-          .filter(action => action.availableForCore || !dnp.isCore)
+          .filter(
+            action =>
+              action.availableForCore ||
+              !dnp.isCore ||
+              (action.whitelist || []).includes(dnp.name)
+          )
           .map(({ name, text, type, action, disabled }) => (
             <div key={name} className="control-item">
               <div>
