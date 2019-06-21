@@ -100,12 +100,17 @@ function InstallerHome({
    * 0. Else show the DnpStore
    */
   function Body() {
-    if (directory.length && !directoryFiltered.length)
-      return <NoPackageFound query={query} />;
-    if (mainnet.syncing) return <IsSyncing {...mainnet} />;
-    if (error) return <Error msg={`Error loading DNPs: ${error}`} />;
-    if (loading && !directory.length) return <Loading msg="Loading DNPs..." />;
-    return <PackageStore directory={directoryFiltered} openDnp={openDnp} />;
+    if (directory.length) {
+      if (directoryFiltered.length)
+        return <PackageStore directory={directoryFiltered} openDnp={openDnp} />;
+      else return <NoPackageFound query={query} />;
+    } else {
+      if (mainnet.syncing) return <IsSyncing {...mainnet} />;
+      if (error) return <Error msg={`Error loading DNPs: ${error}`} />;
+      if (loading) return <Loading msg="Loading DNPs..." />;
+    }
+    // Fallback
+    return <Error msg={`Unknown error`} />;
   }
 
   return (

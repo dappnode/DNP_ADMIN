@@ -41,6 +41,7 @@ export const fetchPackageRequest = id => ({
 
 export const install = (id, options) => async (dispatch, getState) => {
   const dnp = getDnpDirectoryById(getState(), id);
+  const displayName = ((dnp || {}).manifest || {}).name;
 
   // Special permissions
   const specialPermissions = parseSpecialPermissions(dnp.manifest);
@@ -48,7 +49,7 @@ export const install = (id, options) => async (dispatch, getState) => {
     await new Promise(resolve =>
       confirm({
         title: `Special permissions`,
-        text: `${id} needs:`,
+        text: `${displayName} needs:`,
         list: specialPermissions.map(({ name, details }) => ({
           title: name,
           body: details
@@ -64,7 +65,7 @@ export const install = (id, options) => async (dispatch, getState) => {
   if (disclaimer)
     await new Promise(resolve =>
       confirm({
-        title: `${sn(id)} disclaimer`,
+        title: `${sn(displayName)} disclaimer`,
         text: disclaimer.message,
         label: "Accept",
         onClick: resolve,
