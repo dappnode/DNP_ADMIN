@@ -15,12 +15,13 @@ import filterDirectory from "../helpers/filterDirectory";
 import { rootPath } from "../data";
 import NoPackageFound from "./NoPackageFound";
 import TypeFilter from "./TypeFilter";
-import PackageStore from "./PackageStore";
+import DnpStore from "./DnpStore";
 // Components
 import Input from "components/Input";
 import { ButtonLight } from "components/Button";
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
+import SubTitle from "components/SubTitle";
 // Selectors
 import { getMainnet } from "services/chainData/selectors";
 import {
@@ -29,7 +30,7 @@ import {
 } from "services/loadingStatus/selectors";
 import { rootPath as packagesRootPath } from "pages/packages/data";
 // Styles
-import "./installer.css";
+import "./installer.scss";
 import IsSyncing from "./IsSyncing";
 
 function InstallerHome({
@@ -101,9 +102,26 @@ function InstallerHome({
    */
   function Body() {
     if (directory.length) {
-      if (directoryFiltered.length)
-        return <PackageStore directory={directoryFiltered} openDnp={openDnp} />;
-      else return <NoPackageFound query={query} />;
+      if (!directoryFiltered.length) return <NoPackageFound query={query} />;
+      // All is good, display actual DnpStore
+      const isFeatured = dnp => dnp.name.includes("raiden");
+      const directoryFeatured = directoryFiltered.filter(dnp =>
+        isFeatured(dnp)
+      );
+      const directoryNotFeatured = directoryFiltered.filter(
+        dnp => !isFeatured(dnp)
+      );
+      return (
+        <>
+          <SubTitle>Featured</SubTitle>
+          <DnpStore
+            directory={directoryFeatured}
+            openDnp={openDnp}
+            featured={true}
+          />
+          <DnpStore directory={directoryNotFeatured} openDnp={openDnp} />
+        </>
+      );
     } else {
       if (mainnet.syncing) return <IsSyncing {...mainnet} />;
       if (error) return <Error msg={`Error loading DNPs: ${error}`} />;

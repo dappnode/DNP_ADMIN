@@ -1,0 +1,122 @@
+/* New Styles */
+.dnp-cards {
+  display: grid;
+  /* Must be auto-fill so when there's one card on big screens, it appears normal */
+  grid-template-columns: repeat(auto-fill, 14rem);
+  width: 100%;
+  grid-gap: 2rem 2.5rem;
+}
+.dnp-cards.featured {
+  /* Must be auto-fill so when there's one card on big screens, it appears normal */
+  // grid-template-columns: repeat(auto-fill, 14rem);
+}
+
+.dnp-card {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 1px 1px 15px 0 rgba(0, 0, 0, 0.07);
+  text-align: center;
+  align-items: center;
+  > *:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+  img {
+    width: 100%;
+  }
+  .avatar {
+    --avatar-size: 4rem;
+    display: flex;
+    justify-content: center;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+  }
+  .title {
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    word-break: break-word;
+    // Limit the number of text lines to N
+    line-height: 1.5rem; // X
+    max-height: 1.5rem; // X*N
+    overflow: hidden;
+  }
+  .badge {
+    font-weight: 600;
+    white-space: nowrap;
+    color: rgb(33, 212, 143);
+    font-size: 12px;
+    background: rgba(33, 212, 143, 0.15);
+    border-radius: 9px;
+  }
+  .verified-badge {
+    color: var(--dappnode-color);
+    margin-left: 0.25rem;
+    height: 0.95rem;
+  }
+  .description {
+    height: 7rem;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    max-lines: 3;
+    // Limit the number of text lines to N
+    line-height: 1.5rem; // X
+    max-height: 4.5rem; // X*N
+  }
+  .action {
+    margin-top: 0.5rem;
+    align-self: stretch;
+  }
+}
+.dnp-card > img {
+  width: 100%;
+}
+.dnp-card > .info {
+  display: grid;
+}
+.dnp-card > .info > * {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.dnp-card > .info > button {
+  margin-top: 0.5rem;
+  justify-self: end;
+}
+.dnp-card > .info > .keywords {
+  opacity: 0.5;
+}
+.dnp-card .ipfs > img {
+  width: 3.5rem;
+  margin-right: 0.3rem;
+}
+.dnp-card > .info > .title {
+  margin-bottom: 0.25rem;
+}
+
+/* Type filter */
+
+.type-filter > * {
+  margin-right: 0.5rem;
+}
+/* Make bootstrap buttons smaller */
+.type-filter .btn {
+  padding: 0.1rem 0.5rem;
+  border-color: #ced4da;
+}
+
+/* Installer header */
+
+.installer-header {
+  display: grid;
+  grid-gap: var(--default-spacing);
+}
+.installer-header > *:not(.installer-details) {
+  justify-self: end;
+}
+
+/* Dependency list */
+.dependency-list span {
+  overflow: hidden;
+}
