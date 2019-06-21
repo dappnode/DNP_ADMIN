@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import api from "API/rpcMethods";
-import { toast } from "react-toastify";
 import Toast from "components/toast/Toast";
 // Components
 import Card from "components/Card";
