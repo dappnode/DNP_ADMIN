@@ -1,8 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
+// Selectors
+import { getMainnet } from "services/chainData/selectors";
 
 function IsSyncing({ message }) {
   return (
@@ -23,4 +27,11 @@ IsSyncing.propTypes = {
   message: PropTypes.string.isRequired
 };
 
-export default IsSyncing;
+const mapStateToProps = createStructuredSelector({
+  message: state => (getMainnet(state) || {}).message
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(IsSyncing);

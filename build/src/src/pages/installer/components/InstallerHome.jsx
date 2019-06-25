@@ -36,7 +36,7 @@ import IsSyncing from "./IsSyncing";
 function InstallerHome({
   // variables
   directory,
-  mainnet,
+  mainnetIsSyncing,
   loading,
   error,
   history,
@@ -123,7 +123,7 @@ function InstallerHome({
         </>
       );
     } else {
-      if (mainnet.syncing) return <IsSyncing {...mainnet} />;
+      if (mainnetIsSyncing) return <IsSyncing />;
       if (error) return <Error msg={`Error loading DNPs: ${error}`} />;
       if (loading) return <Loading msg="Loading DNPs..." />;
     }
@@ -154,7 +154,7 @@ InstallerHome.propTypes = {
   selectedTypes: PropTypes.object.isRequired,
   inputValue: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
-  mainnet: PropTypes.object.isRequired,
+  mainnetIsSyncing: PropTypes.bool,
   loading: PropTypes.bool.isRequired,
   error: PropTypes.string.isRequired,
   // Dispatch -> props
@@ -167,7 +167,7 @@ const mapStateToProps = createStructuredSelector({
   directoryLoaded: s.directoryLoaded,
   selectedTypes: s.getSelectedTypes,
   inputValue: s.getInputValue,
-  mainnet: getMainnet,
+  mainnetIsSyncing: state => Boolean((getMainnet(state) || {}).syncing),
   loading: getIsLoading.dnpDirectory,
   error: getLoadingError.dnpDirectory
 });
