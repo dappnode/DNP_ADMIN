@@ -21,7 +21,6 @@ import Input from "components/Input";
 import { ButtonLight } from "components/Button";
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
-import SubTitle from "components/SubTitle";
 // Selectors
 import { getMainnet } from "services/chainData/selectors";
 import {
@@ -104,7 +103,7 @@ function InstallerHome({
     if (directory.length) {
       if (!directoryFiltered.length) return <NoPackageFound query={query} />;
       // All is good, display actual DnpStore
-      const isFeatured = dnp => dnp.name.includes("raiden");
+      const isFeatured = dnp => dnp.isFeatured;
       const directoryFeatured = directoryFiltered.filter(dnp =>
         isFeatured(dnp)
       );
@@ -113,7 +112,6 @@ function InstallerHome({
       );
       return (
         <>
-          <SubTitle>Featured</SubTitle>
           <DnpStore
             directory={directoryFeatured}
             openDnp={openDnp}

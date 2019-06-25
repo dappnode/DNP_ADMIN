@@ -2,13 +2,10 @@
 .dnp-cards {
   display: grid;
   /* Must be auto-fill so when there's one card on big screens, it appears normal */
-  grid-template-columns: repeat(auto-fill, 14rem);
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
   width: 100%;
-  grid-gap: 2rem 2.5rem;
-}
-.dnp-cards.featured {
-  /* Must be auto-fill so when there's one card on big screens, it appears normal */
-  // grid-template-columns: repeat(auto-fill, 14rem);
+  // grid-gap: 2rem 2.5rem;
+  grid-gap: var(--default-spacing);
 }
 
 .dnp-card {
@@ -22,9 +19,11 @@
   }
   img {
     width: 100%;
+    height: 100%;
+    border-radius: 8px;
   }
   .avatar {
-    --avatar-size: 4rem;
+    --avatar-size: 4.5rem;
     display: flex;
     justify-content: center;
     width: var(--avatar-size);
@@ -40,18 +39,18 @@
     max-height: 1.5rem; // X*N
     overflow: hidden;
   }
-  .badge {
-    font-weight: 600;
-    white-space: nowrap;
-    color: rgb(33, 212, 143);
-    font-size: 12px;
-    background: rgba(33, 212, 143, 0.15);
-    border-radius: 9px;
-  }
   .verified-badge {
     color: var(--dappnode-color);
     margin-left: 0.25rem;
     height: 0.95rem;
+  }
+  .badge {
+    font-weight: 600;
+    white-space: nowrap;
+    color: #21d48f;
+    font-size: 12px;
+    background: #21d48f26;
+    border-radius: 9px;
   }
   .description {
     height: 7rem;
@@ -59,7 +58,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-word;
-    max-lines: 3;
     // Limit the number of text lines to N
     line-height: 1.5rem; // X
     max-height: 4.5rem; // X*N
@@ -69,36 +67,65 @@
     align-self: stretch;
   }
 }
-.dnp-card > img {
-  width: 100%;
-}
-.dnp-card > .info {
-  display: grid;
-}
-.dnp-card > .info > * {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.dnp-card > .info > button {
-  margin-top: 0.5rem;
-  justify-self: end;
-}
-.dnp-card > .info > .keywords {
-  opacity: 0.5;
-}
-.dnp-card .ipfs > img {
-  width: 3.5rem;
-  margin-right: 0.3rem;
-}
-.dnp-card > .info > .title {
-  margin-bottom: 0.25rem;
+
+.dnp-cards.featured {
+  /* Must be auto-fill so when there's one card on big screens, it appears normal */
+  grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+  @media screen and (max-width: 40rem) {
+    grid-template-columns: 1fr;
+  }
+  // Line below to separate normal DNPs
+  border-bottom: var(--border-style);
+  padding-bottom: var(--default-spacing);
+  margin-bottom: var(--default-spacing);
+
+  .dnp-card {
+    @media screen and (min-width: 40rem) {
+      flex-direction: row;
+      text-align: left;
+      align-items: start;
+    }
+  }
+  .avatar-big {
+    width: 135px;
+    height: 135px;
+    flex-shrink: 0;
+    @media screen and (min-width: 40rem) {
+      margin-bottom: 0;
+      margin-right: 1rem;
+    }
+  }
+  .info-big {
+    .badge {
+      color: inherit;
+      background: none;
+      opacity: 0.5;
+      padding: 0;
+    }
+    .title {
+      font-size: 2.2rem;
+      // Limit the number of text lines to N
+      line-height: 2.5rem; // X
+      max-height: 2.5rem; // X*N
+    }
+    .verified-badge {
+      height: 1.6rem;
+    }
+    .description {
+      height: 7rem;
+      font-size: 1.1rem;
+      // Limit the number of text lines to N
+      line-height: 1.5rem; // X
+      max-height: 4.5rem; // X*N
+    }
+  }
 }
 
 /* Type filter */
 
 .type-filter > * {
   margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 /* Make bootstrap buttons smaller */
 .type-filter .btn {
