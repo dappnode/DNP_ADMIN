@@ -183,7 +183,7 @@ export const mockState = {
           ],
           keywords: ["Raiden", "Ethereum"]
         },
-
+        minimumDappnodeVersion: "0.2.4",
         author:
           "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
         contributors: ["Abel Boldú (@vdo)"],
@@ -249,6 +249,12 @@ export const mockState = {
     {
       name: "admin.dnp.dappnode.eth",
       isCore: true,
+      state: "exited"
+    },
+    {
+      name: "core.dnp.dappnode.eth",
+      isCore: true,
+      version: "0.2.3",
       state: "exited"
     },
     {
