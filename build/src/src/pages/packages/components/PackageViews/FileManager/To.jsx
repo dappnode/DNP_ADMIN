@@ -45,7 +45,7 @@ function To({ id, copyFileTo }) {
 
   return (
     <div className="card-subgroup">
-      <div className="section-card-subtitle">Upload to DNP</div>
+      <div className="section-card-subtitle">Upload to DAppNode Package</div>
       {/* TO, choose source file */}
 
       <div className="input-group mb-3">

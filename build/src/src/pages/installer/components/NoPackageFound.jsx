@@ -8,8 +8,8 @@ function NoPackageFound({ query }) {
     <div className="centered-container">
       <h4>Not found</h4>
       <p>
-        If you would like a specific DAppNode package (DNP) to be developed,
-        express so in the survery below
+        If you would like a specific DAppNode package to be developed, express
+        so in the survery below
       </p>
       <a href={PACKAGE_SURVEY_LINK} {...newTabProps}>
         Request {query}

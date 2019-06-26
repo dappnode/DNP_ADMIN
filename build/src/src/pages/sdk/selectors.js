@@ -43,10 +43,10 @@ export const getDisablePublish = state => {
 export const getInputFields = state => [
   {
     id: "dnpName",
-    name: "DNP name",
+    name: "DAppNode Package name",
     placeholder: "full ENS name",
     help:
-      "Full ENS name of the DNP to update, i.e. timeapp.public.dappnode.eth",
+      "Full ENS name of the DAppNode Package to update, i.e. timeapp.public.dappnode.eth",
     ...getDnpNameInput(state)
   },
   {
@@ -111,7 +111,10 @@ function getDnpNameInput(state) {
     if (registryAddress) success.push(`Registry found: ${registryAddress}`);
     else error.push(`"${dnpName}" does not have a valid registry`);
     if (repoAddress) success.push(`Repo already deployed at: ${repoAddress}`);
-    else success.push(`A new repo will be deployed for the DNP "${dnpName}"`);
+    else
+      success.push(
+        `A new repo will be deployed for the DAppNode Package "${dnpName}"`
+      );
     if (latestVersion) success.push(`Latest version: ${latestVersion}`);
   }
   return cleanArrays({ error, success });

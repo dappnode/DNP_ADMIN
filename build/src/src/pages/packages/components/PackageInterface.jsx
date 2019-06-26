@@ -44,9 +44,9 @@ const PackageInterface = ({
         <Logs id={dnp.name} />
       </>
     ) : loading ? (
-      <Loading msg="Loading installed DNPs..." />
+      <Loading msg="Loading installed DAppNode Packages..." />
     ) : error ? (
-      <Error msg={`Error loading installed DNPs: ${error}`} />
+      <Error msg={`Error loading installed DAppNode Packages: ${error}`} />
     ) : areThereDnps ? (
       <NoDnpInstalled id={id} moduleName={moduleName} />
     ) : null}

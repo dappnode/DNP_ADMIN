@@ -41,7 +41,7 @@ export const restartPackage = id => (_, getState) => {
   // Display a dialog to confirm restart
   confirm({
     title: `Restarting ${sn(id)}`,
-    text: `This action cannot be undone. If this DNP holds state, it may be lost.`,
+    text: `This action cannot be undone. If this DAppNode Package holds state, it may be lost.`,
     label: "Restart",
     onClick: restartPackageCallback
   });
@@ -66,7 +66,7 @@ export const restartPackageVolumes = id => async (_, getState) => {
   const dnpsToRemove = getDnpsToRemove(dnp);
   if (dnpsToRemove)
     list.push({
-      title: "Warning! DNPs to be removed",
+      title: "Warning! DAppNode Packages to be removed",
       body: `${dnpsToRemove} will be reseted in order to remove the volumes`
     });
 
@@ -75,7 +75,7 @@ export const restartPackageVolumes = id => async (_, getState) => {
   await new Promise(resolve =>
     confirm({
       title: `Removing ${sn(id)} data`,
-      text: `This action cannot be undone. If this DNP is a blockchain node, it will lose all the chain data and start syncing from scratch.`,
+      text: `This action cannot be undone. If this DAppNode Package is a blockchain node, it will lose all the chain data and start syncing from scratch.`,
       list: list.length ? list : null,
       label: "Remove volumes",
       onClick: resolve
@@ -95,10 +95,10 @@ export const removePackage = id => async (_, getState) => {
   const deleteVolumes = await new Promise(resolve =>
     confirm({
       title: `Removing ${sn(id)}`,
-      text: `This action cannot be undone. If you do NOT want to keep ${id}'s data, remove it permanently clicking the "Remove DNP + data" option.`,
+      text: `This action cannot be undone. If you do NOT want to keep ${id}'s data, remove it permanently clicking the "Remove and delete data" option.`,
       buttons: [
         { label: "Remove", onClick: resolve.bind(this, false) },
-        { label: "Remove DNP + data", onClick: resolve.bind(this, true) }
+        { label: "Remove and delete data", onClick: resolve.bind(this, true) }
       ]
     })
   );
@@ -111,11 +111,11 @@ export const removePackage = id => async (_, getState) => {
         text: `This action cannot be undone.`,
         list: [
           {
-            title: "Warning! DNPs to be removed",
+            title: "Warning! DAppNode Packages to be removed",
             body: `${dnpsToRemove} will be removed as well because they are dependent on ${id} volumes`
           }
         ],
-        label: "Remove DNP and volumes",
+        label: "Remove DAppNode Package and volumes",
         onClick: resolve
       })
     );

@@ -122,8 +122,8 @@ function InstallerHome({
       );
     } else {
       if (mainnetIsSyncing) return <IsSyncing />;
-      if (error) return <Error msg={`Error loading DNPs: ${error}`} />;
-      if (loading) return <Loading msg="Loading DNPs..." />;
+      if (error) return <Error msg={`Error loading DAppNode Packages: ${error}`} />;
+      if (loading) return <Loading msg="Loading DAppNode Packages..." />;
     }
     // Fallback
     return <Error msg={`Unknown error`} />;
@@ -132,7 +132,7 @@ function InstallerHome({
   return (
     <>
       <Input
-        placeholder="DNP's name or IPFS hash"
+        placeholder="DAppNode Package's name or IPFS hash"
         value={query}
         onValueChange={value => setQuery(correctPackageName(value))}
         onEnterPress={runQuery}
