@@ -86,7 +86,7 @@ function DnpStore({ directory, openDnp, featured }) {
                 {verified && <GoVerified className="verified-badge" />}
               </div>
 
-              <div className="badge">New version available</div>
+              {/* <div className="badge">New version available</div> */}
 
               <div className="description">{description}</div>
               <Button className="action" variant="dappnode" disabled={disabled}>
