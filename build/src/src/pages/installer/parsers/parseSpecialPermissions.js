@@ -20,12 +20,12 @@ function parseSpecialPermissions(manifest = {}) {
     if (parts[0] === "dncore")
       specialPermissions.push({
         name: "Access to core volume",
-        details: `Allows the DNP to read and write to the core volume ${host}`
+        details: `Allows the DAppNode Package to read and write to the core volume ${host}`
       });
     else
       specialPermissions.push({
-        name: "Access to DNP volume",
-        details: `Allows the DNP to read and write to the DNP volume ${host}`
+        name: "Access to DAppNode Package volume",
+        details: `Allows the DAppNode Package to read and write to the volume ${host}`
       });
   }
 
@@ -37,14 +37,14 @@ function parseSpecialPermissions(manifest = {}) {
     specialPermissions.push({
       name: "Privileged access to the system host",
       details:
-        "Allows the DNP to manipulate and read any installed DNP and install additional packages. Allows the DNP to fully interact with the host system"
+        "Allows the DAppNode Package to manipulate and read any installed DAppNode Package and install additional packages. Allows the DAppNode Package to fully interact with the host system"
     });
 
   if (manifest.type === "dncore" && ipv4_address)
     specialPermissions.push({
       name: "Admin privileges in DAppNode's WAMP",
       details:
-        "Allows the DNP to call any WAMP method of any DNP restricted to admin users"
+        "Allows the DAppNode Package to call any WAMP method of any DAppNode Package restricted to admin users"
     });
 
   for (const cap of cap_add || []) {
@@ -59,7 +59,7 @@ function parseSpecialPermissions(manifest = {}) {
     specialPermissions.push({
       name: `Access to the host network`,
       details:
-        "Allows the DNP to connect directly to the host's network. It can bind its open ports directly to the host's IP address"
+        "Allows the DAppNode Package to connect directly to the host's network. It can bind its open ports directly to the host's IP address"
     });
 
   return specialPermissions;

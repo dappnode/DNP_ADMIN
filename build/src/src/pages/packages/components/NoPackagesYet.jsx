@@ -6,10 +6,9 @@ import { ButtonLight } from "components/Button";
 
 const NoPackagesYet = () => (
   <div className="centered-container">
-    <h4>No installed DNPs yet</h4>
+    <h4>No installed DAppNode Packages yet</h4>
     <p>
-      If you would like install a DAppNode package (DNP), go to the installer
-      tab.
+      If you would like install a DAppNode package, go to the installer tab.
     </p>
     <Link to={installerRootPath}>
       <ButtonLight>Go to Install</ButtonLight>

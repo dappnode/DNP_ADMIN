@@ -160,7 +160,7 @@ class Publish extends React.Component {
                     }
                   >
                     <button className="btn btn-outline-dappnode">
-                      Install DNP
+                      Install DAppNode Package
                     </button>
                   </Link>
                 </div>

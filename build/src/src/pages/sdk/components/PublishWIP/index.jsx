@@ -47,9 +47,9 @@ function Publish({ match }) {
   const fields = [
     {
       id: "dnpName",
-      name: "DNP name",
+      name: "DAppNode Package name",
       placeholder: "full ENS name",
-      help: "ENS name of the DNP to update, i.e. timeapp.public.dappnode.eth",
+      help: "ENS name of the DAppNode Package to update, i.e. timeapp.public.dappnode.eth",
       value: dnpName,
       onValueChange: setDnpName,
       validations: [validateEnsDomain(dnpName)]

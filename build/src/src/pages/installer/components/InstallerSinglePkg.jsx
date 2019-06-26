@@ -61,8 +61,8 @@ function InstallerInterface({
   }, [tag]);
 
   if (error && !manifest) return <Error msg={`Error: ${error}`} />;
-  if (loading) return <Loading msg={"Loading DNP data..."} />;
-  if (!dnp && !error) return <Error msg={"Package not found"} />;
+  if (loading) return <Loading msg={"Loading DAppNode Package data..."} />;
+  if (!dnp && !error) return <Error msg={"DAppNode Package not found"} />;
 
   /**
    * Filter options according to the current package

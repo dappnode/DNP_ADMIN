@@ -36,7 +36,9 @@ function generatePublishTx({
 
   // Ensure that a valid registry exists
   if (!registryAddress)
-    throw Error(`There must exist a registry for DNP name ${ensName}`);
+    throw Error(
+      `There must exist a registry for DAppNode Package name ${ensName}`
+    );
 
   // If repository exists, push new version to it
   if (repoAddress) {

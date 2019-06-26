@@ -66,7 +66,7 @@ function PackageControls({
         <div>
           {namedOwnedVols.length
             ? `Deleting the volumes is a permanent action and all data will be lost.`
-            : "This DNP is not the owner of any named volumes."}
+            : "This DAppNode Package is not the owner of any named volumes."}
           {namedExternalVols.map(vol => (
             <div key={vol.name} style={{ opacity: 0.6 }}>
               Go to <Link to={vol.ownerPath}>{vol.owner}</Link> to remove the
