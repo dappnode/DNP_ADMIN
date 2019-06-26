@@ -15,7 +15,7 @@ import filterDirectory from "../helpers/filterDirectory";
 import { rootPath } from "../data";
 import NoPackageFound from "./NoPackageFound";
 import TypeFilter from "./TypeFilter";
-import PackageStore from "./PackageStore";
+import DnpStore from "./DnpStore";
 // Components
 import Input from "components/Input";
 import { ButtonLight } from "components/Button";
@@ -29,13 +29,13 @@ import {
 } from "services/loadingStatus/selectors";
 import { rootPath as packagesRootPath } from "pages/packages/data";
 // Styles
-import "./installer.css";
+import "./installer.scss";
 import IsSyncing from "./IsSyncing";
 
 function InstallerHome({
   // variables
   directory,
-  mainnet,
+  mainnetIsSyncing,
   loading,
   error,
   history,
@@ -101,11 +101,27 @@ function InstallerHome({
    */
   function Body() {
     if (directory.length) {
-      if (directoryFiltered.length)
-        return <PackageStore directory={directoryFiltered} openDnp={openDnp} />;
-      else return <NoPackageFound query={query} />;
+      if (!directoryFiltered.length) return <NoPackageFound query={query} />;
+      // All is good, display actual DnpStore
+      const isFeatured = dnp => dnp.isFeatured;
+      const directoryFeatured = directoryFiltered.filter(dnp =>
+        isFeatured(dnp)
+      );
+      const directoryNotFeatured = directoryFiltered.filter(
+        dnp => !isFeatured(dnp)
+      );
+      return (
+        <>
+          <DnpStore
+            directory={directoryFeatured}
+            openDnp={openDnp}
+            featured={true}
+          />
+          <DnpStore directory={directoryNotFeatured} openDnp={openDnp} />
+        </>
+      );
     } else {
-      if (mainnet.syncing) return <IsSyncing {...mainnet} />;
+      if (mainnetIsSyncing) return <IsSyncing />;
       if (error) return <Error msg={`Error loading DNPs: ${error}`} />;
       if (loading) return <Loading msg="Loading DNPs..." />;
     }
@@ -136,7 +152,7 @@ InstallerHome.propTypes = {
   selectedTypes: PropTypes.object.isRequired,
   inputValue: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
-  mainnet: PropTypes.object.isRequired,
+  mainnetIsSyncing: PropTypes.bool,
   loading: PropTypes.bool.isRequired,
   error: PropTypes.string.isRequired,
   // Dispatch -> props
@@ -149,7 +165,7 @@ const mapStateToProps = createStructuredSelector({
   directoryLoaded: s.directoryLoaded,
   selectedTypes: s.getSelectedTypes,
   inputValue: s.getInputValue,
-  mainnet: getMainnet,
+  mainnetIsSyncing: state => Boolean((getMainnet(state) || {}).syncing),
   loading: getIsLoading.dnpDirectory,
   error: getLoadingError.dnpDirectory
 });

@@ -1,9 +1,8 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
-import ReadMore from "components/ReadMore";
+import ReadMoreMarkdown from "components/ReadMoreMarkdown";
 // This
 import Links from "./Links";
 import Ports from "./Ports";
@@ -23,12 +22,10 @@ function PackageDetails({ dnp }) {
           <StateBadge state={state} />
         </div>
 
-        <ReadMore>
-          <header>
-            <strong>Description</strong>
-          </header>
-          <ReactMarkdown className="no-p-style" source={description} />
-        </ReadMore>
+        <header>
+          <strong>Description</strong>
+        </header>
+        <ReadMoreMarkdown source={description} />
 
         <div>
           <strong>Version: </strong>

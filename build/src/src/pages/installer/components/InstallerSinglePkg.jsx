@@ -5,12 +5,15 @@ import withTitle from "components/hoc/withTitle";
 import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
 import PropTypes from "prop-types";
-import { toSentence } from "utils/strings";
 import { isEmpty } from "lodash";
+import ReactMarkdown from "react-markdown";
+import { toSentence } from "utils/strings";
+import humanFileSize from "utils/humanFileSize";
+import getRepoSlugFromManifest from "utils/getRepoSlugFromManifest";
+import { shortNameCapitalized, shortAuthor } from "utils/format";
 // This module
 import * as s from "../selectors";
 import * as a from "../actions";
-import Details from "./InstallCardComponents/Details";
 import ProgressLogs from "./InstallCardComponents/ProgressLogs";
 import Dependencies from "./InstallCardComponents/Dependencies";
 import SpecialPermissions from "./InstallCardComponents/SpecialPermissions";
@@ -26,6 +29,8 @@ import Error from "components/generic/Error";
 import Button, { ButtonLight } from "components/Button";
 import Card from "components/Card";
 import Switch from "components/Switch";
+import ReadMoreMarkdown from "components/ReadMoreMarkdown";
+import defaultAvatar from "img/defaultAvatar.png";
 
 function InstallerInterface({
   id,
@@ -68,25 +73,72 @@ function InstallerInterface({
     availableOptions.push("BYPASS_CORE_RESTRICTION");
 
   // Otherwise, show info an allow an install
+  const { avatar = defaultAvatar, origin } = dnp || {};
+  const { shortDescription, description, author, version, image } =
+    manifest || {};
+  const { size } = image || {};
+  const repoSlug = getRepoSlugFromManifest(manifest);
+  const changelogUrl = `https://github.com/dappnode/${repoSlug}/tag/v${version}`;
+
   return (
     <>
       <ProgressLogs progressLogs={progressLogs} />
 
       <Card className="installer-header">
-        <Details dnp={dnp} />
-        {availableOptions.map(option => (
-          <Switch
-            checked={options[option]}
-            onToggle={value => setOptions({ [option]: value })}
-            label={toSentence(option)}
-            id={"switch-" + option}
-          />
-        ))}
-        {isEmpty(progressLogs) && (
-          <Button variant="dappnode" onClick={() => install(id, options)}>
-            {tag}
-          </Button>
-        )}
+        <div className="details-header">
+          <div className="left avatar">
+            <img src={avatar} alt="Avatar" />
+          </div>
+          <div className="right">
+            <div className="info">
+              <div className="name">{shortNameCapitalized(name)}</div>
+              <div className="subtle-header">CREATED BY</div>
+              <div className="badge">{shortAuthor(author)}</div>
+            </div>
+            <Button
+              className="action"
+              variant="dappnode"
+              onClick={() => install(id, options)}
+              disabled={!isEmpty(progressLogs)}
+            >
+              {tag}
+            </Button>
+          </div>
+        </div>
+
+        <div className="options">
+          {availableOptions.map(option => (
+            <Switch
+              checked={options[option]}
+              onToggle={value => setOptions({ [option]: value })}
+              label={toSentence(option)}
+              id={"switch-" + option}
+            />
+          ))}
+        </div>
+
+        <div className="details-body">
+          <div className="left">
+            <div className="subtle-header">DESCRIPTION</div>
+            <ReadMoreMarkdown source={shortDescription || description} />
+            {shortDescription && (
+              <>
+                <div className="subtle-header">DETAILS</div>
+                <ReadMoreMarkdown source={description} />
+              </>
+            )}
+          </div>
+          <div className="right">
+            <div className="subtle-header">SIZE</div>
+            <div>{humanFileSize(size)}</div>
+            <div className="subtle-header">VERSION</div>
+            <div>
+              {version} {origin || ""} <a href={changelogUrl}>changelog</a>
+            </div>
+            <div className="subtle-header">CREATED BY</div>
+            <ReactMarkdown className="no-p-style" source={author} />
+          </div>
+        </div>
       </Card>
 
       <Dependencies
