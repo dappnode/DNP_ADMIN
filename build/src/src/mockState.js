@@ -161,6 +161,7 @@ export const mockState = {
     "raiden.dnp.dappnode.eth": {
       name: "raiden.dnp.dappnode.eth",
       whitelisted: true,
+      isFeatured: true,
       manifest: {
         name: "raiden.dnp.dappnode.eth",
         version: "0.0.1",
