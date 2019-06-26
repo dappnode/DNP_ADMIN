@@ -18,7 +18,7 @@ function DnpStore({ directory, openDnp, featured }) {
       {directory.map(dnp => {
         const { manifest, error, avatar = defaultAvatar, origin, tag } =
           dnp || {};
-        const { name, description, appearance } = manifest || {};
+        const { name, description, style } = manifest || {};
         /* Show the button as disabled (gray) if it's updated */
         /* Rename tag from "install" to "get" because there were too many "install" tags 
              Cannot change the actual tag because it is used for logic around the installer */
@@ -30,7 +30,7 @@ function DnpStore({ directory, openDnp, featured }) {
            * Featured DNPs. Their size will be double a normal DNP card
            * Their style is customizable via the manifest
            */
-          const featuredStyle = (appearance || {}).featured || {};
+          const featuredStyle = (style || {}).featured || {};
           return (
             <Card
               key={name + origin}

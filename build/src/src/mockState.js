@@ -96,7 +96,7 @@ export const mockState = {
           url: "https://github.com/dappnode/DAppNodePackage-bitcoin/issues"
         },
         license: "GPL-3.0",
-        appearance: {
+        style: {
           featured: {
             background: "linear-gradient(to right, #4b3317, #cb6e00)",
             color: "white"
@@ -203,7 +203,7 @@ export const mockState = {
         },
         license: "MIT License",
         dependencies: {},
-        appearance: {
+        style: {
           featured: {
             background: "linear-gradient(to right, #323131, #395353)",
             color: "white",
