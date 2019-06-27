@@ -30,7 +30,8 @@ function DnpStore({ directory, openDnp, featured }) {
            * Featured DNPs. Their size will be double a normal DNP card
            * Their style is customizable via the manifest
            */
-          const featuredStyle = (style || {}).featured || {};
+          const { featuredBackground, featuredColor, featuredAvatarFilter } =
+            style || {};
           return (
             <Card
               key={name + origin}
@@ -38,14 +39,14 @@ function DnpStore({ directory, openDnp, featured }) {
               shadow
               onClick={() => openDnp(dnp.name)}
               style={{
-                background: featuredStyle.background,
-                color: featuredStyle.color
+                background: featuredBackground,
+                color: featuredColor
               }}
             >
               <div className="avatar-big">
                 <img
                   style={{
-                    filter: featuredStyle.imgFilter
+                    filter: featuredAvatarFilter
                   }}
                   src={error ? errorAvatar : avatar}
                   alt="avatar"

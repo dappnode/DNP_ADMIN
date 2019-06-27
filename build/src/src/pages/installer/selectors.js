@@ -115,7 +115,8 @@ export const getQueryDnpRequiresCoreUpdate = createSelector(
   getQueryDnp,
   getCoreCurrentVersion,
   (queryDnp, coreCurrentVersion) => {
-    const { minimumDappnodeVersion } = (queryDnp || {}).manifest || {};
+    const { requirements } = (queryDnp || {}).manifest || {};
+    const { minimumDappnodeVersion } = requirements || {};
     return (
       semver.valid(minimumDappnodeVersion) &&
       semver.valid(coreCurrentVersion) &&
