@@ -99,14 +99,20 @@ export const updateUserSetEnvs = ({ dnpName, id, name, value }) => ({
 //   "30303:30303/udp": {
 //     host: "30304",
 //     container: "30303",
-//     type: "udp"
+//     protocol: "udp"
 //   }
 // }
-export const updateUserSetPorts = ({ dnpName, id, host, container, type }) => ({
+export const updateUserSetPorts = ({
+  dnpName,
+  id,
+  host,
+  container,
+  protocol
+}) => ({
   type: t.UPDATE_USERSET_PORTS,
   dnpName,
   id,
-  values: { host, container, type }
+  values: { host, container, protocol }
 });
 
 // "bitcoin.dnp.dappnode.eth": {

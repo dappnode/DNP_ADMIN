@@ -287,7 +287,7 @@ export default {
    *   origin: "/ipfs/Qmabcd...", {string}
    *   chain: "ethereum", {string}
    *   dependencies: { dependency.dnp.dappnode.eth: "0.1.8" }, {object}
-   *   portsToClose: [ {number: 30303, type: 'UDP'}, ...], {array}
+   *   portsToClose: [ {portNumber: 30303, protocol: 'UDP'}, ...], {array}
    *
    *   // Appended on RPC call
    *   envs: { ENV_NAME: "ENV_VALUE" }, {object}
@@ -317,7 +317,7 @@ export default {
    *
    * @param {string} action: "open" or "close" (string)
    * @param {array} ports: array of port objects
-   * ports = [ { number: 30303, type: TCP }, ... ]
+   * ports = [ { portNumber: 30303, protocol: TCP }, ... ]
    */
   managePorts: {
     manadatoryKwargs: ["ports", "action"]

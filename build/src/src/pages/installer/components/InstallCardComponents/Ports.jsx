@@ -27,7 +27,7 @@ function Ports({ ports, isInstalled, hideCardHeaders, updateUserSetPorts }) {
               <div className="section-card-subtitle">{capitalize(dnpName)}</div>
             )}
             <TableInputs
-              headers={["Host port", "Package port / type"]}
+              headers={["Host port", "Package portNumber / protocol"]}
               content={values.map(({ id, ...port }) => [
                 {
                   disabled: isInstalled[dnpName],
@@ -38,7 +38,8 @@ function Ports({ ports, isInstalled, hideCardHeaders, updateUserSetPorts }) {
                 },
                 {
                   disabled: true,
-                  value: port.container + (port.type ? "/" + port.type : "")
+                  value:
+                    port.container + (port.protocol ? "/" + port.protocol : "")
                 }
               ])}
             />
@@ -55,7 +56,7 @@ function Ports({ ports, isInstalled, hideCardHeaders, updateUserSetPorts }) {
  *   "30303:30303/udp": {
  *     host: "30304",
  *     container: "30303",
- *     type: "udp",
+ *     protocol: "udp",
  *     index: 0,
  *   },
  *   "8333:8333": {
@@ -73,7 +74,7 @@ Ports.propTypes = {
         PropTypes.shape({
           host: PropTypes.string.isRequired,
           container: PropTypes.string.isRequired,
-          type: PropTypes.string,
+          protocol: PropTypes.string,
           index: PropTypes.number.isRequired
         })
       ).isRequired
