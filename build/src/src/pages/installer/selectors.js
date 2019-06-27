@@ -1,12 +1,15 @@
 import { mountPoint } from "./data";
 import { createSelector } from "reselect";
 import merge from "deepmerge";
+import semver from "semver";
+// Selectors
 import {
   getDnpDirectory,
   getDnpDirectoryWhitelisted
 } from "services/dnpDirectory/selectors";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 import { getDappnodeParams } from "services/dappnodeStatus/selectors";
+import { getCoreCurrentVersion } from "services/coreUpdate/selectors";
 // Parsers
 import {
   parseDefaultEnvs,
@@ -104,6 +107,20 @@ export const getIsQueryDnpUpdated = createSelector(
       (installedDnp || {}).origin || (installedDnp || {}).version;
     return (
       queryVersion && installedVersion && queryVersion === installedVersion
+    );
+  }
+);
+
+export const getQueryDnpRequiresCoreUpdate = createSelector(
+  getQueryDnp,
+  getCoreCurrentVersion,
+  (queryDnp, coreCurrentVersion) => {
+    const { requirements } = (queryDnp || {}).manifest || {};
+    const { minimumDappnodeVersion } = requirements || {};
+    return (
+      semver.valid(minimumDappnodeVersion) &&
+      semver.valid(coreCurrentVersion) &&
+      semver.gt(minimumDappnodeVersion, coreCurrentVersion)
     );
   }
 );

@@ -36,6 +36,7 @@ function InstallerInterface({
   id,
   dnp,
   isQueryDnpUpdated,
+  requiresCoreUpdate,
   progressLogs,
   // Actions
   install,
@@ -79,10 +80,21 @@ function InstallerInterface({
   const { size } = image || {};
   const repoSlug = getRepoSlugFromManifest(manifest);
   const changelogUrl = `https://github.com/dappnode/${repoSlug}/tag/v${version}`;
+  const shortName = shortNameCapitalized(name);
+
+  const disableInstallation = !isEmpty(progressLogs) || requiresCoreUpdate;
 
   return (
     <>
       <ProgressLogs progressLogs={progressLogs} />
+
+      {requiresCoreUpdate && (
+        <div className="alert alert-danger">
+          <strong>{shortName}</strong> requires a more recent version of
+          DAppNode. <strong>Update your DAppNode</strong> before continuing the
+          installation.
+        </div>
+      )}
 
       <Card className="installer-header">
         <div className="details-header">
@@ -91,7 +103,7 @@ function InstallerInterface({
           </div>
           <div className="right">
             <div className="info">
-              <div className="name">{shortNameCapitalized(name)}</div>
+              <div className="name">{shortName}</div>
               <div className="subtle-header">CREATED BY</div>
               <div className="badge">{shortAuthor(author)}</div>
             </div>
@@ -99,7 +111,7 @@ function InstallerInterface({
               className="action"
               variant="dappnode"
               onClick={() => install(id, options)}
-              disabled={!isEmpty(progressLogs)}
+              disabled={disableInstallation}
             >
               {tag}
             </Button>
@@ -175,6 +187,7 @@ const mapStateToProps = createStructuredSelector({
   id: s.getQueryId,
   dnp: s.getQueryDnp,
   isQueryDnpUpdated: s.getIsQueryDnpUpdated,
+  requiresCoreUpdate: s.getQueryDnpRequiresCoreUpdate,
   progressLogs: (state, ownProps) =>
     getProgressLogsByDnp(state, s.getQueryIdOrName(state, ownProps)),
   // For the withTitle HOC
