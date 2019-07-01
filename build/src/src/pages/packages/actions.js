@@ -98,7 +98,15 @@ export const removePackage = id => async (_, getState) => {
       text: `This action cannot be undone. If you do NOT want to keep ${id}'s data, remove it permanently clicking the "Remove and delete data" option.`,
       buttons: [
         { label: "Remove", onClick: resolve.bind(this, false) },
-        { label: "Remove and delete data", onClick: resolve.bind(this, true) }
+        // Only display the "Remove and delete data" button if necessary
+        ...(areThereVolumesToRemove(dnp)
+          ? [
+              {
+                label: "Remove and delete data",
+                onClick: resolve.bind(this, true)
+              }
+            ]
+          : [])
       ]
     })
   );
@@ -156,6 +164,8 @@ export const cleanCache = () => () =>
  * If there are volumes which this DNP is the owner and some other
  * DNPs are users, they will be removed by the DAPPMANAGER.
  * Alert the user about this fact
+ * @param {object} dnp DNP is installed object
+ * @returns {string} list of DNPs to remove
  */
 function getDnpsToRemove(dnp) {
   const dnpsToRemoveObj = {};
@@ -164,4 +174,13 @@ function getDnpsToRemove(dnp) {
       for (const dnpName of vol.users)
         if (dnpName !== dnp.name) dnpsToRemoveObj[dnpName] = true;
   return Object.keys(dnpsToRemoveObj).join(", ");
+}
+
+/**
+ * Checks if there are volumes to be removed on this DNP
+ * @param {object} dnp DNP is installed object
+ * @returns {bool}
+ */
+function areThereVolumesToRemove(dnp) {
+  return (dnp.volumes || []).filter(vol => vol.isOwner).length;
 }
