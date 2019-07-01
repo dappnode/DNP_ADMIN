@@ -11,6 +11,7 @@ import { toSentence } from "utils/strings";
 import humanFileSize from "utils/humanFileSize";
 import getRepoSlugFromManifest from "utils/getRepoSlugFromManifest";
 import { shortNameCapitalized, shortAuthor } from "utils/format";
+import newTabProps from "utils/newTabProps";
 // This module
 import * as s from "../selectors";
 import * as a from "../actions";
@@ -78,8 +79,8 @@ function InstallerInterface({
   const { shortDescription, description, author, version, image } =
     manifest || {};
   const { size } = image || {};
+  // If the repoSlug is invalid, it will be returned as null
   const repoSlug = getRepoSlugFromManifest(manifest);
-  const changelogUrl = `https://github.com/dappnode/${repoSlug}/tag/v${version}`;
   const shortName = shortNameCapitalized(name);
 
   const disableInstallation = !isEmpty(progressLogs) || requiresCoreUpdate;
@@ -145,7 +146,15 @@ function InstallerInterface({
             <div>{humanFileSize(size)}</div>
             <div className="subtle-header">VERSION</div>
             <div>
-              {version} {origin || ""} <a href={changelogUrl}>changelog</a>
+              {version} {origin || ""}{" "}
+              {repoSlug && version && (
+                <a
+                  href={`https://github.com/${repoSlug}/releases/v${version}`}
+                  {...newTabProps}
+                >
+                  changelog
+                </a>
+              )}
             </div>
             <div className="subtle-header">CREATED BY</div>
             <ReactMarkdown className="no-p-style" source={author} />
