@@ -92,24 +92,21 @@ export const removePackage = id => async (_, getState) => {
   const dnp = getDnpInstalledById(getState(), id);
 
   // Dialog to confirm remove + USER INPUT for delete volumes
-  const deleteVolumes = await new Promise(resolve =>
-    confirm({
-      title: `Removing ${sn(id)}`,
-      text: `This action cannot be undone. If you do NOT want to keep ${id}'s data, remove it permanently clicking the "Remove and delete data" option.`,
-      buttons: [
-        { label: "Remove", onClick: resolve.bind(this, false) },
-        // Only display the "Remove and delete data" button if necessary
-        ...(areThereVolumesToRemove(dnp)
-          ? [
-              {
-                label: "Remove and delete data",
-                onClick: resolve.bind(this, true)
-              }
-            ]
-          : [])
-      ]
-    })
-  );
+  const deleteVolumes = await new Promise(resolve => {
+    const title = `Removing ${sn(id)}`;
+    let text = `This action cannot be undone.`;
+    const buttons = [{ label: "Remove", onClick: resolve.bind(this, false) }];
+    if (areThereVolumesToRemove(dnp)) {
+      // Only show the remove data related text if necessary
+      text += ` If you do NOT want to keep ${id}'s data, remove it permanently clicking the "Remove and delete data" option.`;
+      // Only display the "Remove and delete data" button if necessary
+      buttons.push({
+        label: "Remove and delete data",
+        onClick: resolve.bind(this, true)
+      });
+    }
+    return confirm({ title, text, buttons });
+  });
 
   const dnpsToRemove = getDnpsToRemove(dnp);
   if (dnpsToRemove)
