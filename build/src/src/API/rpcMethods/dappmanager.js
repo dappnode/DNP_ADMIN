@@ -24,7 +24,7 @@ export default {
    * @param {(string|number)} timeout new IPFS timeout in ms
    */
   changeIpfsTimeout: {
-    manadatoryKwargs: ["timeout"]
+    mandatoryKwargs: ["timeout"]
   },
 
   /**
@@ -52,7 +52,7 @@ export default {
    * @returns {string} dataUri = "data:application/zip;base64,UEsDBBQAAAg..."
    */
   copyFileFrom: {
-    manadatoryKwargs: ["id", "fromPath"]
+    mandatoryKwargs: ["id", "fromPath"]
   },
 
   /**
@@ -73,7 +73,7 @@ export default {
    *   Same for relative paths to directories.
    */
   copyFileTo: {
-    manadatoryKwargs: ["id", "dataUri", "filename", "toPath"]
+    mandatoryKwargs: ["id", "dataUri", "filename", "toPath"]
   },
 
   /**
@@ -107,7 +107,7 @@ export default {
    * }
    */
   diskSpaceAvailable: {
-    manadatoryKwargs: ["path"]
+    mandatoryKwargs: ["path"]
   },
 
   /**
@@ -136,7 +136,7 @@ export default {
    * }
    */
   fetchPackageData: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -150,7 +150,7 @@ export default {
    * }, ... ]
    */
   fetchPackageVersions: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -239,7 +239,7 @@ export default {
    * options = { BYPASS_RESOLVER: true, BYPASS_CORE_RESTRICTION: true }
    */
   installPackage: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -253,7 +253,7 @@ export default {
    * options = { BYPASS_CORE_RESTRICTION: true }
    */
   installPackageSafe: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -308,7 +308,7 @@ export default {
    * @returns {string} logs: <string with escape codes>
    */
   logPackage: {
-    manadatoryKwargs: ["id", "options"]
+    mandatoryKwargs: ["id", "options"]
   },
 
   /**
@@ -320,7 +320,7 @@ export default {
    * ports = [ { portNumber: 30303, protocol: TCP }, ... ]
    */
   managePorts: {
-    manadatoryKwargs: ["ports", "action"]
+    mandatoryKwargs: ["ports", "action"]
   },
 
   /**
@@ -347,7 +347,7 @@ export default {
    * ids = [ "notification-id1", "notification-id2" ]
    */
   notificationsRemove: {
-    manadatoryKwargs: ["ids"]
+    mandatoryKwargs: ["ids"]
   },
 
   /**
@@ -373,7 +373,7 @@ export default {
    * @param {bool} deleteVolumes flag to also clear permanent package data
    */
   removePackage: {
-    manadatoryKwargs: ["id", "deleteVolumes"]
+    mandatoryKwargs: ["id", "deleteVolumes"]
   },
 
   /**
@@ -399,7 +399,7 @@ export default {
    * }
    */
   resolveRequest: {
-    manadatoryKwargs: ["req"]
+    mandatoryKwargs: ["req"]
   },
 
   /**
@@ -409,7 +409,7 @@ export default {
    * @param {string} id DNP .eth name
    */
   restartPackage: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -419,7 +419,7 @@ export default {
    * @param {string} id DNP .eth name
    */
   restartPackageVolumes: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -430,7 +430,7 @@ export default {
    * @param {number} timeout seconds to stop the package
    */
   togglePackage: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -445,6 +445,6 @@ export default {
    * @param {bool} restart flag to restart the DNP
    */
   updatePackageEnv: {
-    manadatoryKwargs: ["id", "envs", "restart"]
+    mandatoryKwargs: ["id", "envs", "restart"]
   }
 };
