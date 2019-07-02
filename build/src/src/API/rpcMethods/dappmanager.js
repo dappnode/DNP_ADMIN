@@ -18,6 +18,34 @@ export default {
   ping: {},
 
   /**
+   * Does a backup of a DNP and sends it to the client for download.
+   *
+   * @param {string} id DNP .eth name
+   * @param {array} backup [
+   *   { name: "config", path: "/usr/.raiden/config" },
+   *   { name: "keystore", path: "/usr/.raiden/secret/keystore" }
+   * ]
+   * @returns {string} fileId = "64020f6e8d2d02aa2324dab9cd68a8ccb186e192232814f79f35d4c2fbf2d1cc"
+   */
+  backupGet: {
+    mandatoryKwargs: ["id", "backup"]
+  },
+
+  /**
+   * Restore a previous backup of a DNP, from the dataUri provided by the user
+   *
+   * @param {string} id DNP .eth name
+   * @param {string} fileId = "64020f6e8d2d02aa2324dab9cd68a8ccb186e192232814f79f35d4c2fbf2d1cc"
+   * @param {array} backup [
+   *   { name: "config", path: "/usr/.raiden/config" },
+   *   { name: "keystore", path: "/usr/.raiden/secret/keystore" }
+   * ]
+   */
+  backupRestore: {
+    mandatoryKwargs: ["id", "backup", "fileId"]
+  },
+
+  /**
    * [changeIpfsTimeout]
    * Used to test different IPFS timeout parameters live from the ADMIN UI.
    *

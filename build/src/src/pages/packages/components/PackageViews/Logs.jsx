@@ -130,6 +130,7 @@ function Logs({ id }) {
               Download all
             </Button>
           }
+          style={{ minWidth: "75px" }}
         />
 
         <Input

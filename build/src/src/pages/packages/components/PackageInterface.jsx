@@ -9,6 +9,7 @@ import DnpSpecific from "./PackageViews/DnpSpecific";
 import Logs from "./PackageViews/Logs";
 import Envs from "./PackageViews/Envs";
 import FileManager from "./PackageViews/FileManager";
+import Backup from "./PackageViews/Backup";
 import Controls from "./PackageViews/Controls";
 import NoDnpInstalled from "./NoDnpInstalled";
 // Components
@@ -41,6 +42,7 @@ const PackageInterface = ({
         <DnpSpecific dnp={dnp} />
         <Envs dnp={dnp} />
         <FileManager dnp={dnp} />
+        <Backup dnp={dnp} />
         <Logs id={dnp.name} />
       </>
     ) : loading ? (
