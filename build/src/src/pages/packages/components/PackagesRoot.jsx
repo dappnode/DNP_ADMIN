@@ -5,7 +5,7 @@ import { rootPath } from "../data";
 import PackagesHome from "./PackagesHome";
 import PackageInterface from "./PackageInterface";
 // Styles
-import "./packages.css";
+import "./packages.scss";
 
 const PackagesRoot = () => (
   <>

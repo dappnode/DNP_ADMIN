@@ -1,45 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as a from "../../../actions";
 import api from "API/rpcMethods";
 // Components
-import { ButtonLight } from "components/Button";
-import ProgressBar from "react-bootstrap/ProgressBar";
+import Button from "components/Button";
 // Utils
 import { shortName } from "utils/format";
-import humanFileSize from "utils/humanFileSize";
+import humanFS from "utils/humanFileSize";
 
 const baseUrlUpload = "http://my.dappmanager.dnp.dappnode.eth:3000/upload";
 
-function Restore({ id, backup, copyFileTo }) {
-  const [file, setFile] = useState(null);
-  const [loaded, setLoaded] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [error, setError] = useState("");
-  const [restoring, setRestoring] = useState(false);
-
-  const { name, size } = file || {};
-
-  async function restoreBackupWithFileId(fileId) {
-    try {
-      setRestoring(true);
-      await api.backupRestore(
-        { id, backup, fileId },
-        {
-          toastMessage: `Restoring backup for ${shortName(id)}...`,
-          throw: true
-        }
-      );
-      setFile(null);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setRestoring(false);
-    }
+function Restore({ id, backup, setProgress, isOnProgress, error, setError }) {
+  function handleFileChange(e) {
+    const file = e.target.files[0];
+    submit(file);
   }
 
-  function submit() {
+  function submit(file) {
     setError("");
 
     const xhr = new XMLHttpRequest();
@@ -49,18 +27,26 @@ function Restore({ id, backup, copyFileTo }) {
 
     // Define what happens on successful data submission
     xhr.addEventListener("load", e => {
-      setLoaded(0);
-      setTotal(0);
-      const { responseText } = e.target;
-      if (!/[0-9A-Fa-f]{64}/.test(responseText))
-        setError(`Wrong response: ${responseText}`);
-      else restoreBackupWithFileId(responseText);
+      setProgress(null);
+      const fileId = e.target.responseText;
+      // if responseText is not a 32bytes hex, abort
+      if (!/[0-9A-Fa-f]{64}/.test(fileId))
+        return setError(`Wrong response: ${fileId}`);
+
+      setProgress({ label: "Restoring backup..." });
+      api
+        .backupRestore(
+          { id, backup, fileId },
+          { toastMessage: `Restoring backup for ${shortName(id)}...` }
+        )
+        .then(() => {
+          setProgress(null);
+        });
     });
 
     // Define what happens in case of error
     xhr.addEventListener("error", e => {
-      setLoaded(0);
-      setTotal(0);
+      setProgress(null);
       setError("Something went wrong");
     });
 
@@ -68,8 +54,12 @@ function Restore({ id, backup, copyFileTo }) {
       xhr.upload.addEventListener(
         "progress",
         e => {
-          setLoaded(e.loaded); // In bytes
-          setTotal(e.total); // In bytes
+          const { loaded, total } = e;
+          const percent = ((100 * (loaded || 0)) / (total || 1)).toFixed(2);
+          setProgress({
+            percent,
+            label: `${percent}% ${humanFS(loaded)} / ${humanFS(total)}`
+          });
         },
         false
       );
@@ -80,43 +70,19 @@ function Restore({ id, backup, copyFileTo }) {
     xhr.send(formData);
   }
 
-  const percent = ((100 * (loaded || 0)) / (total || 1)).toFixed(2);
-
   return (
     <div className="card-subgroup">
-      <div className="section-card-subtitle">Restore</div>
-      {/* TO, choose source file */}
-
-      <div className="input-group mb-3">
-        <div className="custom-file">
-          <input
-            type="file"
-            id="backup_upload"
-            name="file"
-            accept=".tar, .xz, .tar.xz, .zip"
-            className="custom-file-input"
-            onChange={e => setFile(e.target.files[0])}
-            disabled={Boolean(total) || restoring}
-          />
-          <label className="custom-file-label" htmlFor="inputGroupFile01">
-            {name ? `${name} (${humanFileSize(size || 0)})` : "Choose file"}
-          </label>
-        </div>
-      </div>
-
-      {file && !Boolean(total) && !restoring && (
-        <ButtonLight onClick={submit}>Upload</ButtonLight>
-      )}
-
-      {Boolean(total) && (
-        <ProgressBar
-          now={percent || 100}
-          animated={true}
-          label={`${percent}% ${loaded} / ${total}`}
+      <Button className="button-file-input" disabled={isOnProgress}>
+        <span>Restore backup</span>
+        <input
+          type="file"
+          id="backup_upload"
+          name="file"
+          accept=".tar, .xz, .tar.xz, .zip"
+          onChange={handleFileChange}
+          disabled={isOnProgress}
         />
-      )}
-
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+      </Button>
     </div>
   );
 }
