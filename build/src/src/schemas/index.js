@@ -133,8 +133,12 @@ export const devices = Joi.array()
 
 export const dnpDirectoryItem = Joi.object({
   name: Joi.string().required(),
-  status: Joi.string(),
+  status: Joi.number(),
+  statusName: Joi.string(),
+  position: Joi.number(),
   directoryId: Joi.number(),
+  isFeatured: Joi.bool(),
+  featuredIndex: Joi.number(),
   manifest: manifest,
   avatar: Joi.string().dataUri()
 });

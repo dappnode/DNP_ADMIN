@@ -10,12 +10,16 @@
  *   whitelisted: true
  * }, ... ]
  * @param {string} query = "bitco"
- * @param {object} selectedTypes = { library: false, service: true }
+ * @param {object} selectedCategories = { library: false, service: true }
  * @returns {array} some elements of directory
  * [Tested]
  */
-export default function filterDirectory({ directory, query, selectedTypes }) {
-  const areThereTypes = Object.values(selectedTypes).reduce(
+export default function filterDirectory({
+  directory,
+  query,
+  selectedCategories
+}) {
+  const isSomeCategorySelected = Object.values(selectedCategories).reduce(
     (acc, val) => acc || val,
     false
   );
@@ -23,8 +27,10 @@ export default function filterDirectory({ directory, query, selectedTypes }) {
     .filter(dnp => !query || includesSafe(dnp.manifest, query))
     .filter(
       dnp =>
-        !areThereTypes ||
-        ((dnp.manifest || {}).type && selectedTypes[dnp.manifest.type])
+        !isSomeCategorySelected ||
+        ((dnp.manifest || {}).categories || []).some(
+          category => selectedCategories[category]
+        )
     );
 }
 

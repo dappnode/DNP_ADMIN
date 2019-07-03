@@ -428,7 +428,7 @@ describe("pages > installer > selectors", () => {
     it("Should add the installer tag properly", () => {
       const state = {
         [mountPoint]: {
-          selectedTypes: {},
+          selectedCategories: {},
           input: ""
         },
         [dnpDirectoryMountPoint]: dnpDirectory,
