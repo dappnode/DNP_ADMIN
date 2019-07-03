@@ -67,4 +67,4 @@ function parseSpecialPermissions(manifest = {}) {
   return specialPermissions;
 }
 
-module.exports = parseSpecialPermissions;
+export default parseSpecialPermissions;
