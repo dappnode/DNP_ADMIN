@@ -1,3 +1,5 @@
+import { stringSplit, stringIncludes } from "./strings";
+
 const supportedDomains = ["eth"];
 
 function isEnsDomain(ensDomain) {
@@ -5,8 +7,8 @@ function isEnsDomain(ensDomain) {
   if (ensDomain.includes("/")) return false;
   if (!ensDomain.includes(".")) return false;
   // "kovan.dnp.dappnode.eth" => "eth"
-  const domain = ensDomain.split(".").slice(-1)[0] || "";
-  if (!supportedDomains.includes(domain)) return false;
+  const domain = stringSplit(ensDomain, ".").slice(-1)[0] || "";
+  if (!stringIncludes(supportedDomains, domain)) return false;
   // If no negative condition was matched:
   return true;
 }

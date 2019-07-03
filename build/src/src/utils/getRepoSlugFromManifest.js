@@ -1,3 +1,5 @@
+import { stringSplit } from "./strings";
+
 const githubBaseUrl = "https://github.com/";
 
 /**
@@ -11,7 +13,7 @@ function getRepoSlugFromManifest(manifest = {}) {
   // Ignore faulty manifests
   if (type !== "git" || !url || !url.includes(githubBaseUrl)) return;
   // Get repo slug from the repoUrl, i.e. "https://github.com/dappnode/DNP_VPN"
-  const repoSlug = url.split(githubBaseUrl)[1] || "";
+  const repoSlug = stringSplit(url, githubBaseUrl)[1] || "";
   return repoSlug.replace(/\/+$/, "").replace(".git", "");
 }
 

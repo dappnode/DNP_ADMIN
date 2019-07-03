@@ -8,6 +8,7 @@ import { ButtonLight } from "components/Button";
 import { shortName } from "utils/format";
 import dataUriToBlob from "utils/dataUriToBlob";
 import { saveAs } from "file-saver";
+import { stringSplit } from "utils/strings";
 
 function From({ id }) {
   const [fromPath, setFromPath] = useState("");
@@ -46,7 +47,9 @@ function From({ id }) {
 
   return (
     <div className="card-subgroup">
-      <div className="section-card-subtitle">Download from DAppNode Package</div>
+      <div className="section-card-subtitle">
+        Download from DAppNode Package
+      </div>
       {/* FROM, chose path */}
       <Input
         placeholder="Container from path"
@@ -64,7 +67,7 @@ function From({ id }) {
 
 function parseFileName(path, mimeType) {
   if (!path || typeof path !== "string") return path;
-  const subPaths = path.split("/");
+  const subPaths = stringSplit(path, "/");
   let fileName = subPaths[subPaths.length - 1] || "";
 
   // Add extension in case it is a compressed directory

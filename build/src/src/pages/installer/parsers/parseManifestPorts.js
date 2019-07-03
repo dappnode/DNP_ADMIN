@@ -1,3 +1,5 @@
+import { stringSplit } from "utils/strings";
+
 /**
  * Parse the ports of a manifest object
  * @param {object} manifest
@@ -11,8 +13,8 @@
 export default function parseManifestPorts(manifest = {}) {
   const portsArray = (manifest.image || {}).ports || [];
   return portsArray.reduce((obj, port, index) => {
-    const [portMapping, protocol] = port.split("/");
-    const [host, container] = portMapping.split(":");
+    const [portMapping, protocol] = stringSplit(port, "/");
+    const [host, container] = stringSplit(portMapping, ":");
 
     // HOST:CONTAINER/protocol, return [HOST, CONTAINER/protocol]
     if (container) obj[port] = { host, container, protocol, index };

@@ -9,6 +9,7 @@ import { wrapErrorsAndLoading } from "services/loadingStatus/sagas";
 import * as loadingIds from "services/loadingStatus/loadingIds";
 // Utils
 import { assertConnectionOpen } from "utils/redux";
+import { stringSplit } from "utils/strings";
 
 // Service > dappnodeStatus
 
@@ -119,7 +120,7 @@ const checkWifiStatus = wrapErrorsAndLoading(
       id: "wifi.dnp.dappnode.eth",
       options: {}
     });
-    const firstLogLine = logs.trim().split("\n")[0];
+    const firstLogLine = stringSplit(logs.trim(), "\n")[0];
     const running = !firstLogLine.includes("No interface found");
     yield put(a.updateWifiStatus({ running }));
   }

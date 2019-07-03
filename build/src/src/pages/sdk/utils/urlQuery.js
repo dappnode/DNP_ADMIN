@@ -1,3 +1,5 @@
+import { stringSplit } from "utils/strings";
+
 /**
  * Parses url params into an object
  * Sample params:
@@ -8,8 +10,8 @@
  * @returns {object}
  */
 export const parseUrlQuery = (params = "") =>
-  params.split("&").reduce((obj, pair) => {
-    const [key, value] = pair.split("=");
+  stringSplit(params, "&").reduce((obj, pair) => {
+    const [key, value] = stringSplit(pair, "=");
     obj[key] = decodeURIComponent(value);
     return obj;
   }, {});

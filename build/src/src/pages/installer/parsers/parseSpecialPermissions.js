@@ -1,3 +1,5 @@
+import { stringSplit } from "utils/strings";
+
 /**
  * - Usage of an external volume
  * - Privileged
@@ -15,8 +17,8 @@ function parseSpecialPermissions(manifest = {}) {
 
   for (const externalVol of external_vol || []) {
     // externalVol = "dncore_ethchaindnpdappnodeeth_data:/app/.ethchain:ro"
-    const host = externalVol.split(":")[0];
-    const parts = host.split("_");
+    const host = stringSplit(externalVol, ":")[0];
+    const parts = stringSplit(host, "_");
     if (parts[0] === "dncore")
       specialPermissions.push({
         name: "Access to core volume",

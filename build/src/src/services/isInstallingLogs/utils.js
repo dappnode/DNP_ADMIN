@@ -1,1 +1,3 @@
-export const stripVersion = s => (s || "").split("@")[0];
+import { stringSplit } from "utils/strings";
+
+export const stripVersion = s => stringSplit(s, "@")[0];
