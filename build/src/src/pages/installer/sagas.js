@@ -22,7 +22,7 @@ import isIpfsHash from "utils/isIpfsHash";
 import isEnsDomain from "utils/isEnsDomain";
 import uniqArray from "utils/uniqArray";
 import Joi from "joi";
-import { stringSplit } from "utils/strings";
+import { stringSplit, stringIncludes } from "utils/strings";
 
 /***************************** Subroutines ************************************/
 
@@ -130,7 +130,7 @@ export function* fetchPackageRequest({ id }) {
     yield call(assertConnectionOpen);
 
     // If chain is not synced yet, cancel request.
-    if (id && !id.includes("ipfs/")) {
+    if (!stringIncludes(id, "ipfs/")) {
       if (yield call(isSyncing)) {
         return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
       }

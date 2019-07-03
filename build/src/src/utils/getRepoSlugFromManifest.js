@@ -1,4 +1,4 @@
-import { stringSplit } from "./strings";
+import { stringSplit, stringIncludes } from "./strings";
 
 const githubBaseUrl = "https://github.com/";
 
@@ -11,10 +11,10 @@ const githubBaseUrl = "https://github.com/";
 function getRepoSlugFromManifest(manifest = {}) {
   const { type, url } = manifest.repository || {};
   // Ignore faulty manifests
-  if (type !== "git" || !url || !url.includes(githubBaseUrl)) return;
+  if (type !== "git" || !stringIncludes(url, githubBaseUrl)) return;
   // Get repo slug from the repoUrl, i.e. "https://github.com/dappnode/DNP_VPN"
-  const repoSlug = stringSplit(url, githubBaseUrl)[1] || "";
-  return repoSlug.replace(/\/+$/, "").replace(".git", "");
+  const repoSlug = stringSplit(url, githubBaseUrl)[1];
+  return (repoSlug || "").replace(/\/+$/, "").replace(".git", "");
 }
 
 export default getRepoSlugFromManifest;

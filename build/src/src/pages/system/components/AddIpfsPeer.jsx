@@ -9,6 +9,7 @@ import Card from "components/Card";
 import Input from "components/Input";
 import Button from "components/Button";
 import Ok from "components/Ok";
+import { stringIncludes } from "utils/strings";
 
 /**
  * peer = "/dns4/1bc3641738cbe2b1.dyndns.dappnode.io/tcp/4001/ipfs/QmWAcZZCvqVnJ6J9946qxEMaAbkUj6FiiVWakizVKfnfDL"
@@ -52,9 +53,9 @@ export default function AddIpfsPeer({ match }) {
     const res = await fetchJson(`${ipfsApiUrl}/swarm/connect?arg=${peer}`);
     if (res.Type === "error") {
       console.error(`Error on addSwarmConnection:`, res);
-      if (res.Message.includes("dial attempt failed"))
+      if (stringIncludes(res.Message, "dial attempt failed"))
         throw Error("Can't connect to peer");
-      else if (res.Message.includes("dial to self attempt"))
+      else if (stringIncludes(res.Message, "dial to self attempt"))
         throw Error("You can't add yourself");
       else throw Error(res.Message);
     }
@@ -62,7 +63,7 @@ export default function AddIpfsPeer({ match }) {
 
   async function addBootstrap(peer) {
     const res = await fetchJson(`${ipfsApiUrl}/bootstrap/add?arg=${peer}`);
-    if (!res.Peers.includes(peer)) {
+    if (!(res.Peers || []).includes(peer)) {
       console.error(`Error on addBootstrap:`, res);
       throw Error(`Error adding bootstrap node`);
     }

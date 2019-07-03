@@ -102,7 +102,7 @@ function getDnpNameInput(state) {
   const error = [],
     success = [];
   // Validation that don't require external calls
-  if (dnpName && !dnpName.includes("."))
+  if (dnpName && !stringIncludes(dnpName, "."))
     error.push(`"${dnpName}" is not a valid ENS domain`);
 
   // Validations that require external calls

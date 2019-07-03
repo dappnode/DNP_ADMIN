@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
 import makeBlockie from "ethereum-blockies-base64";
 import { getDappnodeIdentityClean } from "services/dappnodeStatus/selectors";
-import { stringSplit } from "utils/strings";
+import { stringSplit, stringIncludes } from "utils/strings";
 
 /**
  * Patch to fix the visual issue of the domain being too long.
@@ -16,7 +16,7 @@ import { stringSplit } from "utils/strings";
  * @param {string} value
  */
 function parseIdentityKeyValue(key, value) {
-  if (key.includes("domain")) {
+  if (stringIncludes(key, "domain")) {
     const [hex, rootDomain] = stringSplit(value, /\.(.+)/);
     return (
       <>
