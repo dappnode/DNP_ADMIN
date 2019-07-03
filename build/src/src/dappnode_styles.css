@@ -20,8 +20,8 @@ a:hover {
 }
 
 /* Change default <p> margin-bottom */
-.no-p-style p,
-p.no-p-style {
+.no-p-style:last-child p:last-child,
+p.no-p-style:last-child {
   margin-bottom: 0;
 }
 
