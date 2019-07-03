@@ -7,16 +7,6 @@ import { getDnpDirectoryById } from "services/dnpDirectory/selectors";
 // Parsers
 import parseSpecialPermissions from "./parsers/parseSpecialPermissions";
 
-export const updateInput = id => ({
-  type: t.UPDATE_INPUT,
-  payload: id
-});
-
-export const updateSelectedTypes = types => ({
-  type: t.UPDATE_SELECTED_TYPES,
-  payload: types
-});
-
 export const fetchDirectory = () => ({
   type: t.FETCH_DIRECTORY
 });

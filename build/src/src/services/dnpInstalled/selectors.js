@@ -48,7 +48,6 @@ export const getAreWifiCredentialsDefault = createSelector(
   getDnpInstalled,
   dnps => {
     const wifiDnp = dnps.find(dnp => dnp.name === "wifi.dnp.dappnode.eth");
-    console.log(wifiDnp);
     if (!wifiDnp || !wifiDnp.envs) return false;
     return (
       wifiDnp.envs.WPA_PASSPHRASE === wifiDefaultWPA_PASSPHRASE &&
