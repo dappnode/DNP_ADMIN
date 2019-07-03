@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import api from "API/rpcMethods";
+import { confirm } from "components/ConfirmDialog";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
 import Button from "components/Button";
+import Columns from "components/Columns";
 import ProgressBar from "react-bootstrap/ProgressBar";
 // Utils
 import { shortName } from "utils/format";
@@ -123,6 +125,19 @@ function Backup({ dnp }) {
     xhr.send(formData);
   }
 
+  function handleClickRestore(file) {
+    confirm({
+      title: `Restoring backup`,
+      text: `This action cannot be undone. The backup data will overwrite any previously existing data.`,
+      list: [
+        { title: "Selected file", body: `${file.name} (${humanFS(file.size)})` }
+      ],
+      label: "Restore",
+      onClick: () => restoreBackup(file),
+      variant: "dappnode"
+    });
+  }
+
   // Only render the component if a backup mechanism is provided
   if (!Array.isArray(backup)) return null;
 
@@ -130,47 +145,58 @@ function Backup({ dnp }) {
     <>
       <SubTitle>Backup</SubTitle>
       <Card className="backup">
-        <div>
-          This DAppNode Package backup will contain the items:{" "}
-          {backup.map(({ name }) => name).join(", ")}
-        </div>
-
         {/* Get backup */}
-        <div>
-          {url ? (
-            <a href={url} {...newTabProps} className="no-a-style">
-              <Button variant="dappnode">Download backup</Button>
-              <div
-                style={{
-                  opacity: 0.7,
-                  fontSize: "0.8rem",
-                  marginTop: "0.5rem"
-                }}
+        <Columns>
+          <div>
+            <div className="subtle-header">DOWNLOAD BACKUP</div>
+            <p>
+              Download a backup of the critical files of this package in you
+              local machine.
+            </p>
+            {url ? (
+              <a href={url} {...newTabProps} className="no-a-style">
+                <Button variant="dappnode">Download backup</Button>
+                <div
+                  style={{
+                    opacity: 0.7,
+                    fontSize: "0.8rem",
+                    marginTop: "0.5rem"
+                  }}
+                >
+                  Allow browser pop-ups or click download
+                </div>
+              </a>
+            ) : (
+              <Button
+                onClick={prepareBackupForDownload}
+                disabled={isOnProgress}
+                variant="dappnode"
               >
-                Allow browser pop-ups or click download
-              </div>
-            </a>
-          ) : (
-            <Button onClick={prepareBackupForDownload} disabled={isOnProgress}>
-              Backup now
-            </Button>
-          )}
-        </div>
+                Backup now
+              </Button>
+            )}
+          </div>
 
-        {/* Restore backup */}
-        <div>
-          <Button className="button-file-input" disabled={isOnProgress}>
-            <span>Restore backup</span>
-            <input
-              type="file"
-              id="backup_upload"
-              name="file"
-              accept=".tar, .xz, .tar.xz, .zip"
-              onChange={e => restoreBackup(e.target.files[0])}
-              disabled={isOnProgress}
-            />
-          </Button>
-        </div>
+          {/* Restore backup */}
+          <div>
+            <div className="subtle-header">RESTORE BACKUP</div>
+            <p>
+              Restore an existing backup. Note that this action will overwrite
+              existing data.
+            </p>
+            <Button className="button-file-input" disabled={isOnProgress}>
+              <span>Restore</span>
+              <input
+                type="file"
+                id="backup_upload"
+                name="file"
+                accept=".tar, .xz, .tar.xz, .zip"
+                onChange={e => handleClickRestore(e.target.files[0])}
+                disabled={isOnProgress}
+              />
+            </Button>
+          </div>
+        </Columns>
 
         {isOnProgress && (
           <div>
@@ -182,7 +208,7 @@ function Backup({ dnp }) {
           </div>
         )}
 
-        {error && <p style={{ color: "red" }}>Error: {error}</p>}
+        {error && <div style={{ color: "red" }}>Error: {error}</div>}
       </Card>
     </>
   );
