@@ -16,28 +16,9 @@ import newTabProps from "utils/newTabProps";
 const baseUrlUpload = "http://my.dappmanager.dnp.dappnode.eth:3000/upload";
 const baseUrlDownload = "http://my.dappmanager.dnp.dappnode.eth:3000/download";
 
-const backupFake = [
-  {
-    name: "modules",
-    path: "/usr/src/app/node_modules"
-  },
-  {
-    name: "src",
-    path: "/usr/src/app/src"
-  },
-  {
-    name: "secrets",
-    path: "/usr/src/app/secrets"
-  },
-  {
-    name: "etc",
-    path: "/usr/src/app/etc"
-  }
-];
-
 function Backup({ dnp }) {
   const id = dnp.name;
-  const backup = (dnp.manifest || {}).backup || backupFake;
+  const backup = (dnp.manifest || {}).backup;
 
   const [progress, setProgress] = useState();
   const [error, setError] = useState("");
