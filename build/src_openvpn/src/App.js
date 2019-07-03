@@ -80,7 +80,7 @@ const options = [
   }
 ];
 
-const baseUrl = window.location.origin;
+const origin = window.location.origin;
 const ovpnType = "application/x-openvpn-profile";
 const fileExtension = "ovpn";
 
@@ -99,7 +99,7 @@ export default class App extends Component {
       // 1. Get params from url
       this.setState({ loading: true });
       const { key, id, name, dev } = getParamsFromUrl();
-      const url = `${baseUrl}/cred/${id}?id=${id}`;
+      const url = `${origin}/cred/${id}?id=${id}`;
 
       // Dev param to be able to work on the UI
       if (dev) {
