@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import * as action from "../../actions";
 // Components
 import CardList from "components/CardList";
-import SubTitle from "components/SubTitle";
 import Button from "components/Button";
 // Utils
 import { toLowercase } from "utils/strings";
@@ -91,34 +90,31 @@ function PackageControls({
 
   // Table style -> Removes the space below the table, only for tables in cards
   return (
-    <>
-      <SubTitle>Controls</SubTitle>
-      <CardList>
-        {actions
-          .filter(
-            action =>
-              action.availableForCore ||
-              !dnp.isCore ||
-              (action.whitelist || []).includes(dnp.name)
-          )
-          .map(({ name, text, type, action, disabled }) => (
-            <div key={name} className="control-item">
-              <div>
-                <strong>{name}</strong>
-                <div>{text}</div>
-              </div>
-              <Button
-                variant={`outline-${type}`}
-                onClick={action}
-                style={{ whiteSpace: "normal" }}
-                disabled={disabled}
-              >
-                {name}
-              </Button>
+    <CardList>
+      {actions
+        .filter(
+          action =>
+            action.availableForCore ||
+            !dnp.isCore ||
+            (action.whitelist || []).includes(dnp.name)
+        )
+        .map(({ name, text, type, action, disabled }) => (
+          <div key={name} className="control-item">
+            <div>
+              <strong>{name}</strong>
+              <div>{text}</div>
             </div>
-          ))}
-      </CardList>
-    </>
+            <Button
+              variant={`outline-${type}`}
+              onClick={action}
+              style={{ whiteSpace: "normal" }}
+              disabled={disabled}
+            >
+              {name}
+            </Button>
+          </div>
+        ))}
+    </CardList>
   );
 }
 

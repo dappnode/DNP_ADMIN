@@ -15,3 +15,8 @@ export default function Specific({ dnp }) {
   const Component = Components[name];
   return Component ? <Component dnp={dnp} /> : null;
 }
+
+export const dnpSpecificList = {
+  "dappmanager.dnp.dappnode.eth": "Clean cache",
+  "ipfs.dnp.dappnode.eth": "Connect with peers"
+};

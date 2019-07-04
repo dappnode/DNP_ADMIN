@@ -9,13 +9,13 @@ import Ports from "./Ports";
 import Vols from "./Vols";
 import StateBadge from "../StateBadge";
 
-function PackageDetails({ dnp }) {
+function Info({ dnp }) {
   if (!dnp) return null;
   const { manifest, state } = dnp;
   const { description, version, origin } = manifest || {};
   return (
     <>
-      <SubTitle>Stats</SubTitle>
+      <SubTitle>Details</SubTitle>
       <Card>
         <div>
           <strong>Status: </strong>
@@ -42,4 +42,4 @@ function PackageDetails({ dnp }) {
   );
 }
 
-export default PackageDetails;
+export default Info;
