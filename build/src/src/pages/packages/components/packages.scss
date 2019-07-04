@@ -76,3 +76,53 @@
   grid-template-columns: repeat(auto-fill, minmax(18em, 1fr));
   grid-gap: 1rem;
 }
+
+// Internal packages navigation
+// ============================
+// On big screens
+// - vertical right sided navbar
+// - Display section title
+// Otherwise
+// - horizontal top navbar
+
+// ####### For now hide the header and DO NOT do it responsive
+// ####### the fit to screen breaks. The terminal grows beyond
+// ####### the screen size
+
+.packages-content .section-subtitle {
+  display: none;
+}
+
+.packages-body {
+  display: flex;
+}
+
+.packages-content {
+  flex: auto;
+}
+
+.horizontal-navbar {
+  display: block;
+  text-align: center;
+  margin-bottom: 0.5rem !important;
+  .item {
+    color: #7b7d7f;
+    background-color: transparent;
+    border: none;
+    margin-bottom: 1rem;
+    padding-bottom: 0.3rem;
+    font-size: 1.2rem;
+    &:not(:last-child) {
+      padding-right: 1rem;
+      margin-right: 1rem;
+      border-right: var(--border-style);
+    }
+    &:hover {
+      color: inherit;
+    }
+    &.active {
+      color: #212529;
+      border-bottom: 5px solid var(--dappnode-strong-main-color);
+    }
+  }
+}
