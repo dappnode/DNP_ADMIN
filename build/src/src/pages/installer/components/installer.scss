@@ -53,14 +53,30 @@
     border-radius: 9px;
   }
   .description {
+    position: relative;
     height: 7rem;
     white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-word;
     // Limit the number of text lines to N
-    line-height: 1.5rem; // X
-    max-height: 4.5rem; // X*N
+    --description-line-height: 1.5rem;
+    line-height: var(--description-line-height); // X
+    max-height: calc(3 * var(--description-line-height)); // X*N
+    &:after {
+      content: "";
+      text-align: right;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 30%;
+      height: var(--description-line-height);
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 1) 50%
+      );
+    }
   }
   .action {
     margin-top: 0.5rem;

@@ -18,7 +18,7 @@ function DnpStore({ directory, openDnp, featured }) {
       {directory.map(dnp => {
         const { manifest, error, avatar = defaultAvatar, origin, tag } =
           dnp || {};
-        const { name, description, style } = manifest || {};
+        const { name, shortDescription, description, style } = manifest || {};
         /* Show the button as disabled (gray) if it's updated */
         /* Rename tag from "install" to "get" because there were too many "install" tags 
              Cannot change the actual tag because it is used for logic around the installer */
@@ -60,7 +60,9 @@ function DnpStore({ directory, openDnp, featured }) {
                   {verified && <GoVerified className="verified-badge" />}
                 </div>
 
-                <div className="description">{description}</div>
+                <div className="description">
+                  {shortDescription || description}
+                </div>
               </div>
             </Card>
           );
@@ -88,8 +90,9 @@ function DnpStore({ directory, openDnp, featured }) {
               </div>
 
               {/* <div className="badge">New version available</div> */}
-
-              <div className="description">{description}</div>
+              <div className="description">
+                {shortDescription || description}
+              </div>
               <Button className="action" variant="dappnode" disabled={disabled}>
                 {tagDisplay}
               </Button>
