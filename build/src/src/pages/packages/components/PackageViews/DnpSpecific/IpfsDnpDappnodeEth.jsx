@@ -45,11 +45,11 @@ function IpfsDnpDappnodeEth({ dappnodeParams }) {
   const { staticIp, domain } = dappnodeParams || {};
 
   const [peerId, setPeerId] = useState("");
-  useEffect(() => {}, [
+  useEffect(() => {
     fetch(`${ipfsApiUrl}/id`)
       .then(res => res.json())
-      .then(data => setPeerId(data.ID))
-  ]);
+      .then(data => setPeerId(data.ID));
+  }, []);
 
   // Activate the copy functionality
   useEffect(() => {

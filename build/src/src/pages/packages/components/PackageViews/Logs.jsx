@@ -40,12 +40,17 @@ function Logs({ id }) {
       if (el) el.scrollTop = el.scrollHeight;
       scrollToBottom = () => {};
     };
+    let unmounted;
 
     async function logDnp() {
       try {
         const options = { timestamps, tail: lines };
         const logs = await api.logPackage({ id, options });
         if (typeof logs !== "string") throw Error("Logs must be a string");
+
+        // Prevent updating the state of an unmounted component
+        if (unmounted) return;
+
         setLogs(logs);
         // Auto scroll to bottom (deffered after the paint)
         setTimeout(scrollToBottom, 10);
@@ -59,6 +64,7 @@ function Logs({ id }) {
       const interval = setInterval(logDnp, refreshInterval);
       return () => {
         clearInterval(interval);
+        unmounted = true;
       };
     }
   }, [autoRefresh, timestamps, lines, id]);
