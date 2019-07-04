@@ -229,3 +229,9 @@ p.no-p-style:last-child {
 .copy-input-open > a {
   display: flex;
 }
+
+/* Data-heavy card sections */
+.subtle-header {
+  opacity: 0.4;
+  font-size: 0.8rem;
+}

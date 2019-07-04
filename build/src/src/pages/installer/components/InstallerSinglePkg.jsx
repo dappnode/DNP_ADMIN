@@ -31,6 +31,7 @@ import Button, { ButtonLight } from "components/Button";
 import Card from "components/Card";
 import Switch from "components/Switch";
 import ReadMoreMarkdown from "components/ReadMoreMarkdown";
+import Columns from "components/Columns";
 import defaultAvatar from "img/defaultAvatar.png";
 
 function InstallerInterface({
@@ -130,8 +131,9 @@ function InstallerInterface({
           ))}
         </div>
 
-        <div className="details-body">
-          <div className="left">
+        <Columns className="details-body">
+          {/* Left */}
+          <div>
             <div className="subtle-header">DESCRIPTION</div>
             <ReadMoreMarkdown source={shortDescription || description} />
             {shortDescription && (
@@ -141,7 +143,8 @@ function InstallerInterface({
               </>
             )}
           </div>
-          <div className="right">
+          {/* Right */}
+          <div>
             <div className="subtle-header">SIZE</div>
             <div>{humanFileSize(size)}</div>
             <div className="subtle-header">VERSION</div>
@@ -159,7 +162,7 @@ function InstallerInterface({
             <div className="subtle-header">CREATED BY</div>
             <ReactMarkdown className="no-p-style" source={author} />
           </div>
-        </div>
+        </Columns>
       </Card>
 
       <Dependencies

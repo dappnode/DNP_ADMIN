@@ -14,6 +14,7 @@ import DnpSpecific, { dnpSpecificList } from "./PackageViews/DnpSpecific";
 import Logs from "./PackageViews/Logs";
 import Config from "./PackageViews/Config";
 import FileManager from "./PackageViews/FileManager";
+import Backup from "./PackageViews/Backup";
 import Controls from "./PackageViews/Controls";
 import NoDnpInstalled from "./NoDnpInstalled";
 // Components
@@ -73,6 +74,12 @@ const PackageInterface = ({
       subPath: "logs",
       render: () => <Logs id={dnp.name} />,
       available: true
+    },
+    {
+      name: "Backup",
+      subPath: "backup",
+      render: () => <Backup dnp={dnp} />,
+      available: (dnp.backup || []).length
     },
     {
       name: "File Manager",

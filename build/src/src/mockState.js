@@ -11,6 +11,53 @@ import { mountPoint as loadingStatusMountPoint } from "services/loadingStatus/da
 import { mountPoint as notificationsMountPoint } from "services/notifications/data";
 import { mountPoint as userActionLogsMountPoint } from "services/userActionLogs/data";
 
+const manifestLn = {
+  name: "ln.dnp.dappnode.eth",
+  version: "0.1.1",
+  description:
+    "The Lightning Network DAppNodePackage (lnd + lncli-web).The Lightning Network is a decentralized system for instant, high-volume micropayments that removes the risk of delegating custody of funds to trusted third parties.",
+  avatar: "/ipfs/QmVrjV1ANxjYVqRJzycYKcCUAH8nU337UsMVir1CnZYNa8",
+  type: "service",
+  image: {
+    path: "ln.dnp.dappnode.eth_0.1.1.tar.xz",
+    hash: "/ipfs/QmdKxt6qoFbSSWGYqD44raEZzU62tcXnq3Hs33vCz4Zjqs",
+    size: 51448118,
+    ports: ["9735:9735"],
+    volumes: ["lndconfig_data:/root/.lnd/"],
+    environment: [
+      "RPCUSER=dappnode",
+      "RPCPASS=dappnode",
+      "BITCOIND_HOST=my.bitcoin.dnp.dappnode.eth",
+      "NETWORK=mainnet",
+      "SET_SERVERHOST=0.0.0.0",
+      "ALIAS=",
+      "EXT_IP="
+    ]
+  },
+  author:
+    "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
+  contributors: [
+    "Abel Boldú (@vdo)",
+    "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
+  ],
+  keywords: ["bitcoin", "btc", "lightning network", "lnd"],
+  homepage: {
+    homepage:
+      "https://github.com/dappnode/DAppNodePackage-LightningNetwork#readme"
+  },
+  repository: {
+    type: "git",
+    url: "git+https://github.com/dappnode/DAppNodePackage-LightningNetwork.git"
+  },
+  bugs: {
+    url: "https://github.com/dappnode/DAppNodePackage-LightningNetwork/issues"
+  },
+  license: "GPL-3.0",
+  dependencies: {
+    "bitcoin.dnp.dappnode.eth": "latest"
+  }
+};
+
 export const mockState = {
   /* chainData */
   [chainDataMountPoint]: [],
@@ -106,54 +153,7 @@ export const mockState = {
     "ln.dnp.dappnode.eth": {
       name: "ln.dnp.dappnode.eth",
       whitelisted: true,
-      manifest: {
-        name: "ln.dnp.dappnode.eth",
-        version: "0.1.1",
-        description:
-          "The Lightning Network DAppNodePackage (lnd + lncli-web).The Lightning Network is a decentralized system for instant, high-volume micropayments that removes the risk of delegating custody of funds to trusted third parties.",
-        avatar: "/ipfs/QmVrjV1ANxjYVqRJzycYKcCUAH8nU337UsMVir1CnZYNa8",
-        type: "service",
-        image: {
-          path: "ln.dnp.dappnode.eth_0.1.1.tar.xz",
-          hash: "/ipfs/QmdKxt6qoFbSSWGYqD44raEZzU62tcXnq3Hs33vCz4Zjqs",
-          size: 51448118,
-          ports: ["9735:9735"],
-          volumes: ["lndconfig_data:/root/.lnd/"],
-          environment: [
-            "RPCUSER=dappnode",
-            "RPCPASS=dappnode",
-            "BITCOIND_HOST=my.bitcoin.dnp.dappnode.eth",
-            "NETWORK=mainnet",
-            "SET_SERVERHOST=0.0.0.0",
-            "ALIAS=",
-            "EXT_IP="
-          ]
-        },
-        author:
-          "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
-        contributors: [
-          "Abel Boldú (@vdo)",
-          "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
-        ],
-        keywords: ["bitcoin", "btc", "lightning network", "lnd"],
-        homepage: {
-          homepage:
-            "https://github.com/dappnode/DAppNodePackage-LightningNetwork#readme"
-        },
-        repository: {
-          type: "git",
-          url:
-            "git+https://github.com/dappnode/DAppNodePackage-LightningNetwork.git"
-        },
-        bugs: {
-          url:
-            "https://github.com/dappnode/DAppNodePackage-LightningNetwork/issues"
-        },
-        license: "GPL-3.0",
-        dependencies: {
-          "bitcoin.dnp.dappnode.eth": "latest"
-        }
-      },
+      manifest: manifestLn,
       avatar: "https://i.ibb.co/Twjv2f3/ln.png"
     },
     "raiden.dnp.dappnode.eth": {
@@ -259,7 +259,26 @@ export const mockState = {
       name: "ln.dnp.dappnode.eth",
       isDnp: true,
       version: "0.1.0",
-      state: "running"
+      state: "running",
+      ports: [],
+      volumes: [
+        {
+          type: "volume",
+          path:
+            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
+          dest: "/app/.ethchain",
+          name: "dncore_ethchaindnpdappnodeeth_data",
+          users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
+          owner: "ethchain.dnp.dappnode.eth",
+          isOwner: false,
+          links: "2",
+          size: "71.57GB"
+        }
+      ],
+      manifest: manifestLn,
+      envs: {
+        ENV_NAME: "ENV_VALUE"
+      }
     }
   ],
 

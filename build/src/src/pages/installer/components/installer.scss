@@ -153,10 +153,6 @@
 
 .installer-header {
   --avatar-size: 5rem;
-  .subtle-header {
-    opacity: 0.4;
-    font-size: 0.8rem;
-  }
   .details-header {
     display: flex;
     .left {
@@ -217,18 +213,6 @@
   }
   .details-body {
     margin-top: 3rem;
-    display: flex;
-    @media screen and (max-width: 40rem) {
-      display: block;
-    }
-    @media screen and (min-width: 40rem) {
-      .left {
-        margin-right: var(--default-spacing);
-      }
-    }
-    > * {
-      flex: auto;
-    }
     .subtle-header {
       margin-top: 1rem;
       margin-bottom: 0.5rem;

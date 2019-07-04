@@ -11,7 +11,7 @@ const dnps = {
 
 // Converts a RPC description
 //   installPackage: {
-//     manadatoryKwargs: ["id"]
+//     mandatoryKwargs: ["id"]
 //   },
 //
 // Into a the following wrapped call
@@ -28,7 +28,7 @@ Object.keys(dnps).forEach(dnpId => {
     const call = function rpcMethod(kwargs = {}, options) {
       return wrapCall({
         event: `${eventId}.${dnpId}.dnp.dappnode.eth`,
-        kwargs: assertKwargs(kwargs, rpcCall.manadatoryKwargs),
+        kwargs: assertKwargs(kwargs, rpcCall.mandatoryKwargs),
         options
       });
     };

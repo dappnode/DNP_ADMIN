@@ -23,9 +23,9 @@ function Modal({
   text,
   list,
   buttons = [],
-  label,
-  onClick,
-  variant,
+  label: mainLabel,
+  onClick: mainOnClick,
+  variant: mainVariant,
   close
 }) {
   // If user clicks the modal itself, do not close
@@ -35,7 +35,12 @@ function Modal({
   }
 
   // Add a button from the shorthand form
-  if (label && onClick) buttons.push({ label, onClick, variant });
+  if (mainLabel && mainOnClick)
+    buttons.push({
+      label: mainLabel,
+      onClick: mainOnClick,
+      variant: mainVariant
+    });
 
   // If there is no "Cancel" option, add it as the first
   if (!buttons.find(({ label }) => (label || "").includes("Cancel")))
@@ -72,10 +77,10 @@ function Modal({
         )}
 
         <div className="buttons">
-          {buttons.map(({ label, variant: localVariant, onClick }) => (
+          {buttons.map(({ label, variant, onClick }) => (
             <Button
               key={label}
-              variant={localVariant || "outline-danger"}
+              variant={variant || "outline-danger"}
               onClick={() => {
                 if (onClick) onClick();
                 close();
