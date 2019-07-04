@@ -50,7 +50,7 @@ function InstallerHome({
     // If the packageLink is a valid IPFS hash preload it's info
     if (isIpfsHash(query) || isDnpDomain(query))
       fetchPackageDataFromQuery(query);
-  }, [query]);
+  }, [query, fetchPackageDataFromQuery]);
 
   function openDnp(id) {
     const dnp = directory.find(({ name }) => name === id);

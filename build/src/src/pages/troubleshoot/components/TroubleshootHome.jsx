@@ -26,7 +26,7 @@ function TroubleshootHome({
 }) {
   useEffect(() => {
     fetchAllDappnodeStatus(); // = componentDidMount
-  }, []);
+  }, [fetchAllDappnodeStatus]);
 
   return (
     <>

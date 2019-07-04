@@ -53,7 +53,7 @@ function InstallerInterface({
   useEffect(() => {
     clearUserSet();
     fetchPackageRequest(id);
-  }, [id]);
+  }, [id, clearUserSet, fetchPackageRequest]);
 
   const { loading, resolving, error, manifest, requestResult, tag } = dnp || {};
   const { name, type } = manifest || {};
@@ -61,7 +61,7 @@ function InstallerInterface({
   // When the DNP is updated (finish installation), redirect to /packages
   useEffect(() => {
     if (isQueryDnpUpdated && name) history.push(packagesRootPath + "/" + name);
-  }, [tag]);
+  }, [tag, name, isQueryDnpUpdated, history]);
 
   if (error && !manifest) return <Error msg={`Error: ${error}`} />;
   if (loading) return <Loading msg={"Loading DAppNode Package data..."} />;

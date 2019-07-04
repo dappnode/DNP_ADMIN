@@ -4,7 +4,6 @@ import api from "API/rpcMethods";
 import Toast from "components/toast/Toast";
 // Components
 import Card from "components/Card";
-import SubTitle from "components/SubTitle";
 import Switch from "components/Switch";
 import Input from "components/Input";
 import Button from "components/Button";
@@ -40,12 +39,17 @@ function Logs({ id }) {
       if (el) el.scrollTop = el.scrollHeight;
       scrollToBottom = () => {};
     };
+    let unmounted;
 
     async function logDnp() {
       try {
         const options = { timestamps, tail: lines };
         const logs = await api.logPackage({ id, options });
         if (typeof logs !== "string") throw Error("Logs must be a string");
+
+        // Prevent updating the state of an unmounted component
+        if (unmounted) return;
+
         setLogs(logs);
         // Auto scroll to bottom (deffered after the paint)
         setTimeout(scrollToBottom, 10);
@@ -59,6 +63,7 @@ function Logs({ id }) {
       const interval = setInterval(logDnp, refreshInterval);
       return () => {
         clearInterval(interval);
+        unmounted = true;
       };
     }
   }, [autoRefresh, timestamps, lines, id]);
@@ -101,52 +106,48 @@ function Logs({ id }) {
     : "Lines must be a number > 0";
 
   return (
-    <>
-      <SubTitle>Logs</SubTitle>
-      <Card className="log-controls">
-        <div>
-          <Switch
-            checked={autoRefresh}
-            onToggle={setAutoRefresh}
-            label="Auto-refresh logs"
-            id="switch-ar"
-          />
-          <Switch
-            checked={timestamps}
-            onToggle={setTimestamps}
-            label="Display timestamps"
-            id="switch-ts"
-          />
-        </div>
-
-        <Input
-          placeholder="Number of lines to display..."
-          value={lines}
-          onValueChange={setLines}
-          type="number"
-          prepend="Lines"
-          append={
-            <Button disabled={downloading} onClick={downloadAll}>
-              Download all
-            </Button>
-          }
-          style={{ minWidth: "75px" }}
+    <Card className="log-controls">
+      <div>
+        <Switch
+          checked={autoRefresh}
+          onToggle={setAutoRefresh}
+          label="Auto-refresh logs"
+          id="switch-ar"
         />
-
-        <Input
-          placeholder="Filter by..."
-          value={query}
-          onValueChange={setQuery}
-          prepend="Search"
+        <Switch
+          checked={timestamps}
+          onToggle={setTimestamps}
+          label="Display timestamps"
+          id="switch-ts"
         />
+      </div>
 
-        <Terminal text={terminalText} id={terminalID} />
+      <Input
+        placeholder="Number of lines to display..."
+        value={lines}
+        onValueChange={setLines}
+        type="number"
+        prepend="Lines"
+        append={
+          <Button disabled={downloading} onClick={downloadAll}>
+            Download all
+          </Button>
+        }
+      />
 
-        <a id="downloadAnchorElem" style={{ display: "none" }} href="/">
-          Download Anchor
-        </a>
-      </Card>
-    </>
+      <Input
+        placeholder="Filter by..."
+        value={query}
+        onValueChange={setQuery}
+        prepend="Search"
+      />
+
+      <Terminal text={terminalText} id={terminalID} />
+
+      <a id="downloadAnchorElem" style={{ display: "none" }} href="/">
+        Download Anchor
+      </a>
+    </Card>
   );
 }
 

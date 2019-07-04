@@ -25,7 +25,7 @@ function DeviceDetails({ device, getDeviceCredentials }) {
 
   useEffect(() => {
     if (!url && id) getDeviceCredentials(id);
-  }, [url, id]);
+  }, [url, id, getDeviceCredentials]);
 
   // Activate the copy functionality
   useEffect(() => {

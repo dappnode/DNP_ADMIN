@@ -5,7 +5,6 @@ import { createStructuredSelector } from "reselect";
 import merge from "deepmerge";
 // Components
 import Card from "components/Card";
-import SubTitle from "components/SubTitle";
 import TableInputs from "components/TableInputs";
 import { ButtonLight } from "components/Button";
 // Utils
@@ -21,7 +20,7 @@ function stringifyEnvs(envs) {
   return envsReduced;
 }
 
-function Envs({ dnp, updateEnvs }) {
+function Config({ dnp, updateEnvs }) {
   const [envs, setEnvs] = useState({});
   useEffect(() => {
     /**
@@ -47,26 +46,23 @@ function Envs({ dnp, updateEnvs }) {
   if (!envsArray.length) return null;
 
   return (
-    <>
-      <SubTitle>Enviroment variables</SubTitle>
-      <Card spacing>
-        <TableInputs
-          headers={["Name", "Value"]}
-          content={envsArray.map(({ name, value = "" }) => [
-            { lock: true, value: name },
-            {
-              placeholder: "enter value...",
-              value,
-              onValueChange: value =>
-                setEnvs(envs => ({ ...envs, [name]: { ...envs[name], value } }))
-            }
-          ])}
-        />
-        <ButtonLight onClick={() => updateEnvs(dnp.name, stringifyEnvs(envs))}>
-          Update environment variables
-        </ButtonLight>
-      </Card>
-    </>
+    <Card spacing>
+      <TableInputs
+        headers={["Name", "Value"]}
+        content={envsArray.map(({ name, value = "" }) => [
+          { lock: true, value: name },
+          {
+            placeholder: "enter value...",
+            value,
+            onValueChange: value =>
+              setEnvs(envs => ({ ...envs, [name]: { ...envs[name], value } }))
+          }
+        ])}
+      />
+      <ButtonLight onClick={() => updateEnvs(dnp.name, stringifyEnvs(envs))}>
+        Update environment variables
+      </ButtonLight>
+    </Card>
   );
 }
 
@@ -81,4 +77,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Envs);
+)(Config);

@@ -6,7 +6,6 @@ import ClipboardJS from "clipboard";
 import { rootPath as systemRootPath, addIpfsPeerPath } from "pages/system/data";
 // Components
 import Card from "components/Card";
-import SubTitle from "components/SubTitle";
 import Button from "components/Button";
 import Input from "components/Input";
 // Icons
@@ -45,11 +44,11 @@ function IpfsDnpDappnodeEth({ dappnodeParams }) {
   const { staticIp, domain } = dappnodeParams || {};
 
   const [peerId, setPeerId] = useState("");
-  useEffect(() => {}, [
+  useEffect(() => {
     fetch(`${ipfsApiUrl}/id`)
       .then(res => res.json())
-      .then(data => setPeerId(data.ID))
-  ]);
+      .then(data => setPeerId(data.ID));
+  }, []);
 
   // Activate the copy functionality
   useEffect(() => {
@@ -66,31 +65,33 @@ function IpfsDnpDappnodeEth({ dappnodeParams }) {
   const addMyPeerUrl = `http://my.dappnode/#${systemRootPath}/${addIpfsPeerPath}/${encodeURIComponent(
     peerMultiAddress
   )}`;
-  return (
-    <>
-      <SubTitle>Connect with peers</SubTitle>
-      <Card>
-        <div className="help-text" style={{ marginBottom: "1rem" }}>
-          Share this link with another DAppNode admin to automatically
-          peer-connect your two IPFS nodes. Use this resource to mitigate slow
-          IPFS propagation
-        </div>
 
-        <Input
-          disabled={true}
-          value={addMyPeerUrl || ""}
-          className="copy-input"
-          append={
-            <Button
-              className="copy-input-copy"
-              data-clipboard-text={addMyPeerUrl}
-            >
-              <GoClippy />
-            </Button>
-          }
-        />
-      </Card>
-    </>
+  /**
+   * Title:
+   * Connect with peers
+   */
+  return (
+    <Card>
+      <div className="help-text" style={{ marginBottom: "1rem" }}>
+        Share this link with another DAppNode admin to automatically
+        peer-connect your two IPFS nodes. Use this resource to mitigate slow
+        IPFS propagation
+      </div>
+
+      <Input
+        disabled={true}
+        value={addMyPeerUrl || ""}
+        className="copy-input"
+        append={
+          <Button
+            className="copy-input-copy"
+            data-clipboard-text={addMyPeerUrl}
+          >
+            <GoClippy />
+          </Button>
+        }
+      />
+    </Card>
   );
 }
 

@@ -46,7 +46,7 @@ function Dashboard({
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [fetchDappnodeStats]);
 
   return (
     <>

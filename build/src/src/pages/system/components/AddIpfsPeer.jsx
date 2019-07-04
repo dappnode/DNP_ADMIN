@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import { title } from "../data";
 // Pages
@@ -68,42 +68,49 @@ export default function AddIpfsPeer({ match }) {
     }
   }
 
-  async function addIpfsPeer(peer) {
-    try {
-      if (!peer) throw Error("peer must be defined");
-      setAddStat(s => ({
-        ...s,
-        loading: true,
-        ok: false,
-        msg: "Connecting to peer..."
-      }));
-      await addSwarmConnection(peer);
-      setAddStat(s => ({
-        ...s,
-        loading: true,
-        ok: false,
-        msg: "Adding peer to boostrap list"
-      }));
-      await addBootstrap(peer);
-      setAddStat(s => ({
-        ...s,
-        loading: false,
-        ok: true,
-        msg: "Successfully connected and saved peer"
-      }));
-    } catch (e) {
-      console.error(`Error on addIpfsPeer (${peer}): ${e.stack}`);
-      setAddStat(s => ({ ...s, loading: false, ok: false, msg: e.message }));
-    }
-  }
+  const addIpfsPeer = useMemo(
+    () => async peer => {
+      console.log({ peer });
+      try {
+        if (!peer) throw Error("peer must be defined");
+        setAddStat(s => ({
+          ...s,
+          loading: true,
+          ok: false,
+          msg: "Connecting to peer..."
+        }));
+        await addSwarmConnection(peer);
+        setAddStat(s => ({
+          ...s,
+          loading: true,
+          ok: false,
+          msg: "Adding peer to boostrap list"
+        }));
+        await addBootstrap(peer);
+        setAddStat(s => ({
+          ...s,
+          loading: false,
+          ok: true,
+          msg: "Successfully connected and saved peer"
+        }));
+      } catch (e) {
+        console.error(`Error on addIpfsPeer (${peer}): ${e.stack}`);
+        setAddStat(s => ({ ...s, loading: false, ok: false, msg: e.message }));
+      }
+    },
+    []
+  );
 
   useEffect(() => {
+    console.log("Inside useEffect");
     const peerFromUrl = decodeURIComponent(peerEncoded);
     setPeerInput(peerFromUrl);
     addIpfsPeer(peerFromUrl);
-  }, [peerEncoded]);
+  }, [peerEncoded, addIpfsPeer]);
 
   const { msg, ok, loading } = addStat;
+
+  console.log("asdasd");
 
   return (
     <>
