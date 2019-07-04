@@ -14,7 +14,7 @@ import { correctPackageName } from "../utils";
 import filterDirectory from "../helpers/filterDirectory";
 import { rootPath } from "../data";
 import NoPackageFound from "./NoPackageFound";
-import TypeFilter from "./TypeFilter";
+import CategoryFilter from "./CategoryFilter";
 import DnpStore from "./DnpStore";
 // Components
 import Input from "components/Input";
@@ -44,7 +44,7 @@ function InstallerHome({
   fetchPackageDataFromQuery
 }) {
   const [query, setQuery] = useState("");
-  const [selectedTypes, setSelectedTypes] = useState({});
+  const [selectedCategories, setSelectedCategories] = useState({});
 
   useEffect(() => {
     // If the packageLink is a valid IPFS hash preload it's info
@@ -62,14 +62,14 @@ function InstallerHome({
     }
   }
 
-  function onTypeChange(type) {
-    setSelectedTypes(ts => ({ ...ts, [type]: !ts[type] }));
+  function onCategoryChange(category) {
+    setSelectedCategories(ts => ({ ...ts, [category]: !ts[category] }));
   }
 
   const directoryFiltered = filterDirectory({
     directory,
     query,
-    selectedTypes
+    selectedCategories
   });
 
   /**
@@ -84,12 +84,12 @@ function InstallerHome({
     else openDnp(query);
   }
 
-  const types = {
+  const categories = {
     ...directory.reduce((obj, { manifest = {} }) => {
-      if (manifest.type) obj[manifest.type] = false;
+      for (const category of manifest.categories || []) obj[category] = false;
       return obj;
     }, {}),
-    ...selectedTypes
+    ...selectedCategories
   };
 
   /**
@@ -122,7 +122,8 @@ function InstallerHome({
       );
     } else {
       if (mainnetIsSyncing) return <IsSyncing />;
-      if (error) return <Error msg={`Error loading DAppNode Packages: ${error}`} />;
+      if (error)
+        return <Error msg={`Error loading DAppNode Packages: ${error}`} />;
       if (loading) return <Loading msg="Loading DAppNode Packages..." />;
     }
     // Fallback
@@ -139,7 +140,10 @@ function InstallerHome({
         append={<ButtonLight onClick={runQuery}>Search</ButtonLight>}
       />
 
-      <TypeFilter types={types} onTypeChange={onTypeChange} />
+      <CategoryFilter
+        categories={categories}
+        onCategoryChange={onCategoryChange}
+      />
 
       <Body />
     </>
@@ -149,22 +153,20 @@ function InstallerHome({
 InstallerHome.propTypes = {
   // State -> props
   directory: PropTypes.array.isRequired,
-  selectedTypes: PropTypes.object.isRequired,
-  inputValue: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
-  mainnetIsSyncing: PropTypes.bool,
+  directoryLoaded: PropTypes.bool.isRequired,
+  mainnetIsSyncing: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   error: PropTypes.string.isRequired,
   // Dispatch -> props
   fetchPackageData: PropTypes.func.isRequired,
-  fetchPackageDataFromQuery: PropTypes.func.isRequired
+  fetchPackageDataFromQuery: PropTypes.func.isRequired,
+  // withRouter
+  history: PropTypes.object.isRequired
 };
 
 const mapStateToProps = createStructuredSelector({
   directory: s.getDnpDirectoryWithTagsNonCores,
   directoryLoaded: s.directoryLoaded,
-  selectedTypes: s.getSelectedTypes,
-  inputValue: s.getInputValue,
   mainnetIsSyncing: state => Boolean((getMainnet(state) || {}).syncing),
   loading: getIsLoading.dnpDirectory,
   error: getLoadingError.dnpDirectory
