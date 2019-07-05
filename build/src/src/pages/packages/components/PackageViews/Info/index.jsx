@@ -1,34 +1,31 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
-import ReadMore from "components/ReadMore";
+import ReadMoreMarkdown from "components/ReadMoreMarkdown";
 // This
 import Links from "./Links";
 import Ports from "./Ports";
 import Vols from "./Vols";
 import StateBadge from "../StateBadge";
 
-function PackageDetails({ dnp }) {
+function Info({ dnp }) {
   if (!dnp) return null;
   const { manifest, state } = dnp;
   const { description, version, origin } = manifest || {};
   return (
     <>
-      <SubTitle>Stats</SubTitle>
+      <SubTitle>Details</SubTitle>
       <Card>
         <div>
           <strong>Status: </strong>
           <StateBadge state={state} />
         </div>
 
-        <ReadMore>
-          <header>
-            <strong>Description</strong>
-          </header>
-          <ReactMarkdown source={description} />
-        </ReadMore>
+        <header>
+          <strong>Description</strong>
+        </header>
+        <ReadMoreMarkdown source={description} />
 
         <div>
           <strong>Version: </strong>
@@ -45,4 +42,4 @@ function PackageDetails({ dnp }) {
   );
 }
 
-export default PackageDetails;
+export default Info;

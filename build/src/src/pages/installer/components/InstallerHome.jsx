@@ -14,8 +14,8 @@ import { correctPackageName } from "../utils";
 import filterDirectory from "../helpers/filterDirectory";
 import { rootPath } from "../data";
 import NoPackageFound from "./NoPackageFound";
-import TypeFilter from "./TypeFilter";
-import PackageStore from "./PackageStore";
+import CategoryFilter from "./CategoryFilter";
+import DnpStore from "./DnpStore";
 // Components
 import Input from "components/Input";
 import { ButtonLight } from "components/Button";
@@ -29,13 +29,13 @@ import {
 } from "services/loadingStatus/selectors";
 import { rootPath as packagesRootPath } from "pages/packages/data";
 // Styles
-import "./installer.css";
+import "./installer.scss";
 import IsSyncing from "./IsSyncing";
 
 function InstallerHome({
   // variables
   directory,
-  mainnet,
+  mainnetIsSyncing,
   loading,
   error,
   history,
@@ -44,13 +44,13 @@ function InstallerHome({
   fetchPackageDataFromQuery
 }) {
   const [query, setQuery] = useState("");
-  const [selectedTypes, setSelectedTypes] = useState({});
+  const [selectedCategories, setSelectedCategories] = useState({});
 
   useEffect(() => {
     // If the packageLink is a valid IPFS hash preload it's info
     if (isIpfsHash(query) || isDnpDomain(query))
       fetchPackageDataFromQuery(query);
-  }, [query]);
+  }, [query, fetchPackageDataFromQuery]);
 
   function openDnp(id) {
     const dnp = directory.find(({ name }) => name === id);
@@ -62,14 +62,14 @@ function InstallerHome({
     }
   }
 
-  function onTypeChange(type) {
-    setSelectedTypes(ts => ({ ...ts, [type]: !ts[type] }));
+  function onCategoryChange(category) {
+    setSelectedCategories(ts => ({ ...ts, [category]: !ts[category] }));
   }
 
   const directoryFiltered = filterDirectory({
     directory,
     query,
-    selectedTypes
+    selectedCategories
   });
 
   /**
@@ -84,12 +84,12 @@ function InstallerHome({
     else openDnp(query);
   }
 
-  const types = {
+  const categories = {
     ...directory.reduce((obj, { manifest = {} }) => {
-      if (manifest.type) obj[manifest.type] = false;
+      for (const category of manifest.categories || []) obj[category] = false;
       return obj;
     }, {}),
-    ...selectedTypes
+    ...selectedCategories
   };
 
   /**
@@ -100,25 +100,50 @@ function InstallerHome({
    * 0. Else show the DnpStore
    */
   function Body() {
-    if (directory.length && !directoryFiltered.length)
-      return <NoPackageFound query={query} />;
-    if (mainnet.syncing) return <IsSyncing {...mainnet} />;
-    if (error) return <Error msg={`Error loading DNPs: ${error}`} />;
-    if (loading && !directory.length) return <Loading msg="Loading DNPs..." />;
-    return <PackageStore directory={directoryFiltered} openDnp={openDnp} />;
+    if (directory.length) {
+      if (!directoryFiltered.length) return <NoPackageFound query={query} />;
+      // All is good, display actual DnpStore
+      const isFeatured = dnp => dnp.isFeatured;
+      const directoryFeatured = directoryFiltered.filter(dnp =>
+        isFeatured(dnp)
+      );
+      const directoryNotFeatured = directoryFiltered.filter(
+        dnp => !isFeatured(dnp)
+      );
+      return (
+        <>
+          <DnpStore
+            directory={directoryFeatured}
+            openDnp={openDnp}
+            featured={true}
+          />
+          <DnpStore directory={directoryNotFeatured} openDnp={openDnp} />
+        </>
+      );
+    } else {
+      if (mainnetIsSyncing) return <IsSyncing />;
+      if (error)
+        return <Error msg={`Error loading DAppNode Packages: ${error}`} />;
+      if (loading) return <Loading msg="Loading DAppNode Packages..." />;
+    }
+    // Fallback
+    return <Error msg={`Unknown error`} />;
   }
 
   return (
     <>
       <Input
-        placeholder="DNP's name or IPFS hash"
+        placeholder="DAppNode Package's name or IPFS hash"
         value={query}
         onValueChange={value => setQuery(correctPackageName(value))}
         onEnterPress={runQuery}
         append={<ButtonLight onClick={runQuery}>Search</ButtonLight>}
       />
 
-      <TypeFilter types={types} onTypeChange={onTypeChange} />
+      <CategoryFilter
+        categories={categories}
+        onCategoryChange={onCategoryChange}
+      />
 
       <Body />
     </>
@@ -128,23 +153,21 @@ function InstallerHome({
 InstallerHome.propTypes = {
   // State -> props
   directory: PropTypes.array.isRequired,
-  selectedTypes: PropTypes.object.isRequired,
-  inputValue: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
-  mainnet: PropTypes.object.isRequired,
+  directoryLoaded: PropTypes.bool.isRequired,
+  mainnetIsSyncing: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   error: PropTypes.string.isRequired,
   // Dispatch -> props
   fetchPackageData: PropTypes.func.isRequired,
-  fetchPackageDataFromQuery: PropTypes.func.isRequired
+  fetchPackageDataFromQuery: PropTypes.func.isRequired,
+  // withRouter
+  history: PropTypes.object.isRequired
 };
 
 const mapStateToProps = createStructuredSelector({
   directory: s.getDnpDirectoryWithTagsNonCores,
   directoryLoaded: s.directoryLoaded,
-  selectedTypes: s.getSelectedTypes,
-  inputValue: s.getInputValue,
-  mainnet: getMainnet,
+  mainnetIsSyncing: state => Boolean((getMainnet(state) || {}).syncing),
   loading: getIsLoading.dnpDirectory,
   error: getLoadingError.dnpDirectory
 });

@@ -1,4 +1,4 @@
-import { mountPoint } from "./data";
+import { mountPoint, wifiDefaultSSID, wifiDefaultWPA_PASSPHRASE } from "./data";
 import { createSelector } from "reselect";
 
 // Service > dnpInstalled
@@ -15,7 +15,7 @@ export const getDnpInstalledById = (state, id) =>
  * Returns the volume sizes of the `ethchain` and `ipfs` DNPs
  * - ethchain.dnp.dappnode.eth > dncore_ethchaindnpdappnodeeth_data
  * - ipfs.dnp.dappnode.eth > dncore_ipfsdnpdappnodeeth_data
- * @returns [{
+ * @returns {array} [{
  *   name: "ethchain size",
  *   size: 143818512
  * }, ... ]
@@ -38,4 +38,20 @@ export const getDappnodeVolumes = createSelector(
           size: (dataVolume || {}).size
         };
       })
+);
+
+/**
+ * Check if the wifi DNP has the same credentials as the default ones
+ * @returns {bool} credentials are the same as the default ones
+ */
+export const getAreWifiCredentialsDefault = createSelector(
+  getDnpInstalled,
+  dnps => {
+    const wifiDnp = dnps.find(dnp => dnp.name === "wifi.dnp.dappnode.eth");
+    if (!wifiDnp || !wifiDnp.envs) return false;
+    return (
+      wifiDnp.envs.WPA_PASSPHRASE === wifiDefaultWPA_PASSPHRASE &&
+      wifiDnp.envs.SSID === wifiDefaultSSID
+    );
+  }
 );

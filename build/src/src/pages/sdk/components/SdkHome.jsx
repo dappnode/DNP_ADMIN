@@ -13,7 +13,7 @@ const SDK_GUIDE_LINK =
 
 const subRoutes = [
   {
-    title: "Publish DNPs",
+    title: "Publish DAppNode Packages",
     subtitle: `To an Aragon's APM registry`,
     route: "publish"
   }
@@ -53,7 +53,7 @@ function SdkHome() {
         </div>
         <p>
           The dappnodesdk can be installed locally with npm. Then you can
-          initialize a DNP, build it's docker image and publish it on the Aragon
+          initialize a DAppNode Package, build it's docker image and publish it on the Aragon
           Package Manager (APM) on the ethereum mainnet
         </p>
 

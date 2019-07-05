@@ -33,6 +33,8 @@ window.saveAs = saveAs;
 const instructionsBaseUrl =
   "https://github.com/dappnode/dappnode/wiki/openvpn-client-guide";
 
+const adminUiUrl = "http://my.dappnode/";
+
 const options = [
   {
     name: "MacOS",
@@ -78,7 +80,7 @@ const options = [
   }
 ];
 
-const baseUrl = window.location.origin;
+const origin = window.location.origin;
 const ovpnType = "application/x-openvpn-profile";
 const fileExtension = "ovpn";
 
@@ -97,7 +99,7 @@ export default class App extends Component {
       // 1. Get params from url
       this.setState({ loading: true });
       const { key, id, name, dev } = getParamsFromUrl();
-      const url = `${baseUrl}/cred/${id}?id=${id}`;
+      const url = `${origin}/cred/${id}?id=${id}`;
 
       // Dev param to be able to work on the UI
       if (dev) {
@@ -155,7 +157,7 @@ export default class App extends Component {
             <p className="jumotron-subtitle">
               Download the .ovpn file provided by your DAppNode administrator
               and import it to your client. You can follow the guides below on
-              how to import an .opvn file.
+              how to import an .ovpn file.
             </p>
             <div className="text-center">
               <h6 className="main-text mt-4">
@@ -174,7 +176,24 @@ export default class App extends Component {
                 Download
               </button>
             </div>
+
+            <p className="jumotron-subtitle navigate-to-dappnode">
+              After setting up your connection with the .ovpn and successfully
+              connecting to the VPN, start using your DAppNode by going to{" "}
+              <a className="dappnode-color" href={adminUiUrl}>
+                my.dappnode
+              </a>
+            </p>
+            <div className="text-center">
+              <a
+                className="btn btn-primary dappnode-background-color"
+                href={adminUiUrl}
+              >
+                Go to my.dappnode
+              </a>
+            </div>
           </div>
+
           <div className="jumbotron-area">
             <div className="container text-center">
               <h2 className="jumbotron-title">
@@ -201,6 +220,7 @@ export default class App extends Component {
               ))}
             </div>
           </div>
+
           <HiddenRedirector />
         </React.Fragment>
       );

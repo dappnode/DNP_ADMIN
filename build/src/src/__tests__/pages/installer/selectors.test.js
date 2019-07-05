@@ -199,17 +199,17 @@ describe("pages > installer > selectors", () => {
           "8333:8333": {
             container: "8333",
             host: "8333",
-            type: undefined,
+            protocol: undefined,
             index: 0
           }
         },
         "ln.dnp.dappnode.eth": {
-          "30303": { container: "30303", type: undefined, index: 0 },
+          "30303": { container: "30303", protocol: undefined, index: 0 },
           "30304/udp": "35354",
           "30304:30304/udp": {
             container: "30304",
             host: "30304",
-            type: "udp",
+            protocol: "udp",
             index: 1
           }
         }
@@ -301,7 +301,7 @@ describe("pages > installer > selectors", () => {
               "30303:30303/udp": {
                 container: "30303",
                 host: null,
-                type: "udp",
+                protocol: "udp",
                 index: 0
               },
               "30304": {
@@ -428,7 +428,7 @@ describe("pages > installer > selectors", () => {
     it("Should add the installer tag properly", () => {
       const state = {
         [mountPoint]: {
-          selectedTypes: {},
+          selectedCategories: {},
           input: ""
         },
         [dnpDirectoryMountPoint]: dnpDirectory,

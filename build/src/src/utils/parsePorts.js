@@ -17,9 +17,9 @@ function parsePorts(manifest) {
       `manifest.image.ports must be an array: ${JSON.stringify(portsArray)}`
     );
 
-  //                host : container / type
+  //                host : container / protocol
   // portsArray = ['32323:30303/udp']
-  //               container / type
+  //               container / protocol
   // portsArray = ['30303/udp']
   const portsFormatted = portsArray
     // Ignore ports that are not mapped
@@ -29,8 +29,8 @@ function parsePorts(manifest) {
       const hostPortNumber = p.split(":")[0];
       const portType = p.split("/")[1] || "TCP";
       return {
-        number: hostPortNumber,
-        type: portType ? portType.toUpperCase() : portType
+        portNumber: hostPortNumber,
+        protocol: portType ? portType.toUpperCase() : portType
       };
     });
   return uniqArray(portsFormatted);

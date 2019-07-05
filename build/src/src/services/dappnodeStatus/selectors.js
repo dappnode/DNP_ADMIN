@@ -28,6 +28,7 @@ export const getIpfsConnectionStatus = createSelectorSubProp(
   getLocal,
   "ipfsConnectionStatus"
 );
+export const getWifiStatus = createSelectorSubProp(getLocal, "wifiStatus");
 
 export const getDappmanagerVersionData = createSelectorSubProp(
   getVersionData,
@@ -67,4 +68,9 @@ export const getStaticIp = createSelector(
 export const getUpnpAvailable = createSelector(
   getDappnodeParams,
   ({ upnpAvailable }) => upnpAvailable
+);
+
+export const getIsWifiRunning = createSelector(
+  getWifiStatus,
+  wifiStatus => wifiStatus.running
 );

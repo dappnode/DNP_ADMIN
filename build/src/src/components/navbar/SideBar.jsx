@@ -18,31 +18,30 @@ export function toggleSideNav() {
 
 export default function SideBar() {
   const [collapsed, setCollapsed] = useState(true);
-  const [width, setWidth] = useState(window.innerWidth);
 
   const sidebarEl = useRef(null);
 
-  function toggleSideNav() {
-    setCollapsed(!collapsed);
-  }
   function collapseSideNav() {
     setCollapsed(true);
   }
 
   useEffect(() => {
-    window.addEventListener(toggleSideNavEvent, toggleSideNav);
+    const handleToggleSideNav = () => setCollapsed(_collapsed => !_collapsed);
+    window.addEventListener(toggleSideNavEvent, handleToggleSideNav);
     return () => {
-      window.removeEventListener(toggleSideNavEvent, toggleSideNav);
+      window.removeEventListener(toggleSideNavEvent, handleToggleSideNav);
     };
   }, []);
 
   useEffect(() => {
+    // width is the previous width, to compute the direction of the change
+    let width = window.innerWidth;
     // Always collapse the navbar when crossing the breakpoint, going from big to small
     function onWindowResize() {
       const breakPointPx = getBreakPointPx();
       if (width > breakPointPx && window.innerWidth <= breakPointPx)
         collapseSideNav();
-      setWidth(window.innerWidth);
+      width = window.innerWidth;
     }
     window.addEventListener("resize", onWindowResize);
     return () => {

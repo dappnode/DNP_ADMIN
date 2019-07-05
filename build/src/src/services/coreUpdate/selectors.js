@@ -71,6 +71,17 @@ export const getCoreUpdateAlerts = createSelector(
   }
 );
 
+/**
+ * Gets the core current version
+ */
+export const getCoreCurrentVersion = createSelector(
+  getDnpInstalled,
+  dnpInstalled => {
+    const dnpCore = dnpInstalled.find(dnp => dnp.name === coreName);
+    return (dnpCore || {}).version;
+  }
+);
+
 export const getCoreUpdateAvailable = createSelector(
   getCoreDeps,
   coreDeps => Boolean(coreDeps.length)

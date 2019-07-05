@@ -146,7 +146,7 @@ const getDiagnoseDiskSpace = createSelector(
       msg: ok ? "Disk usage is ok (<95%)" : "Disk usage is over 95%",
       solutions: [
         "If the disk usage gets to 100%, DAppNode will stop working. Please empty some disk space",
-        "Locate DNPs with big volumes such as blockchain nodes and remove their data"
+        "Locate DAppNode Packages with big volumes such as blockchain nodes and remove their data"
       ]
     };
   }
@@ -159,7 +159,7 @@ const getDiagnoseCoreDnpsRunning = createSelector(
     if (isLoading)
       return {
         loading: true,
-        msg: "Verifying installed core DNPs..."
+        msg: "Verifying installed core DAppNode Packages..."
       };
 
     const mandatoryCoreDnps = [
@@ -183,15 +183,19 @@ const getDiagnoseCoreDnpsRunning = createSelector(
     const ok = !notFound.length && !notRunning.length;
     let errorMsg = "";
     if (!ok && notFound.length)
-      errorMsg += `Core DNPs ${notFound.join(", ")} are not found. `;
+      errorMsg += `Core DAppNode Packages ${notFound.join(
+        ", "
+      )} are not found. `;
     if (!ok && notRunning.length)
-      errorMsg += `Core DNPs ${notFound.join(", ")} are not running.`;
+      errorMsg += `Core DAppNode Packages ${notFound.join(
+        ", "
+      )} are not running.`;
     return {
       ok,
-      msg: ok ? "All core DNPs are running" : errorMsg,
+      msg: ok ? "All core DAppNode Packages are running" : errorMsg,
       solutions: [
-        "Make sure the disk is not too full. If so DAppNode automatically stops the ethchain.dnp.dappnode.eth and ipfs.dnp.dappnode.eth DNPs to prevent it from becoming un-usable",
-        "Go to the System tab and restart each stopped DNP. Please inspect the logs to understand cause and report it if it was not expected"
+        "Make sure the disk is not too full. If so DAppNode automatically stops the ethchain.dnp.dappnode.eth and ipfs.dnp.dappnode.eth DAppNode Packages to prevent it from becoming un-usable",
+        "Go to the System tab and restart each stopped DAppNode Package. Please inspect the logs to understand cause and report it if it was not expected"
       ]
     };
   }
@@ -293,7 +297,7 @@ export const getIssueBody = createSelector(
   (dnps, systemInfo) => {
     const sections = [
       {
-        title: "Core DNPs versions",
+        title: "Core DAppNode Packages versions",
         items: dnps
           .filter(dnp => dnp.isCore)
           .map(({ name, version, branch, commit }) => ({

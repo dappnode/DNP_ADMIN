@@ -5,12 +5,12 @@ import { rootPath } from "../data";
 import PackagesHome from "./PackagesHome";
 import PackageInterface from "./PackageInterface";
 // Styles
-import "./packages.css";
+import "./packages.scss";
 
 const PackagesRoot = () => (
   <>
     <Route exact path={rootPath} component={PackagesHome} />
-    <Route path={rootPath + "/:id"} component={PackageInterface} />
+    <Route path={`${rootPath}/:id`} component={PackageInterface} />
   </>
 );
 

@@ -1,7 +1,7 @@
 import React from "react";
 // Dedicated Components
-import IpfsDnpDappnodeEth from "./IpfsDnpDappnodeEth";
 import DappmanagerDnpDappnodeEth from "./DappmanagerDnpDappnodeEth";
+import IpfsDnpDappnodeEth from "./IpfsDnpDappnodeEth";
 
 const Components = {
   "dappmanager.dnp.dappnode.eth": DappmanagerDnpDappnodeEth,
@@ -15,3 +15,8 @@ export default function Specific({ dnp }) {
   const Component = Components[name];
   return Component ? <Component dnp={dnp} /> : null;
 }
+
+export const dnpSpecificList = {
+  "dappmanager.dnp.dappnode.eth": "Clean cache",
+  "ipfs.dnp.dappnode.eth": "Connect with peers"
+};

@@ -1,12 +1,15 @@
 import { mountPoint } from "./data";
 import { createSelector } from "reselect";
 import merge from "deepmerge";
+import semver from "semver";
+// Selectors
 import {
   getDnpDirectory,
   getDnpDirectoryWhitelisted
 } from "services/dnpDirectory/selectors";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 import { getDappnodeParams } from "services/dappnodeStatus/selectors";
+import { getCoreCurrentVersion } from "services/coreUpdate/selectors";
 // Parsers
 import {
   parseDefaultEnvs,
@@ -41,8 +44,6 @@ const getFromLocalFactory = key =>
     local => local[key]
   );
 
-export const getSelectedTypes = getFromLocalFactory("selectedTypes");
-export const getInputValue = getFromLocalFactory("input");
 export const getUserSetEnvs = getFromLocalFactory("userSetEnvs");
 export const getUserSetPorts = getFromLocalFactory("userSetPorts");
 export const getUserSetVols = getFromLocalFactory("userSetVols");
@@ -91,6 +92,35 @@ export const getQueryIdOrName = createSelector(
   getQueryName,
   getQueryId,
   (name, id) => name || id
+);
+
+export const getIsQueryDnpUpdated = createSelector(
+  getQueryDnp,
+  getDnpInstalled,
+  (queryDnp, dnpInstalled) => {
+    const { name, version } = (queryDnp || {}).manifest || {};
+    const queryVersion = queryDnp.origin || version;
+    const installedDnp = dnpInstalled.find(_dnp => _dnp.name === name);
+    const installedVersion =
+      (installedDnp || {}).origin || (installedDnp || {}).version;
+    return (
+      queryVersion && installedVersion && queryVersion === installedVersion
+    );
+  }
+);
+
+export const getQueryDnpRequiresCoreUpdate = createSelector(
+  getQueryDnp,
+  getCoreCurrentVersion,
+  (queryDnp, coreCurrentVersion) => {
+    const { requirements } = (queryDnp || {}).manifest || {};
+    const { minimumDappnodeVersion } = requirements || {};
+    return (
+      semver.valid(minimumDappnodeVersion) &&
+      semver.valid(coreCurrentVersion) &&
+      semver.gt(minimumDappnodeVersion, coreCurrentVersion)
+    );
+  }
 );
 
 /**
@@ -243,17 +273,45 @@ export const getHideCardHeaders = createSelector(
 );
 
 /**
+ * [TEMP] ###### add categories meanwhile the manifest are not updated
+ */
+const categories = {
+  "kovan.dnp.dappnode.eth": ["Developer tools"],
+  "artis-sigma1.public.dappnode.eth": ["Blockchain"],
+  "monero.dnp.dappnode.eth": ["Blockchain"],
+  "vipnode.dnp.dappnode.eth": ["Economic incentive"],
+  "ropsten.dnp.dappnode.eth": ["Developer tools"],
+  "rinkeby.dnp.dappnode.eth": ["Developer tools"],
+  "lightning-network.dnp.dappnode.eth": [
+    "Payment channels",
+    "Economic incentive"
+  ],
+  "swarm.dnp.dappnode.eth": ["Storage", "Communications"],
+  "goerli-geth.dnp.dappnode.eth": ["Developer tools"],
+  "bitcoin.dnp.dappnode.eth": ["Blockchain"],
+  "raiden-testnet.dnp.dappnode.eth": ["Developer tools"],
+  "raiden.dnp.dappnode.eth": ["Payment channels"]
+};
+
+/**
  * Append the install tag to each DNP aggregating the dnpDirectory and the dnpInstalled
  * - Order DNPs by directoryId in descending order (latest on top)
  * @returns {object}
  * [Tested]
  */
+
 const getDnpDirectoryWithTags = createSelector(
   getDnpDirectoryWhitelisted,
   getDnpInstalled,
   (dnpDirectory, dnpInstalled) => {
     return Object.entries(dnpDirectory)
       .map(([dnpName, dnp]) => {
+        /**
+         * [TEMP] ###### add categories meanwhile the manifest are not updated
+         */
+        if (dnp.manifest && !dnp.manifest.categories && categories[dnp.name])
+          dnp.manifest.categories = categories[dnp.name];
+
         const tag = parseInstallTag(dnpDirectory, dnpInstalled, dnpName);
         return { ...dnp, tag };
       })

@@ -31,8 +31,10 @@ const PackagesList = ({
   error,
   restartPackage
 }) => {
-  if (loading) return <Loading msg="Loading installed DNPs..." />;
-  if (error) return <Error msg={`Error loading installed DNPs: ${error}`} />;
+  if (!dnps.length) {
+    if (loading) return <Loading msg="Loading installed DAppNode Packages..." />;
+    if (error) return <Error msg={`Error loading installed DAppNode Packages: ${error}`} />;
+  }
 
   const filteredDnps = dnps.filter(dnp => xnor(coreDnps, dnp.isCore));
   if (!filteredDnps.length) return <NoPackagesYet />;

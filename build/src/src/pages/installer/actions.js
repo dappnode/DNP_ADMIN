@@ -4,16 +4,8 @@ import { confirm } from "components/ConfirmDialog";
 import { shortNameCapitalized as sn } from "utils/format";
 // Selectors
 import { getDnpDirectoryById } from "services/dnpDirectory/selectors";
-
-export const updateInput = id => ({
-  type: t.UPDATE_INPUT,
-  payload: id
-});
-
-export const updateSelectedTypes = types => ({
-  type: t.UPDATE_SELECTED_TYPES,
-  payload: types
-});
+// Parsers
+import parseSpecialPermissions from "./parsers/parseSpecialPermissions";
 
 export const fetchDirectory = () => ({
   type: t.FETCH_DIRECTORY
@@ -37,22 +29,41 @@ export const fetchPackageRequest = id => ({
   id
 });
 
-export const install = (id, options) => (dispatch, getState) => {
-  const installCallback = () => dispatch({ type: t.INSTALL, id, options });
-  // Dialog to accept the disclaimer if any
+export const install = (id, options) => async (dispatch, getState) => {
   const dnp = getDnpDirectoryById(getState(), id);
+  const displayName = ((dnp || {}).manifest || {}).name;
+
+  // Special permissions
+  const specialPermissions = parseSpecialPermissions(dnp.manifest);
+  if (specialPermissions.length)
+    await new Promise(resolve =>
+      confirm({
+        title: `Special permissions`,
+        text: `${displayName} needs:`,
+        list: specialPermissions.map(({ name, details }) => ({
+          title: name,
+          body: details
+        })),
+        label: "Accept",
+        onClick: resolve,
+        variant: "dappnode"
+      })
+    );
+
+  // Dialog to accept the disclaimer if any
   const disclaimer = (dnp.manifest || {}).disclaimer;
-  if (disclaimer) {
-    confirm({
-      title: `${sn(id)} disclaimer`,
-      text: disclaimer.message,
-      label: "Accept",
-      onClick: installCallback,
-      variant: "dappnode"
-    });
-  } else {
-    installCallback();
-  }
+  if (disclaimer)
+    await new Promise(resolve =>
+      confirm({
+        title: `${sn(displayName)} disclaimer`,
+        text: disclaimer.message,
+        label: "Accept",
+        onClick: resolve,
+        variant: "dappnode"
+      })
+    );
+
+  dispatch({ type: t.INSTALL, id, options });
 };
 
 export const openPorts = ports => ({
@@ -78,14 +89,20 @@ export const updateUserSetEnvs = ({ dnpName, id, name, value }) => ({
 //   "30303:30303/udp": {
 //     host: "30304",
 //     container: "30303",
-//     type: "udp"
+//     protocol: "udp"
 //   }
 // }
-export const updateUserSetPorts = ({ dnpName, id, host, container, type }) => ({
+export const updateUserSetPorts = ({
+  dnpName,
+  id,
+  host,
+  container,
+  protocol
+}) => ({
   type: t.UPDATE_USERSET_PORTS,
   dnpName,
   id,
-  values: { host, container, type }
+  values: { host, container, protocol }
 });
 
 // "bitcoin.dnp.dappnode.eth": {

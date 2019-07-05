@@ -9,10 +9,10 @@ export default function parseChainDataMessages(chain) {
   }
   // Rename known errors
   if (stringIncludes(message, "ECONNREFUSED")) {
-    message = `DNP stopped or unreachable (connection refused)`;
+    message = `DAppNode Package stopped or unreachable (connection refused)`;
   }
   if (stringIncludes(message, "Invalid JSON RPC response")) {
-    message = `DNP stopped or unreachable (invalid response)`;
+    message = `DAppNode Package stopped or unreachable (invalid response)`;
   }
   if (stringIncludes(message, "synced #0")) {
     message = `Syncing...`;

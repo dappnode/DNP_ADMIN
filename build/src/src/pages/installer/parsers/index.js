@@ -31,10 +31,13 @@ export function parseDnpFromDirectory(directory, dnpName, dnpVersion) {
 export function parseDefaultEnvs(
   dnpDirectory,
   dnpInstalled,
-  dnpName,
+  dnpNameOrId,
   dnpVersion
 ) {
-  const dnp = parseDnpFromDirectory(dnpDirectory, dnpName, dnpVersion);
+  const dnp = parseDnpFromDirectory(dnpDirectory, dnpNameOrId, dnpVersion);
+  // dnpNameOrId can be an IPFS hash. Also if the name is not found in the manifest,
+  // fallback to dnpNameOrId
+  const dnpName = ((dnp || {}).manifest || {}).name || dnpNameOrId;
   return merge(
     parseManifestEnvs(dnp.manifest),
     // The key .envs already contains ENVs as an object

@@ -18,13 +18,41 @@ export default {
   ping: {},
 
   /**
+   * Does a backup of a DNP and sends it to the client for download.
+   *
+   * @param {string} id DNP .eth name
+   * @param {array} backup [
+   *   { name: "config", path: "/usr/.raiden/config" },
+   *   { name: "keystore", path: "/usr/.raiden/secret/keystore" }
+   * ]
+   * @returns {string} fileId = "64020f6e8d2d02aa2324dab9cd68a8ccb186e192232814f79f35d4c2fbf2d1cc"
+   */
+  backupGet: {
+    mandatoryKwargs: ["id", "backup"]
+  },
+
+  /**
+   * Restore a previous backup of a DNP, from the dataUri provided by the user
+   *
+   * @param {string} id DNP .eth name
+   * @param {string} fileId = "64020f6e8d2d02aa2324dab9cd68a8ccb186e192232814f79f35d4c2fbf2d1cc"
+   * @param {array} backup [
+   *   { name: "config", path: "/usr/.raiden/config" },
+   *   { name: "keystore", path: "/usr/.raiden/secret/keystore" }
+   * ]
+   */
+  backupRestore: {
+    mandatoryKwargs: ["id", "backup", "fileId"]
+  },
+
+  /**
    * [changeIpfsTimeout]
    * Used to test different IPFS timeout parameters live from the ADMIN UI.
    *
    * @param {(string|number)} timeout new IPFS timeout in ms
    */
   changeIpfsTimeout: {
-    manadatoryKwargs: ["timeout"]
+    mandatoryKwargs: ["timeout"]
   },
 
   /**
@@ -52,7 +80,7 @@ export default {
    * @returns {string} dataUri = "data:application/zip;base64,UEsDBBQAAAg..."
    */
   copyFileFrom: {
-    manadatoryKwargs: ["id", "fromPath"]
+    mandatoryKwargs: ["id", "fromPath"]
   },
 
   /**
@@ -73,7 +101,7 @@ export default {
    *   Same for relative paths to directories.
    */
   copyFileTo: {
-    manadatoryKwargs: ["id", "dataUri", "filename", "toPath"]
+    mandatoryKwargs: ["id", "dataUri", "filename", "toPath"]
   },
 
   /**
@@ -107,7 +135,7 @@ export default {
    * }
    */
   diskSpaceAvailable: {
-    manadatoryKwargs: ["path"]
+    mandatoryKwargs: ["path"]
   },
 
   /**
@@ -136,7 +164,7 @@ export default {
    * }
    */
   fetchPackageData: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -150,7 +178,7 @@ export default {
    * }, ... ]
    */
   fetchPackageVersions: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -239,7 +267,7 @@ export default {
    * options = { BYPASS_RESOLVER: true, BYPASS_CORE_RESTRICTION: true }
    */
   installPackage: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -253,7 +281,7 @@ export default {
    * options = { BYPASS_CORE_RESTRICTION: true }
    */
   installPackageSafe: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -287,7 +315,7 @@ export default {
    *   origin: "/ipfs/Qmabcd...", {string}
    *   chain: "ethereum", {string}
    *   dependencies: { dependency.dnp.dappnode.eth: "0.1.8" }, {object}
-   *   portsToClose: [ {number: 30303, type: 'UDP'}, ...], {array}
+   *   portsToClose: [ {portNumber: 30303, protocol: 'UDP'}, ...], {array}
    *
    *   // Appended on RPC call
    *   envs: { ENV_NAME: "ENV_VALUE" }, {object}
@@ -308,7 +336,7 @@ export default {
    * @returns {string} logs: <string with escape codes>
    */
   logPackage: {
-    manadatoryKwargs: ["id", "options"]
+    mandatoryKwargs: ["id", "options"]
   },
 
   /**
@@ -317,10 +345,10 @@ export default {
    *
    * @param {string} action: "open" or "close" (string)
    * @param {array} ports: array of port objects
-   * ports = [ { number: 30303, type: TCP }, ... ]
+   * ports = [ { portNumber: 30303, protocol: TCP }, ... ]
    */
   managePorts: {
-    manadatoryKwargs: ["ports", "action"]
+    mandatoryKwargs: ["ports", "action"]
   },
 
   /**
@@ -347,7 +375,7 @@ export default {
    * ids = [ "notification-id1", "notification-id2" ]
    */
   notificationsRemove: {
-    manadatoryKwargs: ["ids"]
+    mandatoryKwargs: ["ids"]
   },
 
   /**
@@ -373,7 +401,7 @@ export default {
    * @param {bool} deleteVolumes flag to also clear permanent package data
    */
   removePackage: {
-    manadatoryKwargs: ["id", "deleteVolumes"]
+    mandatoryKwargs: ["id", "deleteVolumes"]
   },
 
   /**
@@ -399,7 +427,7 @@ export default {
    * }
    */
   resolveRequest: {
-    manadatoryKwargs: ["req"]
+    mandatoryKwargs: ["req"]
   },
 
   /**
@@ -409,7 +437,7 @@ export default {
    * @param {string} id DNP .eth name
    */
   restartPackage: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -419,7 +447,7 @@ export default {
    * @param {string} id DNP .eth name
    */
   restartPackageVolumes: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -430,7 +458,7 @@ export default {
    * @param {number} timeout seconds to stop the package
    */
   togglePackage: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -445,6 +473,6 @@ export default {
    * @param {bool} restart flag to restart the DNP
    */
   updatePackageEnv: {
-    manadatoryKwargs: ["id", "envs", "restart"]
+    mandatoryKwargs: ["id", "envs", "restart"]
   }
 };

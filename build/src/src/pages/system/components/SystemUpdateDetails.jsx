@@ -39,7 +39,9 @@ const SystemUpdateDetails = ({
     <Card className="system-update-grid">
       <div>
         <div className="section-card-subtitle">Core {coreManifest.version}</div>
-        {changelog && <ReactMarkdown source={changelog} />}
+        {changelog && (
+          <ReactMarkdown className="no-p-style" source={changelog} />
+        )}
 
         {coreUpdateAlerts.map(updateAlert => (
           <div

@@ -10,6 +10,21 @@ button.no-a-style:hover {
   text-decoration: inherit;
 }
 
+a {
+  color: var(--dappnode-links-color);
+  text-decoration: inherit;
+  transition: color ease 150ms;
+}
+a:hover {
+  color: var(--dappnode-links-darker-color);
+}
+
+/* Change default <p> margin-bottom */
+.no-p-style:last-child p:last-child,
+p.no-p-style:last-child {
+  margin-bottom: 0;
+}
+
 /* General layout coloring */
 
 .vertical-container-centered {
@@ -213,4 +228,10 @@ button.no-a-style:hover {
 }
 .copy-input-open > a {
   display: flex;
+}
+
+/* Data-heavy card sections */
+.subtle-header {
+  opacity: 0.4;
+  font-size: 0.8rem;
 }

@@ -76,7 +76,8 @@ ol li {
   list-style-type: decimal-leading-zero;
 }
 
-.dappnode-color {
+.dappnode-color,
+a.dappnode-color:hover {
   color: #2fbcb2;
 }
 .dappnode-background-color {
@@ -177,4 +178,9 @@ input {
   margin: 10px;
   padding: 10px;
   border-radius: 3px;
+}
+
+.navigate-to-dappnode {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
 }

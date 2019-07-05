@@ -22,8 +22,6 @@ import Joi from "joi";
  * }
  */
 const initialState = {
-  selectedTypes: {},
-  input: "",
   userSetEnvs: {},
   userSetPorts: {},
   userSetVols: {}
@@ -32,22 +30,6 @@ const initialState = {
 export default function(state = initialState, action) {
   const assertActionSchema = obj => assertAction(action, Joi.object(obj));
   switch (action.type) {
-    case t.UPDATE_SELECTED_TYPES:
-      assertActionSchema({ payload: Joi.object().required() });
-      return merge(state, {
-        selectedTypes: action.payload
-      });
-
-    case t.UPDATE_INPUT:
-      assertActionSchema({
-        payload: Joi.string()
-          .allow("")
-          .required()
-      });
-      return merge(state, {
-        input: action.payload
-      });
-
     // User set
     case t.UPDATE_USERSET_ENVS:
       assertActionSchema({

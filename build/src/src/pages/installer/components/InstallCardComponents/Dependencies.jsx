@@ -19,11 +19,11 @@ function Dependencies({ request, resolving }) {
   const installedPackages = [];
 
   if (error) {
-    return <Ok ok={false} msg={`DNP is not compatible: ${error}`} />;
+    return <Ok ok={false} msg={`DAppNode Package is not compatible: ${error}`} />;
   } else if (dnps) {
     return (
       <>
-        <Ok ok={true} msg={`DNP is compatible`} />
+        <Ok ok={true} msg={`DAppNode Package is compatible`} />
         <DependencyList
           deps={Object.entries(dnps).map(([dnpName, version]) => {
             const dnp = installedPackages.find(dnp => dnp.name === dnpName);

@@ -46,7 +46,7 @@ function From({ id }) {
 
   return (
     <div className="card-subgroup">
-      <div className="section-card-subtitle">Download from DNP</div>
+      <div className="section-card-subtitle">Download from DAppNode Package</div>
       {/* FROM, chose path */}
       <Input
         placeholder="Container from path"

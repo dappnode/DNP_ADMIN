@@ -23,6 +23,28 @@ const Input = ({
     />
   );
 
+  if (prepend && append) {
+    return (
+      <div className="input-group">
+        <div className="input-group-prepend">
+          {typeof prepend === "string" ? (
+            <span className="input-group-text">{prepend}</span>
+          ) : (
+            prepend
+          )}
+        </div>
+        {input}
+        <div className="input-group-append">
+          {typeof append === "string" ? (
+            <span className="input-group-text">{append}</span>
+          ) : (
+            append
+          )}
+        </div>
+      </div>
+    );
+  }
+
   if (prepend)
     return (
       <div className="input-group">

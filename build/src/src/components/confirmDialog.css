@@ -43,3 +43,17 @@
   margin-bottom: var(--default-spacing);
   white-space: pre-wrap;
 }
+
+.confirm-dialog-root > .dialog .list {
+  margin-top: 0.7rem;
+}
+.confirm-dialog-root > .dialog .list-item {
+  padding: 0.7rem 0;
+  border-bottom: var(--border-style);
+}
+.confirm-dialog-root > .dialog .list-item:first-child {
+  border-top: var(--border-style);
+}
+.confirm-dialog-root > .dialog .list-item > .text {
+  opacity: 0.8;
+}

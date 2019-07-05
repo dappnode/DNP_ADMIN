@@ -18,7 +18,16 @@ import "./confirmDialog.css";
  *   onClick: () => doImportantAction()
  * }, ... ]
  */
-function Modal({ title, text, buttons = [], label, onClick, variant, close }) {
+function Modal({
+  title,
+  text,
+  list,
+  buttons = [],
+  label: mainLabel,
+  onClick: mainOnClick,
+  variant: mainVariant,
+  close
+}) {
   // If user clicks the modal itself, do not close
   const modalEl = useRef(null);
   function handleClickOverlay(e) {
@@ -26,7 +35,12 @@ function Modal({ title, text, buttons = [], label, onClick, variant, close }) {
   }
 
   // Add a button from the shorthand form
-  if (label && onClick) buttons.push({ label, onClick, variant });
+  if (mainLabel && mainOnClick)
+    buttons.push({
+      label: mainLabel,
+      onClick: mainOnClick,
+      variant: mainVariant
+    });
 
   // If there is no "Cancel" option, add it as the first
   if (!buttons.find(({ label }) => (label || "").includes("Cancel")))
@@ -38,18 +52,35 @@ function Modal({ title, text, buttons = [], label, onClick, variant, close }) {
       ref={modalEl}
       onClick={handleClickOverlay}
     >
-      <div className="dialog">
+      <div className="dialog no-p-style">
         {title && <h3 className="title">{title}</h3>}
         {text && (
           <div className="text">
             {typeof text === "string" ? <ReactMarkdown source={text} /> : text}
           </div>
         )}
+        {Array.isArray(list) && (
+          <div className="list">
+            {list.map((item, i) => (
+              <div key={i} className="list-item">
+                <strong>{item.title}</strong>
+                <div className="text">
+                  {typeof item.body === "string" ? (
+                    <ReactMarkdown source={item.body} />
+                  ) : (
+                    item.body
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="buttons">
-          {buttons.map(({ label, variant: localVariant, onClick }) => (
+          {buttons.map(({ label, variant, onClick }) => (
             <Button
               key={label}
-              variant={localVariant || "outline-danger"}
+              variant={variant || "outline-danger"}
               onClick={() => {
                 if (onClick) onClick();
                 close();

@@ -38,7 +38,7 @@ export default {
    * @returns {string}
    */
   addDevice: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -54,7 +54,7 @@ export default {
    * }
    */
   getDeviceCredentials: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -64,7 +64,7 @@ export default {
    * @param {string} id Device id name
    */
   removeDevice: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -74,7 +74,7 @@ export default {
    * @param {string} id Device id name
    */
   resetDevice: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -84,7 +84,7 @@ export default {
    * @param {string} id Device id name
    */
   toggleAdmin: {
-    manadatoryKwargs: ["id"]
+    mandatoryKwargs: ["id"]
   },
 
   /**
@@ -125,6 +125,6 @@ export default {
    * - To disable: null
    */
   setStaticIp: {
-    manadatoryKwargs: ["staticIp"]
+    mandatoryKwargs: ["staticIp"]
   }
 };

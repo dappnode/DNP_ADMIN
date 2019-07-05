@@ -16,6 +16,11 @@ export const getDevices = createSelector(
     })
 );
 
+export const areThereDevices = createSelector(
+  getDevices,
+  devices => Boolean(devices.length)
+);
+
 export const getDeviceById = createSelector(
   getDevices,
   (_, id) => id,

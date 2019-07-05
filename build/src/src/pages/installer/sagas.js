@@ -29,14 +29,15 @@ export function* install({ id, options }) {
   try {
     // Prevent double installations: check if the package is in the blacklist
     if (yield select(getIsInstallingByDnp, id)) {
-      return console.error(`DNP ${id} is already installing`);
+      return console.error(`DAppNode Package ${id} is already installing`);
     }
 
     // Deal with IPFS DNP by retrieving the actual DNP
     const dnp = yield select(getDnpDirectoryById, id);
     let idToInstall;
     if (isIpfsHash(id)) {
-      if (!dnp || !dnp.name) throw Error(`No DNP found for IPFS hash ${id}`);
+      if (!dnp || !dnp.name)
+        throw Error(`No DAppNode Package found for IPFS hash ${id}`);
       idToInstall = `${dnp.name}@${id}`;
     } else if (isEnsDomain(id)) {
       idToInstall = id;
@@ -95,7 +96,7 @@ export function* install({ id, options }) {
 /**
  *
  * @param {object} kwargs { ports:
- *   [ { number: 30303, type: TCP }, ...]
+ *   [ { portNumber: 30303, protocol: TCP }, ...]
  * }
  */
 export function* managePorts({ action, ports = [] }) {
@@ -113,7 +114,7 @@ export function* managePorts({ action, ports = [] }) {
     const upnpAvailable = yield select(getUpnpAvailable);
     if (upnpAvailable && ports.length > 0) {
       const toastMessage = `${action} ports ${ports
-        .map(p => `${p.number} ${p.type}`)
+        .map(p => `${p.portNumber} ${p.protocol}`)
         .join(", ")}...`;
       yield call(api.managePorts, { action, ports }, { toastMessage });
     }
