@@ -4,6 +4,7 @@ import { title } from "../data";
 import packages from "pages/packages";
 // Components
 import StaticIp from "./StaticIp";
+import ChangeHostUserPassword from "./ChangeHostUserPassword";
 import Title from "components/Title";
 
 const PackageList = packages.components.PackageList;
@@ -11,6 +12,8 @@ const PackageList = packages.components.PackageList;
 const SystemHome = () => (
   <>
     <Title title={title} />
+
+    <ChangeHostUserPassword />
 
     <StaticIp />
 
