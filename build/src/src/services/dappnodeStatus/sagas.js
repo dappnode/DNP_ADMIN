@@ -126,6 +126,18 @@ const checkWifiStatus = wrapErrorsAndLoading(
 );
 
 /**
+ * Check if the SSH password is secure
+ * `[Warning] No interface found. Entering sleep mode.`
+ */
+const checkIfPasswordIsInsecure = wrapErrorsAndLoading(
+  loadingIds.passwordIsInsecure,
+  function*() {
+    const passwordIsSecure = yield call(api.passwordIsSecure);
+    yield put(a.updatePasswordIsInsecure(!passwordIsSecure));
+  }
+);
+
+/**
  * Aggregates all previous data fetches
  */
 function* fetchAllDappnodeStatus() {
@@ -137,7 +149,8 @@ function* fetchAllDappnodeStatus() {
       call(pingDappnodeDnps),
       call(getDnpsVersionData),
       call(checkIpfsConnectionStatus),
-      call(checkWifiStatus)
+      call(checkWifiStatus),
+      call(checkIfPasswordIsInsecure)
     ]);
   } catch (e) {
     console.error(`Error on fetchAllDappnodeStatus: ${e.stack}`);
@@ -156,5 +169,6 @@ export default rootWatcher([
   [t.FETCH_DAPPNODE_PARAMS, fetchDappnodeParams],
   [t.FETCH_DAPPNODE_STATS, fetchDappnodeStats],
   [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],
+  [t.FETCH_IF_PASSWORD_IS_INSECURE, checkIfPasswordIsInsecure],
   [t.PING_DAPPNODE_DNPS, pingDappnodeDnps]
 ]);

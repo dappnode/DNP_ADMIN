@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import onEnterKey from "utils/onEnterKey";
 import "./input.css";
 
@@ -11,6 +12,9 @@ const Input = ({
   className,
   ...props
 }) => {
+  /**
+   * Construct the basic input element
+   */
   const input = (
     <input
       type="text"
@@ -23,8 +27,13 @@ const Input = ({
     />
   );
 
-  if (prepend && append) {
-    return (
+  /**
+   * Add the `append` and `prepend` components
+   */
+  let inputWithPreAndAppend;
+
+  if (prepend && append)
+    inputWithPreAndAppend = (
       <div className="input-group">
         <div className="input-group-prepend">
           {typeof prepend === "string" ? (
@@ -43,10 +52,8 @@ const Input = ({
         </div>
       </div>
     );
-  }
-
-  if (prepend)
-    return (
+  else if (prepend)
+    inputWithPreAndAppend = (
       <div className="input-group">
         <div className="input-group-prepend">
           {typeof prepend === "string" ? (
@@ -58,9 +65,8 @@ const Input = ({
         {input}
       </div>
     );
-
-  if (append)
-    return (
+  else if (append)
+    inputWithPreAndAppend = (
       <div className="input-group">
         {input}
         <div className="input-group-append">
@@ -72,8 +78,29 @@ const Input = ({
         </div>
       </div>
     );
+  else inputWithPreAndAppend = input;
 
-  return input;
+  /**
+   * Return the final component
+   */
+  return inputWithPreAndAppend;
+};
+
+Input.propTypes = {
+  onEnterPress: PropTypes.func,
+  onValueChange: PropTypes.func,
+  lock: PropTypes.bool,
+  prepend: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+    PropTypes.object
+  ]),
+  append: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+    PropTypes.object
+  ]),
+  className: PropTypes.string
 };
 
 export default Input;

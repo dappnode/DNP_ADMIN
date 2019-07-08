@@ -90,7 +90,8 @@ export const mockState = {
     stats: {},
     diagnose: {},
     pingReturns: {},
-    ipfsConnectionStatus: {}
+    ipfsConnectionStatus: {},
+    passwordIsInsecure: true
   },
 
   /* devices */
