@@ -8,9 +8,6 @@ export const getDnpInstalled = createSelector(
   dnps => dnps
 );
 
-export const getDnpInstalledById = (state, id) =>
-  getDnpInstalled(state).find(({ name }) => name === id);
-
 /**
  * Returns the volume sizes of the `ethchain` and `ipfs` DNPs
  * - ethchain.dnp.dappnode.eth > dncore_ethchaindnpdappnodeeth_data
@@ -55,3 +52,15 @@ export const getAreWifiCredentialsDefault = createSelector(
     );
   }
 );
+
+/**
+ * Regular selectors, called outside of a normal react-redux situation
+ */
+
+export const getDnpInstalledById = (state, id) =>
+  getDnpInstalled(state).find(({ name }) => name === id);
+
+export const getDependantsOfId = (state, id) =>
+  getDnpInstalled(state)
+    .filter(dnp => dnp.dependencies && dnp.dependencies[id])
+    .map(dnp => dnp.name);
