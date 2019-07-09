@@ -3,7 +3,10 @@ import { confirm } from "components/ConfirmDialog";
 import { shortNameCapitalized as sn } from "utils/format";
 import api from "API/rpcMethods";
 // Selectors
-import { getDnpInstalledById } from "services/dnpInstalled/selectors";
+import {
+  getDnpInstalledById,
+  getDependantsOfId
+} from "services/dnpInstalled/selectors";
 
 /* Notice: togglePackage, restartPackage, etc use redux-thunk
    Since there is no return value, and the state change
@@ -51,9 +54,9 @@ export const restartPackageVolumes = id => async (_, getState) => {
   // Make sure there are no colliding volumes with this DNP
   const dnp = getDnpInstalledById(getState(), id);
 
-  const list = [];
+  const warningsList = [];
   if (dnp.name === "ethchain.dnp.dappnode.eth")
-    list.push({
+    warningsList.push({
       title: "Warning! Resync time",
       body: "The mainnet chain will have to resync and may take a few days"
     });
@@ -64,10 +67,12 @@ export const restartPackageVolumes = id => async (_, getState) => {
    * Alert the user about this fact
    */
   const dnpsToRemove = getDnpsToRemove(dnp);
-  if (dnpsToRemove)
-    list.push({
+  if (dnpsToRemove.length)
+    warningsList.push({
       title: "Warning! DAppNode Packages to be removed",
-      body: `${dnpsToRemove} will be reseted in order to remove the volumes`
+      body: `Some other DAppNode Packages will be reseted in order to remove ${id} volumes. \n\n ${dnpsToRemove
+        .map(name => `- ${name}`)
+        .join("\n")}`
     });
 
   // If there are NOT conflicting volumes,
@@ -76,7 +81,7 @@ export const restartPackageVolumes = id => async (_, getState) => {
     confirm({
       title: `Removing ${sn(id)} data`,
       text: `This action cannot be undone. If this DAppNode Package is a blockchain node, it will lose all the chain data and start syncing from scratch.`,
-      list: list.length ? list : null,
+      list: warningsList.length ? warningsList : null,
       label: "Remove volumes",
       onClick: resolve
     })
@@ -108,19 +113,38 @@ export const removePackage = id => async (_, getState) => {
     return confirm({ title, text, buttons });
   });
 
+  const warningsList = [];
+  // Don't show the same DNP in both dnpsToRemove and dependantsOf
   const dnpsToRemove = getDnpsToRemove(dnp);
-  if (dnpsToRemove)
+  const dependantsOf = getDependantsOfId(getState(), id).filter(
+    name => !dnpsToRemove.includes(name)
+  );
+
+  // dependantsOf = ["raiden.dnp.dappnode.eth", "another.dnp.dappnode.eth"]
+  if (dependantsOf.length)
+    warningsList.push({
+      title: "Warning! There are package dependants",
+      body: `Some DAppNode Packages depend on ${id} and may stop working if you continue. \n\n ${dependantsOf
+        .map(name => `- ${name}`)
+        .join("\n")}`
+    });
+
+  // dnpsToRemove = "raiden.dnp.dappnode.eth, another.dnp.dappnode.eth"
+  if (dnpsToRemove.length)
+    warningsList.push({
+      title: "Warning! Other packages to be removed",
+      body: `Some other DAppNode Packages will be removed as well because they are dependent on ${id} volumes. \n\n ${dnpsToRemove
+        .map(name => `- ${name}`)
+        .join("\n")}`
+    });
+
+  if (warningsList.length)
     await new Promise(resolve =>
       confirm({
-        title: `Removing ${sn(id)} data`,
+        title: `Removing ${sn(id)}`,
         text: `This action cannot be undone.`,
-        list: [
-          {
-            title: "Warning! DAppNode Packages to be removed",
-            body: `${dnpsToRemove} will be removed as well because they are dependent on ${id} volumes`
-          }
-        ],
-        label: "Remove DAppNode Package and volumes",
+        list: warningsList,
+        label: "Continue",
         onClick: resolve
       })
     );
@@ -170,7 +194,7 @@ function getDnpsToRemove(dnp) {
     if (vol.name && vol.isOwner && vol.users.length > 1)
       for (const dnpName of vol.users)
         if (dnpName !== dnp.name) dnpsToRemoveObj[dnpName] = true;
-  return Object.keys(dnpsToRemoveObj).join(", ");
+  return Object.keys(dnpsToRemoveObj);
 }
 
 /**
