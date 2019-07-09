@@ -75,13 +75,10 @@ p.no-p-style:last-child {
  */
 
 .table td {
-  border-top: 0 !important;
+  border-top: 0;
 }
 .table tr {
   border-bottom: 1px solid #dee2e6;
-}
-.table tr:last-child {
-  border-bottom: 0 !important;
 }
 
 /* Space out card sub groups except last element 

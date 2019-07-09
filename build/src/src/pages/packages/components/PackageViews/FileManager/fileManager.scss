@@ -1,0 +1,96 @@
+// File explorer
+
+.file-explorer-navbar {
+  display: flex;
+  margin-bottom: 1rem;
+
+  .back {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+    svg {
+      font-size: 1.1rem;
+      margin-right: 0.3rem;
+    }
+  }
+}
+
+.file-table-container {
+  height: 25rem;
+  overflow-y: auto;
+  border: var(--border-style);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+
+  thead {
+    tr {
+      border-bottom: 0;
+    }
+    th {
+      border-bottom-width: 1px !important;
+      border-top-width: 0px !important;
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: #4d4d4d;
+    }
+  }
+
+  .size {
+    width: 7rem;
+  }
+
+  .time {
+    width: 9rem;
+  }
+
+  .action {
+    width: 3rem;
+  }
+
+  tbody {
+    --table-hover-color: var(--dappnode-color);
+    tr {
+      transition: color ease 0.1s;
+
+      .name {
+        display: flex;
+        align-items: center;
+        // File / Dir icons
+        svg {
+          font-size: 1.1rem;
+          margin-right: 0.8rem;
+        }
+      }
+      .action.file {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 8px;
+        border: 1px solid lightgray;
+        border-radius: 4px;
+        width: 2.2rem;
+        transition: color ease 0.1s, background-color ease 0.1s,
+          border-color ease 0.1s;
+      }
+
+      &:hover {
+        color: var(--table-hover-color);
+        .action.file {
+          border-color: var(--table-hover-color);
+        }
+      }
+      .action.file:hover {
+        color: white;
+        border-color: var(--dappnode-color);
+        background-color: var(--dappnode-color);
+      }
+    }
+  }
+
+  @media screen and (max-width: 40rem) {
+    .size,
+    .time {
+      display: none;
+    }
+  }
+}
