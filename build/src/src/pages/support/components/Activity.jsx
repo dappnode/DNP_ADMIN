@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { getUserActionLogs } from "services/userActionLogs/selectors";
-// Own module
-import "./activity.css";
 // Components
 import CardList from "components/CardList";
 // Utils
 import parseDate from "utils/parseDate";
 import { stringifyObjSafe } from "utils/objects";
+import { stringSplit } from "utils/strings";
+// Own module
+import "./activity.css";
 
 const badgeClass = "badge badge-pill badge-";
 
@@ -58,7 +59,7 @@ function ActivityItem({ log }) {
 
   const type = parseLevel(log.level);
   const date = parseDate(log.timestamp);
-  const eventShort = (log.event || "").split(".")[0];
+  const eventShort = stringSplit(log.event, ".")[0];
 
   return (
     <div className="user-log">

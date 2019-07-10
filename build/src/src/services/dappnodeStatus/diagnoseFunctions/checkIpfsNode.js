@@ -1,4 +1,5 @@
 import { retryable } from "utils/functions";
+import { stringIncludes } from "utils/strings";
 
 // This construction prevents ipfs from auto initialize when imported
 // If this happens tests can fail and trigger nasty effects
@@ -13,7 +14,8 @@ const url = `${protocol}://${host}:${port}/api/v0/cat?arg=${hash}`;
 const checkIpfsConnection = retryable(async () => {
   try {
     const file = await fetchWithTimeout(url).then(res => res.text());
-    if (!file.includes(expectedString)) throw Error("Error parsing file");
+    if (!stringIncludes(file, expectedString))
+      throw Error("Error parsing file");
   } catch (e) {
     e.message = `Error verifying IPFS: ${e.message}`;
     throw e;

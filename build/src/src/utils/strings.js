@@ -19,17 +19,44 @@ export const capitalize = s => {
 };
 
 /**
- * Checks if string 1 includes string 2.
- * - If string 1 or string 2 are undefined, returns false
+ * Checks if string includes content.
+ * - If string or content are undefined, returns false
  * - Does the check in lowerCase
- * @param {string} s1 = "HeLLo"
- * @param {string} s2 = "lo"
+ * @param {string} s = "HeLLo"
+ * @param {string} content = "lo"
  * @returns {bool} = true
  */
-export const stringIncludes = (s1, s2) => {
-  if (!s1 || typeof s1 !== "string") return false;
-  if (!s2 || typeof s2 !== "string") return false;
-  return s1.toLowerCase().includes(s2.toLowerCase());
+export const stringIncludes = (s, content) => {
+  if (!s || typeof s !== "string") return false;
+  if (!content || typeof content !== "string") return false;
+  return s.toLowerCase().includes(content.toLowerCase());
+};
+
+/**
+ * Checks if string endsWith content.
+ * - If string or content are undefined, returns false
+ * - Does the check in lowerCase
+ * @param {string} s = "HeLLo"
+ * @param {string} content = "lo"
+ * @returns {bool} = true
+ */
+export const stringEndsWith = (s, content) => {
+  if (!s || typeof s !== "string") return false;
+  if (!content || typeof content !== "string") return false;
+  return s.toLowerCase().endsWith(content.toLowerCase());
+};
+
+/**
+ * Split string by separator.
+ * - If string or separator are undefined, returns an empty array
+ * @param {string} s = "vpn.eth"
+ * @param {string|object} separator = ".", /\.(.+)/
+ * @returns {array} ["vpn", "eth"]
+ */
+export const stringSplit = (s, separator) => {
+  if (!s || typeof s !== "string") return [""];
+  if (!separator) return [""];
+  return s.split(separator);
 };
 
 /**

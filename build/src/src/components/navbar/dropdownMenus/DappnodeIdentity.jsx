@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
 import makeBlockie from "ethereum-blockies-base64";
 import { getDappnodeIdentityClean } from "services/dappnodeStatus/selectors";
+import { stringSplit, stringIncludes } from "utils/strings";
 
 /**
  * Patch to fix the visual issue of the domain being too long.
@@ -15,8 +16,8 @@ import { getDappnodeIdentityClean } from "services/dappnodeStatus/selectors";
  * @param {string} value
  */
 function parseIdentityKeyValue(key, value) {
-  if (key.includes("domain")) {
-    const [hex, rootDomain] = value.split(/\.(.+)/);
+  if (stringIncludes(key, "domain")) {
+    const [hex, rootDomain] = stringSplit(value, /\.(.+)/);
     return (
       <>
         {hex}
@@ -36,8 +37,7 @@ const DappnodeIdentity = ({ dappnodeIdentity = {} }) => {
 
   // Show a 24x24px blockie icon from the DAppNode's domain or ip+name
   const { name = "", ip = "", domain = "" } = dappnodeIdentity;
-  const seed =
-    domain && domain.includes(".") ? domain.split(".")[0] : `${name}${ip}`;
+  const seed = stringSplit(domain, ".")[0] || `${name}${ip}`;
 
   const Icon = () => (
     <React.Fragment>

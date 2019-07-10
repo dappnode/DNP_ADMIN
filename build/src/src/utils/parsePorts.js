@@ -1,4 +1,5 @@
 import uniqArray from "./uniqArray";
+import { stringSplit, stringIncludes } from "./strings";
 
 /**
  * Parses ports
@@ -23,11 +24,11 @@ function parsePorts(manifest) {
   // portsArray = ['30303/udp']
   const portsFormatted = portsArray
     // Ignore ports that are not mapped
-    .filter(e => e.includes(":"))
+    .filter(e => stringIncludes(e, ":"))
     // Transform ['30303:30303/udp'] => ['30303 UDP']
     .map(p => {
-      const hostPortNumber = p.split(":")[0];
-      const portType = p.split("/")[1] || "TCP";
+      const hostPortNumber = stringSplit(p, ":")[0];
+      const portType = stringSplit(p, "/")[1] || "TCP";
       return {
         portNumber: hostPortNumber,
         protocol: portType ? portType.toUpperCase() : portType

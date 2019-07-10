@@ -1,9 +1,16 @@
-import { capitalize } from "utils/strings";
+import { capitalize, stringEndsWith } from "utils/strings";
+import { stringSplit } from "./strings";
 
 export function shortName(ens) {
   if (!ens || typeof ens !== "string") return ens;
   if (!ens.includes(".")) return ens;
-  return ens.split(".")[0];
+  return stringSplit(ens, ".")[0];
+}
+
+export function repoName(ens) {
+  if (!ens || typeof ens !== "string") return ens;
+  if (!ens.includes(".")) return ens;
+  return stringSplit(ens, /\.(.+)/)[1];
 }
 
 /**
@@ -29,7 +36,9 @@ export function shortNameCapitalized(name) {
 
 export function shortAuthor(author) {
   if (!author || typeof author !== "string") return author;
-  return (author.split("(")[0] || "").split("<")[0] || "";
+  const beforeParentesis = stringSplit(author, "(")[0];
+  const beforeLessthan = stringSplit(beforeParentesis, "<")[0];
+  return beforeLessthan;
 }
 
 /**
@@ -38,6 +47,5 @@ export function shortAuthor(author) {
  * @returns {bool} isVerified
  */
 export function isDnpVerified(name) {
-  const [, repo] = (name || "").split(/\.(.+)/);
-  return repo === "dnp.dappnode.eth";
+  return stringEndsWith(name, "dnp.dappnode.eth");
 }

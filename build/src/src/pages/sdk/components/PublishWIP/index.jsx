@@ -7,10 +7,11 @@ import Input from "components/Input";
 import Title from "components/Title";
 import SubTitle from "components/SubTitle";
 import Card from "components/Card";
+import { stringIncludes } from "utils/strings";
 
 function validateEnsDomain(domain) {
   if (!domain) return null;
-  return domain.includes(".")
+  return stringIncludes(domain, ".")
     ? { valid: true, message: "Valid ENS domain" }
     : { valid: false, message: "Invalid ENS domain" };
 }
@@ -49,7 +50,8 @@ function Publish({ match }) {
       id: "dnpName",
       name: "DAppNode Package name",
       placeholder: "full ENS name",
-      help: "ENS name of the DAppNode Package to update, i.e. timeapp.public.dappnode.eth",
+      help:
+        "ENS name of the DAppNode Package to update, i.e. timeapp.public.dappnode.eth",
       value: dnpName,
       onValueChange: setDnpName,
       validations: [validateEnsDomain(dnpName)]

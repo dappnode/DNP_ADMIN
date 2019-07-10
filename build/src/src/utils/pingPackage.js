@@ -1,3 +1,5 @@
+import { stringIncludes } from "./strings";
+
 /**
  * Pings a package to verify it is currently connected to the current WAMP network
  * - On success returns the resulting object (version data)
@@ -22,13 +24,13 @@ export default function pingPackage(session, packageName) {
       }
     },
     err => {
-      if (!err.error || !err.error.includes("no_such_procedure")) {
+      if (stringIncludes(err.error, "no_such_procedure"))
         console.error(
           `Unkown error while pinging ${packageName}: ${err.error ||
             err.message ||
             JSON.stringify(err)}`
         );
-      }
+
       return false;
     }
   );

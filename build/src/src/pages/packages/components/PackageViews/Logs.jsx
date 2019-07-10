@@ -9,7 +9,7 @@ import Input from "components/Input";
 import Button from "components/Button";
 import Terminal from "./Terminal";
 // Utils
-import { stringIncludes } from "utils/strings";
+import { stringIncludes, stringSplit } from "utils/strings";
 
 const refreshInterval = 2 * 1000;
 const terminalID = "terminal";
@@ -95,7 +95,7 @@ function Logs({ id }) {
    * If the query returned no matching logs, display custom message
    * If the lines parameter is not valid, display custom message
    */
-  const logsArray = (logs || "").split(/\r?\n/);
+  const logsArray = stringSplit(logs, /\r?\n/);
   let logsFiltered = query
     ? logsArray.filter(line => stringIncludes(line, query)).join("\n")
     : logs;
