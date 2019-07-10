@@ -1,6 +1,6 @@
-import * as s from "../../../pages/troubleshoot/selectors";
+import * as s from "../../../pages/support/selectors";
 
-describe("pages > troubleshoot > selectors", () => {
+describe("pages > support > selectors", () => {
   describe("getIssueUrlRaw", () => {
     it("Should return the raw new issue url", () => {
       const state = {};

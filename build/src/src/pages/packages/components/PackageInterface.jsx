@@ -3,12 +3,10 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import withTitle from "components/hoc/withTitle";
 import { compose } from "redux";
-import * as s from "../selectors";
-import { rootPath } from "../data";
 import { createStructuredSelector } from "reselect";
 import PropTypes from "prop-types";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
-// Components
+// This module
 import Info from "./PackageViews/Info";
 import DnpSpecific, { dnpSpecificList } from "./PackageViews/DnpSpecific";
 import Logs from "./PackageViews/Logs";
@@ -17,9 +15,13 @@ import FileManager from "./PackageViews/FileManager";
 import Backup from "./PackageViews/Backup";
 import Controls from "./PackageViews/Controls";
 import NoDnpInstalled from "./NoDnpInstalled";
+import * as s from "../selectors";
+import { rootPath, title } from "../data";
 // Components
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
+// Utils
+import { shortNameCapitalized } from "utils/format";
 // Selectors
 import {
   getIsLoading,
@@ -112,7 +114,7 @@ const PackageInterface = ({
     <>
       <div className="horizontal-navbar">
         {availableRoutes.map(route => (
-          <button key={route.subPath} className="item">
+          <button key={route.subPath} className="item-container">
             <NavLink
               to={route.to}
               className="item no-a-style"
@@ -162,7 +164,8 @@ const mapStateToProps = createStructuredSelector({
   loading: getIsLoading.dnpInstalled,
   error: getLoadingError.dnpInstalled,
   // For the withTitle HOC
-  subtitle: s.getUrlId
+  subtitle: (state, ownProps) =>
+    shortNameCapitalized(s.getUrlId(state, ownProps))
 });
 
 const mapDispatchToProps = null;
@@ -173,5 +176,5 @@ export default compose(
     mapStateToProps,
     mapDispatchToProps
   ),
-  withTitle("Packages")
+  withTitle(title)
 )(PackageInterface);

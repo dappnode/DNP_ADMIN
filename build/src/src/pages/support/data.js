@@ -1,7 +1,7 @@
 // This will be used later in our root reducer and selectors
 
-export const rootPath = "/troubleshoot";
-export const title = "Troubleshoot";
+export const rootPath = "/support";
+export const title = "Support";
 
 // Dedicated data
 const githubRepo = "DNP_ADMIN";

@@ -6,8 +6,8 @@ import defaultAvatar from "img/defaultAvatar.png";
 // Utility components
 import Card from "components/Card";
 import Button from "components/Button";
-import { stringIncludes, capitalize } from "utils/strings";
-import { GoVerified } from "react-icons/go";
+import DnpNameVerified from "components/DnpNameVerified";
+import { stringIncludes } from "utils/strings";
 
 function DnpStore({ directory, openDnp, featured }) {
   // If there are no DNPs, don't render the component to prevent wierd empty spaces
@@ -19,11 +19,6 @@ function DnpStore({ directory, openDnp, featured }) {
         const { manifest, error, avatar = defaultAvatar, origin, tag } =
           dnp || {};
         const { name, shortDescription, description, style } = manifest || {};
-        /* Show the button as disabled (gray) if it's updated */
-        /* Rename tag from "install" to "get" because there were too many "install" tags 
-             Cannot change the actual tag because it is used for logic around the installer */
-        const [shortName, repo] = name.split(/\.(.+)/);
-        const verified = repo === "dnp.dappnode.eth";
 
         if (featured) {
           /**
@@ -53,12 +48,9 @@ function DnpStore({ directory, openDnp, featured }) {
                 />
               </div>
               <div className="info-big">
-                <div className="badge gray">Featured</div>
+                <div className="badge gray featured">Featured</div>
 
-                <div className="title">
-                  {capitalize(shortName)}
-                  {verified && <GoVerified className="verified-badge" />}
-                </div>
+                <DnpNameVerified name={name} big />
 
                 <div className="description">
                   {shortDescription || description}
@@ -84,10 +76,7 @@ function DnpStore({ directory, openDnp, featured }) {
                 <img src={error ? errorAvatar : avatar} alt="avatar" />
               </div>
 
-              <div className="title">
-                {capitalize(shortName)}
-                {verified && <GoVerified className="verified-badge" />}
-              </div>
+              <DnpNameVerified name={name} />
 
               {/* <div className="badge">New version available</div> */}
               <div className="description">

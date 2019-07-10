@@ -20,6 +20,10 @@ import {
 import { MdRefresh, MdOpenInNew } from "react-icons/md";
 // Utils
 import sortByProp from "utils/sortByProp";
+import { shortNameCapitalized } from "utils/format";
+// Images
+import defaultAvatar from "img/defaultAvatar.png";
+import dappnodeIcon from "img/dappnode-logo-only.png";
 
 const xnor = (a, b) => Boolean(a) === Boolean(b);
 
@@ -27,13 +31,18 @@ const PackagesList = ({
   dnps = [],
   moduleName,
   coreDnps,
+  dnpsAvatars,
   loading,
   error,
   restartPackage
 }) => {
   if (!dnps.length) {
-    if (loading) return <Loading msg="Loading installed DAppNode Packages..." />;
-    if (error) return <Error msg={`Error loading installed DAppNode Packages: ${error}`} />;
+    if (loading)
+      return <Loading msg="Loading installed DAppNode Packages..." />;
+    if (error)
+      return (
+        <Error msg={`Error loading installed DAppNode Packages: ${error}`} />
+      );
   }
 
   const filteredDnps = dnps.filter(dnp => xnor(coreDnps, dnp.isCore));
@@ -42,21 +51,28 @@ const PackagesList = ({
   const modulePath = moduleName.toLowerCase();
 
   return (
-    <Card className="list-grid dnps no-a-style">
+    <Card className={`list-grid dnps no-a-style`}>
       <header className="center">Status</header>
+      <header className="center"> </header>
       <header>Name</header>
       <header>Open</header>
-      <header>Restart</header>
+      <header className="restart">Restart</header>
       {filteredDnps.sort(sortByProp("name")).map(({ name, state }) => (
         <React.Fragment key={name}>
           <StateBadge state={state} />
+          <img
+            className="avatar"
+            src={dnpsAvatars[name] || (coreDnps ? dappnodeIcon : defaultAvatar)}
+            alt="Avatar"
+          />
           <NavLink className="name" to={`/${modulePath}/${name}`}>
-            {name}
+            {shortNameCapitalized(name)}
           </NavLink>
           <NavLink className="open" to={`/${modulePath}/${name}`}>
             <MdOpenInNew />
           </NavLink>
           <MdRefresh
+            className="restart"
             style={{ fontSize: "1.05rem" }}
             onClick={() => restartPackage(name)}
           />
@@ -79,6 +95,7 @@ PackagesList.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   dnps: s.getFilteredPackages,
+  dnpsAvatars: s.getPackagesAvatars,
   loading: getIsLoading.dnpInstalled,
   error: getLoadingError.dnpInstalled
 });

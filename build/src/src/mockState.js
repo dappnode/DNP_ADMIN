@@ -186,6 +186,7 @@ export const mockState = {
         requirements: {
           minimumDappnodeVersion: "0.2.4"
         },
+        backup: [{ name: "keystore", path: "/root/.raiden/keystore" }],
         style: {
           featuredBackground: "linear-gradient(to right, #323131, #395353)",
           featuredColor: "white",

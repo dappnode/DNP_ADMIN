@@ -54,8 +54,8 @@
 }
 
 /* Don't show external borders of the user logs list 
-   Using user-logs > x, to win the bootstrap css in specificity
-*/
+     Using user-logs > x, to win the bootstrap css in specificity
+  */
 
 .user-logs > .user-log {
   border-left-width: 0;

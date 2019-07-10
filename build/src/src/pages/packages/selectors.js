@@ -1,5 +1,7 @@
+import _ from "lodash";
 import { createSelector } from "reselect";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
+import { getDnpDirectory } from "services/dnpDirectory/selectors";
 
 // pages > packages
 
@@ -57,4 +59,13 @@ export const getDnpById = createSelector(
   getDnpInstalled,
   (_, id) => id,
   (dnps, id) => dnps.find(dnp => dnp.name === id)
+);
+
+// Get avatars
+export const getPackagesAvatars = createSelector(
+  getDnpInstalled,
+  getDnpDirectory,
+  (dnpsInstalled, dnpDirectory) => {
+    return _.mapValues(dnpDirectory, dnp => dnp.avatar);
+  }
 );

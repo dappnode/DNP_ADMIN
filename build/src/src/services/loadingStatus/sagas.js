@@ -16,7 +16,7 @@ export function wrapErrorsAndLoading(id, fn) {
       return res;
     } catch (e) {
       yield put(a.updateLoading(id, false, e.message));
-      console.error(`Error on fetch${capitalize(id)}: ${e.stack}`);
+      console.error(`Error on fetch ${capitalize(id)}: ${e.stack}`);
     }
   };
 }
