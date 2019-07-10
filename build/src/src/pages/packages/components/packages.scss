@@ -8,18 +8,48 @@
   the lateral scrollbar
    */
   grid-template-columns:
-    minmax(0rem, 2rem)
-    minmax(1rem, min-content)
+    minmax(1.65rem, min-content)
+    2rem
     minmax(5rem, auto)
     minmax(calc(var(--icon-size) / 2), min-content)
     minmax(calc(var(--icon-size) / 2), min-content);
 
   &.core {
     grid-template-columns:
-      minmax(1rem, min-content)
+      2rem
+      minmax(1.65rem, min-content)
       minmax(5rem, auto)
       minmax(calc(var(--icon-size) / 2), min-content)
       minmax(calc(var(--icon-size) / 2), min-content);
+  }
+
+  @media screen and (max-width: 40rem) {
+    grid-template-columns:
+      1.65rem
+      2rem
+      minmax(5rem, auto)
+      minmax(calc(var(--icon-size) / 2), min-content);
+
+    .restart {
+      display: none;
+    }
+
+    .stateBadge {
+      height: 1.65rem;
+      border-radius: 1.65rem;
+      .content {
+        display: none;
+      }
+    }
+
+    &.core {
+      grid-template-columns:
+        2rem
+        minmax(1rem, min-content)
+        minmax(5rem, auto)
+        minmax(calc(var(--icon-size) / 2), min-content)
+        minmax(calc(var(--icon-size) / 2), min-content);
+    }
   }
 
   .avatar {
@@ -151,6 +181,7 @@
     border: none;
     margin-bottom: 1rem;
     padding-bottom: 0.3rem;
+    padding-left: 0;
     font-size: 1.2rem;
     &:not(:last-child) {
       padding-right: 1rem;
