@@ -20,9 +20,8 @@ import Ports from "./InstallCardComponents/Ports";
 import { toSentence } from "utils/strings";
 import humanFileSize from "utils/humanFileSize";
 import getRepoSlugFromManifest from "utils/getRepoSlugFromManifest";
-import { shortNameCapitalized, shortAuthor, isDnpVerified } from "utils/format";
+import { shortNameCapitalized, shortAuthor } from "utils/format";
 import newTabProps from "utils/newTabProps";
-import { GoVerified } from "react-icons/go";
 // Selectors
 import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 import { rootPath as packagesRootPath } from "pages/packages/data";
@@ -34,6 +33,7 @@ import Card from "components/Card";
 import Switch from "components/Switch";
 import ReadMoreMarkdown from "components/ReadMoreMarkdown";
 import Columns from "components/Columns";
+import DnpNameVerified from "components/DnpNameVerified";
 import defaultAvatar from "img/defaultAvatar.png";
 
 function InstallerInterface({
@@ -85,7 +85,6 @@ function InstallerInterface({
   // If the repoSlug is invalid, it will be returned as null
   const repoSlug = getRepoSlugFromManifest(manifest);
   const shortName = shortNameCapitalized(name);
-  const verified = isDnpVerified(name);
 
   const disableInstallation = !isEmpty(progressLogs) || requiresCoreUpdate;
 
@@ -108,10 +107,7 @@ function InstallerInterface({
           </div>
           <div className="right">
             <div className="info">
-              <div className="name-container">
-                <div className="name">{shortName}</div>
-                {verified && <GoVerified className="verified-badge" />}
-              </div>
+              <DnpNameVerified name={name} />
               <div className="subtle-header">CREATED BY</div>
               <div className="badge">{shortAuthor(author)}</div>
             </div>

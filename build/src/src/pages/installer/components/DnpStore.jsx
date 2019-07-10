@@ -6,9 +6,8 @@ import defaultAvatar from "img/defaultAvatar.png";
 // Utility components
 import Card from "components/Card";
 import Button from "components/Button";
-import { shortNameCapitalized, isDnpVerified } from "utils/format";
+import DnpNameVerified from "components/DnpNameVerified";
 import { stringIncludes } from "utils/strings";
-import { GoVerified } from "react-icons/go";
 
 function DnpStore({ directory, openDnp, featured }) {
   // If there are no DNPs, don't render the component to prevent wierd empty spaces
@@ -20,7 +19,6 @@ function DnpStore({ directory, openDnp, featured }) {
         const { manifest, error, avatar = defaultAvatar, origin, tag } =
           dnp || {};
         const { name, shortDescription, description, style } = manifest || {};
-        const verified = isDnpVerified(name);
 
         if (featured) {
           /**
@@ -50,12 +48,9 @@ function DnpStore({ directory, openDnp, featured }) {
                 />
               </div>
               <div className="info-big">
-                <div className="badge gray">Featured</div>
+                <div className="badge gray featured">Featured</div>
 
-                <div className="title">
-                  {shortNameCapitalized(name)}
-                  {verified && <GoVerified className="verified-badge" />}
-                </div>
+                <DnpNameVerified name={name} big />
 
                 <div className="description">
                   {shortDescription || description}
@@ -81,10 +76,7 @@ function DnpStore({ directory, openDnp, featured }) {
                 <img src={error ? errorAvatar : avatar} alt="avatar" />
               </div>
 
-              <div className="title">
-                {shortNameCapitalized(name)}
-                {verified && <GoVerified className="verified-badge" />}
-              </div>
+              <DnpNameVerified name={name} />
 
               {/* <div className="badge">New version available</div> */}
               <div className="description">

@@ -39,19 +39,7 @@
     max-height: 1.5rem; // X*N
     overflow: hidden;
   }
-  .verified-badge {
-    color: var(--dappnode-color);
-    margin-left: 0.25rem;
-    height: 0.95rem;
-  }
-  .badge {
-    font-weight: 600;
-    white-space: nowrap;
-    color: #21d48f;
-    font-size: 12px;
-    background: #21d48f26;
-    border-radius: 9px;
-  }
+
   .description {
     position: relative;
     height: 7rem;
@@ -113,21 +101,30 @@
     }
   }
   .info-big {
-    .badge {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    @media screen and (max-width: 40rem) {
+      align-items: center;
+    }
+
+    .badge.featured {
       color: inherit;
       background: none;
       opacity: 0.5;
       padding: 0;
+      margin-bottom: 0.4rem;
     }
+
     .title {
       font-size: 2.2rem;
       // Limit the number of text lines to N
       line-height: 2.5rem; // X
       max-height: 2.5rem; // X*N
     }
-    .verified-badge {
-      height: 1.6rem;
-    }
+    // .verified-badge {
+    //   height: 1.6rem;
+    // }
     .description {
       height: 7rem;
       font-size: 1.1rem;
