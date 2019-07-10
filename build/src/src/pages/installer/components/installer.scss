@@ -63,6 +63,7 @@
     --description-line-height: 1.5rem;
     line-height: var(--description-line-height); // X
     max-height: calc(3 * var(--description-line-height)); // X*N
+    // Fade out to simulate an ellipsis for text
     &:after {
       content: "";
       text-align: right;
@@ -134,6 +135,11 @@
       line-height: 1.5rem; // X
       max-height: 4.5rem; // X*N
     }
+  }
+  // Don't show the gradient if featured
+  // The white gradient looks awful on top of a colored gradient
+  .description:after {
+    display: none;
   }
 }
 

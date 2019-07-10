@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import withTitle from "components/hoc/withTitle";
 import { compose } from "redux";
 import * as s from "../selectors";
-import { rootPath } from "../data";
+import { rootPath, title } from "../data";
 import { createStructuredSelector } from "reselect";
 import PropTypes from "prop-types";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
@@ -112,7 +112,7 @@ const PackageInterface = ({
     <>
       <div className="horizontal-navbar">
         {availableRoutes.map(route => (
-          <button key={route.subPath} className="item">
+          <button key={route.subPath} className="item-container">
             <NavLink
               to={route.to}
               className="item no-a-style"
@@ -173,5 +173,5 @@ export default compose(
     mapStateToProps,
     mapDispatchToProps
   ),
-  withTitle("Packages")
+  withTitle(title)
 )(PackageInterface);

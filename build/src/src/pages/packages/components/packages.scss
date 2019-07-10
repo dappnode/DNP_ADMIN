@@ -8,10 +8,24 @@
   the lateral scrollbar
    */
   grid-template-columns:
+    minmax(0rem, 2rem)
     minmax(1rem, min-content)
     minmax(5rem, auto)
     minmax(calc(var(--icon-size) / 2), min-content)
     minmax(calc(var(--icon-size) / 2), min-content);
+
+  &.core {
+    grid-template-columns:
+      minmax(1rem, min-content)
+      minmax(5rem, auto)
+      minmax(calc(var(--icon-size) / 2), min-content)
+      minmax(calc(var(--icon-size) / 2), min-content);
+  }
+
+  .avatar {
+    width: 100%;
+    border-radius: 4px;
+  }
 }
 /* Customize name inside NavLink */
 .list-grid.dnps a:hover {
@@ -132,8 +146,7 @@
   display: block;
   text-align: center;
   margin-bottom: 0.5rem !important;
-  .item {
-    color: #7b7d7f;
+  .item-container {
     background-color: transparent;
     border: none;
     margin-bottom: 1rem;
@@ -147,6 +160,17 @@
     &:hover {
       color: inherit;
     }
+
+    // Remove the border (outline) on click
+    &:focus {
+      outline: none;
+    }
+  }
+  .item {
+    color: #7b7d7f;
+    border: none;
+    padding-bottom: 0.3rem;
+    cursor: pointer;
     &.active {
       color: #212529;
       border-bottom: 5px solid var(--dappnode-strong-main-color);
