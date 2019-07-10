@@ -107,7 +107,7 @@ function InstallerInterface({
           </div>
           <div className="right">
             <div className="info">
-              <DnpNameVerified name={name} />
+              <DnpNameVerified name={name} origin={origin} />
               <div className="subtle-header">CREATED BY</div>
               <div className="badge">{shortAuthor(author)}</div>
             </div>
@@ -125,6 +125,7 @@ function InstallerInterface({
         <div className="options">
           {availableOptions.map(option => (
             <Switch
+              key={option}
               checked={options[option]}
               onToggle={value => setOptions({ [option]: value })}
               label={toSentence(option)}
