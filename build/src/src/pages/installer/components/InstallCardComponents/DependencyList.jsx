@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import computeSemverUpdateType from "utils/computeSemverUpdateType";
-import DnpName from "components/DnpName";
 import ReactMarkdown from "react-markdown";
 import styled from "styled-components";
+import { shortNameCapitalized } from "utils/format";
 
 const InfoContainer = styled.div`
   display: grid;
@@ -58,7 +58,7 @@ function DependencyList({ deps }) {
         return (
           <div key={name} className="dependency-list">
             <InfoContainer>
-              <DnpName dnpName={name} />
+              <span>{shortNameCapitalized(name)}</span>
               <SpanCenter>
                 {from ? `Update from ${from} to ${to}` : `Installs ${to}`}
                 {showBadge && <Badge text={updateType} />}

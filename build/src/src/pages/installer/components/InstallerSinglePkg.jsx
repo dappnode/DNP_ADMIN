@@ -7,11 +7,6 @@ import { createStructuredSelector } from "reselect";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 import ReactMarkdown from "react-markdown";
-import { toSentence } from "utils/strings";
-import humanFileSize from "utils/humanFileSize";
-import getRepoSlugFromManifest from "utils/getRepoSlugFromManifest";
-import { shortNameCapitalized, shortAuthor } from "utils/format";
-import newTabProps from "utils/newTabProps";
 // This module
 import * as s from "../selectors";
 import * as a from "../actions";
@@ -21,6 +16,13 @@ import SpecialPermissions from "./InstallCardComponents/SpecialPermissions";
 import Vols from "./InstallCardComponents/Vols";
 import Envs from "./InstallCardComponents/Envs";
 import Ports from "./InstallCardComponents/Ports";
+// Utils
+import { toSentence } from "utils/strings";
+import humanFileSize from "utils/humanFileSize";
+import getRepoSlugFromManifest from "utils/getRepoSlugFromManifest";
+import { shortNameCapitalized, shortAuthor, isDnpVerified } from "utils/format";
+import newTabProps from "utils/newTabProps";
+import { GoVerified } from "react-icons/go";
 // Selectors
 import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 import { rootPath as packagesRootPath } from "pages/packages/data";
@@ -83,6 +85,7 @@ function InstallerInterface({
   // If the repoSlug is invalid, it will be returned as null
   const repoSlug = getRepoSlugFromManifest(manifest);
   const shortName = shortNameCapitalized(name);
+  const verified = isDnpVerified(name);
 
   const disableInstallation = !isEmpty(progressLogs) || requiresCoreUpdate;
 
@@ -105,7 +108,10 @@ function InstallerInterface({
           </div>
           <div className="right">
             <div className="info">
-              <div className="name">{shortName}</div>
+              <div className="name-container">
+                <div className="name">{shortName}</div>
+                {verified && <GoVerified className="verified-badge" />}
+              </div>
               <div className="subtle-header">CREATED BY</div>
               <div className="badge">{shortAuthor(author)}</div>
             </div>
@@ -203,7 +209,8 @@ const mapStateToProps = createStructuredSelector({
   progressLogs: (state, ownProps) =>
     getProgressLogsByDnp(state, s.getQueryIdOrName(state, ownProps)),
   // For the withTitle HOC
-  subtitle: s.getQueryIdOrName
+  subtitle: (state, ownProps) =>
+    shortNameCapitalized(s.getQueryIdOrName(state, ownProps))
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch

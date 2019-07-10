@@ -6,7 +6,8 @@ import defaultAvatar from "img/defaultAvatar.png";
 // Utility components
 import Card from "components/Card";
 import Button from "components/Button";
-import { stringIncludes, capitalize } from "utils/strings";
+import { shortNameCapitalized, isDnpVerified } from "utils/format";
+import { stringIncludes } from "utils/strings";
 import { GoVerified } from "react-icons/go";
 
 function DnpStore({ directory, openDnp, featured }) {
@@ -19,11 +20,7 @@ function DnpStore({ directory, openDnp, featured }) {
         const { manifest, error, avatar = defaultAvatar, origin, tag } =
           dnp || {};
         const { name, shortDescription, description, style } = manifest || {};
-        /* Show the button as disabled (gray) if it's updated */
-        /* Rename tag from "install" to "get" because there were too many "install" tags 
-             Cannot change the actual tag because it is used for logic around the installer */
-        const [shortName, repo] = name.split(/\.(.+)/);
-        const verified = repo === "dnp.dappnode.eth";
+        const verified = isDnpVerified(name);
 
         if (featured) {
           /**
@@ -56,7 +53,7 @@ function DnpStore({ directory, openDnp, featured }) {
                 <div className="badge gray">Featured</div>
 
                 <div className="title">
-                  {capitalize(shortName)}
+                  {shortNameCapitalized(name)}
                   {verified && <GoVerified className="verified-badge" />}
                 </div>
 
@@ -85,7 +82,7 @@ function DnpStore({ directory, openDnp, featured }) {
               </div>
 
               <div className="title">
-                {capitalize(shortName)}
+                {shortNameCapitalized(name)}
                 {verified && <GoVerified className="verified-badge" />}
               </div>
 

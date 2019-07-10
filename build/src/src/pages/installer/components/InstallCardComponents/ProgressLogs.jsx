@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
+import { shortNameCapitalized } from "utils/format";
 // Components
 import ProgressBar from "react-bootstrap/ProgressBar";
-import DnpName from "components/DnpName";
 import Card from "components/Card";
 
 function parsePercent(s = "") {
@@ -29,7 +29,7 @@ function ProgressLogs({ progressLogs }) {
           return (
             <div key={dnpName} className="row">
               <div className="col-6 text-truncate">
-                <DnpName dnpName={dnpName} />
+                <span>{shortNameCapitalized(dnpName)}</span>
               </div>
               <div className="col-6 text-truncate center">
                 <ProgressBar
