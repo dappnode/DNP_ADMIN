@@ -1,7 +1,7 @@
 // INSTALLER
 import * as t from "./actionTypes";
 import { confirm } from "components/ConfirmDialog";
-import { shortNameCapitalized as sn } from "utils/format";
+import { shortNameCapitalized as sn, isDnpVerified } from "utils/format";
 // Selectors
 import { getDnpDirectoryById } from "services/dnpDirectory/selectors";
 // Parsers
@@ -51,12 +51,21 @@ export const install = (id, options) => async (dispatch, getState) => {
     );
 
   // Dialog to accept the disclaimer if any
-  const disclaimer = (dnp.manifest || {}).disclaimer;
-  if (disclaimer)
+  let disclaimerSections = [];
+  // Default disclaimer for public DNPs
+  if (!isDnpVerified(dnp.name) && !dnp.origin)
+    disclaimerSections.push(
+      "This package has been developed by a third party. DAppNode association is not maintaining this package and has not performed any audit on its content. Use it at your own risk. DAppNode will not be liable for any loss or damage produced by the use of this package"
+    );
+  const manifestDisclaimerObject = (dnp.manifest || {}).disclaimer;
+  if (manifestDisclaimerObject)
+    disclaimerSections.push(manifestDisclaimerObject.message);
+
+  if (disclaimerSections.length)
     await new Promise(resolve =>
       confirm({
         title: `${sn(displayName)} disclaimer`,
-        text: disclaimer.message,
+        text: disclaimerSections.join("\n\n----\n\n"),
         label: "Accept",
         onClick: resolve,
         variant: "dappnode"
