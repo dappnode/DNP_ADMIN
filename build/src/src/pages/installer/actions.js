@@ -53,7 +53,7 @@ export const install = (id, options) => async (dispatch, getState) => {
   // Dialog to accept the disclaimer if any
   let disclaimerSections = [];
   // Default disclaimer for public DNPs
-  if (!isDnpVerified(dnp.name) && !dnp.origin)
+  if (!isDnpVerified(dnp.name) || dnp.origin)
     disclaimerSections.push(
       "This package has been developed by a third party. DAppNode association is not maintaining this package and has not performed any audit on its content. Use it at your own risk. DAppNode will not be liable for any loss or damage produced by the use of this package"
     );
