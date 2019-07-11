@@ -33,6 +33,10 @@ export const getPasswordIsInsecure = createSelectorSubProp(
   getLocal,
   "passwordIsInsecure"
 );
+export const getAutoUpdateSettings = createSelectorSubProp(
+  getLocal,
+  "autoUpdateSettings"
+);
 
 export const getDappmanagerVersionData = createSelectorSubProp(
   getVersionData,

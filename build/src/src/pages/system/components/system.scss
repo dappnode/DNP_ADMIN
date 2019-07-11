@@ -18,39 +18,47 @@
   margin-bottom: 0 !important;
 }
 
-.change-password-form {
-  display: grid;
-  grid-template-columns: minmax(min-content, max-content) 1fr;
-  grid-gap: var(--default-spacing);
-
-  > span {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+.auto-update-row {
+  display: flex;
+  justify-content: space-between;
+  select {
+    max-width: 8rem;
   }
+}
 
-  > .toggle {
-    opacity: 0.6;
-    transition: opacity ease 0.1s;
-    &:hover {
-      opacity: 1;
-    }
-  }
+.list-grid.auto-updates {
+  /*
+  Col 1: Shrink the text to an extend, otherwise fill all available space
+  Col 2, 3: Fit to the link buttons / switch always
+  Col 4, 5: On small screens fit to the icon, otherwise to the text
+  NOTE: The min values are less than the content so it collapses over the
+  grid-gap space. On really small screens it helps delay the appearance of
+  the lateral scrollbar
+   */
+  grid-template-columns:
+    minmax(1.65rem, min-content)
+    minmax(4rem, auto)
+    minmax(min-content, max-content);
 
-  > .submit-buttons {
-    display: flex;
-    > *:not(:last-child) {
-      margin-right: var(--default-spacing);
-    }
-  }
-
-  @media screen and (max-width: 25rem) {
-    grid-template-columns: auto;
-    > span {
-      justify-content: flex-start;
-      &.separator {
+  @media screen and (max-width: 40rem) {
+    .stateBadge {
+      height: 1.65rem;
+      border-radius: 1.65rem;
+      width: 1.65rem;
+      .content {
         display: none;
       }
     }
   }
+
+  .stateBadge {
+    width: 2.5rem;
+    overflow: hidden;
+    overflow-wrap: normal;
+  }
+}
+
+.show-detailed-options {
+  margin-top: var(--default-spacing);
+  float: right;
 }

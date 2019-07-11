@@ -18,6 +18,28 @@ export default {
   ping: {},
 
   /**
+   * Edits the auto-update settings
+   *
+   * @param {string} id = "bitcoin.dnp.dappnode.eth"
+   * @param {bool} generalSettings Edit the general settings
+   * @param {bool} applyToAll Reset all DNP individual settings
+   * @param {object} settings = { major: false, minor: false, patch: true }
+   */
+  autoUpdateSettingsEdit: {
+    mandatoryKwargs: ["settings"]
+  },
+
+  /**
+   * Get current auto-update settings
+   *
+   * @returns {object} autoUpdateSettings = {
+   *   "any": { major: false, minor: false, patch: true },
+   *   "bitcoin.dnp.dappnode.eth": { major: false, minor: true, patch: true }
+   * }
+   */
+  autoUpdateSettingsGet: {},
+
+  /**
    * Does a backup of a DNP and sends it to the client for download.
    *
    * @param {string} id DNP .eth name

@@ -46,6 +46,11 @@ export const updatePasswordIsInsecure = passwordIsInsecure => ({
   passwordIsInsecure
 });
 
+export const updateAutoUpdateSettings = autoUpdateSettings => ({
+  type: t.UPDATE_AUTO_UPDATE_SETTINGS,
+  autoUpdateSettings
+});
+
 // Fetch
 
 export const fetchAllDappnodeStatus = () => ({
@@ -66,4 +71,8 @@ export const fetchDappnodeDiagnose = () => ({
 
 export const fetchIfPasswordIsInsecure = () => ({
   type: t.FETCH_IF_PASSWORD_IS_INSECURE
+});
+
+export const fetchAutoUpdateSettings = () => ({
+  type: t.FETCH_AUTO_UPDATE_SETTINGS
 });
