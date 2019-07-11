@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import api from "API/rpcMethods";
-import * as a from "../actions";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
@@ -62,9 +61,16 @@ function AutoUpdates({ dnps, autoUpdateSettings, fetchAutoUpdateSettings }) {
 
   return (
     <>
-      <SubTitle>AutoUpdates</SubTitle>
+      <SubTitle>Auto-updates</SubTitle>
       <Card>
+        <div className="auto-updates-explanation">
+          Enable auto-updates for DAppNode to stay automatically up to date to
+          the latest security updates. The interaction of an admin will always
+          be required for major breaking updates.
+        </div>
+
         <div className="list-grid auto-updates">
+          <hr />
           {dnpsToShow.map(({ name, key }) => {
             const setting =
               autoUpdateSettings[key] ||
@@ -106,6 +112,7 @@ function AutoUpdates({ dnps, autoUpdateSettings, fetchAutoUpdateSettings }) {
               </React.Fragment>
             );
           })}
+          <hr />
         </div>
         <div className="show-detailed-options">
           <Switch

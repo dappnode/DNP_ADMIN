@@ -138,7 +138,7 @@ const checkIfPasswordIsInsecure = wrapErrorsAndLoading(
 );
 
 /**
- * Get the auto update settings
+ * Get the auto-update settings
  */
 const fetchAutoUpdateSettings = wrapErrorsAndLoading(
   loadingIds.autoUpdateSettings,

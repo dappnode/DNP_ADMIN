@@ -26,6 +26,10 @@
   }
 }
 
+.auto-updates-explanation {
+  margin-bottom: var(--default-spacing);
+}
+
 .list-grid.auto-updates {
   /*
   Col 1: Shrink the text to an extend, otherwise fill all available space
@@ -40,6 +44,12 @@
     minmax(4rem, auto)
     minmax(min-content, max-content);
 
+  .stateBadge {
+    width: 2.5rem;
+    overflow: hidden;
+    overflow-wrap: normal;
+  }
+
   @media screen and (max-width: 40rem) {
     .stateBadge {
       height: 1.65rem;
@@ -50,15 +60,15 @@
       }
     }
   }
-
-  .stateBadge {
-    width: 2.5rem;
-    overflow: hidden;
-    overflow-wrap: normal;
-  }
 }
 
 .show-detailed-options {
   margin-top: var(--default-spacing);
-  float: right;
+  label {
+    transition: opacity ease 0.1s;
+    opacity: 0.6;
+  }
+  &:hover label {
+    opacity: 1;
+  }
 }
