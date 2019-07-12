@@ -8,13 +8,13 @@ import Card from "components/Card";
 import SubTitle from "components/SubTitle";
 import Input from "components/Input";
 import Button from "components/Button";
-// Icons
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import Switch from "components/Switch";
 // External
 import { getPasswordIsInsecure } from "services/dappnodeStatus/selectors";
 
 function ChangeHostUserPassword({ passwordIsInsecure, passwordChange }) {
   const [input, setInput] = useState("");
+  const [confirmInput, setConfirmInput] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   if (!passwordIsInsecure) return null;
@@ -23,50 +23,76 @@ function ChangeHostUserPassword({ passwordIsInsecure, passwordChange }) {
   if (input && input.length < 8)
     errors.push("Password must be at least 8 characters long");
 
+  const errorsConfirm = [];
+  if (confirmInput && confirmInput !== input)
+    errorsConfirm.push("Passwords do not match");
+
+  const invalid =
+    !input || !confirmInput || errors.length || errorsConfirm.length;
+
   const update = () => {
-    if (input && !errors.length) passwordChange(input);
+    if (!invalid) passwordChange(input);
   };
 
   return (
     <>
       <SubTitle>Change host user password</SubTitle>
-      <Card>
-        <Input
-          type={showPassword ? "text" : "password"}
-          placeholder="password..."
-          value={input}
-          onValueChange={setInput}
-          onEnterPress={update}
-          className={errors.length ? "is-invalid" : ""}
-          append={
-            <>
-              <Button
-                onClick={() => setShowPassword(_show => !_show)}
-                style={{
-                  display: "flex",
-                  fontSize: "1.4rem",
-                  borderColor: "#ced4da"
-                }}
-              >
-                {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
-              </Button>
-              <Button
-                variant="dappnode"
-                disabled={!input || errors.length}
-                onClick={update}
-              >
-                Change
-              </Button>
-            </>
-          }
-        />
-        <div className="feedback-error">
-          {errors.map((line, i) => (
-            <span key={i}>
-              {line}
-              <br />
-            </span>
-          ))}
+      <Card className="change-password-form">
+        <span>New password</span>
+        <div>
+          <Input
+            type={showPassword ? "text" : "password"}
+            placeholder="password..."
+            value={input}
+            onValueChange={setInput}
+            onEnterPress={update}
+            className={errors.length ? "is-invalid" : ""}
+          />
+          <div className="feedback-error">
+            {errors.map((line, i) => (
+              <span key={i}>
+                {line}
+                <br />
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <span>Confirm</span>
+        <div>
+          <Input
+            type={showPassword ? "text" : "password"}
+            placeholder="password..."
+            value={confirmInput}
+            onValueChange={setConfirmInput}
+            onEnterPress={update}
+            className={errorsConfirm.length ? "is-invalid" : ""}
+          />
+          <div className="feedback-error">
+            {errorsConfirm.map((line, i) => (
+              <span key={i}>
+                {line}
+                <br />
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <span className="separator" />
+        <div className="toggle">
+          <Switch
+            checked={showPassword}
+            onToggle={() => setShowPassword(_show => !_show)}
+            label={"Show my password"}
+            id={"switch-password-visibility"}
+          />
+        </div>
+
+        <span className="separator" />
+        <div className="submit-buttons">
+          <Button variant="dappnode" disabled={invalid} onClick={update}>
+            Change
+          </Button>
         </div>
       </Card>
     </>

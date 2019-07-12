@@ -7,7 +7,7 @@ import SystemUpdate from "./SystemUpdate";
 import AddIpfsPeer from "./AddIpfsPeer";
 import packages from "pages/packages";
 // Styles
-import "./system.css";
+import "./system.scss";
 
 const PackageInterface = packages.components.PackageInterface;
 
