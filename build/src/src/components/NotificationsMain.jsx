@@ -14,6 +14,7 @@ import {
   getPasswordIsInsecure
 } from "services/dappnodeStatus/selectors";
 import { rootPath as systemRootPath, updatePath } from "pages/system/data";
+import { rootPath as packagesRootPath } from "pages/packages/data";
 
 /**
  * Aggregate notification and display logic
@@ -45,7 +46,7 @@ const NotificationsView = ({
     {
       id: "wifiCredentials",
       linkText: "Change",
-      linkPath: systemRootPath + "/wifi.dnp.dappnode.eth/config",
+      linkPath: packagesRootPath + "/wifi.dnp.dappnode.eth/config",
       body:
         "**Change the DAppNode WIFI credentials**, they are insecure default values.",
       active: areWifiCredentialsDefault && isWifiRunning
