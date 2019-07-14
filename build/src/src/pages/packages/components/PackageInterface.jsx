@@ -81,7 +81,7 @@ const PackageInterface = ({
       name: "Backup",
       subPath: "backup",
       render: () => <Backup dnp={dnp} />,
-      available: (dnp.backup || []).length
+      available: ((dnp.manifest || {}).backup || []).length
     },
     {
       name: "File Manager",
