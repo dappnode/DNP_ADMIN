@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 // Icons
 import { MdUnfoldMore, MdUnfoldLess } from "react-icons/md";
 // Styles
 import "./readMore.css";
-
-const readMoreId = "read-more";
 
 /**
  * Fully responsive text box with a Read More label
@@ -19,9 +17,12 @@ const readMoreId = "read-more";
 function ReadMore({ children }) {
   const [readMore, setReadMore] = useState(false);
   const [showReadMore, setShowReadMore] = useState(false);
+  const readMoreEl = useRef();
+
   useEffect(() => {
     function update() {
-      const height = document.getElementById(readMoreId).clientHeight;
+      if (!readMoreEl.current) return;
+      const height = readMoreEl.current.clientHeight;
       setShowReadMore(height >= 121); // max-height of .description
     }
     update();
@@ -33,7 +34,7 @@ function ReadMore({ children }) {
 
   return (
     <div>
-      <div id={readMoreId} className={readMore ? "" : "short"}>
+      <div ref={readMoreEl} className={`read-more ${readMore ? "" : "short"}`}>
         {children}
       </div>
       {showReadMore && (
