@@ -2,11 +2,13 @@ import React from "react";
 import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
 import "./toastStyle.css";
+// External
+import { activityPath } from "pages/support/data";
 
 const errorElement = message => (
   <div>
     {message}
-    <NavLink to={"/activity"}>
+    <NavLink to={activityPath}>
       <button className="btn btn-danger ml-2 mr-2" type="button">
         Show details
       </button>

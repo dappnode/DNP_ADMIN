@@ -2,6 +2,7 @@
 
 export const rootPath = "/support";
 export const title = "Support";
+export const activityPath = `${rootPath}/activity`;
 
 // Dedicated data
 const githubRepo = "DNP_ADMIN";
