@@ -169,9 +169,8 @@ body,
     minmax(var(--icon-size), min-content)
     min-content
     minmax(var(--icon-size), min-content)
-    minmax(var(--icon-size), min-content)
-    min-content
     minmax(var(--icon-size), min-content);
+
   grid-auto-flow: column;
   place-content: center end;
   /* Auto-space the items only in-between, hard to achieve with flex */
