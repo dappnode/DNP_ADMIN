@@ -12,7 +12,7 @@ import StateBadge from "../StateBadge";
 function Info({ dnp }) {
   if (!dnp) return null;
   const { manifest, state } = dnp;
-  const { description, version, origin } = manifest || {};
+  const { description, version, upstreamVersion, origin } = manifest || {};
   return (
     <>
       <SubTitle>Details</SubTitle>
@@ -29,7 +29,8 @@ function Info({ dnp }) {
 
         <div>
           <strong>Version: </strong>
-          {version + " " + (origin || "")}
+          {version} {upstreamVersion && `(${upstreamVersion} upstream)`}{" "}
+          {origin || ""}
         </div>
 
         <div className="dnp-details-list">

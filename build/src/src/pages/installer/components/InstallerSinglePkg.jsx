@@ -79,8 +79,14 @@ function InstallerInterface({
 
   // Otherwise, show info an allow an install
   const { avatar = defaultAvatar, origin } = dnp || {};
-  const { shortDescription, description, author, version, image } =
-    manifest || {};
+  const {
+    shortDescription,
+    description,
+    author,
+    version,
+    upstreamVersion,
+    image
+  } = manifest || {};
   const { size } = image || {};
   // If the repoSlug is invalid, it will be returned as null
   const repoSlug = getRepoSlugFromManifest(manifest);
@@ -152,15 +158,18 @@ function InstallerInterface({
             <div>{humanFileSize(size)}</div>
             <div className="subtle-header">VERSION</div>
             <div>
-              {version} {origin || ""}{" "}
-              {repoSlug && version && (
+              {repoSlug && version ? (
                 <a
                   href={`https://github.com/${repoSlug}/releases/v${version}`}
                   {...newTabProps}
                 >
-                  changelog
+                  {version}
                 </a>
-              )}
+              ) : (
+                version
+              )}{" "}
+              {upstreamVersion && `(${upstreamVersion} upstream)`}{" "}
+              {origin || ""}
             </div>
             <div className="subtle-header">CREATED BY</div>
             <ReactMarkdown className="no-p-style" source={author} />
