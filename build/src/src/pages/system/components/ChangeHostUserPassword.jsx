@@ -22,6 +22,9 @@ function ChangeHostUserPassword({ passwordIsInsecure, passwordChange }) {
   const errors = [];
   if (input && input.length < 8)
     errors.push("Password must be at least 8 characters long");
+  if (input.includes("'")) errors.push("Password MUST not include the quotes");
+  if (!/^([\x20-\x7F])*$/.test(input))
+    errors.push("Password must include only simple ASCII characters");
 
   const errorsConfirm = [];
   if (confirmInput && confirmInput !== input)
