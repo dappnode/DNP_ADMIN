@@ -22,6 +22,7 @@ import isIpfsHash from "utils/isIpfsHash";
 import isEnsDomain from "utils/isEnsDomain";
 import uniqArray from "utils/uniqArray";
 import Joi from "joi";
+import { stringSplit, stringIncludes } from "utils/strings";
 
 /***************************** Subroutines ************************************/
 
@@ -51,7 +52,7 @@ export function* install({ id, options }) {
     yield put(
       updateIsInstallingLog({
         id: idToInstall,
-        dnpName: idToInstall.split("@")[0],
+        dnpName: stringSplit(idToInstall, "@")[0],
         log: "Starting..."
       })
     );
@@ -129,7 +130,7 @@ export function* fetchPackageRequest({ id }) {
     yield call(assertConnectionOpen);
 
     // If chain is not synced yet, cancel request.
-    if (id && !id.includes("ipfs/")) {
+    if (!stringIncludes(id, "ipfs/")) {
       if (yield call(isSyncing)) {
         return yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
       }

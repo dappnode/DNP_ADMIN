@@ -53,13 +53,13 @@
 }
 /* Right position of the dropdown to prevent clipping on small screens */
 .tn-dropdown.notifications > .menu {
-  right: -3.9rem;
+  right: -0.4rem;
 }
 .tn-dropdown.chainstatus > .menu {
-  right: -6.4rem;
+  right: -2.9rem;
 }
 .tn-dropdown.dappnodeidentity > .menu {
-  right: -10rem;
+  right: -6.45rem;
 }
 /* 22 * 90% = 19.8 (the min-width specified above) */
 @media (max-width: 25rem) {

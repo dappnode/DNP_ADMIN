@@ -15,7 +15,8 @@ const initialState = {
   pingReturns: {},
   versionData: {},
   ipfsConnectionStatus: {},
-  wifiStatus: {}
+  wifiStatus: {},
+  passwordIsInsecure: false
 };
 
 export default function(state = initialState, action) {
@@ -86,6 +87,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         wifiStatus: action.wifiStatus
+      };
+
+    case t.UPDATE_PASSWORD_IS_INSECURE:
+      return {
+        ...state,
+        passwordIsInsecure: action.passwordIsInsecure
       };
 
     default:

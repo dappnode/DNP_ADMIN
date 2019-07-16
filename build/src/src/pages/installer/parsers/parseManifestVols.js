@@ -1,3 +1,5 @@
+import { stringSplit } from "utils/strings";
+
 /**
  * Parse the vols of a manifest object
  * @param {object} manifest
@@ -12,7 +14,7 @@ export default function parseManifestVols(manifest = {}) {
   // HOST:CONTAINER:accessMode, return [HOST, CONTAINER:accessMode]
   const volsArray = (manifest.image || {}).volumes || [];
   return volsArray.reduce((obj, vol, index) => {
-    const [host, container, accessMode] = vol.split(":");
+    const [host, container, accessMode] = stringSplit(vol, ":");
     obj[vol] = {
       host,
       container,

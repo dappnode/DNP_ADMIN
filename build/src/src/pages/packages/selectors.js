@@ -1,5 +1,8 @@
+import _ from "lodash";
 import { createSelector } from "reselect";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
+import { getDnpDirectory } from "services/dnpDirectory/selectors";
+import { stringSplit } from "utils/strings";
 
 // pages > packages
 
@@ -26,7 +29,7 @@ export const getModuleName = createSelector(
   (_, ownProps) => ownProps.match.path,
   (path = "") => {
     if (path.startsWith("/")) path = path.slice(1);
-    return path.split("/")[0];
+    return stringSplit(path, "/")[0];
   }
 );
 
@@ -57,4 +60,13 @@ export const getDnpById = createSelector(
   getDnpInstalled,
   (_, id) => id,
   (dnps, id) => dnps.find(dnp => dnp.name === id)
+);
+
+// Get avatars
+export const getPackagesAvatars = createSelector(
+  getDnpInstalled,
+  getDnpDirectory,
+  (dnpsInstalled, dnpDirectory) => {
+    return _.mapValues(dnpDirectory, dnp => dnp.avatar);
+  }
 );

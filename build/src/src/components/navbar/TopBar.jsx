@@ -3,7 +3,6 @@ import React from "react";
 import DappnodeIdentity from "./dropdownMenus/DappnodeIdentity";
 import ChainData from "./dropdownMenus/ChainData";
 import Notifications from "./dropdownMenus/Notifications";
-import Report from "./dropdownMenus/Report";
 // Components
 import { toggleSideNav } from "./SideBar";
 // Icons
@@ -26,8 +25,6 @@ const TopBar = () => (
       <div className="topnav-icon-separator" />
       <ChainData />
       <Notifications />
-      <div className="topnav-icon-separator" />
-      <Report />
     </div>
   </div>
 );

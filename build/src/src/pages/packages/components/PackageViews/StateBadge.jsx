@@ -13,7 +13,7 @@ function StateBadge({ state }) {
       className={`stateBadge center badge-${styleColor}`}
       style={{ opacity: 0.85 }}
     >
-      {state}
+      <span className="content">{state}</span>
     </span>
   );
 }

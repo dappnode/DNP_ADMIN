@@ -23,6 +23,7 @@ import { rootPath as installerRootPath } from "pages/installer";
 import Title from "components/Title";
 import SubTitle from "components/SubTitle";
 import Card from "components/Card";
+import { stringSplit } from "utils/strings";
 
 const ipfsGateway = "http://my.ipfs.dnp.dappnode.eth:8080/ipfs/";
 
@@ -74,7 +75,7 @@ class Publish extends React.Component {
 
     const buttonInput = this.props.buttonInput;
     const showManifestButtons = this.props.showManifestButtons;
-    const manifestHash = (showManifestButtons || "").split("ipfs/")[1];
+    const manifestHash = stringSplit(showManifestButtons, "ipfs/")[1];
     const disablePublish = this.props.disablePublish;
 
     const txPreview = this.props.txPreview;

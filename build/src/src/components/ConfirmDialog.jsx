@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Button from "components/Button";
 import { render, unmountComponentAtNode } from "react-dom";
 import ReactMarkdown from "react-markdown";
+import { stringIncludes } from "utils/strings";
 import "./confirmDialog.css";
 
 /**
@@ -43,7 +44,7 @@ function Modal({
     });
 
   // If there is no "Cancel" option, add it as the first
-  if (!buttons.find(({ label }) => (label || "").includes("Cancel")))
+  if (!buttons.find(({ label }) => stringIncludes(label, "Cancel")))
     buttons.unshift({ label: "Cancel", variant: "outline-secondary" });
 
   return (

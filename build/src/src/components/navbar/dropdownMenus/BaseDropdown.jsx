@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import { stringIncludes } from "utils/strings";
 import "./dropdown.css";
 
 // Utilities
@@ -21,9 +22,9 @@ function parseMessagesType(messages) {
   const messageTypes = messages
     .filter(message => !message.viewed)
     .map(message => message.type || "");
-  if (messageTypes.includes("danger")) globalType = "danger";
-  else if (messageTypes.includes("warning")) globalType = "warning";
-  else if (messageTypes.includes("success")) globalType = "success";
+  if (stringIncludes(messageTypes, "danger")) globalType = "danger";
+  else if (stringIncludes(messageTypes, "warning")) globalType = "warning";
+  else if (stringIncludes(messageTypes, "success")) globalType = "success";
   return globalType;
 }
 

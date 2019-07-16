@@ -41,6 +41,11 @@ export const updateWifiStatus = wifiStatus => ({
   wifiStatus
 });
 
+export const updatePasswordIsInsecure = passwordIsInsecure => ({
+  type: t.UPDATE_PASSWORD_IS_INSECURE,
+  passwordIsInsecure
+});
+
 // Fetch
 
 export const fetchAllDappnodeStatus = () => ({
@@ -57,4 +62,8 @@ export const fetchDappnodeStats = () => ({
 
 export const fetchDappnodeDiagnose = () => ({
   type: t.FETCH_DAPPNODE_DIAGNOSE
+});
+
+export const fetchIfPasswordIsInsecure = () => ({
+  type: t.FETCH_IF_PASSWORD_IS_INSECURE
 });

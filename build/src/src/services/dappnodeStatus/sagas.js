@@ -9,6 +9,7 @@ import { wrapErrorsAndLoading } from "services/loadingStatus/sagas";
 import * as loadingIds from "services/loadingStatus/loadingIds";
 // Utils
 import { assertConnectionOpen } from "utils/redux";
+import { stringSplit, stringIncludes } from "utils/strings";
 
 // Service > dappnodeStatus
 
@@ -119,9 +120,21 @@ const checkWifiStatus = wrapErrorsAndLoading(
       id: "wifi.dnp.dappnode.eth",
       options: {}
     });
-    const firstLogLine = logs.trim().split("\n")[0];
-    const running = !firstLogLine.includes("No interface found");
+    const firstLogLine = stringSplit(logs.trim(), "\n")[0];
+    const running = !stringIncludes(firstLogLine, "No interface found");
     yield put(a.updateWifiStatus({ running }));
+  }
+);
+
+/**
+ * Check if the SSH password is secure
+ * `[Warning] No interface found. Entering sleep mode.`
+ */
+const checkIfPasswordIsInsecure = wrapErrorsAndLoading(
+  loadingIds.passwordIsInsecure,
+  function*() {
+    const passwordIsSecure = yield call(api.passwordIsSecure);
+    yield put(a.updatePasswordIsInsecure(!passwordIsSecure));
   }
 );
 
@@ -137,7 +150,8 @@ function* fetchAllDappnodeStatus() {
       call(pingDappnodeDnps),
       call(getDnpsVersionData),
       call(checkIpfsConnectionStatus),
-      call(checkWifiStatus)
+      call(checkWifiStatus),
+      call(checkIfPasswordIsInsecure)
     ]);
   } catch (e) {
     console.error(`Error on fetchAllDappnodeStatus: ${e.stack}`);
@@ -156,5 +170,6 @@ export default rootWatcher([
   [t.FETCH_DAPPNODE_PARAMS, fetchDappnodeParams],
   [t.FETCH_DAPPNODE_STATS, fetchDappnodeStats],
   [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],
+  [t.FETCH_IF_PASSWORD_IS_INSECURE, checkIfPasswordIsInsecure],
   [t.PING_DAPPNODE_DNPS, pingDappnodeDnps]
 ]);

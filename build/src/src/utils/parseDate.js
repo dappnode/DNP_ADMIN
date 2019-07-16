@@ -1,3 +1,7 @@
+/**
+ * @param {string|number} 1563728142
+ * @returns {string} Today, 15 min ago
+ */
 export default function parseDate(rawDate) {
   let date = new Date(rawDate);
   let now = new Date();

@@ -1,18 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
+import { shortNameCapitalized } from "utils/format";
 // Components
 import ProgressBar from "react-bootstrap/ProgressBar";
-import DnpName from "components/DnpName";
 import Card from "components/Card";
+import { stringIncludes } from "utils/strings";
 
-function parsePercent(s = "") {
-  if (!s.includes("%")) return null;
-  // Return string before the first "%" and after the last " "
-  return s
-    .split("%")[0]
-    .split(" ")
-    .slice(-1);
+/**
+ * Return string before the first "%" and after the last " "
+ * @param {string} s = "Downloading 65%"
+ * @returns {string} percent
+ */
+function parsePercent(s) {
+  return ((s || "").match(/\s(\d+?)%/) || [])[1];
 }
 
 function ProgressLogs({ progressLogs }) {
@@ -25,11 +26,11 @@ function ProgressLogs({ progressLogs }) {
         .filter(([dnpName]) => dnpName !== "core.dnp.dappnode.eth")
         .map(([dnpName, log = ""]) => {
           const percent = parsePercent(log);
-          const progressing = percent || log.includes("...");
+          const progressing = percent || stringIncludes(log, "...");
           return (
             <div key={dnpName} className="row">
               <div className="col-6 text-truncate">
-                <DnpName dnpName={dnpName} />
+                <span>{shortNameCapitalized(dnpName)}</span>
               </div>
               <div className="col-6 text-truncate center">
                 <ProgressBar

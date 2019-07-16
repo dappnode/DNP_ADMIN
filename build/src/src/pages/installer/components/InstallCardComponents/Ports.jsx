@@ -6,7 +6,8 @@ import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
 import * as action from "../../actions";
 import * as selector from "../../selectors";
-import { capitalize } from "utils/strings";
+import { shortNameCapitalized } from "utils/format";
+
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
@@ -24,7 +25,9 @@ function Ports({ ports, isInstalled, hideCardHeaders, updateUserSetPorts }) {
           <div key={dnpName} className="card-subgroup">
             {/* Only display the name of the DNP if there are more than one */}
             {!hideCardHeaders && (
-              <div className="section-card-subtitle">{capitalize(dnpName)}</div>
+              <div className="section-card-subtitle">
+                {shortNameCapitalized(dnpName)}
+              </div>
             )}
             <TableInputs
               headers={["Host port", "Package portNumber / protocol"]}

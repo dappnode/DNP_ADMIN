@@ -45,7 +45,7 @@ async function getRegistry(registryAddress) {
           registryAddress,
           "0x266bfdb2124a68beb6769dc887bd655f78778923"
         ) &&
-        name.includes(".")
+        stringIncludes(name, ".")
       )
         return false;
       // ignore apm-registry apm-enssub apm-repo

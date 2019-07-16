@@ -1,9 +1,9 @@
 /* Read more */
 
-#read-more {
+.read-more {
   overflow: hidden;
 }
-#read-more.short {
+.read-more.short {
   /* DO NOT CHANGE THIS VALUE. Linked to ReadMore.jsx */
   max-height: 121px;
 }

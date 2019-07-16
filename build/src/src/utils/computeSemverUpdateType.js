@@ -16,15 +16,29 @@ function computeSemverUpdateType(from, to) {
   // If not valid, abort
   from = semver.valid(semver.coerce(from));
   to = semver.valid(semver.coerce(to));
+  // For safety, check again
+  if (!semver.valid(from) || !semver.valid(to)) return;
+
   // Semver considers 0.1.21 -> 0.2.0 a minor update
-  if (from.startsWith("0.0.") && to.startsWith("0.0.")) {
-    from = from.split("0.0.")[1] + ".0.0";
-    to = to.split("0.0.")[1] + ".0.0";
+  // Turn it into 1.21.0 -> 2.0.0, to consider it a major
+  const fromMajor = semver.major(from);
+  const fromMinor = semver.minor(from);
+  const fromPatch = semver.patch(from);
+  const toMajor = semver.major(to);
+  const toMinor = semver.minor(to);
+  const toPatch = semver.patch(to);
+  if (fromMajor === 0 && toMajor === 0) {
+    if (fromMinor === 0 && toMinor === 0) {
+      from = [fromPatch, 0, 0].join(".");
+      to = [toPatch, 0, 0].join(".");
+    } else {
+      from = [fromMinor, fromPatch, 0].join(".");
+      to = [toMinor, toPatch, 0].join(".");
+    }
   }
-  if (from.startsWith("0.") && to.startsWith("0.")) {
-    from = from.split("0.")[1] + ".0";
-    to = to.split("0.")[1] + ".0";
-  }
+
+  // For safety, check again
+  if (!semver.valid(from) || !semver.valid(to)) return;
 
   for (const type of ["major", "minor", "patch"]) {
     if (semver[type](from) !== semver[type](to)) return type;

@@ -29,6 +29,10 @@ export const getIpfsConnectionStatus = createSelectorSubProp(
   "ipfsConnectionStatus"
 );
 export const getWifiStatus = createSelectorSubProp(getLocal, "wifiStatus");
+export const getPasswordIsInsecure = createSelectorSubProp(
+  getLocal,
+  "passwordIsInsecure"
+);
 
 export const getDappmanagerVersionData = createSelectorSubProp(
   getVersionData,

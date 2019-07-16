@@ -5,12 +5,12 @@ import GivethLogo from "img/logos/giveth-min.png";
 import EcfLogo from "img/logos/ecf-min.png";
 // Icons
 import Dashboard from "Icons/Dashboard";
-import Activity from "Icons/Activity";
 import Devices from "Icons/Devices";
 import Folder from "Icons/Folder";
 import NewFolder from "Icons/NewFolder";
 import Settings from "Icons/Settings";
 import Build from "Icons/Build";
+import ContactSupport from "Icons/ContactSupport";
 
 export const fundedBy = [
   {
@@ -42,11 +42,6 @@ export const sidenavItems = [
     icon: Dashboard
   },
   {
-    name: "Activity",
-    href: "/activity",
-    icon: Activity
-  },
-  {
     name: "Devices",
     href: "/devices",
     icon: Devices
@@ -70,5 +65,10 @@ export const sidenavItems = [
     name: "Sdk",
     href: "/sdk",
     icon: Build
+  },
+  {
+    name: "Support",
+    href: "/support",
+    icon: ContactSupport
   }
 ];

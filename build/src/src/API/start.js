@@ -5,6 +5,7 @@ import {
   connectionOpen,
   connectionClose
 } from "services/connectionStatus/actions";
+import { stringIncludes } from "utils/strings";
 
 // Initalize app
 // Development
@@ -37,7 +38,8 @@ export default function start() {
       connectionClose({
         error: [reason, (details || {}).message].filter(x => x).join(" - "),
         session: connection,
-        isNotAdmin: (details.message || "").includes(
+        isNotAdmin: stringIncludes(
+          details.messagem,
           "could not authenticate session"
         )
       })
