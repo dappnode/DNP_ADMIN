@@ -18,6 +18,49 @@ export default {
   ping: {},
 
   /**
+   * Returns a registry of successfully completed auto-updates
+   *
+   * @returns {object} autoUpdateRegistry = {
+   *   "system-packages": [
+   *     { version: "0.2.4", timestamp: 1563304834738 }
+   *     { version: "0.2.5", timestamp: 1563371560487 }
+   *   ]
+   *   "bitcoin.dnp.dappnode.eth": [
+   *     { version: "0.1.1", timestamp: 1563304834738 }
+   *     { version: "0.1.2", timestamp: 1563371560487 }
+   *   ]
+   * }
+   */
+  autoUpdateRegistryGet: {},
+
+  /**
+   * Edits the auto-update settings
+   *
+   * @param {string} id = "my-packages", "system-packages" or "bitcoin.dnp.dappnode.eth"
+   * @param {bool} enabled Auto update is enabled for ID
+   */
+  autoUpdateSettingsEdit: {
+    mandatoryKwargs: ["id", "enabled"]
+  },
+
+  /**
+   * Get current auto-update settings
+   *
+   * - "system-packages" = if the update is enabled
+   * - "my-packages" = an object, means the default settings is update enabled
+   * - "my-packages"["bitcoin.dnp.dappnode.eth"] = true, means that the
+   *   update is NOT enabled
+   *
+   * @returns {object} autoUpdateSettings = {
+   *   "system-packages": true
+   *   "my-packages": {
+   *     "bitcoin.dnp.dappnode.eth": true
+   *   }
+   * }
+   */
+  autoUpdateSettingsGet: {},
+
+  /**
    * Does a backup of a DNP and sends it to the client for download.
    *
    * @param {string} id DNP .eth name

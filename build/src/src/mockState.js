@@ -220,7 +220,13 @@ export const mockState = {
     pingReturns: {},
     ipfsConnectionStatus: {},
     wifiStatus: { running: true },
-    passwordIsInsecure: true
+    passwordIsInsecure: true,
+    autoUpdateSettings: {
+      "my-packages": {
+        "ln.dnp.dappnode.eth": true
+      },
+      "system-packages": true
+    }
   },
 
   /* devices */

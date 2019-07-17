@@ -19,7 +19,9 @@ function Dependencies({ request, resolving }) {
   const installedPackages = [];
 
   if (error) {
-    return <Ok ok={false} msg={`DAppNode Package is not compatible: ${error}`} />;
+    return (
+      <Ok ok={false} msg={`DAppNode Package is not compatible: ${error}`} />
+    );
   } else if (dnps) {
     return (
       <>

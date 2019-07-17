@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { getUserActionLogs } from "services/userActionLogs/selectors";
@@ -20,6 +20,15 @@ function parseLevel(level) {
 }
 
 function Activity({ userActionLogs }) {
+  // Force a re-render every 15 seconds for the timeFrom to show up correctly
+  const [, setClock] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => setClock(n => n + 1), 15 * 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   function download() {
     var dataStr =
       "data:text/json;charset=utf-8," +

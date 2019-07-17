@@ -9,7 +9,11 @@ import { updateDevices } from "services/devices/actions";
 import { updateDnpDirectory } from "services/dnpDirectory/actions";
 import { updateDnpInstalled } from "services/dnpInstalled/actions";
 import { pushUserActionLog } from "services/userActionLogs/actions";
-import { updateIsInstallingLog } from "services/isInstallingLogs/actions";
+import {
+  clearIsInstallingLogsById,
+  updateIsInstallingLog
+} from "services/isInstallingLogs/actions";
+import { updateAutoUpdateRegistry } from "services/dappnodeStatus/actions";
 
 export default function subscriptions(session) {
   /**
@@ -37,6 +41,25 @@ export default function subscriptions(session) {
   }
 
   /**
+   * @param {object} autoUpdateRegistry = {
+   *   "system-packages": [
+   *     { version: "0.2.4", timestamp: 1563304834738 }
+   *     { version: "0.2.5", timestamp: 1563371560487 }
+   *   ]
+   *   "bitcoin.dnp.dappnode.eth": [
+   *     { version: "0.1.1", timestamp: 1563304834738 }
+   *     { version: "0.1.2", timestamp: 1563371560487 }
+   *   ]
+   * }
+   */
+  subscribe(
+    "autoUpdateRegistry.dappmanager.dnp.dappnode.eth",
+    autoUpdateRegistry => {
+      store.dispatch(updateAutoUpdateRegistry(autoUpdateRegistry));
+    }
+  );
+
+  /**
    * @param {object} userActionLog = {
    *   level: "info" | "error", {string}
    *   event: "installPackage.dnp.dappnode.eth", {string}
@@ -61,9 +84,13 @@ export default function subscriptions(session) {
    *   message: "Downloading 75%", {string} log message
    * }
    */
-  subscribe("log.dappmanager.dnp.dappnode.eth", ({ id, name, message }) => {
-    store.dispatch(updateIsInstallingLog({ id, dnpName: name, log: message }));
-  });
+  subscribe(
+    "log.dappmanager.dnp.dappnode.eth",
+    ({ id, name: dnpName, message: log, clear }) => {
+      if (clear) store.dispatch(clearIsInstallingLogsById(id));
+      else store.dispatch(updateIsInstallingLog({ id, dnpName, log }));
+    }
+  );
 
   /**
    * @param {array} dnpInstalled = res.result = [{

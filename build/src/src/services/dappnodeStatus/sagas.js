@@ -128,13 +128,36 @@ const checkWifiStatus = wrapErrorsAndLoading(
 
 /**
  * Check if the SSH password is secure
- * `[Warning] No interface found. Entering sleep mode.`
  */
 const checkIfPasswordIsInsecure = wrapErrorsAndLoading(
   loadingIds.passwordIsInsecure,
   function*() {
     const passwordIsSecure = yield call(api.passwordIsSecure);
     yield put(a.updatePasswordIsInsecure(!passwordIsSecure));
+  }
+);
+
+/**
+ * Get the auto-update settings
+ */
+const fetchAutoUpdateSettings = wrapErrorsAndLoading(
+  loadingIds.autoUpdateSettings,
+  function*() {
+    // If there are no settings the return will be null
+    const autoUpdateSettings = yield call(api.autoUpdateSettingsGet);
+    yield put(a.updateAutoUpdateSettings(autoUpdateSettings || {}));
+  }
+);
+
+/**
+ * Get the auto-update registry
+ */
+const fetchAutoUpdateRegistry = wrapErrorsAndLoading(
+  loadingIds.autoUpdateRegistry,
+  function*() {
+    // If there are no settings the return will be null
+    const autoUpdateRegistry = yield call(api.autoUpdateRegistryGet);
+    yield put(a.updateAutoUpdateRegistry(autoUpdateRegistry) || {});
   }
 );
 
@@ -151,7 +174,9 @@ function* fetchAllDappnodeStatus() {
       call(getDnpsVersionData),
       call(checkIpfsConnectionStatus),
       call(checkWifiStatus),
-      call(checkIfPasswordIsInsecure)
+      call(checkIfPasswordIsInsecure),
+      call(fetchAutoUpdateSettings),
+      call(fetchAutoUpdateRegistry)
     ]);
   } catch (e) {
     console.error(`Error on fetchAllDappnodeStatus: ${e.stack}`);
@@ -171,5 +196,6 @@ export default rootWatcher([
   [t.FETCH_DAPPNODE_STATS, fetchDappnodeStats],
   [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],
   [t.FETCH_IF_PASSWORD_IS_INSECURE, checkIfPasswordIsInsecure],
+  [t.FETCH_AUTO_UPDATE_SETTINGS, fetchAutoUpdateSettings],
   [t.PING_DAPPNODE_DNPS, pingDappnodeDnps]
 ]);

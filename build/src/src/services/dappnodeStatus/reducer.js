@@ -16,7 +16,9 @@ const initialState = {
   versionData: {},
   ipfsConnectionStatus: {},
   wifiStatus: {},
-  passwordIsInsecure: false
+  passwordIsInsecure: false,
+  autoUpdateSettings: {},
+  autoUpdateRegistry: {}
 };
 
 export default function(state = initialState, action) {
@@ -93,6 +95,18 @@ export default function(state = initialState, action) {
       return {
         ...state,
         passwordIsInsecure: action.passwordIsInsecure
+      };
+
+    case t.UPDATE_AUTO_UPDATE_SETTINGS:
+      return {
+        ...state,
+        autoUpdateSettings: action.autoUpdateSettings
+      };
+
+    case t.UPDATE_AUTO_UPDATE_REGISTRY:
+      return {
+        ...state,
+        autoUpdateRegistry: action.autoUpdateRegistry
       };
 
     default:
