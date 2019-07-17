@@ -18,6 +18,22 @@ export default {
   ping: {},
 
   /**
+   * Returns a registry of successfully completed auto-updates
+   *
+   * @returns {object} autoUpdateRegistry = {
+   *   "system-packages": [
+   *     { version: "0.2.4", timestamp: 1563304834738 }
+   *     { version: "0.2.5", timestamp: 1563371560487 }
+   *   ]
+   *   "bitcoin.dnp.dappnode.eth": [
+   *     { version: "0.1.1", timestamp: 1563304834738 }
+   *     { version: "0.1.2", timestamp: 1563371560487 }
+   *   ]
+   * }
+   */
+  autoUpdateRegistryGet: {},
+
+  /**
    * Edits the auto-update settings
    *
    * @param {string} id = "my-packages", "system-packages" or "bitcoin.dnp.dappnode.eth"

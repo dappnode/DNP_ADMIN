@@ -21,8 +21,13 @@
    */
   grid-template-columns:
     minmax(1.65rem, min-content)
+    minmax(4rem, max-content)
     minmax(4rem, auto)
     minmax(min-content, max-content);
+
+  .header {
+    opacity: 0.6;
+  }
 
   .stateBadge {
     width: 2.5rem;
@@ -36,8 +41,14 @@
     color: var(--border-color);
   }
 
+  .last-update {
+    justify-self: right;
+    opacity: 0.6;
+  }
+
   @media screen and (max-width: 40rem) {
-    .stateBadge {
+    .stateBadge,
+    .last-update {
       display: none;
     }
     grid-template-columns:

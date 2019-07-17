@@ -51,6 +51,11 @@ export const updateAutoUpdateSettings = autoUpdateSettings => ({
   autoUpdateSettings
 });
 
+export const updateAutoUpdateRegistry = autoUpdateRegistry => ({
+  type: t.UPDATE_AUTO_UPDATE_REGISTRY,
+  autoUpdateRegistry
+});
+
 // Fetch
 
 export const fetchAllDappnodeStatus = () => ({

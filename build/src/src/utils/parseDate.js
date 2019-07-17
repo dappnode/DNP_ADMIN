@@ -3,6 +3,8 @@
  * @returns {string} Today, 15 min ago
  */
 export default function parseDate(rawDate) {
+  if (!rawDate) return null;
+
   let date = new Date(rawDate);
   let now = new Date();
   if (sameDay(date, now)) {

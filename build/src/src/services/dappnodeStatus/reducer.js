@@ -17,7 +17,8 @@ const initialState = {
   ipfsConnectionStatus: {},
   wifiStatus: {},
   passwordIsInsecure: false,
-  autoUpdateSettings: {}
+  autoUpdateSettings: {},
+  autoUpdateRegistry: {}
 };
 
 export default function(state = initialState, action) {
@@ -100,6 +101,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         autoUpdateSettings: action.autoUpdateSettings
+      };
+
+    case t.UPDATE_AUTO_UPDATE_REGISTRY:
+      return {
+        ...state,
+        autoUpdateRegistry: action.autoUpdateRegistry
       };
 
     default:

@@ -144,8 +144,20 @@ const fetchAutoUpdateSettings = wrapErrorsAndLoading(
   loadingIds.autoUpdateSettings,
   function*() {
     // If there are no settings the return will be null
-    const autoUpdateSettings = yield call(api.autoUpdateSettingsGet) || {};
-    yield put(a.updateAutoUpdateSettings(autoUpdateSettings));
+    const autoUpdateSettings = yield call(api.autoUpdateSettingsGet);
+    yield put(a.updateAutoUpdateSettings(autoUpdateSettings || {}));
+  }
+);
+
+/**
+ * Get the auto-update registry
+ */
+const fetchAutoUpdateRegistry = wrapErrorsAndLoading(
+  loadingIds.autoUpdateRegistry,
+  function*() {
+    // If there are no settings the return will be null
+    const autoUpdateRegistry = yield call(api.autoUpdateRegistryGet);
+    yield put(a.updateAutoUpdateRegistry(autoUpdateRegistry) || {});
   }
 );
 
@@ -163,7 +175,8 @@ function* fetchAllDappnodeStatus() {
       call(checkIpfsConnectionStatus),
       call(checkWifiStatus),
       call(checkIfPasswordIsInsecure),
-      call(fetchAutoUpdateSettings)
+      call(fetchAutoUpdateSettings),
+      call(fetchAutoUpdateRegistry)
     ]);
   } catch (e) {
     console.error(`Error on fetchAllDappnodeStatus: ${e.stack}`);

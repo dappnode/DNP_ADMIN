@@ -4,7 +4,7 @@ import { stripVersion } from "./utils";
 
 // Service > isInstallingLogs
 
-const getIsInstallingLogs = createSelector(
+export const getIsInstallingLogs = createSelector(
   state => state[mountPoint],
   userActionLogs => userActionLogs
 );
