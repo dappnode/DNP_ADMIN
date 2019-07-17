@@ -20,21 +20,26 @@ export default {
   /**
    * Edits the auto-update settings
    *
-   * @param {string} id = "bitcoin.dnp.dappnode.eth"
-   * @param {bool} generalSettings Edit the general settings
-   * @param {bool} applyToAll Reset all DNP individual settings
-   * @param {object} settings = { major: false, minor: false, patch: true }
+   * @param {string} id = "my-packages", "system-packages" or "bitcoin.dnp.dappnode.eth"
+   * @param {bool} enabled Auto update is enabled for ID
    */
   autoUpdateSettingsEdit: {
-    mandatoryKwargs: ["settings"]
+    mandatoryKwargs: ["id", "enabled"]
   },
 
   /**
    * Get current auto-update settings
    *
+   * - "system-packages" = if the update is enabled
+   * - "my-packages" = an object, means the default settings is update enabled
+   * - "my-packages"["bitcoin.dnp.dappnode.eth"] = true, means that the
+   *   update is NOT enabled
+   *
    * @returns {object} autoUpdateSettings = {
-   *   "any": { major: false, minor: false, patch: true },
-   *   "bitcoin.dnp.dappnode.eth": { major: false, minor: true, patch: true }
+   *   "system-packages": true
+   *   "my-packages": {
+   *     "bitcoin.dnp.dappnode.eth": true
+   *   }
    * }
    */
   autoUpdateSettingsGet: {},

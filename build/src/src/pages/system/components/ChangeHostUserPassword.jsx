@@ -11,6 +11,8 @@ import Button from "components/Button";
 import Switch from "components/Switch";
 // External
 import { getPasswordIsInsecure } from "services/dappnodeStatus/selectors";
+// Style
+import "./changeHostUserPassword.scss";
 
 function ChangeHostUserPassword({ passwordIsInsecure, passwordChange }) {
   const [input, setInput] = useState("");
