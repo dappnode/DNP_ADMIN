@@ -10,7 +10,7 @@ import SubTitle from "components/SubTitle";
 import Switch from "components/Switch";
 // Utils
 import { shortNameCapitalized } from "utils/format";
-import parseDate from "utils/parseDate";
+import { parseStaticDate, parseDiffDates } from "utils/dates";
 // External
 import {
   getAutoUpdateSettings,
@@ -38,7 +38,16 @@ function AutoUpdates({
     MY_PACKAGES,
     ...(autoUpdateSettings[MY_PACKAGES]
       ? dnpInstalled
-          .filter(dnp => dnp.isDnp && semver.valid(dnp.version))
+          .filter(
+            dnp =>
+              dnp.name &&
+              // Ignore core DNPs
+              dnp.isDnp &&
+              // Ignore wierd versions
+              semver.valid(dnp.version) &&
+              // MUST come from the APM
+              !dnp.origin
+          )
           .map(dnp => dnp.name)
           .sort()
       : [])
@@ -96,8 +105,35 @@ function AutoUpdates({
 
             const realName = id === SYSTEM_PACKAGES ? coreName : id;
 
-            const updates = autoUpdateRegistry[realName] || [];
-            const lastUpdate = updates[updates.length - 1];
+            /**
+             * @returns {object} registry = {
+             *   "bitcoin.dnp.dappnode.eth": {
+             *     "0.1.1": { firstSeen: 1563218436285, updated: 1563304834738, completedDelay: true },
+             *     "0.1.2": { firstSeen: 1563371560487 }
+             *   }, ...
+             * }
+             */
+
+            const versions = autoUpdateRegistry[realName] || {};
+            const latestVersion = semver.maxSatisfying(
+              Object.keys(versions).filter(semver.valid),
+              "*"
+            );
+            const { firstSeen, scheduledUpdate, updated } =
+              versions[latestVersion] || {};
+
+            const dnp = dnpInstalled.find(dnp => dnp.name === realName);
+            const currentVersion = (dnp || {}).version;
+
+            // In queue means that the scheduled time has passed,
+            // but likely the interval has not happened yet or the installation errored
+            const inQueue = firstSeen ? Date.now() > scheduledUpdate : false;
+            const manuallyUpdated =
+              currentVersion &&
+              currentVersion === latestVersion &&
+              scheduledUpdate &&
+              !updated;
+
             const isInstalling = progressLogs[realName];
 
             return (
@@ -119,8 +155,14 @@ function AutoUpdates({
                 <span className="last-update">
                   {isInstalling
                     ? "Updating..."
-                    : lastUpdate
-                    ? parseDate(lastUpdate.timestamp)
+                    : manuallyUpdated
+                    ? "Manually updated"
+                    : updated
+                    ? parseStaticDate(updated)
+                    : inQueue
+                    ? "In queue..."
+                    : scheduledUpdate
+                    ? `Scheduled, in ${parseDiffDates(scheduledUpdate)}`
                     : "-"}
                 </span>
 

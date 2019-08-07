@@ -226,6 +226,14 @@ export const mockState = {
         "ln.dnp.dappnode.eth": true
       },
       "system-packages": true
+    },
+    autoUpdateRegistry: {
+      "ln.dnp.dappnode.eth": {
+        "0.1.1": {
+          firstSeen: 1565197639677,
+          scheduledUpdate: 1565284039677
+        }
+      }
     }
   },
 
