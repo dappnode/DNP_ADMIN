@@ -82,7 +82,7 @@ function AutoUpdates({
       <Card>
         <div className="auto-updates-explanation">
           Enable auto-updates for DAppNode to stay automatically up to date to
-          the latest updates. <strong>Note</strong> that for major breaking
+          the latest versions. <strong>Note</strong> that for major breaking
           updates, the interaction of an admin will always be required.
         </div>
 
