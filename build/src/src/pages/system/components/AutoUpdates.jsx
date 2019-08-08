@@ -20,11 +20,11 @@ import { fetchAutoUpdateSettings } from "services/dappnodeStatus/actions";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 import { getIsInstallingLogs } from "services/isInstallingLogs/selectors";
 import { coreName } from "services/coreUpdate/data";
+import { autoUpdateIds } from "services/dappnodeStatus/data";
 // Styles
 import "./autoUpdates.scss";
 
-const MY_PACKAGES = "my-packages";
-const SYSTEM_PACKAGES = "system-packages";
+const { MY_PACKAGES, SYSTEM_PACKAGES } = autoUpdateIds;
 
 function AutoUpdates({
   autoUpdateRegistry,

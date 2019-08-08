@@ -11,7 +11,8 @@ import {
 import { getAreWifiCredentialsDefault } from "services/dnpInstalled/selectors";
 import {
   getIsWifiRunning,
-  getPasswordIsInsecure
+  getPasswordIsInsecure,
+  getIsCoreAutoUpdateActive
 } from "services/dappnodeStatus/selectors";
 import { rootPath as systemRootPath, updatePath } from "pages/system/data";
 import { rootPath as packagesRootPath } from "pages/packages/data";
@@ -22,6 +23,7 @@ import { rootPath as packagesRootPath } from "pages/packages/data";
 const NotificationsView = ({
   coreUpdateAvailable,
   updatingCore,
+  isCoreAutoUpdateActive,
   areWifiCredentialsDefault,
   isWifiRunning,
   passwordIsInsecure
@@ -37,7 +39,7 @@ const NotificationsView = ({
       linkPath: systemRootPath + "/" + updatePath,
       body:
         "**DAppNode system update available.** Click **Update** to review and approve it",
-      active: coreUpdateAvailable && !updatingCore
+      active: coreUpdateAvailable && !updatingCore && !isCoreAutoUpdateActive
     },
     /**
      * [WIFI-PASSWORD]
@@ -103,6 +105,7 @@ const NotificationsView = ({
 const mapStateToProps = createStructuredSelector({
   coreUpdateAvailable: getCoreUpdateAvailable,
   updatingCore: getUpdatingCore,
+  isCoreAutoUpdateActive: getIsCoreAutoUpdateActive,
   areWifiCredentialsDefault: getAreWifiCredentialsDefault,
   isWifiRunning: getIsWifiRunning,
   passwordIsInsecure: getPasswordIsInsecure

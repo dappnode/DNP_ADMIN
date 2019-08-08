@@ -1,4 +1,4 @@
-import { mountPoint } from "./data";
+import { mountPoint, autoUpdateIds } from "./data";
 import { createSelector } from "reselect";
 import createSelectorSubProp from "utils/createSelectorSubProp";
 import { cleanObj } from "utils/objects";
@@ -78,4 +78,9 @@ export const getUpnpAvailable = createSelector(
 export const getIsWifiRunning = createSelector(
   getWifiStatus,
   wifiStatus => wifiStatus.running
+);
+
+export const getIsCoreAutoUpdateActive = createSelector(
+  getAutoUpdateSettings,
+  autoUpdateSettings => autoUpdateSettings[autoUpdateIds.SYSTEM_PACKAGES]
 );
