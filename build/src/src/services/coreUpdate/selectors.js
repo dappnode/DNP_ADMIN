@@ -1,6 +1,7 @@
 import { mountPoint, coreName } from "./data";
 import { createSelector } from "reselect";
 import semver from "semver";
+import computeSemverUpdateType from "utils/computeSemverUpdateType";
 // Selectors
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 
@@ -85,4 +86,25 @@ export const getCoreCurrentVersion = createSelector(
 export const getCoreUpdateAvailable = createSelector(
   getCoreDeps,
   coreDeps => Boolean(coreDeps.length)
+);
+
+export const getIsCoreUpdateTypePatch = createSelector(
+  getCoreDeps,
+  getCoreManifest,
+  getCoreCurrentVersion,
+  (coreDeps, coreManifest, coreCurrentVersion) => {
+    const coreUpdateType = computeSemverUpdateType(
+      coreCurrentVersion,
+      (coreManifest || {}).version,
+      true
+    );
+    if (coreUpdateType !== "patch") return false;
+
+    for (const { from, to } of coreDeps) {
+      const depUpdateType = computeSemverUpdateType(from, to, true);
+      if (depUpdateType !== "patch") return false;
+    }
+
+    return true;
+  }
 );

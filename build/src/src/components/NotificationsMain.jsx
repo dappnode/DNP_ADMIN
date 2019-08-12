@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 // Selectors
 import {
   getCoreUpdateAvailable,
+  getIsCoreUpdateTypePatch,
   getUpdatingCore
 } from "services/coreUpdate/selectors";
 import { getAreWifiCredentialsDefault } from "services/dnpInstalled/selectors";
@@ -23,6 +24,7 @@ import { rootPath as packagesRootPath } from "pages/packages/data";
 const NotificationsView = ({
   coreUpdateAvailable,
   updatingCore,
+  isCoreUpdateTypePatch,
   isCoreAutoUpdateActive,
   areWifiCredentialsDefault,
   isWifiRunning,
@@ -39,7 +41,11 @@ const NotificationsView = ({
       linkPath: systemRootPath + "/" + updatePath,
       body:
         "**DAppNode system update available.** Click **Update** to review and approve it",
-      active: coreUpdateAvailable && !updatingCore && !isCoreAutoUpdateActive
+      active:
+        coreUpdateAvailable &&
+        !updatingCore &&
+        // Show if NOT patch, or if patch is must not be active
+        (!isCoreUpdateTypePatch || !isCoreAutoUpdateActive)
     },
     /**
      * [WIFI-PASSWORD]
@@ -105,6 +111,7 @@ const NotificationsView = ({
 const mapStateToProps = createStructuredSelector({
   coreUpdateAvailable: getCoreUpdateAvailable,
   updatingCore: getUpdatingCore,
+  isCoreUpdateTypePatch: getIsCoreUpdateTypePatch,
   isCoreAutoUpdateActive: getIsCoreAutoUpdateActive,
   areWifiCredentialsDefault: getAreWifiCredentialsDefault,
   isWifiRunning: getIsWifiRunning,
