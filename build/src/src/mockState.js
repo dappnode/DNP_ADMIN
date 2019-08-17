@@ -227,11 +227,38 @@ export const mockState = {
       },
       "system-packages": true
     },
-    autoUpdateRegistry: {
-      "ln.dnp.dappnode.eth": {
-        "0.1.1": {
-          firstSeen: 1565197639677,
-          scheduledUpdate: 1565284039677
+    autoUpdateData: {
+      settings: {
+        "system-packages": { enabled: true },
+        "my-packages": { enabled: true },
+        "bitcoin.dnp.dappnode.eth": { enabled: false },
+        "ln.dnp.dappnode.eth": { enabled: true }
+      },
+      registry: {
+        "core.dnp.dappnode.eth": {
+          "0.2.4": { updated: 1563304834738, successful: true },
+          "0.2.5": { updated: 1563304834738, successful: false }
+        },
+        "bitcoin.dnp.dappnode.eth": {
+          "0.1.1": { updated: 1563304834738, successful: true },
+          "0.1.2": { updated: 1563304834738, successful: true }
+        },
+        "ln.dnp.dappnode.eth": {
+          "0.1.1": { updated: 1565284039677, successful: true }
+        }
+      },
+      pending: {
+        "core.dnp.dappnode.eth": {
+          version: "0.2.4",
+          firstSeen: 1563218436285,
+          scheduledUpdate: 1563304834738,
+          completedDelay: true
+        },
+        "bitcoin.dnp.dappnode.eth": {
+          version: "0.1.2",
+          firstSeen: 1563218436285,
+          scheduledUpdate: 1563304834738,
+          completedDelay: false
         }
       }
     }

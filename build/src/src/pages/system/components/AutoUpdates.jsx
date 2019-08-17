@@ -12,12 +12,7 @@ import Switch from "components/Switch";
 import { shortNameCapitalized } from "utils/format";
 import { parseStaticDate, parseDiffDates } from "utils/dates";
 // External
-import {
-  getAutoUpdateSettings,
-  getAutoUpdateRegistry
-} from "services/dappnodeStatus/selectors";
-import { fetchAutoUpdateSettings } from "services/dappnodeStatus/actions";
-import { getDnpInstalled } from "services/dnpInstalled/selectors";
+import { getAutoUpdateData } from "services/dappnodeStatus/selectors";
 import { getIsInstallingLogs } from "services/isInstallingLogs/selectors";
 import { coreName } from "services/coreUpdate/data";
 import { autoUpdateIds } from "services/dappnodeStatus/data";
@@ -26,32 +21,8 @@ import "./autoUpdates.scss";
 
 const { MY_PACKAGES, SYSTEM_PACKAGES } = autoUpdateIds;
 
-function AutoUpdates({
-  autoUpdateRegistry,
-  autoUpdateSettings,
-  dnpInstalled,
-  progressLogs,
-  fetchAutoUpdateSettings
-}) {
-  const updatableIds = [
-    SYSTEM_PACKAGES,
-    MY_PACKAGES,
-    ...(autoUpdateSettings[MY_PACKAGES]
-      ? dnpInstalled
-          .filter(
-            dnp =>
-              dnp.name &&
-              // Ignore core DNPs
-              dnp.isDnp &&
-              // Ignore wierd versions
-              semver.valid(dnp.version) &&
-              // MUST come from the APM
-              !dnp.origin
-          )
-          .map(dnp => dnp.name)
-          .sort()
-      : [])
-  ];
+function AutoUpdates({ autoUpdateData, progressLogs }) {
+  const { dnpsToShow = [] } = autoUpdateData;
 
   // Force a re-render every 15 seconds for the timeFrom to show up correctly
   const [, setClock] = useState(0);
@@ -63,17 +34,14 @@ function AutoUpdates({
   }, []);
 
   function setUpdateSettings(id, enabled) {
-    api
-      .autoUpdateSettingsEdit(
-        { id, enabled },
-        {
-          toastMessage: `${
-            enabled ? "Enabling" : "Disabling"
-          } auto updates for ${shortNameCapitalized(id)}...`
-        }
-      )
-      .then(() => fetchAutoUpdateSettings())
-      .catch(console.error);
+    api.autoUpdateSettingsEdit(
+      { id, enabled },
+      {
+        toastMessage: `${
+          enabled ? "Enabling" : "Disabling"
+        } auto updates for ${shortNameCapitalized(id)}...`
+      }
+    );
   }
 
   return (
@@ -95,46 +63,13 @@ function AutoUpdates({
 
           <hr />
           {/* Items of the table */}
-          {updatableIds.map(id => {
+          {dnpsToShow.map(({ id, displayName, enabled, feedback }) => {
             const isSinglePackage =
               id !== MY_PACKAGES && id !== SYSTEM_PACKAGES;
-            const enabled = isSinglePackage
-              ? autoUpdateSettings[MY_PACKAGES] &&
-                !autoUpdateSettings[MY_PACKAGES][id]
-              : autoUpdateSettings[id];
-
             const realName = id === SYSTEM_PACKAGES ? coreName : id;
 
-            /**
-             * @returns {object} registry = {
-             *   "bitcoin.dnp.dappnode.eth": {
-             *     "0.1.1": { firstSeen: 1563218436285, updated: 1563304834738, completedDelay: true },
-             *     "0.1.2": { firstSeen: 1563371560487 }
-             *   }, ...
-             * }
-             */
-
-            const versions = autoUpdateRegistry[realName] || {};
-            const latestVersion = semver.maxSatisfying(
-              Object.keys(versions).filter(semver.valid),
-              "*"
-            );
-            const { firstSeen, scheduledUpdate, updated } =
-              versions[latestVersion] || {};
-
-            const dnp = dnpInstalled.find(dnp => dnp.name === realName);
-            const currentVersion = (dnp || {}).version;
-
-            // In queue means that the scheduled time has passed,
-            // but likely the interval has not happened yet or the installation errored
-            const inQueue = firstSeen ? Date.now() > scheduledUpdate : false;
-            const manuallyUpdated =
-              currentVersion &&
-              currentVersion === latestVersion &&
-              scheduledUpdate &&
-              !updated;
-
             const isInstalling = progressLogs[realName];
+            const { updated, manuallyUpdated, inQueue, scheduled } = feedback;
 
             return (
               <React.Fragment key={id}>
@@ -149,7 +84,7 @@ function AutoUpdates({
 
                 <span className="name">
                   {isSinglePackage && <span>> </span>}
-                  {shortNameCapitalized(id)}
+                  {displayName}
                 </span>
 
                 <span className="last-update">
@@ -157,12 +92,12 @@ function AutoUpdates({
                     ? "Updating..."
                     : manuallyUpdated
                     ? "Manually updated"
-                    : updated
-                    ? parseStaticDate(updated)
                     : inQueue
                     ? "In queue..."
-                    : scheduledUpdate
-                    ? `Scheduled, in ${parseDiffDates(scheduledUpdate)}`
+                    : scheduled
+                    ? `Scheduled, in ${parseDiffDates(scheduled)}`
+                    : updated
+                    ? parseStaticDate(updated)
                     : "-"}
                 </span>
 
@@ -182,24 +117,18 @@ function AutoUpdates({
 }
 
 AutoUpdates.propTypes = {
-  autoUpdateRegistry: PropTypes.object.isRequired,
-  autoUpdateSettings: PropTypes.object.isRequired,
-  dnpInstalled: PropTypes.array.isRequired,
+  autoUpdateData: PropTypes.object.isRequired,
   progressLogs: PropTypes.object.isRequired
 };
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  autoUpdateRegistry: getAutoUpdateRegistry,
-  autoUpdateSettings: getAutoUpdateSettings,
-  dnpInstalled: getDnpInstalled,
+  autoUpdateData: getAutoUpdateData,
   progressLogs: getIsInstallingLogs
 });
 
-const mapDispatchToProps = {
-  fetchAutoUpdateSettings
-};
+const mapDispatchToProps = null;
 
 export default connect(
   mapStateToProps,

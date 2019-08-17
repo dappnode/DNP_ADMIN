@@ -25,13 +25,9 @@ export const getPasswordIsInsecure = createSelectorSubProp(
   getLocal,
   "passwordIsInsecure"
 );
-export const getAutoUpdateSettings = createSelectorSubProp(
+export const getAutoUpdateData = createSelectorSubProp(
   getLocal,
-  "autoUpdateSettings"
-);
-export const getAutoUpdateRegistry = createSelectorSubProp(
-  getLocal,
-  "autoUpdateRegistry"
+  "autoUpdateData"
 );
 
 // Sub-sub local properties
@@ -81,6 +77,8 @@ export const getIsWifiRunning = createSelector(
 );
 
 export const getIsCoreAutoUpdateActive = createSelector(
-  getAutoUpdateSettings,
-  autoUpdateSettings => autoUpdateSettings[autoUpdateIds.SYSTEM_PACKAGES]
+  getAutoUpdateData,
+  autoUpdateData =>
+    ((autoUpdateData.settings || {})[autoUpdateIds.SYSTEM_PACKAGES] || {})
+      .enabled
 );

@@ -1,7 +1,5 @@
 import { mountPoint, coreName } from "./data";
 import { createSelector } from "reselect";
-import semver from "semver";
-import computeSemverUpdateType from "utils/computeSemverUpdateType";
 // Selectors
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 
@@ -16,6 +14,10 @@ export const getUpdatingCore = createSelector(
   getLocalState,
   localState => localState.updatingCore
 );
+export const getCoreUpdateData = createSelector(
+  getLocalState,
+  localState => localState.coreUpdateData
+);
 
 /**
  * @returns {array} = [{
@@ -26,19 +28,18 @@ export const getUpdatingCore = createSelector(
  * }, ... ]
  */
 export const getCoreDeps = createSelector(
-  getLocalState,
-  getDnpInstalled,
-  (localState, dnpInstalled) => {
-    const { coreDeps } = localState;
-    return Object.entries(coreDeps).map(([name, manifest]) => {
-      const dnp = dnpInstalled.find(_dnp => _dnp.name === name);
-      return {
-        name,
-        from: (dnp || {}).version || "",
-        to: (manifest || {}).version,
-        manifest
-      };
-    });
+  getCoreUpdateData,
+  coreUpdateData => {
+    const corePackages = coreUpdateData.packages || [];
+    const coreDeps = corePackages.filter(
+      dnp => !(dnp.name || "").includes("core")
+    );
+    if (coreDeps.length) return coreDeps;
+
+    const coreDnp = corePackages.find(dnp => (dnp.name || "").includes("core"));
+    if (coreDnp) return [coreDnp];
+
+    return [];
   }
 );
 
@@ -47,29 +48,21 @@ export const getCoreDeps = createSelector(
  * updateType = "major, minor, patch"
  */
 export const getCoreManifest = createSelector(
-  getLocalState,
-  localState => localState.coreManifest
+  getCoreUpdateData,
+  coreUpdateData => {
+    const dnpCore = (coreUpdateData.packages || []).find(dnp =>
+      (dnp.name || "").includes("core")
+    );
+    return (dnpCore || {}).manifest;
+  }
 );
 
 /**
  * Gets the core update message, computing the current update jump
  */
 export const getCoreUpdateAlerts = createSelector(
-  getCoreManifest,
-  getDnpInstalled,
-  (coreManifest, dnpInstalled) => {
-    const dnpCore = dnpInstalled.find(dnp => dnp.name === coreName);
-    const from = (dnpCore || {}).version;
-    const to = (coreManifest || {}).version;
-    const { updateAlerts = [] } = coreManifest || {};
-    return updateAlerts.filter(
-      updateAlert =>
-        updateAlert.message &&
-        updateAlert.from &&
-        semver.satisfies(from, updateAlert.from) &&
-        semver.satisfies(to, updateAlert.to || "*")
-    );
-  }
+  getCoreUpdateData,
+  coreUpdateData => coreUpdateData.updateAlerts || []
 );
 
 /**
@@ -84,27 +77,11 @@ export const getCoreCurrentVersion = createSelector(
 );
 
 export const getCoreUpdateAvailable = createSelector(
-  getCoreDeps,
-  coreDeps => Boolean(coreDeps.length)
+  getCoreUpdateData,
+  coreUpdateData => Boolean(coreUpdateData.available)
 );
 
 export const getIsCoreUpdateTypePatch = createSelector(
-  getCoreDeps,
-  getCoreManifest,
-  getCoreCurrentVersion,
-  (coreDeps, coreManifest, coreCurrentVersion) => {
-    const coreUpdateType = computeSemverUpdateType(
-      coreCurrentVersion,
-      (coreManifest || {}).version,
-      true
-    );
-    if (coreUpdateType !== "patch") return false;
-
-    for (const { from, to } of coreDeps) {
-      const depUpdateType = computeSemverUpdateType(from, to, true);
-      if (depUpdateType !== "patch") return false;
-    }
-
-    return true;
-  }
+  getCoreUpdateData,
+  coreUpdateData => coreUpdateData.type === "patch"
 );

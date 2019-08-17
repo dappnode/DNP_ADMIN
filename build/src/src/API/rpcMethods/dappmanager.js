@@ -18,26 +18,42 @@ export default {
   ping: {},
 
   /**
-   * Returns a registry of successfully completed auto-updates
+   * Returns a auto-update data:
+   * - settings: If auto-updates are enabled for a specific DNP or DNPs
+   * - registry: List of executed auto-updates
+   * - pending: Pending auto-update per DNP, can be already executed
+   * - dnpsToShow: Parsed data to be shown in the UI
    *
-   * @returns {object} registry = {
-   *   "core.dnp.dappnode.eth": {
-   *     "0.2.4": { firstSeen: 1563218436285,
-   *                scheduledUpdate: 1563304834738,
-   *                updated: 1563304834738,
-   *                completedDelay: true },
-   *     "0.2.5": { firstSeen: 1563371560487 }
+   * @returns {object} result = {
+   *   settings: {
+   *     "system-packages": { enabled: true }
+   *     "my-packages": { enabled: true }
+   *     "bitcoin.dnp.dappnode.eth": { enabled: false }
    *   },
-   *   "bitcoin.dnp.dappnode.eth": {
-   *     "0.1.1": { firstSeen: 1563218436285,
-   *                scheduledUpdate: 1563304834738,
-   *                updated: 1563304834738,
-   *                completedDelay: true },
-   *     "0.1.2": { firstSeen: 1563371560487 }
-   *   }
+   *   registry: { "core.dnp.dappnode.eth": {
+   *     "0.2.4": { updated: 1563304834738, successful: true },
+   *     "0.2.5": { updated: 1563304834738, successful: false }
+   *   }, ... },
+   *   pending: { "core.dnp.dappnode.eth": {
+   *     version: "0.2.4",
+   *     firstSeen: 1563218436285,
+   *     scheduledUpdate: 1563304834738,
+   *     completedDelay: true
+   *   }, ... },
+   *   dnpsToShow: [{
+   *     id: "system-packages",
+   *     displayName: "System packages",
+   *     enabled: true,
+   *     feedback: {
+   *       updated: 15363818244,
+   *       manuallyUpdated: true,
+   *       inQueue: true,
+   *       scheduled: 15363818244
+   *     }
+   *   }, ... ]
    * }
    */
-  autoUpdateRegistryGet: {},
+  autoUpdateDataGet: {},
 
   /**
    * Edits the auto-update settings
@@ -48,23 +64,6 @@ export default {
   autoUpdateSettingsEdit: {
     mandatoryKwargs: ["id", "enabled"]
   },
-
-  /**
-   * Get current auto-update settings
-   *
-   * - "system-packages" = if the update is enabled
-   * - "my-packages" = an object, means the default settings is update enabled
-   * - "my-packages"["bitcoin.dnp.dappnode.eth"] = true, means that the
-   *   update is NOT enabled
-   *
-   * @returns {object} autoUpdateSettings = {
-   *   "system-packages": true
-   *   "my-packages": {
-   *     "bitcoin.dnp.dappnode.eth": true
-   *   }
-   * }
-   */
-  autoUpdateSettingsGet: {},
 
   /**
    * Does a backup of a DNP and sends it to the client for download.
@@ -186,6 +185,33 @@ export default {
   diskSpaceAvailable: {
     mandatoryKwargs: ["path"]
   },
+
+  /**
+   * Fetches the core update data, if available
+   *
+   * @returns {object} result = {
+   *   available: true {bool},
+   *   type: "minor",
+   *   packages: [
+   *     {
+   *       name: "core.dnp.dappnode.eth",
+   *       from: "0.2.5",
+   *       to: "0.2.6",
+   *       manifest: {}
+   *     },
+   *     {
+   *       name: "admin.dnp.dappnode.eth",
+   *       from: "0.2.2",
+   *       to: "0.2.3",
+   *       manifest: {}
+   *     }
+   *   ],
+   *   changelog: "Changelog text",
+   *   updateAlerts: [{ message: "Specific update alert"}, ... ],
+   *   versionId: "admin@0.2.6,core@0.2.8"
+   * }
+   */
+  fetchCoreUpdateData: {},
 
   /**
    * [fetchDirectory]
