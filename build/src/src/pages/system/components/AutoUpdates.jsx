@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import semver from "semver";
+import { NavLink } from "react-router-dom";
 import api from "API/rpcMethods";
 // Components
 import Card from "components/Card";
@@ -16,6 +17,8 @@ import { getAutoUpdateData } from "services/dappnodeStatus/selectors";
 import { getIsInstallingLogs } from "services/isInstallingLogs/selectors";
 import { coreName } from "services/coreUpdate/data";
 import { autoUpdateIds } from "services/dappnodeStatus/data";
+import { rootPath as installerRootPath } from "pages/installer";
+import { rootPath as systemRootPath, updatePath } from "pages/system/data";
 // Styles
 import "./autoUpdates.scss";
 
@@ -71,6 +74,27 @@ function AutoUpdates({ autoUpdateData, progressLogs }) {
             const isInstalling = progressLogs[realName];
             const { updated, manuallyUpdated, inQueue, scheduled } = feedback;
 
+            const dnpInstallPath =
+              id === MY_PACKAGES
+                ? null
+                : id === SYSTEM_PACKAGES
+                ? `${systemRootPath}/${updatePath}`
+                : `${installerRootPath}/${id}`;
+
+            const feedbackText = isInstalling
+              ? "Updating..."
+              : manuallyUpdated
+              ? "Manually updated"
+              : inQueue
+              ? "In queue..."
+              : scheduled
+              ? `Scheduled, in ${parseDiffDates(scheduled)}`
+              : updated
+              ? parseStaticDate(updated)
+              : "-";
+
+            const showUpdateLink = isInstalling || inQueue || scheduled;
+
             return (
               <React.Fragment key={id}>
                 <span
@@ -88,17 +112,13 @@ function AutoUpdates({ autoUpdateData, progressLogs }) {
                 </span>
 
                 <span className="last-update">
-                  {isInstalling
-                    ? "Updating..."
-                    : manuallyUpdated
-                    ? "Manually updated"
-                    : inQueue
-                    ? "In queue..."
-                    : scheduled
-                    ? `Scheduled, in ${parseDiffDates(scheduled)}`
-                    : updated
-                    ? parseStaticDate(updated)
-                    : "-"}
+                  {showUpdateLink ? (
+                    <NavLink className="name" to={dnpInstallPath}>
+                      {feedbackText}
+                    </NavLink>
+                  ) : (
+                    feedbackText
+                  )}
                 </span>
 
                 <Switch
