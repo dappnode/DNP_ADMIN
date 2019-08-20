@@ -81,7 +81,9 @@ function AutoUpdates({ autoUpdateData, progressLogs }) {
                 ? `${systemRootPath}/${updatePath}`
                 : `${installerRootPath}/${id}`;
 
-            const feedbackText = isInstalling
+            const feedbackText = !enabled
+              ? "-"
+              : isInstalling
               ? "Updating..."
               : manuallyUpdated
               ? "Manually updated"
