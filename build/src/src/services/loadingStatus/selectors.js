@@ -59,6 +59,9 @@ export const getIsLoadingStrictById = loadingId => {
 };
 
 export const getIsLoading = mapValues(loadingIds, id => getIsLoadingById(id));
+export const getIsLoadingStrict = mapValues(loadingIds, id =>
+  getIsLoadingStrictById(id)
+);
 export const getLoadingError = mapValues(loadingIds, id =>
   getLoadingErrorById(id)
 );

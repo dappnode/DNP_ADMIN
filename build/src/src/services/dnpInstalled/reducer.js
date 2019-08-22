@@ -23,9 +23,9 @@ import Joi from "joi";
  *   name: "admin.dnp.dappnode.eth", {string}
  *   shortName: "admin", {string}
  *   ports: [{
- *     PrivatePort: 2222, {number}
- *     PublicPort: 3333, {number}
- *     Type: "tcp" {string}
+ *     container: 2222, {number}
+ *     host: 3333, {number}
+ *     protocol: "tcp" {string}
  *   }, ... ], {array}
  *   volumes: [{
  *     type: "bind", {string}

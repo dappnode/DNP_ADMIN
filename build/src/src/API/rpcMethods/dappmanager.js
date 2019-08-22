@@ -342,9 +342,9 @@ export default {
    *   name: "admin.dnp.dappnode.eth", {string}
    *   shortName: "admin", {string}
    *   ports: [{
-   *     PrivatePort: 2222, {number}
-   *     PublicPort: 3333, {number}
-   *     Type: "tcp" {string}
+   *     host: 2222, {number}
+   *     container: 3333, {number}
+   *     protocol: "TCP" {string}
    *   }, ... ], {array}
    *   volumes: [{
    *     type: "bind", {string}
@@ -542,5 +542,19 @@ export default {
    */
   updatePackageEnv: {
     mandatoryKwargs: ["id", "envs", "restart"]
+  },
+
+  /**
+   * Updates the .env file of a package. If requested, also re-ups it
+   *
+   * @param {string} id DNP .eth name
+   * @param {array} portMappings [
+   *   { host: 30444, container: 30303, protocol: "UDP" },
+   *   { host: 4000, container: 4000, protocol: "TCP" }
+   * ]
+   * #### !!!!! NOTE take into account existing ephemeral ports
+   */
+  updatePortMappings: {
+    mandatoryKwargs: ["id", "portMappings"]
   }
 };
