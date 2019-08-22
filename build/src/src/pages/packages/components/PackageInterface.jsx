@@ -76,7 +76,7 @@ const PackageInterface = ({
       name: "Ports",
       subPath: "ports",
       render: () => <Ports dnp={dnp} />,
-      available: true
+      available: dnp.name !== "dappmanager.dnp.dappnode.eth"
     },
     {
       name: "Logs",

@@ -12,11 +12,14 @@ import { MdAdd } from "react-icons/md";
 // Selectors
 import { getIsLoadingStrict } from "services/loadingStatus/selectors";
 import { getHostPortMappings } from "services/dnpInstalled/selectors";
+// Style
+import "./ports.scss";
 
 const maxPortNumber = 32768 - 1;
 
 function getPortsFromDnp(dnp) {
   return (dnp.ports || [])
+    .filter(({ host }) => host)
     .sort((a, b) => a.container - b.container)
     .sort((a, b) =>
       a.deletable && !b.deletable ? 1 : !a.deletable && b.deletable ? -1 : 0
@@ -27,25 +30,17 @@ function Ports({ dnp, loading, hostPortMapping }) {
   const [ports, setPorts] = useState(getPortsFromDnp(dnp));
   const [updating, setUpdating] = useState(false);
   useEffect(() => {
-    /**
-     * Mix the ENVs from the manifest and the already set on the DNP
-     * Also, convert to a nested object notation to retain the order
-     * specified in the manifest
-     * [NOTE] use deepmerge to preserve the `index` key comming from the manifest
-     *
-     * const envs = {
-     *   "ENV_NAME": {
-     *     name: "ENV_NAME",
-     *     value: "ENV_VALUE",
-     *     index: 0
-     *   }
-     * }
-     *
-     */
-
     setPorts(getPortsFromDnp(dnp));
-    // setEnvs(merge(parseManifestEnvs(dnp.manifest), parseInstalledDnpEnvs(dnp)));
   }, [dnp]);
+
+  const unMappedPorts = (dnp.ports || [])
+    .filter(({ host }) => !host)
+    .filter(
+      ({ container, protocol }) =>
+        !ports.find(
+          port => port.container === container && port.protocol === protocol
+        )
+    );
 
   async function onUpdateEnvsSubmit() {
     const id = dnp.name;
@@ -64,11 +59,8 @@ function Ports({ dnp, loading, hostPortMapping }) {
     }
   }
 
-  function addNewPort() {
-    setPorts(ps => [
-      ...ps,
-      { host: "", container: "", protocol: "TCP", deletable: true }
-    ]);
+  function addNewPort({ container = "", protocol = "TCP" } = {}) {
+    setPorts(ps => [...ps, { host: "", container, protocol, deletable: true }]);
   }
 
   function editPort(i, data) {
@@ -133,7 +125,7 @@ function Ports({ dnp, loading, hostPortMapping }) {
         )
         .join("");
     }
-    return portsToId(dnp.ports) === portsToId(ports);
+    return portsToId(getPortsFromDnp(dnp)) === portsToId(ports);
   }
 
   const areNewMappingsInvalid = ports.some(
@@ -148,13 +140,53 @@ function Ports({ dnp, loading, hostPortMapping }) {
   const thereAreNewPorts = ports.some(({ deletable }) => deletable);
   const arePortsTheSame = getArePortsTheSame();
 
-  // const envsArray = Object.values(envs).sort(sortByProp("index"));
+  // Aggregate error messages as an array of strings
+  const errors = [];
+  if (duplicatedHostPort)
+    errors.push(
+      `Duplicated mapping for host port ${duplicatedHostPort.host}/${
+        duplicatedHostPort.protocol
+      }. Each host port can only be mapped once.`
+    );
 
-  // If there are no ENVs don't render the component
-  // if (!envsArray.length) return null;
+  if (duplicatedContainerPort)
+    errors.push(
+      `Duplicated mapping for package port ${
+        duplicatedContainerPort.container
+      }/${
+        duplicatedContainerPort.protocol
+      }. Each package port can only be mapped once.`
+    );
+
+  if (conflictingPort)
+    errors.push(
+      `Port ${conflictingPort.host}/${
+        conflictingPort.protocol
+      } is already mapped by the DAppNode Package ${shortNameCapitalized(
+        conflictingPort.owner
+      )}`
+    );
+
+  if (portOverTheMax)
+    errors.push(
+      `Port mapping ${portOverTheMax.container}/${
+        portOverTheMax.protocol
+      } is in the ephemeral port range (32768-65535). It must be avoided.`
+    );
+
+  // Aggregate conditions to disable the update
+  const disableUpdate =
+    areNewMappingsInvalid ||
+    duplicatedContainerPort ||
+    duplicatedHostPort ||
+    conflictingPort ||
+    portOverTheMax ||
+    arePortsTheSame ||
+    updating ||
+    loading;
 
   return (
-    <Card spacing>
+    <Card spacing className="ports-editor">
       <TableInputs
         headers={[
           "Host port",
@@ -204,68 +236,48 @@ function Ports({ dnp, loading, hostPortMapping }) {
         ]}
       />
 
-      {duplicatedHostPort && (
-        <div style={{ color: "red" }}>
-          Duplicated mapping for host port {duplicatedHostPort.host}/
-          {duplicatedHostPort.protocol}. Each host port can only be mapped once.
+      {errors.map(error => (
+        <div className="error" key={error}>
+          {error}
         </div>
-      )}
+      ))}
 
-      {duplicatedContainerPort && (
-        <div style={{ color: "red" }}>
-          Duplicated mapping for package port{" "}
-          {duplicatedContainerPort.container}/{duplicatedContainerPort.protocol}
-          . Each package port can only be mapped once.
-        </div>
-      )}
-
-      {conflictingPort && (
-        <div style={{ color: "red" }}>
-          Port {conflictingPort.host}/{conflictingPort.protocol} is already
-          mapped by the DAppNode Package{" "}
-          {shortNameCapitalized(conflictingPort.owner)}
-        </div>
-      )}
-
-      {portOverTheMax && (
-        <div style={{ color: "red" }}>
-          Port mapping {portOverTheMax.container}/{portOverTheMax.protocol} is
-          in the ephemeral port range (32768-65535). It must be avoided.
-        </div>
-      )}
-
-      <div>
+      <div className="button-row">
         <Button
           variant={"dappnode"}
           onClick={onUpdateEnvsSubmit}
-          style={{ float: "left" }}
-          disabled={
-            areNewMappingsInvalid ||
-            duplicatedContainerPort ||
-            duplicatedHostPort ||
-            conflictingPort ||
-            portOverTheMax ||
-            arePortsTheSame ||
-            updating ||
-            loading
-          }
+          disabled={disableUpdate}
         >
           Update port mappings
         </Button>
 
-        <Button
-          onClick={addNewPort}
-          style={{
-            fontSize: "1.5rem",
-            display: "flex",
-            padding: ".375rem",
-            borderColor: "#ced4da",
-            float: "right"
-          }}
-        >
+        <Button className="add-button" onClick={addNewPort}>
           <MdAdd />
         </Button>
       </div>
+
+      {unMappedPorts.length > 0 && (
+        <>
+          <hr />
+          <div className="unmapped-ports">
+            <p className="text">
+              Active package ports not exposed to the host. Click to expose
+              them.
+            </p>
+            <div className="buttons">
+              {unMappedPorts.map(({ container, protocol }) => (
+                <Button
+                  key={container + protocol}
+                  variant={"outline-secondary"}
+                  onClick={() => addNewPort({ container, protocol })}
+                >
+                  {container}/{protocol}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </Card>
   );
 }

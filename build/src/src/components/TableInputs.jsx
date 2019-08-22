@@ -18,7 +18,7 @@ const TableXN = styled.div`
   grid-gap: 1em;
 `;
 const Header = styled.h6`
-  opacity: 0.5;
+  color: var(--light-text-color);
   margin-bottom: 0;
 `;
 
