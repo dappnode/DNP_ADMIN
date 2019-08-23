@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { createStructuredSelector } from "reselect";
+import { createStructuredSelector, createSelector } from "reselect";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import api from "API/rpcMethods";
@@ -8,12 +8,15 @@ import api from "API/rpcMethods";
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
 import Switch from "components/Switch";
+import Alert from "react-bootstrap/Alert";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 import { parseStaticDate, parseDiffDates } from "utils/dates";
 // External
 import { getAutoUpdateData } from "services/dappnodeStatus/selectors";
 import { getIsInstallingLogs } from "services/isInstallingLogs/selectors";
+import { getMainnet } from "services/chainData/selectors";
+import { getIsMainnetDnpNotRunning } from "services/dnpInstalled/selectors";
 import { coreName } from "services/coreUpdate/data";
 import { autoUpdateIds } from "services/dappnodeStatus/data";
 import { rootPath as installerRootPath } from "pages/installer";
@@ -23,7 +26,7 @@ import "./autoUpdates.scss";
 
 const { MY_PACKAGES, SYSTEM_PACKAGES } = autoUpdateIds;
 
-function AutoUpdates({ autoUpdateData, progressLogs }) {
+function AutoUpdates({ autoUpdateData, progressLogs, mainnetBadStatus }) {
   const { dnpsToShow = [] } = autoUpdateData;
 
   // Force a re-render every 15 seconds for the timeFrom to show up correctly
@@ -56,6 +59,12 @@ function AutoUpdates({ autoUpdateData, progressLogs }) {
           updates, the interaction of an admin will always be required.
         </div>
 
+        {mainnetBadStatus && (
+          <Alert variant="warning">
+            {mainnetBadStatus}. Note that auto-updates will not work meanwhile.
+          </Alert>
+        )}
+
         <div className="list-grid auto-updates">
           {/* Table header */}
           <span className="stateBadge" />
@@ -67,6 +76,7 @@ function AutoUpdates({ autoUpdateData, progressLogs }) {
           {/* Items of the table */}
           {dnpsToShow.map(({ id, displayName, enabled, feedback }) => (
             <AutoUpdateItem
+              key={id}
               {...{
                 id,
                 displayName,
@@ -98,13 +108,8 @@ function AutoUpdateItem({
 }) {
   const [collapsed, setCollapsed] = useState(true);
 
-  const {
-    updated,
-    manuallyUpdated,
-    inQueue,
-    scheduled,
-    errorMessage
-  } = feedback;
+  const { updated, manuallyUpdated, inQueue, scheduled } = feedback;
+  const errorMessage = feedback.errorMessage;
 
   const dnpInstallPath =
     id === MY_PACKAGES
@@ -181,7 +186,18 @@ AutoUpdates.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   autoUpdateData: getAutoUpdateData,
-  progressLogs: getIsInstallingLogs
+  progressLogs: getIsInstallingLogs,
+  mainnetBadStatus: createSelector(
+    getMainnet,
+    getIsMainnetDnpNotRunning,
+    (mainnet, isMainnetDnpNotRunning) => {
+      if (isMainnetDnpNotRunning) return "Mainnet is not running";
+      if (!mainnet) return "Mainnet not found";
+      if (mainnet.syncing) return "Mainnet is syncing";
+      if (mainnet.error) return "Mainnet error";
+      return null;
+    }
+  )
 });
 
 const mapDispatchToProps = null;

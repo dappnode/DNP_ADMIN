@@ -53,6 +53,18 @@ export const getAreWifiCredentialsDefault = createSelector(
   }
 );
 
+export const getIsMainnetDnpNotRunning = createSelector(
+  getDnpInstalled,
+  dnps => {
+    if (!dnps.length) return false;
+    const mainnetDnp = dnps.find(
+      dnp => dnp.name === "ethchain.dnp.dappnode.eth"
+    );
+    if (!mainnetDnp) return true;
+    return !mainnetDnp.running;
+  }
+);
+
 /**
  * Regular selectors, called outside of a normal react-redux situation
  */
