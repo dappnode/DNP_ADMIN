@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import semver from "semver";
 import { NavLink } from "react-router-dom";
 import api from "API/rpcMethods";
 // Components
@@ -66,75 +65,110 @@ function AutoUpdates({ autoUpdateData, progressLogs }) {
 
           <hr />
           {/* Items of the table */}
-          {dnpsToShow.map(({ id, displayName, enabled, feedback }) => {
-            const isSinglePackage =
-              id !== MY_PACKAGES && id !== SYSTEM_PACKAGES;
-            const realName = id === SYSTEM_PACKAGES ? coreName : id;
-
-            const isInstalling = progressLogs[realName];
-            const { updated, manuallyUpdated, inQueue, scheduled } = feedback;
-
-            const dnpInstallPath =
-              id === MY_PACKAGES
-                ? null
-                : id === SYSTEM_PACKAGES
-                ? `${systemRootPath}/${updatePath}`
-                : `${installerRootPath}/${id}`;
-
-            const feedbackText = !enabled
-              ? "-"
-              : isInstalling
-              ? "Updating..."
-              : manuallyUpdated
-              ? "Manually updated"
-              : inQueue
-              ? "In queue..."
-              : scheduled
-              ? `Scheduled, in ${parseDiffDates(scheduled)}`
-              : updated
-              ? parseStaticDate(updated)
-              : "-";
-
-            const showUpdateLink = isInstalling || inQueue || scheduled;
-
-            return (
-              <React.Fragment key={id}>
-                <span
-                  className={`stateBadge center badge-${
-                    enabled ? "success" : "secondary"
-                  }`}
-                  style={{ opacity: 0.85 }}
-                >
-                  <span className="content">{enabled ? "on" : "off"}</span>
-                </span>
-
-                <span className="name">
-                  {isSinglePackage && <span>> </span>}
-                  {displayName}
-                </span>
-
-                <span className="last-update">
-                  {showUpdateLink ? (
-                    <NavLink className="name" to={dnpInstallPath}>
-                      {feedbackText}
-                    </NavLink>
-                  ) : (
-                    feedbackText
-                  )}
-                </span>
-
-                <Switch
-                  checked={enabled ? true : false}
-                  onToggle={() => setUpdateSettings(id, !Boolean(enabled))}
-                />
-
-                <hr />
-              </React.Fragment>
-            );
-          })}
+          {dnpsToShow.map(({ id, displayName, enabled, feedback }) => (
+            <AutoUpdateItem
+              {...{
+                id,
+                displayName,
+                enabled,
+                feedback,
+                isInstalling:
+                  progressLogs[id === SYSTEM_PACKAGES ? coreName : id],
+                isSinglePackage: id !== MY_PACKAGES && id !== SYSTEM_PACKAGES,
+                // Actions
+                setUpdateSettings
+              }}
+            />
+          ))}
         </div>
       </Card>
     </>
+  );
+}
+
+function AutoUpdateItem({
+  id,
+  displayName,
+  enabled,
+  feedback,
+  isInstalling,
+  isSinglePackage,
+  // Actions
+  setUpdateSettings
+}) {
+  const [collapsed, setCollapsed] = useState(true);
+
+  const {
+    updated,
+    manuallyUpdated,
+    inQueue,
+    scheduled,
+    errorMessage
+  } = feedback;
+
+  const dnpInstallPath =
+    id === MY_PACKAGES
+      ? null
+      : id === SYSTEM_PACKAGES
+      ? `${systemRootPath}/${updatePath}`
+      : `${installerRootPath}/${id}`;
+
+  const feedbackText = !enabled
+    ? "-"
+    : isInstalling
+    ? "Updating..."
+    : manuallyUpdated
+    ? "Manually updated"
+    : inQueue
+    ? "In queue..."
+    : scheduled
+    ? `Scheduled, in ${parseDiffDates(scheduled)}`
+    : updated
+    ? parseStaticDate(updated)
+    : "-";
+
+  const showUpdateLink = isInstalling || inQueue || scheduled;
+
+  return (
+    <React.Fragment key={id}>
+      <span
+        className={`stateBadge center badge-${
+          enabled ? "success" : "secondary"
+        }`}
+        style={{ opacity: 0.85 }}
+      >
+        <span className="content">{enabled ? "on" : "off"}</span>
+      </span>
+
+      <span className="name">
+        {isSinglePackage && <span>> </span>}
+        {displayName}
+      </span>
+
+      <span className="last-update">
+        {showUpdateLink ? (
+          <NavLink className="name" to={dnpInstallPath}>
+            {feedbackText}
+          </NavLink>
+        ) : (
+          <span>{feedbackText}</span>
+        )}
+        {errorMessage ? (
+          <span className="error" onClick={() => setCollapsed(!collapsed)}>
+            Error on update
+          </span>
+        ) : null}
+      </span>
+
+      <Switch
+        checked={enabled ? true : false}
+        onToggle={() => setUpdateSettings(id, !Boolean(enabled))}
+      />
+
+      {!collapsed && <div className="extra-info">{errorMessage}</div>}
+
+      <hr />
+    </React.Fragment>
   );
 }
 

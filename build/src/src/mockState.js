@@ -221,12 +221,6 @@ export const mockState = {
     ipfsConnectionStatus: {},
     wifiStatus: { running: true },
     passwordIsInsecure: true,
-    autoUpdateSettings: {
-      "my-packages": {
-        "ln.dnp.dappnode.eth": true
-      },
-      "system-packages": true
-    },
     autoUpdateData: {
       settings: {
         "system-packages": { enabled: true },
@@ -260,7 +254,38 @@ export const mockState = {
           scheduledUpdate: 1563304834738,
           completedDelay: false
         }
-      }
+      },
+
+      dnpsToShow: [
+        {
+          id: "system-packages",
+          displayName: "System packages",
+          enabled: true,
+          feedback: { scheduled: 1566645310441 }
+        },
+        {
+          id: "my-packages",
+          displayName: "My packages",
+          enabled: true,
+          feedback: {}
+        },
+        {
+          id: "bitcoin.dnp.dappnode.eth",
+          displayName: "Bitcoin",
+          enabled: false,
+          feedback: { updated: 1563304834738 }
+        },
+        {
+          id: "ln.dnp.dappnode.eth",
+          displayName: "LN",
+          enabled: true,
+          feedback: {
+            inQueue: true,
+            errorMessage:
+              "Error updating LN: Mainnet is still syncing. More lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
+          }
+        }
+      ]
     }
   },
 

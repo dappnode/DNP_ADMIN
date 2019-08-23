@@ -23,7 +23,7 @@
     minmax(1.65rem, min-content)
     minmax(4rem, max-content)
     minmax(4rem, auto)
-    minmax(min-content, max-content);
+    min-content;
 
   .header {
     color: #8c8c8c;
@@ -47,6 +47,23 @@
   .last-update {
     justify-self: right;
     color: #8c8c8c;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    .error {
+      color: #ce4545;
+      font-size: 80%;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .extra-info {
+    grid-column: 1 / -1;
+    color: #ce4545;
+    font-size: 90%;
   }
 
   @media screen and (max-width: 40rem) {
@@ -57,6 +74,10 @@
     grid-template-columns:
       minmax(4rem, auto)
       minmax(min-content, max-content);
+
+    .extra-info {
+      display: none;
+    }
   }
 }
 
