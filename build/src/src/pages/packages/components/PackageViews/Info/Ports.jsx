@@ -19,15 +19,14 @@ function Ports({ dnp }) {
         .map(portObj => {
           const locked = Boolean(
             (portsToClose || []).find(
-              _portObj =>
-                String(_portObj.portNumber) === String(portObj.PublicPort)
+              _portObj => String(_portObj.portNumber) === String(portObj.host)
             )
           );
           return { ...portObj, locked };
         })
-        .map(({ PrivatePort, PublicPort, Type, locked }) => (
+        .map(({ container, host, protocol, locked }) => (
           <>
-            {PrivatePort} -> {PublicPort} {Type ? Type.toUpperCase() : Type}{" "}
+            {container} -> {host} {protocol ? protocol.toUpperCase() : protocol}{" "}
             {locked ? <span style={{ opacity: 0.5 }}>(locked)</span> : null}
           </>
         ))}
@@ -37,7 +36,7 @@ function Ports({ dnp }) {
 
 /**
  * PORTS
- * dnp.ports = [{ IP: "0.0.0.0", PrivatePort: 30304, PublicPort: 32770, Type: "tcp" }, ...]
+ * dnp.ports = [{ IP: "0.0.0.0", container: 30304, host: 32770, protocol: "tcp" }, ...]
  * dnp.portsToClose = [{ portNumber: 32771, protocol: "TCP" }, ...]
  */
 
@@ -45,9 +44,9 @@ Ports.propTypes = {
   dnp: PropTypes.shape({
     ports: PropTypes.arrayOf(
       PropTypes.shape({
-        PrivatePort: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        PublicPort: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        Type: PropTypes.string.isRequired
+        container: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        host: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        protocol: PropTypes.string.isRequired
       })
     ).isRequired,
     portsToClose: PropTypes.arrayOf(

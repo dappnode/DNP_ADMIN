@@ -53,6 +53,18 @@ export const getAreWifiCredentialsDefault = createSelector(
   }
 );
 
+export const getHostPortMappings = createSelector(
+  getDnpInstalled,
+  dnps => {
+    const hostPortMappings = {};
+    for (const dnp of dnps)
+      for (const port of dnp.ports || [])
+        if (port.host)
+          hostPortMappings[`${port.host}/${port.protocol}`] = dnp.name;
+    return hostPortMappings;
+  }
+);
+
 export const getIsMainnetDnpNotRunning = createSelector(
   getDnpInstalled,
   dnps => {
