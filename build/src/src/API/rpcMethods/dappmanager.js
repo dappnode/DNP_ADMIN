@@ -494,6 +494,16 @@ export default {
   passwordIsSecure: {},
 
   /**
+   * Instruct the host to poweroff
+   */
+  poweroffHost: {},
+
+  /**
+   * Instruct the host to reboot
+   */
+  rebootHost: {},
+
+  /**
    * [removePackage]
    * Remove package data: docker down + disk files
    *
