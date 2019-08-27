@@ -292,11 +292,71 @@ export const mockState = {
     ipfsConnectionStatus: {},
     wifiStatus: { running: true },
     passwordIsInsecure: true,
-    autoUpdateSettings: {
-      "my-packages": {
-        "ln.dnp.dappnode.eth": true
+    autoUpdateData: {
+      settings: {
+        "system-packages": { enabled: true },
+        "my-packages": { enabled: true },
+        "bitcoin.dnp.dappnode.eth": { enabled: false },
+        "ln.dnp.dappnode.eth": { enabled: true }
       },
-      "system-packages": true
+      registry: {
+        "core.dnp.dappnode.eth": {
+          "0.2.4": { updated: 1563304834738, successful: true },
+          "0.2.5": { updated: 1563304834738, successful: false }
+        },
+        "bitcoin.dnp.dappnode.eth": {
+          "0.1.1": { updated: 1563304834738, successful: true },
+          "0.1.2": { updated: 1563304834738, successful: true }
+        },
+        "ln.dnp.dappnode.eth": {
+          "0.1.1": { updated: 1565284039677, successful: true }
+        }
+      },
+      pending: {
+        "core.dnp.dappnode.eth": {
+          version: "0.2.4",
+          firstSeen: 1563218436285,
+          scheduledUpdate: 1563304834738,
+          completedDelay: true
+        },
+        "bitcoin.dnp.dappnode.eth": {
+          version: "0.1.2",
+          firstSeen: 1563218436285,
+          scheduledUpdate: 1563304834738,
+          completedDelay: false
+        }
+      },
+
+      dnpsToShow: [
+        {
+          id: "system-packages",
+          displayName: "System packages",
+          enabled: true,
+          feedback: { scheduled: 1566645310441 }
+        },
+        {
+          id: "my-packages",
+          displayName: "My packages",
+          enabled: true,
+          feedback: {}
+        },
+        {
+          id: "bitcoin.dnp.dappnode.eth",
+          displayName: "Bitcoin",
+          enabled: false,
+          feedback: { updated: 1563304834738 }
+        },
+        {
+          id: "ln.dnp.dappnode.eth",
+          displayName: "LN",
+          enabled: true,
+          feedback: {
+            inQueue: true,
+            errorMessage:
+              "Error updating LN: Mainnet is still syncing. More lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
+          }
+        }
+      ]
     }
   },
 

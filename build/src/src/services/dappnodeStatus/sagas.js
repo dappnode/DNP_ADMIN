@@ -138,26 +138,17 @@ const checkIfPasswordIsInsecure = wrapErrorsAndLoading(
 );
 
 /**
- * Get the auto-update settings
+ * Get the auto-update data:
+ * - settings
+ * - registry
+ * - pending
  */
-const fetchAutoUpdateSettings = wrapErrorsAndLoading(
-  loadingIds.autoUpdateSettings,
+const fetchAutoUpdateData = wrapErrorsAndLoading(
+  loadingIds.autoUpdateData,
   function*() {
     // If there are no settings the return will be null
-    const autoUpdateSettings = yield call(api.autoUpdateSettingsGet);
-    yield put(a.updateAutoUpdateSettings(autoUpdateSettings || {}));
-  }
-);
-
-/**
- * Get the auto-update registry
- */
-const fetchAutoUpdateRegistry = wrapErrorsAndLoading(
-  loadingIds.autoUpdateRegistry,
-  function*() {
-    // If there are no settings the return will be null
-    const autoUpdateRegistry = yield call(api.autoUpdateRegistryGet);
-    yield put(a.updateAutoUpdateRegistry(autoUpdateRegistry) || {});
+    const autoUpdateData = yield call(api.autoUpdateDataGet);
+    yield put(a.updateAutoUpdateData(autoUpdateData) || {});
   }
 );
 
@@ -175,8 +166,7 @@ function* fetchAllDappnodeStatus() {
       call(checkIpfsConnectionStatus),
       call(checkWifiStatus),
       call(checkIfPasswordIsInsecure),
-      call(fetchAutoUpdateSettings),
-      call(fetchAutoUpdateRegistry)
+      call(fetchAutoUpdateData)
     ]);
   } catch (e) {
     console.error(`Error on fetchAllDappnodeStatus: ${e.stack}`);
@@ -196,6 +186,5 @@ export default rootWatcher([
   [t.FETCH_DAPPNODE_STATS, fetchDappnodeStats],
   [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],
   [t.FETCH_IF_PASSWORD_IS_INSECURE, checkIfPasswordIsInsecure],
-  [t.FETCH_AUTO_UPDATE_SETTINGS, fetchAutoUpdateSettings],
   [t.PING_DAPPNODE_DNPS, pingDappnodeDnps]
 ]);

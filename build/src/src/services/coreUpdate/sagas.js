@@ -1,4 +1,4 @@
-import { put, call, all, select } from "redux-saga/effects";
+import { put, call, select } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import api from "API/rpcMethods";
 import * as a from "./actions";
@@ -15,8 +15,6 @@ import { pushNotification } from "services/notifications/actions";
 import { clearIsInstallingLogsById } from "services/isInstallingLogs/actions";
 // Utilities
 import isSyncing from "utils/isSyncing";
-import { mapValues } from "lodash";
-import { stringIncludes } from "utils/strings";
 
 // Service > coreUpdate
 
@@ -67,23 +65,6 @@ function* putMainnetIsStillSyncing() {
 }
 
 /**
- * Wrapper to fetch a DNP's manifest. If there is an error because the chain is syncing,
- * update the App state to so it knows that the chain is syncing
- * @param {string} id = "core.dnp.dappnode.eth@latest"
- */
-function* fetchManifest(id) {
-  try {
-    const { manifest } = yield call(api.fetchPackageData, { id });
-    return manifest;
-  } catch (e) {
-    // Check if the dappmanager says mainnet is still syncing
-    if (stringIncludes((e || {}).message, "Mainnet is still syncing"))
-      yield call(putMainnetIsStillSyncing);
-    console.error(`Error fetching manifest for ${id}, ${e.stack}`);
-  }
-}
-
-/**
  * Does a call to `api.resolveRequest` with `id = core.dnp.dappnode.eth@latest`
  * to know if there is an update available. If so, it fetches the manifests
  * of the core DNP and all the necessary dependencies
@@ -97,38 +78,38 @@ export function* checkCoreUpdate() {
     yield put(updateIsLoading(loadingId));
 
     /**
-     * @param success = {
-     *   core.dnp.dappnode.eth: "latest",
-     *   dappmanager.dnp.dappnode.eth: "0.1.18",
-     *   vpn.dnp.dappnode.eth: "/ipfs/QmPPmuD55aSHQfvgjGMDZLsfY2ykcr54Sab9BoSXKFQZEv",
-     *   ... }
+     * @param {object} result = {
+     *   available: true {bool},
+     *   type: "minor",
+     *   packages: [
+     *     {
+     *       name: "core.dnp.dappnode.eth",
+     *       from: "0.2.5",
+     *       to: "0.2.6",
+     *       manifest: {}
+     *     },
+     *     {
+     *       name: "admin.dnp.dappnode.eth",
+     *       from: "0.2.2",
+     *       to: "0.2.3",
+     *       manifest: {}
+     *     }
+     *   ],
+     *   changelog: "Changelog text",
+     *   updateAlerts: [{ message: "Specific update alert"}, ... ],
+     *   versionId: "admin@0.2.6,core@0.2.8"
+     * }
      */
-    const { state } = yield call(api.resolveRequest, {
-      req: { name: coreName, ver: coreVersion },
-      options: { BYPASS_RESOLVER: true }
-    });
-    const { [coreName]: _, ...deps } = state;
-    yield put(a.updateCoreDeps(mapValues(deps, version => ({ version }))));
+    const coreUpdateData = yield call(api.fetchCoreUpdateData);
+    yield put(a.updateCoreUpdateData(coreUpdateData));
 
-    /* Try to get all core dependencies manifests. If it fails, don't stop the update 
-      Map the deps object to an incomplete manifest: { version }
-    */
-    const coreManifest = yield call(fetchManifest, coreId);
-    yield put(a.updateCoreManifest(coreManifest));
-
-    /* yield all accepts an object mapping of functions, returns { "vpn...": <manifestObj>, ... } */
-    const depManifests = yield all(
-      mapValues(deps, (version, name) =>
-        call(fetchManifest, [name, version].join("@"))
-      )
-    );
-    yield put(a.updateCoreDeps(depManifests));
     yield put(updateIsLoaded(loadingId));
+
     /* Log out current state */
-    console.log(`DAppNode ${coreId} (${coreManifest.version}) deps`, {
-      deps,
-      coreManifest
-    });
+    console.log(
+      `DAppNode ${coreId} (${coreUpdateData.versionId})`,
+      coreUpdateData
+    );
   } catch (e) {
     console.error(`Error on checkCoreUpdate: ${e.stack}`);
   }
