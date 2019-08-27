@@ -8,24 +8,24 @@ import SubTitle from "components/SubTitle";
 import Columns from "components/Columns";
 import Button from "components/Button";
 
-function RebootHost() {
+function PowerManagment() {
   function reboot() {
     confirm({
       title: `Rebooting host`,
-      text: `Are you sure you want to reboot the host? Only do this action if it's stricly necessary.`,
+      text: `Are you sure you want to reboot the host machine? Only do this if it’s strictly necessary.`,
       label: "Reboot",
       onClick: () => api.rebootHost({}, { toastMessage: `Rebooting host...` }),
       variant: "danger"
     });
   }
 
-  async function shutdown() {
+  async function powerOff() {
     // Since there are two consecutive modals, the async form must be used
     await new Promise(resolve =>
       confirm({
-        title: `Shuting down host`,
-        text: `WARNING! You will not be able to turn back on your DAppNode from the admin UI, you will have to manually (or physically) start it again. Only do this action if it's stricly necessary, or you know what you are doing.`,
-        label: "Shutdown",
+        title: `Powering off host`,
+        text: `WARNING! Your machine will power off and you will not be able to turn it back on without physical access or a remote way to switch on the power.`,
+        label: "Power off",
         onClick: resolve,
         variant: "danger"
       })
@@ -34,27 +34,27 @@ function RebootHost() {
     await new Promise(resolve =>
       confirm({
         title: `Are you sure?`,
-        text: `You will not be able to turn back on your DAppNode from the admin UI.`,
-        label: "I am sure, shutdown",
+        text: `Please make sure you have a way of turning the host machine’s power back on.`,
+        label: "I am sure, power off",
         onClick: resolve,
         variant: "danger"
       })
     );
 
-    await api.poweroffHost({}, { toastMessage: `Shutting down host...` });
+    await api.poweroffHost({}, { toastMessage: `Powering off down host...` });
   }
 
   return (
     <>
-      <SubTitle>Reboot host</SubTitle>
+      <SubTitle>Power management</SubTitle>
       <Card className="backup">
         {/* Get backup */}
         <Columns>
           <div>
             <div className="subtle-header">REBOOT HOST</div>
             <p>
-              Only use this functionality if it's stricly necessary and the last
-              resource to solve a problem.
+              Only use this functionality as last resort and when all other
+              troubleshooting options have been exhausted.
             </p>
             <Button
               onClick={reboot}
@@ -67,17 +67,17 @@ function RebootHost() {
 
           {/* Restore backup */}
           <div>
-            <div className="subtle-header">SHUTDOWN HOST</div>
+            <div className="subtle-header">POWER OFF HOST</div>
             <p>
-              You will not be able to start your DAppNode from the admin UI, you
-              will have to do it manually.
+              Your machine will power off and you will not be able to access the
+              Admin UI until you turn it back on.
             </p>
             <Button
-              onClick={shutdown}
+              onClick={powerOff}
               // disabled={isOnProgress}
               variant="outline-danger"
             >
-              Shutdown
+              Power off
             </Button>
           </div>
         </Columns>
@@ -86,4 +86,4 @@ function RebootHost() {
   );
 }
 
-export default RebootHost;
+export default PowerManagment;

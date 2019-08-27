@@ -4,7 +4,7 @@ import { title } from "../data";
 import StaticIp from "./StaticIp";
 import AutoUpdates from "./AutoUpdates";
 import ChangeHostUserPassword from "./ChangeHostUserPassword";
-import RebootHost from "./RebootHost";
+import PowerManagment from "./PowerManagment";
 import Title from "components/Title";
 
 const SystemHome = () => (
@@ -13,7 +13,7 @@ const SystemHome = () => (
     <ChangeHostUserPassword />
     <AutoUpdates />
     <StaticIp />
-    <RebootHost />
+    <PowerManagment />
   </>
 );
 
