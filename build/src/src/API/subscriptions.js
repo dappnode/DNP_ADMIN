@@ -13,7 +13,7 @@ import {
   clearIsInstallingLogsById,
   updateIsInstallingLog
 } from "services/isInstallingLogs/actions";
-import { updateAutoUpdateRegistry } from "services/dappnodeStatus/actions";
+import { updateAutoUpdateData } from "services/dappnodeStatus/actions";
 
 export default function subscriptions(session) {
   /**
@@ -41,23 +41,38 @@ export default function subscriptions(session) {
   }
 
   /**
-   * @param {object} autoUpdateRegistry = {
-   *   "system-packages": [
-   *     { version: "0.2.4", timestamp: 1563304834738 }
-   *     { version: "0.2.5", timestamp: 1563371560487 }
-   *   ]
-   *   "bitcoin.dnp.dappnode.eth": [
-   *     { version: "0.1.1", timestamp: 1563304834738 }
-   *     { version: "0.1.2", timestamp: 1563371560487 }
-   *   ]
+   * @param {object} autoUpdateData = {
+   *   settings: {
+   *     "system-packages": { enabled: true }
+   *     "my-packages": { enabled: true }
+   *     "bitcoin.dnp.dappnode.eth": { enabled: false }
+   *   },
+   *   registry: { "core.dnp.dappnode.eth": {
+   *     "0.2.4": { updated: 1563304834738, successful: true },
+   *     "0.2.5": { updated: 1563304834738, successful: false }
+   *   }, ... },
+   *   pending: { "core.dnp.dappnode.eth": {
+   *     version: "0.2.4",
+   *     firstSeen: 1563218436285,
+   *     scheduledUpdate: 1563304834738,
+   *     completedDelay: true
+   *   }, ... },
+   *   dnpsToShow: [{
+   *     id: "system-packages",
+   *     displayName: "System packages",
+   *     enabled: true,
+   *     feedback: {
+   *       updated: 15363818244,
+   *       manuallyUpdated: true,
+   *       inQueue: true,
+   *       scheduled: 15363818244
+   *     }
+   *   }, ... ]
    * }
    */
-  subscribe(
-    "autoUpdateRegistry.dappmanager.dnp.dappnode.eth",
-    autoUpdateRegistry => {
-      store.dispatch(updateAutoUpdateRegistry(autoUpdateRegistry));
-    }
-  );
+  subscribe("autoUpdateData.dappmanager.dnp.dappnode.eth", autoUpdateData => {
+    store.dispatch(updateAutoUpdateData(autoUpdateData));
+  });
 
   /**
    * @param {object} userActionLog = {

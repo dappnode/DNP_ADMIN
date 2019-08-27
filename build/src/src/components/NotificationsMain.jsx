@@ -1,20 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 // Selectors
 import {
   getCoreUpdateAvailable,
+  getIsCoreUpdateTypePatch,
   getUpdatingCore
 } from "services/coreUpdate/selectors";
 import { getAreWifiCredentialsDefault } from "services/dnpInstalled/selectors";
 import {
   getIsWifiRunning,
-  getPasswordIsInsecure
+  getPasswordIsInsecure,
+  getIsCoreAutoUpdateActive
 } from "services/dappnodeStatus/selectors";
 import { rootPath as systemRootPath, updatePath } from "pages/system/data";
 import { rootPath as packagesRootPath } from "pages/packages/data";
+import Alert from "react-bootstrap/Alert";
+import Button from "components/Button";
+// Style
+import "./notificationsMain.scss";
+
+function AlertDismissible({ body, linkText, linkPath }) {
+  const [show, setShow] = useState(true);
+  return show ? (
+    <Alert
+      variant="warning"
+      onClose={() => setShow(false)}
+      dismissible
+      className="main-notification"
+    >
+      {/* <Alert.Heading>Oh snap! You got an error!</Alert.Heading> */}
+      <ReactMarkdown source={body} />
+      <NavLink to={linkPath}>
+        <Button variant={"warning"}>{linkText}</Button>
+      </NavLink>
+    </Alert>
+  ) : null;
+}
 
 /**
  * Aggregate notification and display logic
@@ -22,6 +46,8 @@ import { rootPath as packagesRootPath } from "pages/packages/data";
 const NotificationsView = ({
   coreUpdateAvailable,
   updatingCore,
+  isCoreUpdateTypePatch,
+  isCoreAutoUpdateActive,
   areWifiCredentialsDefault,
   isWifiRunning,
   passwordIsInsecure
@@ -37,7 +63,11 @@ const NotificationsView = ({
       linkPath: systemRootPath + "/" + updatePath,
       body:
         "**DAppNode system update available.** Click **Update** to review and approve it",
-      active: coreUpdateAvailable && !updatingCore
+      active:
+        coreUpdateAvailable &&
+        !updatingCore &&
+        // Show if NOT patch, or if patch is must not be active
+        (!isCoreUpdateTypePatch || !isCoreAutoUpdateActive)
     },
     /**
      * [WIFI-PASSWORD]
@@ -70,31 +100,7 @@ const NotificationsView = ({
       {notifications
         .filter(({ active }) => active)
         .map(({ id, linkText, linkPath, body }) => (
-          <div
-            id={id}
-            key={id}
-            className="alert alert-warning alert-dismissible show"
-            role="alert"
-          >
-            <Link
-              className="btn btn-warning float-right"
-              style={{ marginLeft: "0.5rem" }}
-              to={linkPath}
-            >
-              {linkText}
-            </Link>
-
-            <ReactMarkdown source={body} />
-
-            <button
-              type="button"
-              className="close"
-              data-dismiss="alert"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
+          <AlertDismissible key={id} {...{ linkText, linkPath, body }} />
         ))}
     </div>
   );
@@ -103,6 +109,8 @@ const NotificationsView = ({
 const mapStateToProps = createStructuredSelector({
   coreUpdateAvailable: getCoreUpdateAvailable,
   updatingCore: getUpdatingCore,
+  isCoreUpdateTypePatch: getIsCoreUpdateTypePatch,
+  isCoreAutoUpdateActive: getIsCoreAutoUpdateActive,
   areWifiCredentialsDefault: getAreWifiCredentialsDefault,
   isWifiRunning: getIsWifiRunning,
   passwordIsInsecure: getPasswordIsInsecure

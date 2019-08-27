@@ -33,12 +33,12 @@ const SystemUpdateDetails = ({
   /* If no deps, don't show the card */
   if (!coreDeps.length) return null;
 
-  const { changelog } = coreManifest || {};
+  const { changelog, version } = coreManifest || {};
 
   return (
     <Card className="system-update-grid">
       <div>
-        <div className="section-card-subtitle">Core {coreManifest.version}</div>
+        <div className="section-card-subtitle">Core {version}</div>
         {changelog && (
           <ReactMarkdown className="no-p-style" source={changelog} />
         )}

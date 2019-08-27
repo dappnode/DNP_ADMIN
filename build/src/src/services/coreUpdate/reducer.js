@@ -1,42 +1,47 @@
 import * as t from "./actionTypes";
 import { assertAction } from "utils/redux";
-import * as schemas from "schemas";
 import Joi from "joi";
 
 // Service > coreUpdate
 
 /**
- * @param {object} coreDeps = {
- *   "depName.dnp.dappnode.eth": <manifest object>
+ * @param {object} coreUpdateData = {
+ *   available: true {bool},
+ *   type: "minor",
+ *   packages: [
+ *     {
+ *       name: "core.dnp.dappnode.eth",
+ *       from: "0.2.5",
+ *       to: "0.2.6",
+ *       manifest: {}
+ *     },
+ *     {
+ *       name: "admin.dnp.dappnode.eth",
+ *       from: "0.2.2",
+ *       to: "0.2.3",
+ *       manifest: {}
+ *     }
+ *   ],
+ *   changelog: "Changelog text",
+ *   updateAlerts: [{ message: "Specific update alert"}, ... ],
+ *   versionId: "admin@0.2.6,core@0.2.8"
  * }
  */
 const initialState = {
-  coreDeps: {},
-  coreManifest: null,
+  coreUpdateData: {},
   updatingCore: false
 };
 
 export default function(state = initialState, action) {
   const assertActionSchema = obj => assertAction(action, Joi.object(obj));
   switch (action.type) {
-    case t.UPDATE_CORE_DEPS:
+    case t.UPDATE_CORE_UPDATE_DATA:
       assertActionSchema({
-        coreDeps: Joi.object({})
-          .pattern(/.*/, Joi.object().required())
-          .required()
+        coreUpdateData: Joi.object().required()
       });
       return {
         ...state,
-        coreDeps: action.coreDeps
-      };
-
-    case t.UPDATE_CORE_MANIFEST:
-      assertActionSchema({
-        coreManifest: schemas.manifest.required()
-      });
-      return {
-        ...state,
-        coreManifest: action.coreManifest
+        coreUpdateData: action.coreUpdateData
       };
 
     case t.UPDATE_UPDATING_CORE:

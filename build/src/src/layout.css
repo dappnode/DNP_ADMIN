@@ -232,4 +232,5 @@ body,
   padding: 5em 1em;
   text-align: center;
   background-color: var(--color-background);
+  min-height: 100vh;
 }

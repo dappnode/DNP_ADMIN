@@ -23,10 +23,10 @@
     minmax(1.65rem, min-content)
     minmax(4rem, max-content)
     minmax(4rem, auto)
-    minmax(min-content, max-content);
+    min-content;
 
   .header {
-    opacity: 0.6;
+    color: #8c8c8c;
   }
 
   .stateBadge {
@@ -35,6 +35,9 @@
     overflow-wrap: normal;
   }
 
+  .name {
+    display: flex;
+  }
   .name span {
     margin-right: 0.5rem;
     font-weight: 800;
@@ -43,7 +46,24 @@
 
   .last-update {
     justify-self: right;
-    opacity: 0.6;
+    color: #8c8c8c;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    .error {
+      color: #ce4545;
+      font-size: 80%;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .extra-info {
+    grid-column: 1 / -1;
+    color: #ce4545;
+    font-size: 90%;
   }
 
   @media screen and (max-width: 40rem) {
@@ -54,6 +74,10 @@
     grid-template-columns:
       minmax(4rem, auto)
       minmax(min-content, max-content);
+
+    .extra-info {
+      display: none;
+    }
   }
 }
 
@@ -61,7 +85,7 @@
   margin-top: var(--default-spacing);
   label {
     transition: opacity ease 0.1s;
-    opacity: 0.6;
+    color: #8c8c8c;
   }
   &:hover label {
     opacity: 1;
