@@ -203,7 +203,7 @@ function Ports({ dnp, loading, hostPortMapping }) {
         content={[
           ...ports.map(({ host, container, protocol, deletable }, i) => [
             {
-              placeholder: "ephemeral port (32768-65535)",
+              placeholder: "Ephemeral port if unspecified",
               value: host || "",
               onValueChange: value => editPort(i, { host: value })
             },
