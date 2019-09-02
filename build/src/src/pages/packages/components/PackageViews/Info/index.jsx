@@ -5,9 +5,9 @@ import SubTitle from "components/SubTitle";
 import ReadMoreMarkdown from "components/ReadMoreMarkdown";
 // This
 import Links from "./Links";
-import Ports from "./Ports";
 import Vols from "./Vols";
 import StateBadge from "../StateBadge";
+import "./info.scss";
 
 function Info({ dnp }) {
   if (!dnp) return null;
@@ -33,10 +33,12 @@ function Info({ dnp }) {
           {origin || ""}
         </div>
 
-        <div className="dnp-details-list">
-          <Links dnp={dnp} />
-          <Ports dnp={dnp} />
+        <div>
           <Vols dnp={dnp} />
+        </div>
+
+        <div>
+          <Links dnp={dnp} />
         </div>
       </Card>
     </>

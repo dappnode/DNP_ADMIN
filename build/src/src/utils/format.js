@@ -49,3 +49,26 @@ export function shortAuthor(author) {
 export function isDnpVerified(name) {
   return stringEndsWith(name, "dnp.dappnode.eth");
 }
+
+/**
+ * Formats nicely a docker volume name
+ *
+ * @param {string} volName "dncore_ethchaindnpdappnodeeth_data"
+ * @param {string} dnpName "vipnode.dnp.dappnode.eth"
+ */
+export function prettyVolumeName(volName, dnpName) {
+  if (!volName || !dnpName) return volName;
+
+  const coreDnpString = "dnpdappnodeeth_";
+  const coreString = "dncore_";
+  // "nginx-proxy.dnp.dappnode.eth" => "nginxproxydnpdappnodeeth"
+  const dnpNameOnVolume = dnpName.replace(/[^0-9a-z]/gi, "");
+  if (volName.includes(dnpNameOnVolume)) {
+    const prettyVolName = volName.split(`${dnpNameOnVolume}_`)[1];
+    return capitalize(prettyVolName);
+  } else if (volName.includes(coreDnpString) && volName.includes(coreString)) {
+    const [leadingString, prettyVolName] = volName.split(coreDnpString);
+    const volOwner = leadingString.split(coreString)[1];
+    return `${capitalize(volOwner)} - ${capitalize(prettyVolName)}`;
+  } else return volName;
+}
