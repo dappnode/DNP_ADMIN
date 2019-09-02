@@ -33,15 +33,6 @@ function Ports({ dnp, loading, hostPortMapping }) {
     setPorts(getPortsFromDnp(dnp));
   }, [dnp]);
 
-  const unMappedPorts = (dnp.ports || [])
-    .filter(({ host }) => !host)
-    .filter(
-      ({ container, protocol }) =>
-        !ports.find(
-          port => port.container === container && port.protocol === protocol
-        )
-    );
-
   async function onUpdateEnvsSubmit() {
     const id = dnp.name;
     try {
@@ -255,29 +246,6 @@ function Ports({ dnp, loading, hostPortMapping }) {
           <MdAdd />
         </Button>
       </div>
-
-      {unMappedPorts.length > 0 && (
-        <>
-          <hr />
-          <div className="unmapped-ports">
-            <p className="text">
-              Active package ports not exposed to the host. Click to expose
-              them.
-            </p>
-            <div className="buttons">
-              {unMappedPorts.map(({ container, protocol }) => (
-                <Button
-                  key={container + protocol}
-                  variant={"outline-secondary"}
-                  onClick={() => addNewPort({ container, protocol })}
-                >
-                  {container}/{protocol}
-                </Button>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
     </Card>
   );
 }
