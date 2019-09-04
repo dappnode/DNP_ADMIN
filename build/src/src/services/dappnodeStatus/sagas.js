@@ -128,13 +128,27 @@ const checkWifiStatus = wrapErrorsAndLoading(
 
 /**
  * Check if the SSH password is secure
- * `[Warning] No interface found. Entering sleep mode.`
  */
 const checkIfPasswordIsInsecure = wrapErrorsAndLoading(
   loadingIds.passwordIsInsecure,
   function*() {
     const passwordIsSecure = yield call(api.passwordIsSecure);
     yield put(a.updatePasswordIsInsecure(!passwordIsSecure));
+  }
+);
+
+/**
+ * Get the auto-update data:
+ * - settings
+ * - registry
+ * - pending
+ */
+const fetchAutoUpdateData = wrapErrorsAndLoading(
+  loadingIds.autoUpdateData,
+  function*() {
+    // If there are no settings the return will be null
+    const autoUpdateData = yield call(api.autoUpdateDataGet);
+    yield put(a.updateAutoUpdateData(autoUpdateData) || {});
   }
 );
 
@@ -151,7 +165,8 @@ function* fetchAllDappnodeStatus() {
       call(getDnpsVersionData),
       call(checkIpfsConnectionStatus),
       call(checkWifiStatus),
-      call(checkIfPasswordIsInsecure)
+      call(checkIfPasswordIsInsecure),
+      call(fetchAutoUpdateData)
     ]);
   } catch (e) {
     console.error(`Error on fetchAllDappnodeStatus: ${e.stack}`);

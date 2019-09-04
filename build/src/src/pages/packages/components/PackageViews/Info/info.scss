@@ -1,0 +1,20 @@
+.links-icon {
+  font-size: 1.2rem;
+  position: relative;
+  top: 3px;
+  margin-right: 4px;
+  color: var(--dappnode-color);
+}
+
+.links-url {
+  text-transform: capitalize;
+}
+
+.api-link-box {
+  border: var(--border-style);
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-left: 0.75rem;
+  font-family: monospace;
+  background-color: var(--color-background);
+}

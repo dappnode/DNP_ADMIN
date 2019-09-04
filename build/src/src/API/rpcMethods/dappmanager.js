@@ -18,6 +18,54 @@ export default {
   ping: {},
 
   /**
+   * Returns a auto-update data:
+   * - settings: If auto-updates are enabled for a specific DNP or DNPs
+   * - registry: List of executed auto-updates
+   * - pending: Pending auto-update per DNP, can be already executed
+   * - dnpsToShow: Parsed data to be shown in the UI
+   *
+   * @returns {object} result = {
+   *   settings: {
+   *     "system-packages": { enabled: true }
+   *     "my-packages": { enabled: true }
+   *     "bitcoin.dnp.dappnode.eth": { enabled: false }
+   *   },
+   *   registry: { "core.dnp.dappnode.eth": {
+   *     "0.2.4": { updated: 1563304834738, successful: true },
+   *     "0.2.5": { updated: 1563304834738, successful: false }
+   *   }, ... },
+   *   pending: { "core.dnp.dappnode.eth": {
+   *     version: "0.2.4",
+   *     firstSeen: 1563218436285,
+   *     scheduledUpdate: 1563304834738,
+   *     completedDelay: true
+   *   }, ... },
+   *   dnpsToShow: [{
+   *     id: "system-packages",
+   *     displayName: "System packages",
+   *     enabled: true,
+   *     feedback: {
+   *       updated: 15363818244,
+   *       manuallyUpdated: true,
+   *       inQueue: true,
+   *       scheduled: 15363818244
+   *     }
+   *   }, ... ]
+   * }
+   */
+  autoUpdateDataGet: {},
+
+  /**
+   * Edits the auto-update settings
+   *
+   * @param {string} id = "my-packages", "system-packages" or "bitcoin.dnp.dappnode.eth"
+   * @param {bool} enabled Auto update is enabled for ID
+   */
+  autoUpdateSettingsEdit: {
+    mandatoryKwargs: ["id", "enabled"]
+  },
+
+  /**
    * Does a backup of a DNP and sends it to the client for download.
    *
    * @param {string} id DNP .eth name
@@ -137,6 +185,33 @@ export default {
   diskSpaceAvailable: {
     mandatoryKwargs: ["path"]
   },
+
+  /**
+   * Fetches the core update data, if available
+   *
+   * @returns {object} result = {
+   *   available: true {bool},
+   *   type: "minor",
+   *   packages: [
+   *     {
+   *       name: "core.dnp.dappnode.eth",
+   *       from: "0.2.5",
+   *       to: "0.2.6",
+   *       manifest: {}
+   *     },
+   *     {
+   *       name: "admin.dnp.dappnode.eth",
+   *       from: "0.2.2",
+   *       to: "0.2.3",
+   *       manifest: {}
+   *     }
+   *   ],
+   *   changelog: "Changelog text",
+   *   updateAlerts: [{ message: "Specific update alert"}, ... ],
+   *   versionId: "admin@0.2.6,core@0.2.8"
+   * }
+   */
+  fetchCoreUpdateData: {},
 
   /**
    * [fetchDirectory]
@@ -299,9 +374,9 @@ export default {
    *   name: "admin.dnp.dappnode.eth", {string}
    *   shortName: "admin", {string}
    *   ports: [{
-   *     PrivatePort: 2222, {number}
-   *     PublicPort: 3333, {number}
-   *     Type: "tcp" {string}
+   *     host: 2222, {number}
+   *     container: 3333, {number}
+   *     protocol: "TCP" {string}
    *   }, ... ], {array}
    *   volumes: [{
    *     type: "bind", {string}
@@ -419,6 +494,16 @@ export default {
   passwordIsSecure: {},
 
   /**
+   * Instruct the host to poweroff
+   */
+  poweroffHost: {},
+
+  /**
+   * Instruct the host to reboot
+   */
+  rebootHost: {},
+
+  /**
    * [removePackage]
    * Remove package data: docker down + disk files
    *
@@ -499,5 +584,19 @@ export default {
    */
   updatePackageEnv: {
     mandatoryKwargs: ["id", "envs", "restart"]
+  },
+
+  /**
+   * Updates the .env file of a package. If requested, also re-ups it
+   *
+   * @param {string} id DNP .eth name
+   * @param {array} portMappings [
+   *   { host: 30444, container: 30303, protocol: "UDP" },
+   *   { host: 4000, container: 4000, protocol: "TCP" }
+   * ]
+   * #### !!!!! NOTE take into account existing ephemeral ports
+   */
+  updatePortMappings: {
+    mandatoryKwargs: ["id", "portMappings"]
   }
 };

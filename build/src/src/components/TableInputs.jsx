@@ -1,7 +1,10 @@
 import React from "react";
 import Input from "components/Input";
+import Select from "components/Select";
+import Button from "components/Button";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { MdClose } from "react-icons/md";
 
 /**
  * Note to self:
@@ -13,14 +16,13 @@ import PropTypes from "prop-types";
 const TableXN = styled.div`
   display: grid;
   grid-gap: 1em;
-  grid-template-columns: auto auto;
 `;
 const Header = styled.h6`
-  opacity: 0.5;
+  color: var(--light-text-color);
   margin-bottom: 0;
 `;
 
-function TableInputs({ headers, content }) {
+function TableInputs({ headers, content, numOfRows = 2, rowsTemplate }) {
   if (!Array.isArray(headers)) {
     console.error("headers must be an array");
     return null;
@@ -37,12 +39,35 @@ function TableInputs({ headers, content }) {
   });
 
   return (
-    <TableXN>
+    <TableXN
+      style={{ gridTemplateColumns: rowsTemplate || "auto ".repeat(numOfRows) }}
+    >
       {headers.map((header, i) => (
         <Header key={i}>{header}</Header>
       ))}
       {content.map((row, i) =>
-        row.map((col, j) => <Input key={`${i}${j}`} {...col} />)
+        row.map((col, j) =>
+          col.empty ? (
+            <div key={`${i}${j}`} />
+          ) : col.deleteButton ? (
+            <Button
+              key={`${i}${j}`}
+              onClick={col.onClick}
+              style={{
+                display: "flex",
+                fontSize: "1.5rem",
+                padding: ".375rem",
+                borderColor: "#ced4da"
+              }}
+            >
+              <MdClose />
+            </Button>
+          ) : col.select ? (
+            <Select key={`${i}${j}`} {...col} />
+          ) : (
+            <Input key={`${i}${j}`} {...col} />
+          )
+        )
       )}
     </TableXN>
   );

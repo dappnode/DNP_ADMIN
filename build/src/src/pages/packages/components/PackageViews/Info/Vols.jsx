@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import DataList from "./DataList";
-import Soft from "./Soft";
+import { Soft } from "./Soft";
+import { prettyVolumeName } from "utils/format";
 
 function Vols({ dnp }) {
   const { volumes = [] } = dnp;
@@ -15,11 +16,13 @@ function Vols({ dnp }) {
       data={(volumes || [])
         // Order volumes before bind mounts
         .sort(v1 => (v1.type === "volume" ? -1 : 1))
+        // Order volumes with a bigger size first
+        .sort(v1 => ((v1.name || "").includes("data") ? -1 : 0))
         // Display style:
         // - dncore_vpndnpdappnodeeth_data: 866B
         // - /etc/hostname: - (bind)
         .map(({ name, path, size, type }) => ({
-          name: name || path || "unknown",
+          name: name ? prettyVolumeName(name, dnp.name) : path || "Unknown",
           size: size || (type === "bind" ? "(bind)" : "unknown")
         }))
         .map(({ name, size }) => (

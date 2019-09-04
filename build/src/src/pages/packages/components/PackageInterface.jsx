@@ -11,6 +11,7 @@ import Info from "./PackageViews/Info";
 import DnpSpecific, { dnpSpecificList } from "./PackageViews/DnpSpecific";
 import Logs from "./PackageViews/Logs";
 import Config from "./PackageViews/Config";
+import Ports from "./PackageViews/Ports";
 import FileManager from "./PackageViews/FileManager";
 import Backup from "./PackageViews/Backup";
 import Controls from "./PackageViews/Controls";
@@ -70,6 +71,12 @@ const PackageInterface = ({
       subPath: "config",
       render: () => <Config dnp={dnp} />,
       available: Object.keys(dnp.envs || {}).length
+    },
+    {
+      name: "Ports",
+      subPath: "ports",
+      render: () => <Ports dnp={dnp} />,
+      available: dnp.name !== "dappmanager.dnp.dappnode.eth"
     },
     {
       name: "Logs",

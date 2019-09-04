@@ -8,14 +8,9 @@ export const updateCore = () => ({
   type: t.UPDATE_CORE
 });
 
-export const updateCoreManifest = coreManifest => ({
-  type: t.UPDATE_CORE_MANIFEST,
-  coreManifest
-});
-
-export const updateCoreDeps = coreDeps => ({
-  type: t.UPDATE_CORE_DEPS,
-  coreDeps
+export const updateCoreUpdateData = coreUpdateData => ({
+  type: t.UPDATE_CORE_UPDATE_DATA,
+  coreUpdateData
 });
 
 export const updateUpdatingCore = updatingCore => ({

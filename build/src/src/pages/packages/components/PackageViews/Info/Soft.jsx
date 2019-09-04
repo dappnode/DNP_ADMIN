@@ -4,4 +4,9 @@ const Soft = styled.span`
   opacity: 0.5;
 `;
 
-export default Soft;
+const SoftCapitalized = styled.span`
+  text-transform: capitalize;
+  opacity: 0.5;
+`;
+
+export { Soft, SoftCapitalized };

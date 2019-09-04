@@ -1,4 +1,4 @@
-import { mountPoint } from "./data";
+import { mountPoint, autoUpdateIds } from "./data";
 import { createSelector } from "reselect";
 import createSelectorSubProp from "utils/createSelectorSubProp";
 import { cleanObj } from "utils/objects";
@@ -10,15 +10,7 @@ export const getLocal = createSelector(
   local => local
 );
 
-// ip: '85.84.83.82',
-// name: 'My-DAppNode',
-// staticIp: '85.84.83.82', (Optional)
-// domain: '1234acbd.dyndns.io (Optional)
-// upnpAvailable: true / false,
-// noNatLoopback: true / false,
-// alertToOpenPorts: true / false,
-// internalIp: 192.168.0.1,
-
+// Sub-local properties
 export const getDappnodeParams = createSelectorSubProp(getLocal, "params");
 export const getDappnodeStats = createSelectorSubProp(getLocal, "stats");
 export const getDappnodeDiagnose = createSelectorSubProp(getLocal, "diagnose");
@@ -33,7 +25,12 @@ export const getPasswordIsInsecure = createSelectorSubProp(
   getLocal,
   "passwordIsInsecure"
 );
+export const getAutoUpdateData = createSelectorSubProp(
+  getLocal,
+  "autoUpdateData"
+);
 
+// Sub-sub local properties
 export const getDappmanagerVersionData = createSelectorSubProp(
   getVersionData,
   "dappmanager"
@@ -77,4 +74,11 @@ export const getUpnpAvailable = createSelector(
 export const getIsWifiRunning = createSelector(
   getWifiStatus,
   wifiStatus => wifiStatus.running
+);
+
+export const getIsCoreAutoUpdateActive = createSelector(
+  getAutoUpdateData,
+  autoUpdateData =>
+    ((autoUpdateData.settings || {})[autoUpdateIds.SYSTEM_PACKAGES] || {})
+      .enabled
 );

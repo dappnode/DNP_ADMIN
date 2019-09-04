@@ -17,27 +17,41 @@ import { mountPoint as userActionLogsMountPoint } from "services/userActionLogs/
  */
 
 const manifestLn = {
-  name: "ln.dnp.dappnode.eth",
-  version: "0.1.1",
+  name: "lightning-network.dnp.dappnode.eth",
+  version: "0.0.3",
+  upstreamVersion: "0.6.1-beta",
+  shortDescription: "Scalable, instant Bitcoin/Blockchain transactions",
   description:
-    "The Lightning Network DAppNodePackage (lnd + lncli-web).The Lightning Network is a decentralized system for instant, high-volume micropayments that removes the risk of delegating custody of funds to trusted third parties.",
+    "The Lightning Network DAppNodePackage (lnd + RTL). The Lightning Network is a decentralized system for instant, high-volume micropayments that removes the risk of delegating custody of funds to trusted third parties.",
   avatar: "/ipfs/QmVrjV1ANxjYVqRJzycYKcCUAH8nU337UsMVir1CnZYNa8",
   type: "service",
   image: {
-    path: "ln.dnp.dappnode.eth_0.1.1.tar.xz",
-    hash: "/ipfs/QmdKxt6qoFbSSWGYqD44raEZzU62tcXnq3Hs33vCz4Zjqs",
-    size: 51448118,
+    path: "",
+    hash: "",
+    size: "",
     ports: ["9735:9735"],
     volumes: ["lndconfig_data:/root/.lnd/"],
+    restart: "always",
     environment: [
+      "RTL_PASSWORD=changeme",
       "RPCUSER=dappnode",
       "RPCPASS=dappnode",
       "BITCOIND_HOST=my.bitcoin.dnp.dappnode.eth",
       "NETWORK=mainnet",
-      "SET_SERVERHOST=0.0.0.0",
       "ALIAS=",
+      "COLOR=#5ACDC5",
       "EXT_IP="
     ]
+  },
+  backup: [
+    {
+      name: "data",
+      path: "/root/.lnd/data"
+    }
+  ],
+  style: {
+    featuredBackground: "linear-gradient(67deg, #090909, #2f1354)",
+    featuredColor: "#eee"
   },
   author:
     "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
@@ -45,10 +59,13 @@ const manifestLn = {
     "Abel Boldú (@vdo)",
     "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
   ],
+  categories: ["Payment channels", "Economic incentive"],
   keywords: ["bitcoin", "btc", "lightning network", "lnd"],
-  homepage: {
+  links: {
     homepage:
-      "https://github.com/dappnode/DAppNodePackage-LightningNetwork#readme"
+      "https://github.com/dappnode/DAppNodePackage-LightningNetwork#readme",
+    ui: "http://lightning-network.dappnode",
+    api: "http://lightning-network.dappnode:8080"
   },
   repository: {
     type: "git",
@@ -56,6 +73,10 @@ const manifestLn = {
   },
   bugs: {
     url: "https://github.com/dappnode/DAppNodePackage-LightningNetwork/issues"
+  },
+  disclaimer: {
+    message:
+      "This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package.\n\nThis package stores private keys, which will be stored in your DAppNode. Neither DAppNode Association nor the developers of this software can have access to your private key, nor help you recover it if you lose it. \n\nYou are solely responsible for keeping your private keys and password safe and to perform secure backups, as well as to restrict access to your computer and other equipment. To the extent permitted by applicable law, you agree to be responsible for all activities that have been conducted from your account. You must take all necessary steps to ensure that your private key, password, and/or recovery phrase remain confidential and secured."
   },
   license: "GPL-3.0",
   dependencies: {
@@ -88,8 +109,10 @@ const manifestVipnode = {
 const manifestRaiden = {
   name: "raiden.dnp.dappnode.eth",
   version: "0.0.1",
+  upstreamVersion: "0.100.3",
+  shortDescription: "Fast, cheap, scalable token transfers for Ethereum",
   description:
-    "The Raiden Network is an off-chain scaling solution, enabling near-instant, low-fee and scalable payments.",
+    "The Raiden Network is an off-chain scaling solution, enabling near-instant, low-fee and scalable payments. It’s complementary to the Ethereum blockchain and works with any ERC20 compatible token. \n\n\n **Getting started** \n\n Once you have installed the Raiden DAppNode Package you **must** upload your own keystore. Go to this [getting started guide](https://github.com/dappnode/DAppNodePackage-raiden) to learn how to do so.  \n\n\n All set? Check out the [documentation and introductory guides](https://raiden-network.readthedocs.io/en/stable/#how-to-get-started) to quickly get started doing payments.",
   avatar: "/ipfs/QmaqgLyZXpETXYzhWcebNJnh6vPs4WqiCJbZY3EY1fXqer",
   type: "service",
   image: {
@@ -112,7 +135,7 @@ const manifestRaiden = {
   },
   backup: [{ name: "keystore", path: "/root/.raiden/keystore" }],
   style: {
-    featuredBackground: "linear-gradient(to right, #323131, #395353)",
+    featuredBackground: "linear-gradient(293deg, #000000, #313131)",
     featuredColor: "white",
     featuredAvatarFilter: "invert(1)"
   },
@@ -134,6 +157,54 @@ const manifestRaiden = {
       "This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package.\n\nThis package stores private keys, which will be stored in your DAppNode. Neither DAppNode Association nor the developers of this software can have access to your private key, nor help you recover it if you lose it. \n\nYou are solely responsible for keeping your private keys and password safe and to perform secure backups, as well as to restrict access to your computer and other equipment. To the extent permitted by applicable law, you agree to be responsible for all activities that have been conducted from your account. You must take all necessary steps to ensure that your private key, password, and recovery phrase remain confidential and secured. \n\nThis is an Alpha version of experimental open source software released as a test version under an MIT license and may contain errors and/or bugs. No guarantee or representations whatsoever is made regarding its suitability (or its use) for any purpose or regarding its compliance with any applicable laws and regulations. Use of the software is at your own risk and discretion and by using the software you acknowledge that you have read this disclaimer, understand its contents, assume all risk related thereto and hereby release, waive, discharge and covenant not to sue Brainbot Labs Establishment or any officers, employees or affiliates from and for any direct or indirect liability resulting from the use of the software as permissible by applicable laws and regulations.\n\nPrivacy Warning: Please be aware, that by using the Raiden Client, \namong others, your Ethereum address, channels, channel deposits, settlements and the Ethereum address of your channel counterparty will be stored on the Ethereum chain, i.e. on servers of Ethereum node operators and ergo are to a certain extent publicly available. The same might also be stored on systems of parties running Raiden nodes connected to the same token network. Data present in the Ethereum chain is very unlikely to be able to be changed, removed or deleted from the public arena.\n\nAlso be aware, that data on individual Raiden token transfers will be made available via the Matrix protocol to the recipient, intermediating nodes of a specific transfer as well as to the Matrix server operators."
   },
   license: "MIT License"
+};
+
+const manifestRaidenTestnet = {
+  name: "raiden-testnet.dnp.dappnode.eth",
+  version: "0.0.2",
+  description:
+    "The Raiden Network is an off-chain scaling solution, enabling near-instant, low-fee and scalable payments. It’s complementary to the Ethereum blockchain and works with any ERC20 compatible token. \n\n\n **Getting started** \n\n Once you have installed the Raiden DAppNode Package you **must** upload your own keystore. Go to this [getting started guide](https://github.com/dappnode/DAppNodePackage-raiden) to learn how to do so.  \n\n\n All set? Check out the [documentation and introductory guides](https://raiden-network.readthedocs.io/en/stable/#how-to-get-started) to quickly get started doing payments.",
+  avatar: "/ipfs/QmaqgLyZXpETXYzhWcebNJnh6vPs4WqiCJbZY3EY1fXqer",
+  type: "service",
+  image: {
+    path: "",
+    hash: "",
+    size: "",
+    restart: "always",
+    ports: [],
+    volumes: ["data:/root/.raiden"],
+    environment: [
+      "RAIDEN_ADDRESS=",
+      "RAIDEN_KEYSTORE_PASSWORD=",
+      "RAIDEN_ETH_RPC_ENDPOINT=http://goerli-geth.dappnode:8545",
+      "RAIDEN_NETWORK_ID=goerli",
+      "EXTRA_OPTS=--disable-debug-logfile"
+    ],
+    keywords: ["Raiden", "Ethereum", "Testnet", "Goerli"]
+  },
+  author:
+    "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
+  contributors: ["Abel Boldú (@vdo)", "Eduardo Antuña (@eduadiez)"],
+  homepage: {
+    WebApplication: "http://raiden-testnet.dappnode/",
+    homepage:
+      "https://github.com/dappnode/DAppNodePackage-raiden-testnet#readme"
+  },
+  repository: {
+    type: "git",
+    url: "http://github.com/dappnode/DAppNodePackage-raiden-testnet.git"
+  },
+  bugs: {
+    url: "https://github.com/dappnode/DAppNodePackage-raiden-testnet/issues"
+  },
+  license: "GPL-3.0",
+  dependencies: {
+    "goerli-geth.dnp.dappnode.eth": "latest"
+  },
+  disclaimer: {
+    message:
+      "This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package.\n\nThis package stores private keys, which will be stored in your DAppNode. Neither DAppNode Association nor the developers of this software can have access to your private key, nor help you recover it if you lose it. \n\nYou are solely responsible for keeping your private keys and password safe and to perform secure backups, as well as to restrict access to your computer and other equipment. To the extent permitted by applicable law, you agree to be responsible for all activities that have been conducted from your account. You must take all necessary steps to ensure that your private key, password, and recovery phrase remain confidential and secured. \n\nThis is an Alpha version of experimental open source software released as a test version under an MIT license and may contain errors and/or bugs. No guarantee or representations whatsoever is made regarding its suitability (or its use) for any purpose or regarding its compliance with any applicable laws and regulations. Use of the software is at your own risk and discretion and by using the software you acknowledge that you have read this disclaimer, understand its contents, assume all risk related thereto and hereby release, waive, discharge and covenant not to sue Brainbot Labs Establishment or any officers, employees or affiliates from and for any direct or indirect liability resulting from the use of the software as permissible by applicable laws and regulations.\n\nPrivacy Warning: Please be aware, that by using the Raiden Client, \namong others, your Ethereum address, channels, channel deposits, settlements and the Ethereum address of your channel counterparty will be stored on the Ethereum chain, i.e. on servers of Ethereum node operators and ergo are to a certain extent publicly available. The same might also be stored on systems of parties running Raiden nodes connected to the same token network. Data present in the Ethereum chain is very unlikely to be able to be changed, removed or deleted from the public arena.\n\nAlso be aware, that data on individual Raiden token transfers will be made available via the Matrix protocol to the recipient, intermediating nodes of a specific transfer as well as to the Matrix server operators."
+  }
 };
 
 const manifestBitcoin = {
@@ -220,7 +291,73 @@ export const mockState = {
     pingReturns: {},
     ipfsConnectionStatus: {},
     wifiStatus: { running: true },
-    passwordIsInsecure: true
+    passwordIsInsecure: true,
+    autoUpdateData: {
+      settings: {
+        "system-packages": { enabled: true },
+        "my-packages": { enabled: true },
+        "bitcoin.dnp.dappnode.eth": { enabled: false },
+        "ln.dnp.dappnode.eth": { enabled: true }
+      },
+      registry: {
+        "core.dnp.dappnode.eth": {
+          "0.2.4": { updated: 1563304834738, successful: true },
+          "0.2.5": { updated: 1563304834738, successful: false }
+        },
+        "bitcoin.dnp.dappnode.eth": {
+          "0.1.1": { updated: 1563304834738, successful: true },
+          "0.1.2": { updated: 1563304834738, successful: true }
+        },
+        "ln.dnp.dappnode.eth": {
+          "0.1.1": { updated: 1565284039677, successful: true }
+        }
+      },
+      pending: {
+        "core.dnp.dappnode.eth": {
+          version: "0.2.4",
+          firstSeen: 1563218436285,
+          scheduledUpdate: 1563304834738,
+          completedDelay: true
+        },
+        "bitcoin.dnp.dappnode.eth": {
+          version: "0.1.2",
+          firstSeen: 1563218436285,
+          scheduledUpdate: 1563304834738,
+          completedDelay: false
+        }
+      },
+
+      dnpsToShow: [
+        {
+          id: "system-packages",
+          displayName: "System packages",
+          enabled: true,
+          feedback: { scheduled: 1566645310441 }
+        },
+        {
+          id: "my-packages",
+          displayName: "My packages",
+          enabled: true,
+          feedback: {}
+        },
+        {
+          id: "bitcoin.dnp.dappnode.eth",
+          displayName: "Bitcoin",
+          enabled: false,
+          feedback: { updated: 1563304834738 }
+        },
+        {
+          id: "ln.dnp.dappnode.eth",
+          displayName: "LN",
+          enabled: true,
+          feedback: {
+            inQueue: true,
+            errorMessage:
+              "Error updating LN: Mainnet is still syncing. More lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
+          }
+        }
+      ]
+    }
   },
 
   /* devices */
@@ -240,16 +377,21 @@ export const mockState = {
     "ln.dnp.dappnode.eth": {
       name: "ln.dnp.dappnode.eth",
       whitelisted: true,
+      isFeatured: true,
       manifest: manifestLn,
       avatar: "https://i.ibb.co/Twjv2f3/ln.png"
     },
     "raiden.dnp.dappnode.eth": {
       name: "raiden.dnp.dappnode.eth",
       whitelisted: true,
-      isFeatured: true,
       manifest: manifestRaiden,
-      avatar:
-        "data:image/png;base64,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"
+      avatar: "https://i.ibb.co/Y0YzyrG/raiden300-min.png"
+    },
+    "raiden-testnet.dnp.dappnode.eth": {
+      name: "raiden-testnet.dnp.dappnode.eth",
+      whitelisted: true,
+      manifest: manifestRaidenTestnet,
+      avatar: "https://i.ibb.co/2ynnctD/raiden-testnet-300.png"
     },
     "vipnode.dnp.dappnode.eth": {
       name: "vipnode.dnp.dappnode.eth",
@@ -278,7 +420,18 @@ export const mockState = {
       isDnp: true,
       version: "0.1.0",
       state: "running",
-      ports: [],
+      ports: [
+        {
+          host: "30303",
+          container: "30303",
+          protocol: "TCP"
+        },
+        {
+          host: "30303",
+          container: "30303",
+          protocol: "UDP"
+        }
+      ],
       volumes: [
         {
           type: "volume",

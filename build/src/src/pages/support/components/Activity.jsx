@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { getUserActionLogs } from "services/userActionLogs/selectors";
 // Components
 import CardList from "components/CardList";
 // Utils
-import parseDate from "utils/parseDate";
+import { parseStaticDate } from "utils/dates";
 import { stringifyObjSafe } from "utils/objects";
 import { stringSplit } from "utils/strings";
 // Own module
@@ -20,6 +20,15 @@ function parseLevel(level) {
 }
 
 function Activity({ userActionLogs }) {
+  // Force a re-render every 15 seconds for the timeFrom to show up correctly
+  const [, setClock] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => setClock(n => n + 1), 15 * 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   function download() {
     var dataStr =
       "data:text/json;charset=utf-8," +
@@ -58,7 +67,7 @@ function ActivityItem({ log }) {
   const [collapsed, setCollapsed] = useState(true);
 
   const type = parseLevel(log.level);
-  const date = parseDate(log.timestamp);
+  const date = parseStaticDate(log.timestamp);
   const eventShort = stringSplit(log.event, ".")[0];
 
   return (

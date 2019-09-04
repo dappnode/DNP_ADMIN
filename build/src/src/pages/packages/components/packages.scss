@@ -112,15 +112,6 @@
   grid-gap: var(--default-spacing);
 }
 
-/* Details list */
-
-.dnp-details-list {
-  display: grid;
-  /* Must be auto-fill so when there's one card on big screens, it appears normal */
-  grid-template-columns: repeat(auto-fill, minmax(18em, 1fr));
-  grid-gap: 1rem;
-}
-
 /* Button file selectors */
 
 .backup {

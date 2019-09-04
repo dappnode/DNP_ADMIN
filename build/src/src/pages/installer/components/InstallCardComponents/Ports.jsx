@@ -34,7 +34,7 @@ function Ports({ ports, isInstalled, hideCardHeaders, updateUserSetPorts }) {
               content={values.map(({ id, ...port }) => [
                 {
                   disabled: isInstalled[dnpName],
-                  placeholder: "ephemeral port (32768-65535)",
+                  placeholder: "Ephemeral port if unspecified",
                   value: port.host || "",
                   onValueChange: value =>
                     updateUserSetPorts({ ...port, id, dnpName, host: value })

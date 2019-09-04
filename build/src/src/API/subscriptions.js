@@ -9,7 +9,11 @@ import { updateDevices } from "services/devices/actions";
 import { updateDnpDirectory } from "services/dnpDirectory/actions";
 import { updateDnpInstalled } from "services/dnpInstalled/actions";
 import { pushUserActionLog } from "services/userActionLogs/actions";
-import { updateIsInstallingLog } from "services/isInstallingLogs/actions";
+import {
+  clearIsInstallingLogsById,
+  updateIsInstallingLog
+} from "services/isInstallingLogs/actions";
+import { updateAutoUpdateData } from "services/dappnodeStatus/actions";
 
 export default function subscriptions(session) {
   /**
@@ -37,6 +41,40 @@ export default function subscriptions(session) {
   }
 
   /**
+   * @param {object} autoUpdateData = {
+   *   settings: {
+   *     "system-packages": { enabled: true }
+   *     "my-packages": { enabled: true }
+   *     "bitcoin.dnp.dappnode.eth": { enabled: false }
+   *   },
+   *   registry: { "core.dnp.dappnode.eth": {
+   *     "0.2.4": { updated: 1563304834738, successful: true },
+   *     "0.2.5": { updated: 1563304834738, successful: false }
+   *   }, ... },
+   *   pending: { "core.dnp.dappnode.eth": {
+   *     version: "0.2.4",
+   *     firstSeen: 1563218436285,
+   *     scheduledUpdate: 1563304834738,
+   *     completedDelay: true
+   *   }, ... },
+   *   dnpsToShow: [{
+   *     id: "system-packages",
+   *     displayName: "System packages",
+   *     enabled: true,
+   *     feedback: {
+   *       updated: 15363818244,
+   *       manuallyUpdated: true,
+   *       inQueue: true,
+   *       scheduled: 15363818244
+   *     }
+   *   }, ... ]
+   * }
+   */
+  subscribe("autoUpdateData.dappmanager.dnp.dappnode.eth", autoUpdateData => {
+    store.dispatch(updateAutoUpdateData(autoUpdateData));
+  });
+
+  /**
    * @param {object} userActionLog = {
    *   level: "info" | "error", {string}
    *   event: "installPackage.dnp.dappnode.eth", {string}
@@ -61,9 +99,13 @@ export default function subscriptions(session) {
    *   message: "Downloading 75%", {string} log message
    * }
    */
-  subscribe("log.dappmanager.dnp.dappnode.eth", ({ id, name, message }) => {
-    store.dispatch(updateIsInstallingLog({ id, dnpName: name, log: message }));
-  });
+  subscribe(
+    "log.dappmanager.dnp.dappnode.eth",
+    ({ id, name: dnpName, message: log, clear }) => {
+      if (clear) store.dispatch(clearIsInstallingLogsById(id));
+      else store.dispatch(updateIsInstallingLog({ id, dnpName, log }));
+    }
+  );
 
   /**
    * @param {array} dnpInstalled = res.result = [{

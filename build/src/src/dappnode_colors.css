@@ -16,6 +16,8 @@
   --success-color: var(--dappnode-strong-main-color);
   /* Shortcuts */
   --dappnode-color: var(--dappnode-strong-main-color);
+  /* Text colors */
+  --light-text-color: #727577;
 }
 
 .color-danger {

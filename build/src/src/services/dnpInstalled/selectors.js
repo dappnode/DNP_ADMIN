@@ -53,6 +53,30 @@ export const getAreWifiCredentialsDefault = createSelector(
   }
 );
 
+export const getHostPortMappings = createSelector(
+  getDnpInstalled,
+  dnps => {
+    const hostPortMappings = {};
+    for (const dnp of dnps)
+      for (const port of dnp.ports || [])
+        if (port.host)
+          hostPortMappings[`${port.host}/${port.protocol}`] = dnp.name;
+    return hostPortMappings;
+  }
+);
+
+export const getIsMainnetDnpNotRunning = createSelector(
+  getDnpInstalled,
+  dnps => {
+    if (!dnps.length) return false;
+    const mainnetDnp = dnps.find(
+      dnp => dnp.name === "ethchain.dnp.dappnode.eth"
+    );
+    if (!mainnetDnp) return true;
+    return !mainnetDnp.running;
+  }
+);
+
 /**
  * Regular selectors, called outside of a normal react-redux situation
  */
