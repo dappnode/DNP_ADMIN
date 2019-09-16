@@ -77,6 +77,29 @@ export const getIsMainnetDnpNotRunning = createSelector(
   }
 );
 
+const defaultClientEnvName = "DEFAULT_CLIENT";
+export const getEthchainClient = createSelector(
+  getDnpInstalled,
+  dnps => {
+    if (!dnps.length) return null;
+    const mainnetDnp = dnps.find(
+      dnp => dnp.name === "ethchain.dnp.dappnode.eth"
+    );
+    if (
+      !mainnetDnp ||
+      !mainnetDnp.envs ||
+      !(defaultClientEnvName in mainnetDnp.envs)
+    )
+      return null;
+
+    return (mainnetDnp.envs[defaultClientEnvName] || "")
+      .toLowerCase()
+      .includes("geth")
+      ? "Geth"
+      : "Parity";
+  }
+);
+
 /**
  * Regular selectors, called outside of a normal react-redux situation
  */

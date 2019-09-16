@@ -252,6 +252,49 @@ const manifestBitcoin = {
   license: "GPL-3.0"
 };
 
+const manifestEthchain = {
+  name: "ethchain.dnp.dappnode.eth",
+  version: "0.2.6",
+  description:
+    "Dappnode package responsible for providing the Ethereum blockchain, based on Parity v2.5.8-stable",
+  avatar: "/ipfs/QmNdWMzgapc49kpofYFE9M63Snc2dKJ8YQmEmdRU8wPMEg",
+  type: "dncore",
+  chain: "ethereum",
+  upstreamVersion: "v2.5.8-stable",
+  image: {
+    path: "ethchain.dnp.dappnode.eth_0.2.6.tar.xz",
+    hash: "/ipfs/QmbEFEC12zFYZduZB4Q2zh2GLuox9SQjKtjcLLs8BzK2YQ",
+    size: 11680248,
+    volumes: [
+      "ethchaindnpdappnodeeth_data:/root/.local/share/io.parity.ethereum/",
+      "ethchaindnpdappnodeeth_geth:/root/.ethereum/"
+    ],
+    ports: ["30303:30303", "30303:30303/udp", "30304:30304/udp"],
+    environment: ["EXTRA_OPTS_PARITY=", "EXTRA_OPTS_GETH=", "DEFAULT_CLIENT="],
+    restart: "always",
+    subnet: "172.33.0.0/16",
+    ipv4_address: "172.33.1.6"
+  },
+  author:
+    "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
+  contributors: [
+    "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
+  ],
+  keywords: ["DAppNodeCore", "Parity", "Mainnet", "Ethereum"],
+  links: {
+    endpoint: "http://my.ethchain.dnp.dappnode.eth:8545",
+    homepage: "https://github.com/dappnode/DNP_ETHCHAIN#readme"
+  },
+  repository: {
+    type: "git",
+    url: "https://github.com/dappnode/DNP_ETHCHAIN"
+  },
+  bugs: {
+    url: "https://github.com/dappnode/DNP_ETHCHAIN/issues"
+  },
+  license: "GPL-3.0"
+};
+
 /**
  * Actual mockState
  * ================
@@ -458,6 +501,54 @@ export const mockState = {
         SSID: "DAppNodeWIFI",
         WPA_PASSPHRASE: "dappnode"
       }
+    },
+    {
+      name: "ethchain.dnp.dappnode.eth",
+      isCore: true,
+      version: "0.2.6",
+      state: "running",
+      ports: [
+        {
+          host: "30303",
+          container: "30303",
+          protocol: "TCP"
+        },
+        {
+          host: "30303",
+          container: "30303",
+          protocol: "UDP"
+        }
+      ],
+      volumes: [
+        {
+          type: "volume",
+          path:
+            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
+          dest: "/app/.ethchain",
+          name: "dncore_ethchaindnpdappnodeeth_data",
+          users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
+          owner: "ethchain.dnp.dappnode.eth",
+          isOwner: true,
+          links: "2",
+          size: "71.57GB"
+        },
+        {
+          type: "volume",
+          path:
+            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_geth/_data",
+          dest: "/root/.ethereum/",
+          name: "dncore_ethchaindnpdappnodeeth_geth",
+          users: ["ethchain.dnp.dappnode.eth"],
+          owner: "ethchain.dnp.dappnode.eth",
+          isOwner: true,
+          links: "1",
+          size: "94.62GB"
+        }
+      ],
+      envs: {
+        DEFAULT_CLIENT: "GETH"
+      },
+      manifest: manifestEthchain
     }
   ],
 
