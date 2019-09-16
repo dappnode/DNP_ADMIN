@@ -9,35 +9,6 @@ export const getDnpInstalled = createSelector(
 );
 
 /**
- * Returns the volume sizes of the `ethchain` and `ipfs` DNPs
- * - ethchain.dnp.dappnode.eth > dncore_ethchaindnpdappnodeeth_data
- * - ipfs.dnp.dappnode.eth > dncore_ipfsdnpdappnodeeth_data
- * @returns {array} [{
- *   name: "ethchain size",
- *   size: 143818512
- * }, ... ]
- */
-export const getDappnodeVolumes = createSelector(
-  getDnpInstalled,
-  dnps =>
-    dnps
-      .filter(
-        dnp =>
-          dnp.name === "ethchain.dnp.dappnode.eth" ||
-          dnp.name === "ipfs.dnp.dappnode.eth"
-      )
-      .map(dnp => {
-        const dataVolume = ((dnp || {}).volumes || []).find(volume =>
-          (volume.name || "").endsWith("_data")
-        );
-        return {
-          name: `${dnp.shortName} size`,
-          size: (dataVolume || {}).size
-        };
-      })
-);
-
-/**
  * Check if the wifi DNP has the same credentials as the default ones
  * @returns {bool} credentials are the same as the default ones
  */
@@ -97,6 +68,40 @@ export const getEthchainClient = createSelector(
       .includes("geth")
       ? "Geth"
       : "Parity";
+  }
+);
+
+/**
+ * Returns the volume sizes of the `ethchain` and `ipfs` DNPs
+ * - ethchain.dnp.dappnode.eth > dncore_ethchaindnpdappnodeeth_data
+ * - ipfs.dnp.dappnode.eth > dncore_ipfsdnpdappnodeeth_data
+ * @returns {array} [{
+ *   name: "ethchain size",
+ *   size: 143818512
+ * }, ... ]
+ */
+export const getDappnodeVolumes = createSelector(
+  getDnpInstalled,
+  getEthchainClient,
+  (dnps, ethchainClient) => {
+    const findDnp = name => dnps.find(dnp => dnp.name === name) || {};
+    const findVolume = (dnp, name) =>
+      (dnp.volumes || []).find(vol => (vol.name || "").endsWith(name)) || {};
+    const ipfsDnp = findDnp("ipfs.dnp.dappnode.eth");
+    const ethchainDnp = findDnp("ethchain.dnp.dappnode.eth");
+    const ipfsDataVolume = findVolume(ipfsDnp, "_data");
+    const ethchainDataVolume = findVolume(
+      ethchainDnp,
+      ethchainClient === "Geth" ? "_geth" : "_data"
+    );
+
+    return [
+      {
+        name: `Ethchain size${ethchainClient ? ` (${ethchainClient})` : ""}`,
+        size: ethchainDataVolume.size
+      },
+      { name: "Ipfs size", size: ipfsDataVolume.size }
+    ];
   }
 );
 

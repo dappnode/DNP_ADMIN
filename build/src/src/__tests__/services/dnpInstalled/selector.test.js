@@ -21,8 +21,8 @@ describe("service > dnpInstalled", () => {
         ]
       };
       expect(s.getDappnodeVolumes(state)).toEqual([
-        { name: "ethchain size", size: 1000 },
-        { name: "ipfs size", size: 1000 }
+        { name: "Ethchain size", size: 1000 },
+        { name: "Ipfs size", size: 1000 }
       ]);
     });
   });
