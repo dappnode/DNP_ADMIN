@@ -28,8 +28,8 @@ function EthchainDnpDappnodeEth({ ethchainClient }) {
     try {
       const volumeId =
         clientName === "Geth"
-          ? "ethchaindnpdappnodeeth_geth"
-          : "ethchaindnpdappnodeeth_data";
+          ? "dncore_ethchaindnpdappnodeeth_geth"
+          : "dncore_ethchaindnpdappnodeeth_data";
       const envValue = clientName === "Geth" ? "GETH" : "PARITY";
 
       const currentClient = ethchainClient;
