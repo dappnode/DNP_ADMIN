@@ -35,8 +35,8 @@ function EthchainDnpDappnodeEth({ ethchainClient }) {
       const currentClient = ethchainClient;
       const shouldRemoveVolumes = await new Promise(resolve =>
         confirm({
-          title: `Chaning Ethchain client`,
-          text: `Do you want to remove the data of ${currentClient}? If you do you will not be able to recover it. If you switch back to ${currentClient} it may take days to sync back.`,
+          title: `Changing Ethchain client`,
+          text: `Do you want to remove the data of ${currentClient}? If you do, you will not be able to recover it and if you switch back to ${currentClient} it will have to sync from scratch.`,
           buttons: [
             {
               label: "Keep volumes",
