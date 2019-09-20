@@ -39,6 +39,8 @@
     "striptags": "^3.1.1",
     "styled-components": "^4.2.0",
     "tether": "^1.4.4",
+    "tweetnacl": "^1.0.1",
+    "tweetnacl-util": "^0.15.0",
     "web3": "1.0.0-beta.33"
   },
   "scripts": {

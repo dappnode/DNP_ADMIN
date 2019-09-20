@@ -14,7 +14,7 @@ import Security from "./Security";
 import PowerManagment from "./PowerManagment";
 import SystemUpdate from "./SystemUpdate";
 import AddIpfsPeer from "./AddIpfsPeer";
-import Indentity from "./Identity";
+import Identity from "./Identity";
 import SystemInfo from "./SystemInfo";
 import Title from "components/Title";
 import Card from "components/Card";
@@ -31,7 +31,11 @@ function SystemHome() {
     //   subPath: "info",
     //   component: SystemInfo
     // },
-
+    {
+      name: "Identity",
+      subPath: "identity",
+      component: Identity
+    },
     {
       name: "Security",
       subPath: securityPath,
