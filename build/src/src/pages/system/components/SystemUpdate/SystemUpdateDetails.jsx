@@ -12,12 +12,9 @@ import {
   getCoreManifest,
   getCoreUpdateAlerts
 } from "services/coreUpdate/selectors";
-import { getIsLoadingStrictById } from "services/loadingStatus/selectors";
-import { loadingId as loadingIdCoreUpdate } from "services/coreUpdate/data";
 // Components
 import Card from "components/Card";
 import Button from "components/Button";
-import Loading from "components/generic/Loading";
 // Icons
 import { FaArrowRight } from "react-icons/fa";
 
@@ -25,14 +22,8 @@ const SystemUpdateDetails = ({
   coreDeps,
   coreManifest,
   coreUpdateAlerts,
-  isLoading,
   updateCore
 }) => {
-  /* If loading, return a loading animation */
-  if (isLoading) return <Loading msg="Checking core version..." />;
-  /* If no deps, don't show the card */
-  if (!coreDeps.length) return null;
-
   const { changelog, version } = coreManifest || {};
 
   return (
@@ -88,8 +79,7 @@ SystemUpdateDetails.propTypes = {
 const mapStateToProps = createStructuredSelector({
   coreDeps: getCoreDeps,
   coreManifest: getCoreManifest,
-  coreUpdateAlerts: getCoreUpdateAlerts,
-  isLoading: getIsLoadingStrictById(loadingIdCoreUpdate)
+  coreUpdateAlerts: getCoreUpdateAlerts
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch

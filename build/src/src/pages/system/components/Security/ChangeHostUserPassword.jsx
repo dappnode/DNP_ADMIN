@@ -1,25 +1,19 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import * as a from "../actions";
+import * as a from "../../actions";
 // Components
 import Card from "components/Card";
-import SubTitle from "components/SubTitle";
 import Input from "components/Input";
 import Button from "components/Button";
 import Switch from "components/Switch";
-// External
-import { getPasswordIsInsecure } from "services/dappnodeStatus/selectors";
 // Style
 import "./changeHostUserPassword.scss";
 
-function ChangeHostUserPassword({ passwordIsInsecure, passwordChange }) {
+function ChangeHostUserPassword({ passwordChange }) {
   const [input, setInput] = useState("");
   const [confirmInput, setConfirmInput] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  if (!passwordIsInsecure) return null;
 
   const errors = [];
   if (input && input.length < 8)
@@ -40,9 +34,14 @@ function ChangeHostUserPassword({ passwordIsInsecure, passwordChange }) {
   };
 
   return (
-    <>
-      <SubTitle>Change host user password</SubTitle>
-      <Card className="change-password-form">
+    <Card spacing>
+      <div>
+        Please change the host user password. The current password is the
+        factory insecure default. Changing it to a strong password will protect
+        your DAppNode from external attackers.
+      </div>
+
+      <div className="change-password-form">
         <span>New password</span>
         <div>
           <Input
@@ -99,21 +98,18 @@ function ChangeHostUserPassword({ passwordIsInsecure, passwordChange }) {
             Change
           </Button>
         </div>
-      </Card>
-    </>
+      </div>
+    </Card>
   );
 }
 
 ChangeHostUserPassword.propTypes = {
-  passwordIsInsecure: PropTypes.bool.isRequired,
   passwordChange: PropTypes.func.isRequired
 };
 
 // Container
 
-const mapStateToProps = createStructuredSelector({
-  passwordIsInsecure: getPasswordIsInsecure
-});
+const mapStateToProps = null;
 
 const mapDispatchToProps = {
   passwordChange: a.passwordChange

@@ -6,9 +6,8 @@ import * as a from "../actions";
 import isIpv4 from "utils/isIpv4";
 // Components
 import Card from "components/Card";
-import SubTitle from "components/SubTitle";
 import Input from "components/Input";
-import { ButtonLight, ButtonDanger } from "components/Button";
+import Button from "components/Button";
 // External
 import { getStaticIp } from "services/dappnodeStatus/selectors";
 
@@ -24,31 +23,41 @@ function StaticIp({ staticIp = "", setStaticIp }) {
   };
 
   return (
-    <>
-      <SubTitle>Static IP</SubTitle>
-      <Card>
-        <div className="input-group">
-          <Input
-            placeholder="Your static ip..."
-            value={input}
-            onValueChange={setInput}
-            onEnterPress={update}
-            append={
-              <>
-                <ButtonLight disabled={!isIpv4(input)} onClick={update}>
-                  {staticIp ? "Update" : "Enable"}
-                </ButtonLight>
-                {staticIp && (
-                  <ButtonDanger onClick={() => setStaticIp("")}>
-                    Disable
-                  </ButtonDanger>
-                )}
-              </>
-            }
-          />
-        </div>
-      </Card>
-    </>
+    <Card spacing>
+      <div>
+        You can set a static IP for this DAppNode instead of using a dyndns.
+        Only set a static IP if you are sure it is static, otherwise you may not
+        be able to connect to its VPN.
+      </div>
+
+      <div className="input-group">
+        <Input
+          placeholder="Your static ip..."
+          value={input}
+          onValueChange={setInput}
+          onEnterPress={update}
+          append={
+            <>
+              <Button
+                variant="dappnode"
+                disabled={!isIpv4(input)}
+                onClick={update}
+              >
+                {staticIp ? "Update" : "Enable"}
+              </Button>
+              {staticIp && (
+                <Button
+                  variant="outline-dappnode"
+                  onClick={() => setStaticIp("")}
+                >
+                  Disable
+                </Button>
+              )}
+            </>
+          }
+        />
+      </div>
+    </Card>
   );
 }
 

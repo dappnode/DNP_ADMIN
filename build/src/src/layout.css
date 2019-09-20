@@ -218,6 +218,15 @@ body,
 }
 
 /********************
+  Generic section
+  *******************
+ */
+
+.section-spacing > * {
+  margin-bottom: var(--default-spacing);
+}
+
+/********************
   SPECIAL STAND-ALONE
   *******************
   Used in:
