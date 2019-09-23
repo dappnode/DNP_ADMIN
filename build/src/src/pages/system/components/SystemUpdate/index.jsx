@@ -15,10 +15,12 @@ import {
 import StatusCard from "components/StatusCard";
 import SystemUpdateDetails from "./SystemUpdateDetails";
 import Loading from "components/generic/Loading";
+import SubTitle from "components/SubTitle";
 
 function SystemUpdate({ coreProgressLogs, isLoading, coreUpdateAvailable }) {
   return (
     <>
+      <SubTitle>Update</SubTitle>
       {/* This component will automatically hide if logs are empty */}
       <installer.components.ProgressLogs progressLogs={coreProgressLogs} />
 

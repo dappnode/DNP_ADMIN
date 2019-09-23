@@ -48,7 +48,8 @@ function SystemRoot({ match }) {
     {
       name: "Update",
       subPath: updatePath,
-      component: SystemUpdate
+      component: SystemUpdate,
+      hideFromMenu: true
     },
     {
       name: "Peers",
@@ -67,17 +68,19 @@ function SystemRoot({ match }) {
       <Title title={title} />
 
       <div className="horizontal-navbar">
-        {availableRoutes.map(route => (
-          <button key={route.subPath} className="item-container">
-            <NavLink
-              to={`${match.url}/${route.subPath}`}
-              className="item no-a-style"
-              style={{ whiteSpace: "nowrap" }}
-            >
-              {route.name}
-            </NavLink>
-          </button>
-        ))}
+        {availableRoutes
+          .filter(route => !route.hideFromMenu)
+          .map(route => (
+            <button key={route.subPath} className="item-container">
+              <NavLink
+                to={`${match.url}/${route.subPath}`}
+                className="item no-a-style"
+                style={{ whiteSpace: "nowrap" }}
+              >
+                {route.name}
+              </NavLink>
+            </button>
+          ))}
       </div>
 
       <div className="section-spacing">
