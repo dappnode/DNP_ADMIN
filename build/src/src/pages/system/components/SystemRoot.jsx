@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  title,
-  rootPath,
-  updatePath,
-  addIpfsPeerPath,
-  securityPath
-} from "../data";
+import { title, rootPath, updatePath, securityPath } from "../data";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 // Components
 import StaticIp from "./StaticIp";
@@ -13,7 +7,7 @@ import AutoUpdates from "./AutoUpdates";
 import Security from "./Security";
 import PowerManagment from "./PowerManagment";
 import SystemUpdate from "./SystemUpdate";
-import AddIpfsPeer from "./AddIpfsPeer";
+import Peers from "./Peers";
 import Identity from "./Identity";
 import SystemInfo from "./SystemInfo";
 import Title from "components/Title";
@@ -57,9 +51,9 @@ function SystemHome() {
       component: SystemUpdate
     },
     {
-      name: "Add peers",
-      subPath: addIpfsPeerPath,
-      component: AddIpfsPeer
+      name: "Peers",
+      subPath: "peers",
+      component: Peers
     },
     {
       name: "Power",

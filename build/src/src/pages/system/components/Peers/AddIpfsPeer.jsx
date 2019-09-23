@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { NavLink } from "react-router-dom";
-// Pages
-import { rootPath as systemRootPath } from "pages/system/data";
+import { ipfsApiUrl } from "../../data";
 // Components
 import Card from "components/Card";
 import Input from "components/Input";
@@ -38,12 +36,7 @@ import { stringIncludes } from "utils/strings";
  * - /dnsaddr/
  */
 
-const ipfsApiUrl = "http://ipfs.dappnode:5001/api/v0";
-const fetchJson = url => fetch(url).then(r => r.json());
-
-export default function AddIpfsPeer({ match }) {
-  const peerEncoded = ((match || {}).params || {}).peer || "";
-
+export default function AddIpfsPeer({ peerFromUrl }) {
   const [peerInput, setPeerInput] = useState("");
   const [addStat, setAddStat] = useState({});
 
@@ -69,9 +62,8 @@ export default function AddIpfsPeer({ match }) {
 
   const addIpfsPeer = useMemo(
     () => async peer => {
-      console.log({ peer });
       try {
-        if (!peer) throw Error("peer must be defined");
+        if (!peer) throw Error("Peer must be defined");
         setAddStat(s => ({
           ...s,
           loading: true,
@@ -101,12 +93,11 @@ export default function AddIpfsPeer({ match }) {
   );
 
   useEffect(() => {
-    const peerFromUrl = decodeURIComponent(peerEncoded);
     if (peerFromUrl) {
       addIpfsPeer(peerFromUrl);
       setPeerInput(peerFromUrl);
     }
-  }, [peerEncoded, addIpfsPeer]);
+  }, [peerFromUrl, addIpfsPeer]);
 
   const { msg, ok, loading } = addStat;
 
@@ -115,11 +106,7 @@ export default function AddIpfsPeer({ match }) {
       <Card spacing>
         <div>
           Add an IPFS peer to your own boostrap list and immediately connect to
-          it. The easiest way to do so is to use the link generated in the{" "}
-          <NavLink to={`${systemRootPath}/ipfs.dnp.dappnode.eth`}>
-            IPFS packages page
-          </NavLink>
-          .
+          it.
         </div>
 
         <Input
@@ -138,7 +125,7 @@ export default function AddIpfsPeer({ match }) {
             <Button
               variant="dappnode"
               onClick={() => addIpfsPeer(peerInput)}
-              disabled={loading}
+              disabled={loading || !peerInput}
             >
               Add peer
             </Button>
@@ -149,4 +136,15 @@ export default function AddIpfsPeer({ match }) {
       </Card>
     </>
   );
+}
+
+// Utils
+
+/**
+ * Fetch JSON data
+ * @param {string} url
+ * @returns {object}
+ */
+function fetchJson(url) {
+  return fetch(url).then(r => r.json());
 }
