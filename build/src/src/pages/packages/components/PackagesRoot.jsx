@@ -1,16 +1,15 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import { rootPath } from "../data";
 // Components
 import PackagesHome from "./PackagesHome";
 import PackageInterface from "./PackageInterface";
 // Styles
 import "./packages.scss";
 
-const PackagesRoot = () => (
+const PackagesRoot = ({ match }) => (
   <>
-    <Route exact path={rootPath} component={PackagesHome} />
-    <Route path={`${rootPath}/:id`} component={PackageInterface} />
+    <Route exact path={match.path} component={PackagesHome} />
+    <Route path={match.path + "/:id"} component={PackageInterface} />
   </>
 );
 

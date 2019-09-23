@@ -1,5 +1,5 @@
 import React from "react";
-import { title, rootPath, updatePath, securityPath } from "../data";
+import { title, updatePath, securityPath } from "../data";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 // Components
 import StaticIp from "./StaticIp";
@@ -13,7 +13,7 @@ import SystemInfo from "./SystemInfo";
 import Title from "components/Title";
 import Card from "components/Card";
 
-function SystemHome() {
+function SystemRoot({ match }) {
   /**
    * Construct all subroutes to iterate them both in:
    * - Link (to)
@@ -70,7 +70,7 @@ function SystemHome() {
         {availableRoutes.map(route => (
           <button key={route.subPath} className="item-container">
             <NavLink
-              to={`${rootPath}/${route.subPath}`}
+              to={`${match.url}/${route.subPath}`}
               className="item no-a-style"
               style={{ whiteSpace: "nowrap" }}
             >
@@ -85,7 +85,7 @@ function SystemHome() {
           {availableRoutes.map(route => (
             <Route
               key={route.subPath}
-              path={`${rootPath}/${route.subPath}`}
+              path={`${match.path}/${route.subPath}`}
               component={route.component}
             />
           ))}
@@ -97,7 +97,7 @@ function SystemHome() {
               <Card>
                 {availableRoutes.map(route => (
                   <li key={route.subPath}>
-                    <NavLink to={`${rootPath}/${route.subPath}`}>
+                    <NavLink to={`${match.url}/${route.subPath}`}>
                       {route.name}
                     </NavLink>
                   </li>
@@ -111,4 +111,4 @@ function SystemHome() {
   );
 }
 
-export default SystemHome;
+export default SystemRoot;

@@ -1,6 +1,5 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import { rootPath } from "../data";
 // Components
 import Publish from "./Publish";
 import Explore from "./Explore";
@@ -8,11 +7,11 @@ import SdkHome from "./SdkHome";
 
 import "./sdk.css";
 
-const SdkRoot = () => (
+const SdkRoot = ({ match }) => (
   <>
-    <Route exact path={rootPath} component={SdkHome} />
-    <Route path={rootPath + "/publish/:urlQuery?"} component={Publish} />
-    <Route path={rootPath + "/explore"} component={Explore} />
+    <Route exact path={match.path} component={SdkHome} />
+    <Route path={match.path + "/publish/:urlQuery?"} component={Publish} />
+    <Route path={match.path + "/explore"} component={Explore} />
   </>
 );
 

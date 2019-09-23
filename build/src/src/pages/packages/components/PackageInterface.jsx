@@ -17,7 +17,7 @@ import Backup from "./PackageViews/Backup";
 import Controls from "./PackageViews/Controls";
 import NoDnpInstalled from "./NoDnpInstalled";
 import * as s from "../selectors";
-import { rootPath, title } from "../data";
+import { title } from "../data";
 // Components
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
@@ -45,8 +45,6 @@ const PackageInterface = ({
     if (areThereDnps) return <NoDnpInstalled id={id} moduleName={moduleName} />;
     return <Error msg={`Unknown error, package not found`} />;
   }
-
-  const urlId = match.params.id;
 
   /**
    * Construct all subroutes to iterate them both in:
@@ -109,13 +107,7 @@ const PackageInterface = ({
       render: () => <DnpSpecific dnp={dnp} />,
       available: dnpSpecificList[dnp.name]
     }
-  ]
-    .map(route => ({
-      ...route,
-      path: `${rootPath}/:id/${route.subPath}`,
-      to: `${rootPath}/${urlId}/${route.subPath}`
-    }))
-    .filter(route => route.available);
+  ].filter(route => route.available);
 
   return (
     <>
@@ -123,7 +115,7 @@ const PackageInterface = ({
         {availableRoutes.map(route => (
           <button key={route.subPath} className="item-container">
             <NavLink
-              to={route.to}
+              to={`${match.url}/${route.subPath}`}
               className="item no-a-style"
               style={{ whiteSpace: "nowrap" }}
             >
@@ -138,13 +130,13 @@ const PackageInterface = ({
           {availableRoutes.map(route => (
             <Route
               key={route.subPath}
-              path={route.path}
+              path={`${match.path}/${route.subPath}`}
               render={route.render}
             />
           ))}
           {/* Redirect automatically to the first route. DO NOT hardcode 
               to prevent typos and causing infinite loops */}
-          <Redirect to={`${rootPath}/${urlId}/${availableRoutes[0].subPath}`} />
+          <Redirect to={`${match.url}/${availableRoutes[0].subPath}`} />
         </Switch>
       </div>
     </>
