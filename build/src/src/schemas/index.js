@@ -1,68 +1,13 @@
 import Joi from "joi";
 
-const schema = Joi.object({}).pattern(/.*/, Joi.boolean());
-
-window.test2 = value => Joi.assert(value, schema);
-
 // Generic
 
 export const depsObject = Joi.object({}).pattern(/.*/, Joi.string().required());
 
-// Semi-strict manifest check
-
-// export const manifest = Joi.object({
-//   name: Joi.string().required(),
-//   version: Joi.string().required(),
-//   description: Joi.string().allow(""),
-//   avatar: Joi.string().allow(""),
-//   type: Joi.string(),
-//   image: Joi.object({
-//     path: Joi.string().required(),
-//     hash: Joi.string().required(),
-//     size: Joi.number().required(),
-//     restart: Joi.string(),
-//     ports: Joi.array().items(Joi.string()),
-//     volumes: Joi.array().items(Joi.string()),
-//     external_vol: Joi.array().items(Joi.string()),
-//     environment: Joi.array().items(Joi.string()),
-//     ipv4_address: Joi.string(),
-//     subnet: Joi.string(),
-//     privileged: Joi.boolean(),
-//     labels: Joi.array(),
-//     cap_add: Joi.string(),
-//     cap_drop: Joi.string(),
-//     network_mode: Joi.string(),
-//     command: Joi.string(),
-//     // Some are wrong
-//     keywords: Joi.array().items(Joi.string()),
-//     // #### Backwards compatibility
-//     name: Joi.string(), // #### Backwards compatibility
-//     version: Joi.string() // #### Backwards compatibility
-//   }).required(),
-//   dependencies: Joi.object(),
-//   chain: Joi.string(),
-//   changelog: Joi.string(),
-//   warnings: Joi.object(),
-//   origin: Joi.string(),
-//   // Metadata
-//   author: Joi.string(),
-//   contributors: Joi.array().items(Joi.string()),
-//   keywords: Joi.array().items(Joi.string()),
-//   homepage: Joi.object(),
-//   repository: Joi.object(),
-//   bugs: Joi.object(),
-//   license: Joi.string().allow("")
-// });
-
 // Minimal (very relaxed) manifest check
 export const manifest = Joi.object({
   name: Joi.string().required(),
-  version: Joi.string().required(),
-  image: Joi.object({
-    path: Joi.string().required()
-  })
-    .pattern(/./, Joi.any())
-    .required()
+  version: Joi.string().required()
 }).pattern(/./, Joi.any());
 
 export const alertType = Joi.string().valid("danger", "warning", "success");
@@ -77,7 +22,7 @@ export const chainData = Joi.array()
       syncing: Joi.boolean(),
       progress: Joi.number(),
       error: Joi.boolean()
-    })
+    }).pattern(/./, Joi.any())
   )
   .required();
 
@@ -92,13 +37,17 @@ export const params = Joi.object({
   noNatLoopback: Joi.boolean().required(),
   alertToOpenPorts: Joi.boolean().required(),
   internalIp: Joi.string().required()
-}).required();
+})
+  .pattern(/./, Joi.any())
+  .required();
 
 export const stats = Joi.object({
   cpu: Joi.string(),
   memory: Joi.string(),
   disk: Joi.string()
-}).required();
+})
+  .pattern(/./, Joi.any())
+  .required();
 
 export const diagnose = Joi.object({
   name: Joi.string().required(),
@@ -141,7 +90,7 @@ export const dnpDirectoryItem = Joi.object({
   featuredIndex: Joi.number(),
   manifest: manifest,
   avatar: Joi.string().dataUri()
-});
+}).pattern(/./, Joi.any());
 export const dnpDirectory = Joi.array().items(dnpDirectoryItem);
 
 // Service > dnpInstalled
@@ -168,7 +117,7 @@ export const dnpInstalledItem = Joi.object({
   // Appended later
   envs: Joi.object(),
   manifest: Joi.object() // #### Don't check this manifest at all
-});
+}).pattern(/./, Joi.any());
 
 export const dnpInstalled = Joi.array()
   .items(dnpInstalledItem)
@@ -186,7 +135,7 @@ export const notification = Joi.object({
   title: Joi.string().required(),
   body: Joi.string().required(),
   timestamp: Joi.number()
-});
+}).pattern(/./, Joi.any());
 
 // Service > userActionLogs
 
@@ -199,4 +148,4 @@ export const userActionLog = Joi.object({
   result: Joi.any(),
   stack: Joi.string(),
   name: Joi.string() // #### Backwards compatibility
-});
+}).pattern(/./, Joi.any());

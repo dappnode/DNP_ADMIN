@@ -169,24 +169,6 @@ export default {
   diagnose: {},
 
   /**
-   * [diskSpaceAvailable]
-   *
-   * Returns the current disk space available of a requested path
-   *
-   * [WARNING] Does not work as expected
-   *
-   * @param {string} path
-   * @returns {object} status = {
-   *   exists, {bool}
-   *   totalSize, {string}
-   *   availableSize, {string}
-   * }
-   */
-  diskSpaceAvailable: {
-    mandatoryKwargs: ["path"]
-  },
-
-  /**
    * Fetches the core update data, if available
    *
    * @returns {object} result = {
