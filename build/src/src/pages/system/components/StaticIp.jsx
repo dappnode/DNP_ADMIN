@@ -39,7 +39,7 @@ function StaticIp({ staticIp = "", setStaticIp }) {
                   {staticIp ? "Update" : "Enable"}
                 </ButtonLight>
                 {staticIp && (
-                  <ButtonDanger onClick={() => setStaticIp(null)}>
+                  <ButtonDanger onClick={() => setStaticIp("")}>
                     Disable
                   </ButtonDanger>
                 )}
