@@ -9,7 +9,7 @@ import { encrypt } from "utils/publicKeyEncryption";
 import Card from "components/Card";
 import Button from "components/Button";
 import Form from "react-bootstrap/Form";
-import StatusCard from "components/StatusCard";
+import StatusIcon from "components/StatusIcon";
 import Loading from "components/generic/Loading";
 // External
 import { getIdentityAddress } from "services/dappnodeStatus/selectors";
@@ -70,15 +70,17 @@ function Identity({ identityAddress, fetchIdentityAddress }) {
       {identityAddress === null ? (
         <Loading msg="Checking identity..." />
       ) : identityAddress && !editorActive ? (
-        <StatusCard
-          success
-          message={
-            <>
-              Identity set: <strong>{identityAddress}</strong>
-            </>
-          }
-          append={<Button onClick={() => setEditorActive(true)}>Edit</Button>}
-        />
+        <Card spacing>
+          <StatusIcon
+            success
+            message={
+              <>
+                Identity set: <strong>{identityAddress}</strong>
+              </>
+            }
+          />
+          <Button onClick={() => setEditorActive(true)}>Edit</Button>
+        </Card>
       ) : (
         <Card className="dappnode-identity">
           <div>

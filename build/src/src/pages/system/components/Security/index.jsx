@@ -4,35 +4,71 @@ import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 // Components
 import SubTitle from "components/SubTitle";
-import StatusCard from "components/StatusCard";
+import Card from "components/Card";
+import StatusIcon from "components/StatusIcon";
 import SeverityBadge from "./SeverityBadge";
 import ChangeHostUserPassword from "./ChangeHostUserPassword";
+import ChangeWifiPassword from "./ChangeWifiPassword";
 // External
-import { getPasswordIsInsecure } from "services/dappnodeStatus/selectors";
+import {
+  getPasswordIsInsecure,
+  getIsWifiRunning
+} from "services/dappnodeStatus/selectors";
 // Style
 import "./security.scss";
+import { getAreWifiCredentialsDefault } from "services/dnpInstalled/selectors";
+import Ok from "components/Ok";
 
-function SystemSecurity({ passwordIsInsecure }) {
-  const securityIssues = [];
-  if (passwordIsInsecure)
-    securityIssues.push({
+function SystemSecurity({
+  passwordIsInsecure,
+  areWifiCredentialsDefault,
+  isWifiRunning
+}) {
+  const securityIssues = [
+    {
       name: "Change host user password",
       severity: "critical",
-      component: ChangeHostUserPassword
-    });
+      component: ChangeHostUserPassword,
+      isActive: passwordIsInsecure,
+      okMessage: "Host user password changed"
+    },
+    {
+      name: "Change WIFI default password",
+      severity: "critical",
+      component: ChangeWifiPassword,
+      isActive: areWifiCredentialsDefault && isWifiRunning,
+      okMessage: isWifiRunning
+        ? "WIFI credentials changed"
+        : "WIFI is not required"
+    }
+  ];
 
-  const issues = securityIssues.length > 0;
+  const issuesToShow = securityIssues.filter(issue => issue.isActive);
+  const areActiveIssues = issuesToShow.length > 0;
 
   return (
     <>
-      <StatusCard
-        success={!issues}
-        message={
-          issues ? "Some issues require your attention" : "No issues found"
-        }
-      />
+      <Card spacing>
+        <StatusIcon
+          success={!areActiveIssues}
+          message={
+            areActiveIssues
+              ? "Some issues require your attention"
+              : "Issues addressed"
+          }
+        />
+        <hr />
+        <div>
+          {securityIssues.map(issue => (
+            <Ok
+              msg={issue.isActive ? issue.name : issue.okMessage}
+              ok={!issue.isActive}
+            />
+          ))}
+        </div>
+      </Card>
 
-      {securityIssues.map(issue => (
+      {issuesToShow.map(issue => (
         <React.Fragment key={issue.name}>
           <div className="security-issue-header">
             <SubTitle>{issue.name}</SubTitle>
@@ -52,7 +88,9 @@ SystemSecurity.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  passwordIsInsecure: getPasswordIsInsecure
+  passwordIsInsecure: getPasswordIsInsecure,
+  areWifiCredentialsDefault: getAreWifiCredentialsDefault,
+  isWifiRunning: getIsWifiRunning
 });
 
 export default connect(

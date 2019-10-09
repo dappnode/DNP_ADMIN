@@ -5,7 +5,7 @@ import "./loader-icon.css";
 const styleIcon = {
   width: "1.35rem",
   height: "1.35rem",
-  marginRight: "0.3rem"
+  marginRight: "0.5rem"
 };
 
 function LoaderIcon() {

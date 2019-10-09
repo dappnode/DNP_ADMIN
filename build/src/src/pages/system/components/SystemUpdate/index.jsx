@@ -12,7 +12,8 @@ import {
   coreName
 } from "services/coreUpdate/data";
 // Components
-import StatusCard from "components/StatusCard";
+import Card from "components/Card";
+import StatusIcon from "components/StatusIcon";
 import SystemUpdateDetails from "./SystemUpdateDetails";
 import Loading from "components/generic/Loading";
 import SubTitle from "components/SubTitle";
@@ -29,7 +30,9 @@ function SystemUpdate({ coreProgressLogs, isLoading, coreUpdateAvailable }) {
       ) : coreUpdateAvailable ? (
         <SystemUpdateDetails />
       ) : (
-        <StatusCard success message="System up to date" />
+        <Card spacing>
+          <StatusIcon success message="System up to date" />
+        </Card>
       )}
     </>
   );
