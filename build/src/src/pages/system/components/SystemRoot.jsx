@@ -20,11 +20,11 @@ function SystemRoot({ match }) {
    * - Route (render, path)
    */
   const availableRoutes = [
-    // {
-    //   name: "Info",
-    //   subPath: "info",
-    //   component: SystemInfo
-    // },
+    {
+      name: "Info",
+      subPath: "info",
+      component: SystemInfo
+    },
     {
       name: "Identity",
       subPath: "identity",
@@ -94,20 +94,7 @@ function SystemRoot({ match }) {
           ))}
           {/* Redirect automatically to the first route. DO NOT hardcode 
               to prevent typos and causing infinite loops */}
-          {/* <Redirect to={`${rootPath}/${availableRoutes[0].subPath}`} /> */}
-          <Route
-            render={() => (
-              <Card>
-                {availableRoutes.map(route => (
-                  <li key={route.subPath}>
-                    <NavLink to={`${match.url}/${route.subPath}`}>
-                      {route.name}
-                    </NavLink>
-                  </li>
-                ))}
-              </Card>
-            )}
-          />
+          <Redirect to={`${match.url}/${availableRoutes[0].subPath}`} />
         </Switch>
       </div>
     </>
