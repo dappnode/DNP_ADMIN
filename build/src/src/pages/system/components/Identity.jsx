@@ -14,13 +14,12 @@ import Loading from "components/generic/Loading";
 // External
 import { getIdentityAddress } from "services/dappnodeStatus/selectors";
 import { fetchIdentityAddress } from "services/dappnodeStatus/actions";
+import { adminNaclSecretKey } from "params";
 // Images
 import etherCardSample from "img/ether-card-sample.png";
 import blankCardSample from "img/blank-card-sample.png";
 // Style
 import "./identity.scss";
-
-const adminSecretKey = "IbB5BuqXnzCObxMpGll1u9vOAInv0va83MxmCk76eAQ=";
 
 function Identity({ identityAddress, fetchIdentityAddress }) {
   const [showRealCard, setShowRealCard] = useState(false);
@@ -45,7 +44,7 @@ function Identity({ identityAddress, fetchIdentityAddress }) {
       const dappmanagerPublicKey = await api.naclEncryptionGetPublicKey({}, {});
       const seedPhraseEncrypted = encrypt(
         seedPhrase,
-        adminSecretKey,
+        adminNaclSecretKey,
         dappmanagerPublicKey
       );
       await api.seedPhraseSet(
