@@ -1,33 +1,29 @@
-import React, { useState } from "react";
-import { title } from "../data";
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { title, rootPath, systemPackagesSubPath } from "../data";
 import withTitle from "components/hoc/withTitle";
 // Components
 import PackageList from "./PackageList";
 
-const PackagesHome = () => {
-  const [showCoreDnps, setShowCoreDnps] = useState(false);
+const PackagesHome = ({ showCoreDnps }) => {
   const options = [
-    { name: "My packages", showCoreDnps: false },
-    { name: "System packages", showCoreDnps: true }
+    { name: "My packages", path: rootPath },
+    { name: "System packages", path: rootPath + systemPackagesSubPath }
   ];
 
   return (
     <>
       <div className="horizontal-navbar">
-        {options.map((option, i) => (
-          <button
-            key={i}
-            onClick={() => setShowCoreDnps(option.showCoreDnps)}
-            className="item-container"
-            style={{ whiteSpace: "nowrap" }}
-          >
-            <span
-              className={`item ${
-                showCoreDnps === option.showCoreDnps ? "active" : ""
-              }`}
+        {options.map(option => (
+          <button key={option.path} className="item-container">
+            <NavLink
+              to={option.path}
+              exact
+              className="item no-a-style"
+              style={{ whiteSpace: "nowrap" }}
             >
               {option.name}
-            </span>
+            </NavLink>
           </button>
         ))}
       </div>

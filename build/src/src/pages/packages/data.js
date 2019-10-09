@@ -2,3 +2,6 @@
 export const mountPoint = "page-packages";
 export const rootPath = "/packages";
 export const title = "Packages";
+
+// SubPaths
+export const systemPackagesSubPath = "/system";
