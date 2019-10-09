@@ -295,6 +295,59 @@ const manifestEthchain = {
   license: "GPL-3.0"
 };
 
+const manifestTrustlines = {
+  name: "trustlines.dnp.dappnode.eth",
+  version: "0.0.1",
+  upstreamVersion: "release4044",
+  shortDescription: "Financial inclusion through OS decentralized systems",
+  description:
+    "The Trustlines Protocol aims to provide the service of “transfer of value” without actually transferring value. This can be accomplished by leveraging networks of mutual-trust. The Trustlines Protocol is being built to support a range of use cases by leveraging existing networks of mutual trust and mapping trust-based relationships onto trustless infrastructure",
+  avatar: "/ipfs/QmcpEAc5CsaSD5jc1rkmiGtjtpxDaWDMHUWWh2tUgXFhDC",
+  type: "service",
+  chain: "ethereum",
+  image: {
+    path: "trustlines.dnp.dappnode.eth_0.0.1.tar.xz",
+    hash: "/ipfs/QmQm8jkGDtefmVmtBBGY5HJ9cMS5EoHKA53cXWXgeK7yyD",
+    size: 25629780,
+    restart: "always",
+    volumes: ["data:/data", "config:/config/custom"],
+    environment: ["ROLE=observer", "ADDRESS", "PASSWORD"],
+    ports: ["30300", "30300/udp"]
+  },
+  requirements: {
+    minimumDappnodeVersion: "0.2.10"
+  },
+  backup: [
+    {
+      name: "config",
+      path: "/config"
+    }
+  ],
+  style: {
+    featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
+    featuredColor: "white"
+  },
+  author:
+    "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
+  contributors: [
+    "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
+  ],
+  categories: ["Blockchain"],
+  links: {
+    homepage: "https://github.com/dappnode/DAppNodePackage-trustlines#readme",
+    trustlines: "https://trustlines.network",
+    explorer: "https://explorelaika.trustlines.foundation"
+  },
+  repository: {
+    type: "git",
+    url: "https://github.com/dappnode/DAppNodePackage-trustlines.git"
+  },
+  bugs: {
+    url: "https://github.com/dappnode/DAppNodePackage-trustlines/issues"
+  },
+  license: "GPL-3.0"
+};
+
 /**
  * Actual mockState
  * ================
@@ -420,7 +473,6 @@ export const mockState = {
     "ln.dnp.dappnode.eth": {
       name: "ln.dnp.dappnode.eth",
       whitelisted: true,
-      isFeatured: true,
       manifest: manifestLn,
       avatar: "https://i.ibb.co/Twjv2f3/ln.png"
     },
@@ -442,6 +494,13 @@ export const mockState = {
       manifest: manifestVipnode,
       avatar:
         "https://i.ibb.co/ypjjMVJ/Qmen3sr-ZXEHnc-MM2-RPsg-VKk-Pbk-JPTMN9-SNFVEAQQY4a7-Nf.png"
+    },
+    "trustlines.dnp.dappnode.eth": {
+      name: "trustlines.dnp.dappnode.eth",
+      whitelisted: true,
+      isFeatured: true,
+      manifest: manifestTrustlines,
+      avatar: "https://i.ibb.co/vLBbdGZ/avatar-min.png"
     }
   },
 

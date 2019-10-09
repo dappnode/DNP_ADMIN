@@ -10,6 +10,7 @@ import * as loadingIds from "services/loadingStatus/loadingIds";
 // Utils
 import { assertConnectionOpen } from "utils/redux";
 import { stringSplit, stringIncludes } from "utils/strings";
+import { wifiName } from "params";
 
 // Service > dappnodeStatus
 
@@ -117,7 +118,7 @@ const checkWifiStatus = wrapErrorsAndLoading(
   loadingIds.wifiStatus,
   function*() {
     const logs = yield call(api.logPackage, {
-      id: "wifi.dnp.dappnode.eth",
+      id: wifiName,
       options: {}
     });
     const firstLogLine = stringSplit(logs.trim(), "\n")[0];

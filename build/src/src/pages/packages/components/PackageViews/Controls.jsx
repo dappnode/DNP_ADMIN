@@ -7,6 +7,7 @@ import CardList from "components/CardList";
 import Button from "components/Button";
 // Utils
 import { toLowercase } from "utils/strings";
+import { wifiName } from "params";
 
 function getRootPath(dnpName) {
   return [
@@ -48,7 +49,7 @@ function PackageControls({
       text: "Toggle the state of the package from running to paused",
       action: () => togglePackage(dnp.name),
       availableForCore: false,
-      whitelist: ["wifi.dnp.dappnode.eth"],
+      whitelist: [wifiName],
       type: "secondary"
     },
     {
