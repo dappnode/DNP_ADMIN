@@ -7,6 +7,7 @@ export const ipfsConnectionStatus = "ipfsConnectionStatus";
 export const wifiStatus = "wifiStatus";
 export const passwordIsInsecure = "passwordIsInsecure";
 export const autoUpdateData = "autoUpdateData";
+export const identity = "identity";
 // Service > dnpDirectory
 export const dnpDirectory = "dnpDirectory";
 // Service > dnpInstalled

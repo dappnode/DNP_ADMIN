@@ -1,4 +1,13 @@
-import { mountPoint, wifiDefaultSSID, wifiDefaultWPA_PASSPHRASE } from "./data";
+import { mountPoint } from "./data";
+import {
+  wifiName,
+  ethchainName,
+  ipfsName,
+  wifiDefaultSSID,
+  wifiDefaultWPA_PASSPHRASE,
+  wifiEnvWPA_PASSPHRASE,
+  wifiEnvSSID
+} from "params";
 import { createSelector } from "reselect";
 
 // Service > dnpInstalled
@@ -15,11 +24,11 @@ export const getDnpInstalled = createSelector(
 export const getAreWifiCredentialsDefault = createSelector(
   getDnpInstalled,
   dnps => {
-    const wifiDnp = dnps.find(dnp => dnp.name === "wifi.dnp.dappnode.eth");
+    const wifiDnp = dnps.find(dnp => dnp.name === wifiName);
     if (!wifiDnp || !wifiDnp.envs) return false;
     return (
-      wifiDnp.envs.WPA_PASSPHRASE === wifiDefaultWPA_PASSPHRASE &&
-      wifiDnp.envs.SSID === wifiDefaultSSID
+      wifiDnp.envs[wifiEnvWPA_PASSPHRASE] === wifiDefaultWPA_PASSPHRASE &&
+      wifiDnp.envs[wifiEnvSSID] === wifiDefaultSSID
     );
   }
 );
@@ -40,9 +49,7 @@ export const getIsMainnetDnpNotRunning = createSelector(
   getDnpInstalled,
   dnps => {
     if (!dnps.length) return false;
-    const mainnetDnp = dnps.find(
-      dnp => dnp.name === "ethchain.dnp.dappnode.eth"
-    );
+    const mainnetDnp = dnps.find(dnp => dnp.name === ethchainName);
     if (!mainnetDnp) return true;
     return !mainnetDnp.running;
   }
@@ -53,9 +60,7 @@ export const getEthchainClient = createSelector(
   getDnpInstalled,
   dnps => {
     if (!dnps.length) return null;
-    const mainnetDnp = dnps.find(
-      dnp => dnp.name === "ethchain.dnp.dappnode.eth"
-    );
+    const mainnetDnp = dnps.find(dnp => dnp.name === ethchainName);
     if (
       !mainnetDnp ||
       !mainnetDnp.envs ||
@@ -87,8 +92,8 @@ export const getDappnodeVolumes = createSelector(
     const findDnp = name => dnps.find(dnp => dnp.name === name) || {};
     const findVolume = (dnp, name) =>
       (dnp.volumes || []).find(vol => (vol.name || "").endsWith(name)) || {};
-    const ipfsDnp = findDnp("ipfs.dnp.dappnode.eth");
-    const ethchainDnp = findDnp("ethchain.dnp.dappnode.eth");
+    const ipfsDnp = findDnp(ipfsName);
+    const ethchainDnp = findDnp(ethchainName);
     const ipfsDataVolume = findVolume(ipfsDnp, "_data");
     const ethchainDataVolume = findVolume(
       ethchainDnp,

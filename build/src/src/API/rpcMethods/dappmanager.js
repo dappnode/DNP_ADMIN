@@ -426,6 +426,15 @@ export default {
   },
 
   /**
+   * Returns the public key of nacl's asymmetric encryption,
+   * to be used by the ADMIN UI to send sensitive data in a slightly
+   * more protected way.
+   *
+   * @param {string} publicKey
+   */
+  naclEncryptionGetPublicKey: {},
+
+  /**
    * [notificationsGet]
    * Returns not viewed notifications
    *
@@ -557,6 +566,26 @@ export default {
    */
   restartPackageVolumes: {
     mandatoryKwargs: ["id"]
+  },
+
+  /**
+   * Returns the public key of the seedPhrase currently stored if any.
+   * If it's not stored yet, it's an empty string
+   *
+   * @returns {string} publicKey
+   */
+  seedPhraseGetPublicKey: {},
+
+  /**
+   * Receives an encrypted message containing the seed phrase of
+   * 12 word mnemonic ethereum account. The extra layer of encryption
+   * slightly increases the security of the exchange while the WAMP
+   * module works over HTTP.
+   *
+   * @param {string} seedPhraseEncrypted tweetnacl base64 box with nonce
+   */
+  seedPhraseSet: {
+    mandatoryKwargs: ["seedPhraseEncrypted"]
   },
 
   /**

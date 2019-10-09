@@ -51,6 +51,11 @@ export const updateAutoUpdateData = autoUpdateData => ({
   autoUpdateData
 });
 
+export const updateIdentityAddress = identityAddress => ({
+  type: t.UPDATE_IDENTITY_ADDRESS,
+  identityAddress
+});
+
 // Fetch
 
 export const fetchAllDappnodeStatus = () => ({
@@ -71,4 +76,8 @@ export const fetchDappnodeDiagnose = () => ({
 
 export const fetchIfPasswordIsInsecure = () => ({
   type: t.FETCH_IF_PASSWORD_IS_INSECURE
+});
+
+export const fetchIdentityAddress = () => ({
+  type: t.FETCH_IDENTITY_ADDRESS
 });

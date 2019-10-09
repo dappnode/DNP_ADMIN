@@ -1,10 +1,8 @@
 import React from "react";
 import api from "API/rpcMethods";
 import { confirm } from "components/ConfirmDialog";
-
 // Components
 import Card from "components/Card";
-import SubTitle from "components/SubTitle";
 import Columns from "components/Columns";
 import Button from "components/Button";
 
@@ -45,44 +43,41 @@ function PowerManagment() {
   }
 
   return (
-    <>
-      <SubTitle>Power management</SubTitle>
-      <Card className="backup">
-        {/* Get backup */}
-        <Columns>
-          <div>
-            <div className="subtle-header">REBOOT HOST</div>
-            <p>
-              Only use this functionality as last resort and when all other
-              troubleshooting options have been exhausted.
-            </p>
-            <Button
-              onClick={reboot}
-              // disabled={isOnProgress}
-              variant="outline-danger"
-            >
-              Reboot
-            </Button>
-          </div>
+    <Card className="backup">
+      {/* Get backup */}
+      <Columns>
+        <div>
+          <div className="subtle-header">REBOOT HOST</div>
+          <p>
+            Only use this functionality as last resort and when all other
+            troubleshooting options have been exhausted.
+          </p>
+          <Button
+            onClick={reboot}
+            // disabled={isOnProgress}
+            variant="outline-danger"
+          >
+            Reboot
+          </Button>
+        </div>
 
-          {/* Restore backup */}
-          <div>
-            <div className="subtle-header">POWER OFF HOST</div>
-            <p>
-              Your machine will power off and you will not be able to access the
-              Admin UI until you turn it back on.
-            </p>
-            <Button
-              onClick={powerOff}
-              // disabled={isOnProgress}
-              variant="outline-danger"
-            >
-              Power off
-            </Button>
-          </div>
-        </Columns>
-      </Card>
-    </>
+        {/* Restore backup */}
+        <div>
+          <div className="subtle-header">POWER OFF HOST</div>
+          <p>
+            Your machine will power off and you will not be able to access the
+            Admin UI until you turn it back on.
+          </p>
+          <Button
+            onClick={powerOff}
+            // disabled={isOnProgress}
+            variant="outline-danger"
+          >
+            Power off
+          </Button>
+        </div>
+      </Columns>
+    </Card>
   );
 }
 

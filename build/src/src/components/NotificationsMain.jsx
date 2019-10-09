@@ -15,8 +15,11 @@ import {
   getPasswordIsInsecure,
   getIsCoreAutoUpdateActive
 } from "services/dappnodeStatus/selectors";
-import { rootPath as systemRootPath, updatePath } from "pages/system/data";
-import { rootPath as packagesRootPath } from "pages/packages/data";
+import {
+  rootPath as systemRootPath,
+  updatePath,
+  securityPath
+} from "pages/system/data";
 import Alert from "react-bootstrap/Alert";
 import Button from "components/Button";
 // Style
@@ -76,7 +79,7 @@ const NotificationsView = ({
     {
       id: "wifiCredentials",
       linkText: "Change",
-      linkPath: packagesRootPath + "/wifi.dnp.dappnode.eth/config",
+      linkPath: systemRootPath + "/" + securityPath,
       body:
         "**Change the DAppNode WIFI credentials**, they are insecure default values.",
       active: areWifiCredentialsDefault && isWifiRunning
@@ -88,7 +91,7 @@ const NotificationsView = ({
     {
       id: "hostPasswordInsecure",
       linkText: "Change",
-      linkPath: systemRootPath,
+      linkPath: systemRootPath + "/" + securityPath,
       body:
         "**Change the host 'dappnode' user password**, it's an insecure default.",
       active: passwordIsInsecure

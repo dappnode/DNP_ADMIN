@@ -1,35 +1,104 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { title, rootPath, updatePath, addIpfsPeerPath } from "../data";
+import { title, updatePath, securityPath } from "../data";
+import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 // Components
-import SystemHome from "./SystemHome";
+import StaticIp from "./StaticIp";
+import AutoUpdates from "./AutoUpdates";
+import Security from "./Security";
+import PowerManagment from "./PowerManagment";
 import SystemUpdate from "./SystemUpdate";
-import AddIpfsPeer from "./AddIpfsPeer";
-import packages from "pages/packages";
-// Styles
-import "./system.scss";
+import Peers from "./Peers";
+import Identity from "./Identity";
+import SystemInfo from "./SystemInfo";
+import Title from "components/Title";
+import Card from "components/Card";
 
-const PackageInterface = packages.components.PackageInterface;
+function SystemRoot({ match }) {
+  /**
+   * Construct all subroutes to iterate them both in:
+   * - Link (to)
+   * - Route (render, path)
+   */
+  const availableRoutes = [
+    {
+      name: "Info",
+      subPath: "info",
+      component: SystemInfo
+    },
+    {
+      name: "Identity",
+      subPath: "identity",
+      component: Identity
+    },
+    {
+      name: "Security",
+      subPath: securityPath,
+      component: Security
+    },
+    {
+      name: "Auto updates",
+      subPath: "auto-updates",
+      component: AutoUpdates
+    },
+    {
+      name: "Static IP",
+      subPath: "static-ip",
+      component: StaticIp
+    },
+    {
+      name: "Update",
+      subPath: updatePath,
+      component: SystemUpdate,
+      hideFromMenu: true
+    },
+    {
+      name: "Peers",
+      subPath: "peers",
+      component: Peers
+    },
+    {
+      name: "Power",
+      subPath: "power",
+      component: PowerManagment
+    }
+  ];
 
-const SystemRoot = () => (
-  <>
-    {/* Use switch so only the first match is rendered. match.url = /system */}
-    <Switch>
-      <Route exact path={rootPath} component={SystemHome} />
-      <Route path={rootPath + "/" + updatePath} component={SystemUpdate} />
-      <Route
-        path={rootPath + "/" + addIpfsPeerPath + "/:peer"}
-        component={AddIpfsPeer}
-      />
-      <Route
-        path={rootPath + "/:id"}
-        render={props => <PackageInterface {...props} moduleName={title} />}
-      />
-    </Switch>
-  </>
-);
+  return (
+    <>
+      <Title title={title} />
 
-// Container
+      <div className="horizontal-navbar">
+        {availableRoutes
+          .filter(route => !route.hideFromMenu)
+          .map(route => (
+            <button key={route.subPath} className="item-container">
+              <NavLink
+                to={`${match.url}/${route.subPath}`}
+                className="item no-a-style"
+                style={{ whiteSpace: "nowrap" }}
+              >
+                {route.name}
+              </NavLink>
+            </button>
+          ))}
+      </div>
 
-// Use `compose` from "redux" if you need multiple HOC
+      <div className="section-spacing">
+        <Switch>
+          {availableRoutes.map(route => (
+            <Route
+              key={route.subPath}
+              path={`${match.path}/${route.subPath}`}
+              component={route.component}
+            />
+          ))}
+          {/* Redirect automatically to the first route. DO NOT hardcode 
+              to prevent typos and causing infinite loops */}
+          <Redirect to={`${match.url}/${availableRoutes[0].subPath}`} />
+        </Switch>
+      </div>
+    </>
+  );
+}
+
 export default SystemRoot;

@@ -6,7 +6,6 @@ import { NavLink } from "react-router-dom";
 import api from "API/rpcMethods";
 // Components
 import Card from "components/Card";
-import SubTitle from "components/SubTitle";
 import Switch from "components/Switch";
 import Alert from "react-bootstrap/Alert";
 // Utils
@@ -50,49 +49,46 @@ function AutoUpdates({ autoUpdateData, progressLogs, mainnetBadStatus }) {
   }
 
   return (
-    <>
-      <SubTitle>Auto-updates</SubTitle>
-      <Card>
-        <div className="auto-updates-explanation">
-          Enable auto-updates for DAppNode to stay automatically up to date to
-          the latest versions. <strong>Note</strong> that for major breaking
-          updates, the interaction of an admin will always be required.
-        </div>
+    <Card>
+      <div className="auto-updates-explanation">
+        Enable auto-updates for DAppNode to stay automatically up to date to the
+        latest versions. <strong>Note</strong> that for major breaking updates,
+        the interaction of an admin will always be required.
+      </div>
 
-        {mainnetBadStatus && (
-          <Alert variant="warning">
-            {mainnetBadStatus}. Note that auto-updates will not work meanwhile.
-          </Alert>
-        )}
+      {mainnetBadStatus && (
+        <Alert variant="warning">
+          {mainnetBadStatus}. Note that auto-updates will not work meanwhile.
+        </Alert>
+      )}
 
-        <div className="list-grid auto-updates">
-          {/* Table header */}
-          <span className="stateBadge" />
-          <span className="name" />
-          <span className="last-update header">Last auto-update</span>
-          <span className="header">Enabled</span>
+      <div className="list-grid auto-updates">
+        {/* Table header */}
+        <span className="stateBadge" />
+        <span className="name" />
+        <span className="last-update header">Last auto-update</span>
+        <span className="header">Enabled</span>
 
-          <hr />
-          {/* Items of the table */}
-          {dnpsToShow.map(({ id, displayName, enabled, feedback }) => (
-            <AutoUpdateItem
-              key={id}
-              {...{
-                id,
-                displayName,
-                enabled,
-                feedback,
-                isInstalling:
-                  progressLogs[id === SYSTEM_PACKAGES ? coreName : id],
-                isSinglePackage: id !== MY_PACKAGES && id !== SYSTEM_PACKAGES,
-                // Actions
-                setUpdateSettings
-              }}
-            />
-          ))}
-        </div>
-      </Card>
-    </>
+        <hr />
+        {/* Items of the table */}
+        {dnpsToShow.map(({ id, displayName, enabled, feedback }) => (
+          <AutoUpdateItem
+            key={id}
+            {...{
+              id,
+              displayName,
+              enabled,
+              feedback,
+              isInstalling:
+                progressLogs[id === SYSTEM_PACKAGES ? coreName : id],
+              isSinglePackage: id !== MY_PACKAGES && id !== SYSTEM_PACKAGES,
+              // Actions
+              setUpdateSettings
+            }}
+          />
+        ))}
+      </div>
+    </Card>
   );
 }
 

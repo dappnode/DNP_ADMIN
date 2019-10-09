@@ -10,6 +10,7 @@ import * as loadingIds from "services/loadingStatus/loadingIds";
 // Utils
 import { assertConnectionOpen } from "utils/redux";
 import { stringSplit, stringIncludes } from "utils/strings";
+import { wifiName } from "params";
 
 // Service > dappnodeStatus
 
@@ -117,7 +118,7 @@ const checkWifiStatus = wrapErrorsAndLoading(
   loadingIds.wifiStatus,
   function*() {
     const logs = yield call(api.logPackage, {
-      id: "wifi.dnp.dappnode.eth",
+      id: wifiName,
       options: {}
     });
     const firstLogLine = stringSplit(logs.trim(), "\n")[0];
@@ -153,6 +154,18 @@ const fetchAutoUpdateData = wrapErrorsAndLoading(
 );
 
 /**
+ * Get DAppNode identity (eth address):
+ */
+const fetchIdentityAddress = wrapErrorsAndLoading(
+  loadingIds.identity,
+  function*() {
+    // If there are no settings the return will be null
+    const identityAddress = yield call(api.seedPhraseGetPublicKey);
+    yield put(a.updateIdentityAddress(identityAddress) || {});
+  }
+);
+
+/**
  * Aggregates all previous data fetches
  */
 function* fetchAllDappnodeStatus() {
@@ -166,7 +179,8 @@ function* fetchAllDappnodeStatus() {
       call(checkIpfsConnectionStatus),
       call(checkWifiStatus),
       call(checkIfPasswordIsInsecure),
-      call(fetchAutoUpdateData)
+      call(fetchAutoUpdateData),
+      call(fetchIdentityAddress)
     ]);
   } catch (e) {
     console.error(`Error on fetchAllDappnodeStatus: ${e.stack}`);
@@ -186,5 +200,6 @@ export default rootWatcher([
   [t.FETCH_DAPPNODE_STATS, fetchDappnodeStats],
   [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],
   [t.FETCH_IF_PASSWORD_IS_INSECURE, checkIfPasswordIsInsecure],
+  [t.FETCH_IDENTITY_ADDRESS, fetchIdentityAddress],
   [t.PING_DAPPNODE_DNPS, pingDappnodeDnps]
 ]);

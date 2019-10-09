@@ -47,5 +47,5 @@ export const toggleAdmin = id => () =>
 
 export const getDeviceCredentials = id => dispatch =>
   api.getDeviceCredentials({ id }, { toastOnError: true }).then(data => {
-    dispatch(updateDevice(id, data));
+    if (data) dispatch(updateDevice(id, data));
   });

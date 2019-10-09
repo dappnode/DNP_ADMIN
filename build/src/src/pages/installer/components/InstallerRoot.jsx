@@ -1,16 +1,15 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import { rootPath } from "../data";
 // Components
 import InstallerHome from "./InstallerHome";
 import InstallerSinglePkg from "./InstallerSinglePkg";
 // Modules
 
-const InstallerRoot = () => (
+const InstallerRoot = ({ match }) => (
   <>
-    <Route exact path={rootPath} component={InstallerHome} />
+    <Route exact path={match.path} component={InstallerHome} />
     {/* Using :id+ so it matches only id.length > 0 */}
-    <Route path={rootPath + "/:id+"} component={InstallerSinglePkg} />
+    <Route path={match.path + "/:id+"} component={InstallerSinglePkg} />
   </>
 );
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { title, rootPath } from "../data";
+import { title } from "../data";
 import { Link } from "react-router-dom";
 import newTabProps from "utils/newTabProps";
 // Components
@@ -24,7 +24,7 @@ const subRoutes = [
   // }
 ];
 
-function SdkHome() {
+function SdkHome({ match }) {
   return (
     <>
       <Title title={title} />
@@ -53,8 +53,8 @@ function SdkHome() {
         </div>
         <p>
           The dappnodesdk can be installed locally with npm. Then you can
-          initialize a DAppNode Package, build it's docker image and publish it on the Aragon
-          Package Manager (APM) on the ethereum mainnet
+          initialize a DAppNode Package, build it's docker image and publish it
+          on the Aragon Package Manager (APM) on the ethereum mainnet
         </p>
 
         <a
@@ -73,7 +73,7 @@ function SdkHome() {
             <h5 className="card-title">{title}</h5>
             <div style={{ opacity: "0.5" }}>{subtitle}</div>
           </div>
-          <Link to={rootPath + "/" + route}>
+          <Link to={match.url + "/" + route}>
             <ButtonLight>{route}</ButtonLight>
           </Link>
         </Card>
