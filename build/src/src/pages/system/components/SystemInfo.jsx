@@ -8,12 +8,10 @@ import { getDappnodeVolumes } from "services/dnpInstalled/selectors";
 import { getChainData } from "services/chainData/selectors";
 import { getDappnodeStats } from "services/dappnodeStatus/selectors";
 // Own module
-import ChainCard from "pages/dashboard/components/ChainCard";
 import StatsCard from "pages/dashboard/components/StatsCard";
 import VolumeCard from "pages/dashboard/components/VolumeCard";
 // Components
 import SubTitle from "components/SubTitle";
-import Title from "components/Title";
 
 /**
  * @param {array} chainData = [{

@@ -11,7 +11,6 @@ import Peers from "./Peers";
 import Identity from "./Identity";
 import SystemInfo from "./SystemInfo";
 import Title from "components/Title";
-import Card from "components/Card";
 
 function SystemRoot({ match }) {
   /**
