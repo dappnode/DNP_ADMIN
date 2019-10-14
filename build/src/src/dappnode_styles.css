@@ -198,6 +198,10 @@ p.no-p-style:last-child {
 .card-body.spacing > *:not(:last-child) {
   margin-bottom: var(--default-spacing);
 }
+.card-body.spacing.divider > *:not(:last-child) {
+  padding-bottom: var(--default-spacing);
+  border-bottom: var(--border-style);
+}
 
 /* Center bootstrap columns */
 
@@ -232,6 +236,6 @@ p.no-p-style:last-child {
 
 /* Data-heavy card sections */
 .subtle-header {
-  opacity: 0.4;
+  color: #757575;
   font-size: 0.8rem;
 }

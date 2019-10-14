@@ -86,9 +86,11 @@ const manifestLn = {
 
 const manifestVipnode = {
   name: "vipnode.dnp.dappnode.eth",
-  version: "0.0.1",
+  version: "0.1.0",
+  upstreamVersion: "2.2.1",
+  shortDescription: "Economic incentive for running Ethereum full nodes",
   description:
-    "https://vipnode.org - Economic incentive for running Ethereum full nodes. The goal is to allow the Ethereum network to remain decentralized by creating a financial marketplace for more people to run full nodes and serve native light clients.",
+    "[Vipnode](https://vipnode.org)'s goal is to allow the Ethereum network to remain decentralized by creating a financial marketplace for more people to run full nodes and serve native light clients. Check this [medium article](https://medium.com/vipnode/an-economic-incentive-for-running-ethereum-full-nodes-ecc0c9ebe22) to understand the motivation behind this project and this [2.0 release article](https://medium.com/vipnode/vipnode-2-0-released-9af1d65b4552) for a tutorial on how to use Vipnode.",
   avatar: "https://ipfs.io/ipfs/Qmen3srZXEHncMM2RPsgVKkPbkJPTMN9SNFVEAQQY4a7Nf",
   type: "service",
   image: {
@@ -99,11 +101,45 @@ const manifestVipnode = {
     environment: ["PAYOUT_ADDRESS="],
     external_vol: ["dncore_ethchaindnpdappnodeeth_data:/app/.ethchain:ro"]
   },
-  dependencies: {},
+  author:
+    "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
+  categories: ["Economic incentive"],
+  links: {
+    homepage: "https://github.com/dappnode/DAppNodePackage-vipnode"
+  },
+  wizard: {
+    description: `This setup wizard will help you start. In case of problems: https://vipnode.io`,
+    type: "object",
+    required: ["payoutAddress"],
+    properties: {
+      payoutAddress: {
+        target: {
+          type: "environment",
+          name: "PAYOUT_ADDRESS"
+        },
+        type: "string",
+        title: "Payout address",
+        description: "Define an Ethereum mainnet address to get rewards to",
+        pattern: "^0x[a-fA-F0-9]{40}$",
+        customErrors: {
+          pattern: "Must be an address 0x1234... 40 bytes"
+        },
+        "ui:help": "Don't use your main address"
+      }
+    }
+  },
   disclaimer: {
     message:
-      "This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package.\n\nThis package stores private keys, which will be stored in your DAppNode. Neither DAppNode Association nor the developers of this software can have access to your private key, nor help you recover it if you lose it. \n\nYou are solely responsible for keeping your private keys and password safe and to perform secure backups, as well as to restrict access to your computer and other equipment. To the extent permitted by applicable law, you agree to be responsible for all activities that have been conducted from your account. You must take all necessary steps to ensure that your private key, password, and recovery phrase remain confidential and secured. \n\nThis is an Alpha version of experimental open source software released as a test version under an MIT license and may contain errors and/or bugs. No guarantee or representations whatsoever is made regarding its suitability (or its use) for any purpose or regarding its compliance with any applicable laws and regulations. Use of the software is at your own risk and discretion and by using the software you acknowledge that you have read this disclaimer, understand its contents, assume all risk related thereto and hereby release, waive, discharge and covenant not to sue Brainbot Labs Establishment or any officers, employees or affiliates from and for any direct or indirect liability resulting from the use of the software as permissible by applicable laws and regulations.\n\nPrivacy Warning: Please be aware, that by using the Raiden Client, \namong others, your Ethereum address, channels, channel deposits, settlements and the Ethereum address of your channel counterparty will be stored on the Ethereum chain, i.e. on servers of Ethereum node operators and ergo are to a certain extent publicly available. The same might also be stored on systems of parties running Raiden nodes connected to the same token network. Data present in the Ethereum chain is very unlikely to be able to be changed, removed or deleted from the public arena.\n\nAlso be aware, that data on individual Raiden token transfers will be made available via the Matrix protocol to the recipient, intermediating nodes of a specific transfer as well as to the Matrix server operators."
-  }
+      "This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package."
+  },
+  repository: {
+    type: "git",
+    url: "https://github.com/dappnode/DAppNodePackage-vipnode.git"
+  },
+  bugs: {
+    url: "https://github.com/dappnode/DAppNodePackage-vipnode/issues"
+  },
+  license: "GPL-3.0"
 };
 
 const manifestRaiden = {

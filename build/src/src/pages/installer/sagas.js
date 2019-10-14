@@ -2,7 +2,6 @@ import { call, put, select } from "redux-saga/effects";
 import api from "API/rpcMethods";
 import * as t from "./actionTypes";
 import * as a from "./actions";
-import * as s from "./selectors";
 // Actions
 import { fetchDnpDirectory as actionFetchDnpDirectory } from "services/dnpDirectory/actions";
 import { updateDnpDirectoryById } from "services/dnpDirectory/actions";
@@ -26,7 +25,7 @@ import { stringSplit, stringIncludes } from "utils/strings";
 
 /***************************** Subroutines ************************************/
 
-export function* install({ id, options }) {
+export function* install({ id, userSetFormData, options }) {
   try {
     // Prevent double installations: check if the package is in the blacklist
     if (yield select(getIsInstallingByDnp, id)) {
@@ -57,30 +56,11 @@ export function* install({ id, options }) {
       })
     );
 
-    /**
-     * Formats userSet parameters to be send to the dappmanager
-     * userSetFormatted = {
-     *   userSetEnvs = {
-     *     "kovan.dnp.dappnode.eth": {
-     *       "ENV_NAME": "VALUE1"
-     *     }, ... },
-     *   userSetVols = "kovan.dnp.dappnode.eth": {
-     *      "old_path:/root/.local": "new_path:/root/.local"
-     *    }, ... },
-     *   userSetPorts = {
-     *    "kovan.dnp.dappnode.eth": {
-     *      "30303": "31313:30303",
-     *      "30303/udp": "31313:30303/udp"
-     *   }, ... }
-     * }
-     */
-    const userSetFormatted = yield select(s.getUserSetFormatted);
-
     // Fire call
     const toastMessage = `Adding ${shortName(idToInstall)}...`;
     yield call(
       api.installPackage,
-      { id: idToInstall, ...userSetFormatted, options },
+      { id: idToInstall, userSet: userSetFormData, options },
       { toastMessage }
     );
 

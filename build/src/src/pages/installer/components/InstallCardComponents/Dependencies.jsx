@@ -52,11 +52,14 @@ Dependencies.propTypes = {
   resolving: PropTypes.bool.isRequired
 };
 
-export default props => (
-  <>
-    <SubTitle>Dependencies</SubTitle>
-    <CardList>
-      <Dependencies {...props} />
-    </CardList>
-  </>
-);
+export default ({ noCard, ...props }) =>
+  noCard ? (
+    <Dependencies {...props} />
+  ) : (
+    <>
+      <SubTitle>Dependencies</SubTitle>
+      <CardList>
+        <Dependencies {...props} />
+      </CardList>
+    </>
+  );

@@ -1,11 +1,5 @@
 // INSTALLER
 import * as t from "./actionTypes";
-import { confirm } from "components/ConfirmDialog";
-import { shortNameCapitalized as sn, isDnpVerified } from "utils/format";
-// Selectors
-import { getDnpDirectoryById } from "services/dnpDirectory/selectors";
-// Parsers
-import parseSpecialPermissions from "./parsers/parseSpecialPermissions";
 
 export const fetchDirectory = () => ({
   type: t.FETCH_DIRECTORY
@@ -29,51 +23,12 @@ export const fetchPackageRequest = id => ({
   id
 });
 
-export const install = (id, options) => async (dispatch, getState) => {
-  const dnp = getDnpDirectoryById(getState(), id);
-  const displayName = ((dnp || {}).manifest || {}).name;
-
-  // Special permissions
-  const specialPermissions = parseSpecialPermissions(dnp.manifest);
-  if (specialPermissions.length)
-    await new Promise(resolve =>
-      confirm({
-        title: `Special permissions`,
-        text: `${displayName} needs:`,
-        list: specialPermissions.map(({ name, details }) => ({
-          title: name,
-          body: details
-        })),
-        label: "Accept",
-        onClick: resolve,
-        variant: "dappnode"
-      })
-    );
-
-  // Dialog to accept the disclaimer if any
-  let disclaimerSections = [];
-  // Default disclaimer for public DNPs
-  if (!isDnpVerified(dnp.name) || dnp.origin)
-    disclaimerSections.push(
-      "This package has been developed by a third party. DAppNode association is not maintaining this package and has not performed any audit on its content. Use it at your own risk. DAppNode will not be liable for any loss or damage produced by the use of this package"
-    );
-  const manifestDisclaimerObject = (dnp.manifest || {}).disclaimer;
-  if (manifestDisclaimerObject)
-    disclaimerSections.push(manifestDisclaimerObject.message);
-
-  if (disclaimerSections.length)
-    await new Promise(resolve =>
-      confirm({
-        title: `${sn(displayName)} disclaimer`,
-        text: disclaimerSections.join("\n\n----\n\n"),
-        label: "Accept",
-        onClick: resolve,
-        variant: "dappnode"
-      })
-    );
-
-  dispatch({ type: t.INSTALL, id, options });
-};
+export const install = ({ id, userSet, options }) => ({
+  type: t.INSTALL,
+  id,
+  userSet,
+  options
+});
 
 export const openPorts = ports => ({
   type: t.MANAGE_PORTS,

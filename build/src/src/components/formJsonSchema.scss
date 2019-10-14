@@ -1,0 +1,39 @@
+.rjsf {
+  .cancel-button {
+    margin-right: var(--default-spacing);
+  }
+
+  // Styles of the react-jsonschema-form library
+  .control-label {
+    font-weight: bold;
+  }
+
+  .has-error {
+    input {
+      border-color: var(--danger-color);
+    }
+  }
+  & > .form-group > fieldset > .form-group:not(.confirm) {
+    padding-top: var(--default-spacing);
+    border-top: var(--border-style);
+  }
+
+  .help-block {
+    display: block;
+    margin-top: 0.25rem;
+    color: #737373;
+    font-size: 85%;
+  }
+
+  ul.error-detail {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    li {
+      font-size: 85%;
+      width: 100%;
+      margin-top: 0.25rem;
+      list-style: none;
+    }
+  }
+}
