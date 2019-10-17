@@ -52,7 +52,7 @@ function SystemRoot({ match }) {
     },
     {
       name: "Peers",
-      subPath: "peers",
+      subPath: "add-ipfs-peer",
       component: Peers
     },
     {
