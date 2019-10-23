@@ -27,7 +27,8 @@ function SystemRoot({ match }) {
     {
       name: "Identity",
       subPath: "identity",
-      component: Identity
+      component: Identity,
+      hideFromMenu: true
     },
     {
       name: "Security",

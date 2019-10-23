@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import ClipboardJS from "clipboard";
+import styled from "styled-components";
 import { ipfsApiUrl } from "../../data";
 // Components
 import Card from "components/Card";
@@ -38,6 +39,10 @@ import { getDappnodeParams } from "services/dappnodeStatus/selectors";
  * - /dnsaddr/
  */
 
+const ErrMsg = styled.div`
+  color: var(--danger-color);
+`;
+
 function ShareIpfsPeer({ dappnodeParams, matchUrl }) {
   const { staticIp, domain } = dappnodeParams || {};
 
@@ -68,16 +73,18 @@ function ShareIpfsPeer({ dappnodeParams, matchUrl }) {
     new ClipboardJS(".copy-input-copy");
   }, []);
 
-  let peerMultiAddress;
-  if (peerId && (staticIp || domain)) {
-    const origin = staticIp ? `/ip4/${staticIp}` : `/dns4/${domain}`;
-    peerMultiAddress = `${origin}/tcp/4001/ipfs/${peerId}`;
-  }
+  const origin = staticIp
+    ? `/ip4/${staticIp}`
+    : domain
+    ? `/dns4/${domain}`
+    : "";
+  const peerMultiAddressEncoded =
+    origin && peerId
+      ? encodeURIComponent(`${origin}/tcp/4001/ipfs/${peerId}`)
+      : "";
 
   // http://my.dappnode/#/system/add-ipfs-peer/%2Fip4%2F1.9.207.246%2Ftcp%2F4001%2Fipfs%2FQmQnwHU6nj1v47mZQWeej4rBtYYTPrMJft88vKp9BAV38L
-  const addMyPeerUrl = `http://my.dappnode/#${matchUrl}/${encodeURIComponent(
-    peerMultiAddress
-  )}`;
+  const addMyPeerUrl = `http://my.dappnode/#${matchUrl}/${peerMultiAddressEncoded}`;
 
   return (
     <Card spacing>
@@ -88,19 +95,27 @@ function ShareIpfsPeer({ dappnodeParams, matchUrl }) {
       </div>
 
       {peerId ? (
-        <Input
-          disabled={true}
-          value={addMyPeerUrl || ""}
-          className="copy-input"
-          append={
-            <Button
-              className="copy-input-copy"
-              data-clipboard-text={addMyPeerUrl}
-            >
-              <GoClippy />
-            </Button>
-          }
-        />
+        <>
+          {origin && peerId ? (
+            <Input
+              disabled={true}
+              value={addMyPeerUrl}
+              className="copy-input"
+              append={
+                <Button
+                  className="copy-input-copy"
+                  data-clipboard-text={addMyPeerUrl}
+                >
+                  <GoClippy />
+                </Button>
+              }
+            />
+          ) : null}
+          {!origin ? (
+            <ErrMsg>Could not fetch domain or static IP</ErrMsg>
+          ) : null}
+          {!peerId ? <ErrMsg>Could not fetch peer ID</ErrMsg> : null}
+        </>
       ) : (
         <Ok
           loading={loading}
