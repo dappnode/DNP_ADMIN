@@ -13,9 +13,7 @@ import * as a from "../actions";
 import ProgressLogs from "./InstallCardComponents/ProgressLogs";
 import Dependencies from "./InstallCardComponents/Dependencies";
 import SpecialPermissions from "./InstallCardComponents/SpecialPermissions";
-import Vols from "./InstallCardComponents/Vols";
-import Envs from "./InstallCardComponents/Envs";
-import Ports from "./InstallCardComponents/Ports";
+import OldEditor from "./OldEditor";
 // Utils
 import { toSentence } from "utils/strings";
 import humanFileSize from "utils/humanFileSize";
@@ -49,7 +47,7 @@ function InstallerInterface({
   // Extra
   history
 }) {
-  const [showSettings, setShowSettings] = useState(false);
+  const [showSettings, setShowSettings] = useState(true);
   const [options, setOptions] = useState({});
 
   useEffect(() => {
@@ -186,9 +184,13 @@ function InstallerInterface({
 
       {showSettings ? (
         <>
-          <Envs />
-          <Ports />
-          <Vols />
+          <OldEditor
+            dnp={{
+              envs: { LOG_LEVEL: "debug" },
+              ports: { "9096/tcp": "9096" },
+              vols: { "/data/.bitcoin": "data" }
+            }}
+          />
         </>
       ) : (
         <ButtonLight onClick={() => setShowSettings(true)}>

@@ -40,7 +40,7 @@ function TableInputs({ headers, content, numOfRows = 2, rowsTemplate }) {
 
   return (
     <TableXN
-      style={{ gridTemplateColumns: rowsTemplate || "auto ".repeat(numOfRows) }}
+      style={{ gridTemplateColumns: rowsTemplate || "1fr ".repeat(numOfRows) }}
     >
       {headers.map((header, i) => (
         <Header key={i}>{header}</Header>
