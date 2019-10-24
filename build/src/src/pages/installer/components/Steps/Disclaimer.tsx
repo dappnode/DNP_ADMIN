@@ -5,7 +5,17 @@ import Card from "components/Card";
 import Button from "components/Button";
 import StatusIcon from "components/StatusIcon";
 
-export default function Disclaimer({ disclaimers, onAccept, goBack }) {
+interface DisclaimerProps {
+  disclaimers: { name: string; message: string }[];
+  onAccept: () => void;
+  goBack: () => void;
+}
+
+const Disclaimer: React.FunctionComponent<DisclaimerProps> = ({
+  disclaimers,
+  onAccept,
+  goBack
+}) => {
   /**
    * @param disclaimers = [{
    *   name: "Package disclaimer"
@@ -35,4 +45,6 @@ export default function Disclaimer({ disclaimers, onAccept, goBack }) {
       </div>
     </Card>
   );
-}
+};
+
+export default Disclaimer;

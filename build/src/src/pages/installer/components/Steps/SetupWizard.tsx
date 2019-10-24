@@ -1,35 +1,41 @@
 import React from "react";
-import PropTypes from "prop-types";
 // Components
 import Card from "components/Card";
 import FormJsonSchema from "components/FormJsonSchema";
+import { SetupSchema, SetupUiSchema } from "types";
 
-export default function SetupWizard({
-  wizard,
+interface SetupWizardProps {
+  setupSchema: SetupSchema;
+  setupUiSchema: SetupUiSchema;
+  initialFormData: any;
+  onSubmit: (formData: any) => void;
+  goBack: () => void;
+}
+
+const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
+  setupSchema,
+  setupUiSchema,
   initialFormData,
   onSubmit,
-  onChange,
   goBack
-}) {
-  function _onSubmit(formData) {
+}) => {
+  function _onSubmit(formData: any) {
     onSubmit(formData);
   }
 
   return (
     <Card spacing>
       <FormJsonSchema
-        schema={wizard}
+        schema={setupSchema}
+        uiSchema={setupUiSchema}
         initialFormData={initialFormData}
         onSubmit={_onSubmit}
         onCancel={() => goBack()}
-        onChange={onChange}
         onSubmitLabel="Submit"
         onCancelLabel="Back"
       ></FormJsonSchema>
     </Card>
   );
-}
-
-SetupWizard.propTypes = {
-  dnp: PropTypes.object
 };
+
+export default SetupWizard;

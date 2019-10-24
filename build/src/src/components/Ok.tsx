@@ -17,7 +17,15 @@ const IconContainer = styled.span`
 
 // margin-bottom: 2px;
 
-export default function Ok({ msg, ok, loading, ...props }) {
+interface OkProps {
+  ok?: boolean;
+  loading?: boolean;
+  msg: string;
+}
+
+const Ok: React.FunctionComponent<
+  OkProps & React.HTMLAttributes<HTMLDivElement>
+> = ({ msg, ok, loading, ...props }) => {
   return (
     <OkContainer {...props}>
       <IconContainer>
@@ -39,4 +47,6 @@ export default function Ok({ msg, ok, loading, ...props }) {
       <span>{msg}</span>
     </OkContainer>
   );
-}
+};
+
+export default Ok;

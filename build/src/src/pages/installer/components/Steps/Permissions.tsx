@@ -5,7 +5,17 @@ import Card from "components/Card";
 import Button from "components/Button";
 import StatusIcon from "components/StatusIcon";
 
-export default function Permissions({ permissions, onAccept, goBack }) {
+interface PermissionsProps {
+  permissions: { name: string; details: string }[];
+  onAccept: () => void;
+  goBack: () => void;
+}
+
+const Permissions: React.FunctionComponent<PermissionsProps> = ({
+  permissions,
+  onAccept,
+  goBack
+}) => {
   /**
    * @param permissions = [{
    *   name: "Short description",
@@ -35,4 +45,6 @@ export default function Permissions({ permissions, onAccept, goBack }) {
       </div>
     </Card>
   );
-}
+};
+
+export default Permissions;

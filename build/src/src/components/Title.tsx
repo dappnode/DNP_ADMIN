@@ -1,6 +1,15 @@
 import React from "react";
 
-function Title({ title, subtitle, children }) {
+interface TitleProps {
+  title: string;
+  subtitle?: string;
+}
+
+const Title: React.FunctionComponent<TitleProps> = ({
+  title,
+  subtitle,
+  children
+}) => {
   if (children) return <div className="section-title">{children}</div>;
   if (subtitle)
     return (
@@ -10,6 +19,6 @@ function Title({ title, subtitle, children }) {
       </div>
     );
   return <div className="section-title">{title}</div>;
-}
+};
 
 export default Title;

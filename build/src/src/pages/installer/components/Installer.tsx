@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import withTitle from "components/hoc/withTitle";
 import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
-import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 import { Switch, Route, Redirect } from "react-router-dom";
 // This module
@@ -17,8 +16,12 @@ import { joinCssClass } from "utils/css";
 // Parsers
 import parseSpecialPermissions from "../parsers/parseSpecialPermissions";
 // Selectors
-import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
+import {
+  getProgressLogsByDnp,
+  getIsInstallingLogs
+} from "services/isInstallingLogs/selectors";
 import { rootPath as packagesRootPath } from "pages/packages/data";
+import { getDnpRequest } from "services/dnpRequest/selectors";
 // Components
 import Info from "./Steps/Info";
 import SetupWizard from "./Steps/SetupWizard";
@@ -28,6 +31,13 @@ import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
 // ### Move out
 import "./stepper.scss";
+import Title from "components/Title";
+import { RequestedDnp } from "types";
+
+interface InstallerInterfaceProps {
+  dnp: RequestedDnp;
+  progressLogs: { [dnpName: string]: string };
+}
 
 /**
  * [WARNING!] Do NOT store the userSetFormData as it may contain large files,
@@ -37,39 +47,30 @@ import "./stepper.scss";
 //   "dappnode-user-set-form-data-" + dnp.origin ||
 //   (dnp.manifest || {}).name + (dnp.manifest || {}).version;
 
-function InstallerInterface({
-  id,
+const InstallerInterface: React.FunctionComponent<
+  InstallerInterfaceProps & RouteComponentProps
+> = ({
   dnp,
-  isQueryDnpUpdated,
-  requiresCoreUpdate,
   progressLogs,
-  // Actions
-  install,
-  clearUserSet,
-  fetchPackageRequest,
   // Extra
   history,
   location,
   match
-}) {
+}) => {
   const [userSetFormData, setUserSetFormData] = useState({});
-  const [options, setOptions] = useState({});
+  const [options, setOptions] = useState({} as { [optionId: string]: boolean });
 
-  useEffect(() => {
-    clearUserSet();
-    fetchPackageRequest(id);
-  }, [id, clearUserSet, fetchPackageRequest]);
-
-  const { loading, error, manifest, tag } = dnp || {};
-  const { name, type } = manifest || {};
-  const wizard = (manifest || {}).wizard;
-  const permissions = parseSpecialPermissions(dnp.manifest);
-  const disclaimerObj = (manifest || {}).disclaimer;
+  const { name, version, origin, metadata } = dnp;
+  const type = metadata.type;
+  const setupSchema = dnp.setupSchema;
+  const setupUiSchema = dnp.setupUiSchema;
+  const permissions = parseSpecialPermissions(metadata);
+  const requiresCoreUpdate = dnp.request.compatible.requiresCoreUpdate;
 
   /**
    * Construct disclaimer
    */
-  const disclaimers = [];
+  const disclaimers: { name: string; message: string }[] = [];
   // Default disclaimer for public DNPs
   if (!isDnpVerified(dnp.name) || dnp.origin)
     disclaimers.push({
@@ -77,10 +78,10 @@ function InstallerInterface({
       message:
         "This package has been developed by a third party. DAppNode association is not maintaining this package and has not performed any audit on its content. Use it at your own risk. DAppNode will not be liable for any loss or damage produced by the use of this package"
     });
-  if (disclaimerObj)
+  if (metadata.disclaimer)
     disclaimers.push({
       name: shortNameCapitalized(name),
-      message: disclaimerObj.message
+      message: metadata.disclaimer.message
     });
 
   /**
@@ -105,7 +106,7 @@ function InstallerInterface({
    * Call the install method with the gathered data
    */
   function onInstall() {
-    install({ id, userSet: userSetFormData, options });
+    // install({ name, version, userSet: userSetFormData, options });
   }
 
   /**
@@ -113,7 +114,7 @@ function InstallerInterface({
    * 1. If package is core and from ipfs, show "BYPASS_CORE_RESTRICTION" option
    */
   const availableOptions = [];
-  if ((id || "").startsWith("/ipfs/") && type === "dncore")
+  if (origin && type === "dncore")
     availableOptions.push("BYPASS_CORE_RESTRICTION");
 
   const disableInstallation = !isEmpty(progressLogs) || requiresCoreUpdate;
@@ -129,8 +130,9 @@ function InstallerInterface({
       subPath: setupSubPath,
       render: () => (
         <SetupWizard
-          wizard={wizard}
-          onSubmit={formData => {
+          setupSchema={setupSchema || {}}
+          setupUiSchema={setupUiSchema || {}}
+          onSubmit={(formData: any) => {
             setUserSetFormData(formData);
             goNext();
           }}
@@ -138,7 +140,7 @@ function InstallerInterface({
           initialFormData={userSetFormData}
         />
       ),
-      available: !isEmpty(wizard)
+      available: !isEmpty(setupSchema)
     },
     {
       name: "Permissions",
@@ -187,9 +189,11 @@ function InstallerInterface({
   useEffect(() => {
     if (currentSubRoute) history.push(match.url);
   }, []);
-  useEffect(() => {
-    if (isQueryDnpUpdated && name) history.push(packagesRootPath + "/" + name);
-  }, [tag, name, isQueryDnpUpdated, history]);
+
+  // Do this in a different way
+  // useEffect(() => {
+  //   if (isQueryDnpUpdated && name) history.push(packagesRootPath + "/" + name);
+  // }, [tag, name, isQueryDnpUpdated, history]);
 
   function goNext() {
     const nextIndex = currentIndex + 1;
@@ -208,10 +212,6 @@ function InstallerInterface({
     if (prevStep) history.push(`${match.url}/${prevStep.subPath}`);
     else history.push(match.url);
   }
-
-  if (error && !manifest) return <Error msg={`Error: ${error}`} />;
-  if (loading) return <Loading msg={"Loading DAppNode Package data..."} />;
-  if (!dnp && !error) return <Error msg={"DAppNode Package not found"} />;
 
   return (
     <>
@@ -233,7 +233,10 @@ function InstallerInterface({
             return (
               <div
                 key={route.name}
-                className={`steps-step ${joinCssClass({ active, completed })}`}
+                className={`steps-step ${joinCssClass({
+                  active,
+                  completed
+                })}`}
               >
                 <div className="connector">
                   <span />
@@ -275,31 +278,21 @@ function InstallerInterface({
             />
           ))}
         {/* Redirect automatically to the first route. DO NOT hardcode 
-              to prevent typos and causing infinite loops */}
+                to prevent typos and causing infinite loops */}
         <Redirect to={`${match.url}/${availableRoutes[0].subPath}`} />
       </Switch>
     </>
   );
-}
-
-InstallerInterface.propTypes = {
-  id: PropTypes.string.isRequired,
-  dnp: PropTypes.object,
-  history: PropTypes.object.isRequired
 };
 
 // Container
 
+const getIdFromOwnProps = (ownProps: { match?: { params: { id: string } } }) =>
+  ((ownProps.match || {}).params || {}).id || "";
+
 const mapStateToProps = createStructuredSelector({
-  id: s.getQueryId,
-  dnp: s.getQueryDnp,
-  isQueryDnpUpdated: s.getIsQueryDnpUpdated,
-  requiresCoreUpdate: s.getQueryDnpRequiresCoreUpdate,
-  progressLogs: (state, ownProps) =>
-    getProgressLogsByDnp(state, s.getQueryIdOrName(state, ownProps)),
-  // For the withTitle HOC
-  subtitle: (state, ownProps) =>
-    shortNameCapitalized(s.getQueryIdOrName(state, ownProps))
+  dnp: (state: any, ownProps: any) =>
+    getDnpRequest(state, getIdFromOwnProps(ownProps))
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch
@@ -309,13 +302,6 @@ const mapDispatchToProps = {
   fetchPackageRequest: a.fetchPackageRequest
 };
 
-export default compose(
-  withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  withTitle("Installer")
-)(InstallerInterface);
+export default withRouter(InstallerInterface);
 
 // ##### TODO: - Implement the loading HOC for the specific DNP fetch

@@ -6,10 +6,15 @@ import { mountPoint as dappnodeStatusMountPoint } from "services/dappnodeStatus/
 import { mountPoint as devicesMountPoint } from "services/devices/data";
 import { mountPoint as dnpDirectoryMountPoint } from "services/dnpDirectory/data";
 import { mountPoint as dnpInstalledMountPoint } from "services/dnpInstalled/data";
+import { mountPoint as dnpRequestMountPoint } from "services/dnpRequest/data";
 import { mountPoint as isInstallingLogsMountPoint } from "services/isInstallingLogs/data";
 import { mountPoint as loadingStatusMountPoint } from "services/loadingStatus/data";
 import { mountPoint as notificationsMountPoint } from "services/notifications/data";
 import { mountPoint as userActionLogsMountPoint } from "services/userActionLogs/data";
+
+function getDescription(manifest) {
+  return manifest.shortDescription || manifest.description;
+}
 
 /**
  * Manifests
@@ -498,47 +503,106 @@ export const mockState = {
     { id: "other-user", admin: false, url: "link-to-otp/?id=617824#hdfuisf" }
   ],
 
-  /* dnpDirectory */
-  [dnpDirectoryMountPoint]: {
+  /* requests */
+  [dnpRequestMountPoint]: {
     "bitcoin.dnp.dappnode.eth": {
       name: "bitcoin.dnp.dappnode.eth",
-      whitelisted: true,
-      manifest: manifestBitcoin,
-      avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png"
-    },
-    "ln.dnp.dappnode.eth": {
-      name: "ln.dnp.dappnode.eth",
-      whitelisted: true,
-      manifest: manifestLn,
-      avatar: "https://i.ibb.co/Twjv2f3/ln.png"
-    },
-    "raiden.dnp.dappnode.eth": {
-      name: "raiden.dnp.dappnode.eth",
-      whitelisted: true,
-      manifest: manifestRaiden,
-      avatar: "https://i.ibb.co/Y0YzyrG/raiden300-min.png"
-    },
-    "raiden-testnet.dnp.dappnode.eth": {
-      name: "raiden-testnet.dnp.dappnode.eth",
-      whitelisted: true,
-      manifest: manifestRaidenTestnet,
-      avatar: "https://i.ibb.co/2ynnctD/raiden-testnet-300.png"
-    },
-    "vipnode.dnp.dappnode.eth": {
-      name: "vipnode.dnp.dappnode.eth",
-      whitelisted: true,
-      manifest: manifestVipnode,
-      avatar:
-        "https://i.ibb.co/ypjjMVJ/Qmen3sr-ZXEHnc-MM2-RPsg-VKk-Pbk-JPTMN9-SNFVEAQQY4a7-Nf.png"
-    },
-    "trustlines.dnp.dappnode.eth": {
-      name: "trustlines.dnp.dappnode.eth",
-      whitelisted: true,
-      isFeatured: true,
-      manifest: manifestTrustlines,
-      avatar: "https://i.ibb.co/vLBbdGZ/avatar-min.png"
+      origin: null,
+      avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png",
+      metadata: manifestBitcoin,
+      settings: {
+        "bitcoin.dnp.dappnode.eth": {
+          ports: { "8333": "8333" },
+          volumes: { bitcoin_data: "" },
+          environment: {
+            BTC_RPCUSER: "dappnode",
+            BTC_RPCPASSWORD: "dappnode",
+            BTC_TXINDEX: "1",
+            BTC_PRUNE: "0"
+          }
+        }
+      },
+      request: {
+        compatible: {
+          isCompatible: true,
+          message: "",
+          dnps: {
+            "bitcoin.dnp.dappnode.eth": {
+              from: "0.2.5",
+              to: "0.2.6"
+            }
+          }
+        },
+        available: {
+          isAvailable: true,
+          message: ""
+        }
+      }
     }
   },
+
+  /* dnpDirectory */
+  [dnpDirectoryMountPoint]: [
+    {
+      name: "bitcoin.dnp.dappnode.eth",
+      description: getDescription(manifestBitcoin),
+      avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png",
+      isInstalled: false,
+      isUpdated: false,
+      whitelisted: true,
+      isFeatured: false
+    },
+    {
+      name: "ln.dnp.dappnode.eth",
+      description: getDescription(manifestLn),
+      avatar: "https://i.ibb.co/Twjv2f3/ln.png",
+      isInstalled: false,
+      isUpdated: false,
+      whitelisted: true,
+      isFeatured: false
+    },
+    {
+      name: "raiden.dnp.dappnode.eth",
+      description: getDescription(manifestRaiden),
+      avatar: "https://i.ibb.co/Y0YzyrG/raiden300-min.png",
+      isInstalled: true,
+      isUpdated: true,
+      whitelisted: true,
+      isFeatured: false
+    },
+    {
+      name: "raiden-testnet.dnp.dappnode.eth",
+      description: getDescription(manifestRaidenTestnet),
+      avatar: "https://i.ibb.co/2ynnctD/raiden-testnet-300.png",
+      isInstalled: true,
+      isUpdated: false,
+      whitelisted: true,
+      isFeatured: false
+    },
+    {
+      name: "vipnode.dnp.dappnode.eth",
+      description: getDescription(manifestVipnode),
+      avatar:
+        "https://i.ibb.co/ypjjMVJ/Qmen3sr-ZXEHnc-MM2-RPsg-VKk-Pbk-JPTMN9-SNFVEAQQY4a7-Nf.png",
+      isInstalled: false,
+      isUpdated: false,
+      whitelisted: true,
+      isFeatured: false
+    },
+    {
+      name: "trustlines.dnp.dappnode.eth",
+      description: getDescription(manifestTrustlines),
+      avatar: "https://i.ibb.co/vLBbdGZ/avatar-min.png",
+      isInstalled: false,
+      isUpdated: false,
+      whitelisted: true,
+      isFeatured: true,
+      featuredStyle: {
+        featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
+        featuredColor: "white"
+      }
+    }
+  ],
 
   /* dnpInstalled */
   [dnpInstalledMountPoint]: [

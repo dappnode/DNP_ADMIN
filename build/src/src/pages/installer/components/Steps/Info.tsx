@@ -21,8 +21,17 @@ import defaultAvatar from "img/defaultAvatar.png";
 import { MdMoreHoriz, MdClose } from "react-icons/md";
 // Styles
 import "./info.scss";
+import { RequestedDnp } from "types";
 
-function OkBadge({ ok, loading, msg, ...props }) {
+interface OkBadgeProps {
+  ok?: boolean;
+  loading?: boolean;
+  msg: string;
+}
+
+const OkBadge: React.FunctionComponent<
+  OkBadgeProps & React.HTMLAttributes<HTMLDivElement>
+> = ({ ok, loading, msg, ...props }) => {
   const status = ok ? "ok" : loading ? "" : "not-ok";
   return (
     <Ok
@@ -31,38 +40,59 @@ function OkBadge({ ok, loading, msg, ...props }) {
       {...props}
     />
   );
+};
+
+interface InstallerStepInfoProps {
+  dnp: RequestedDnp;
+  onInstall: () => void;
+  disableInstallation: boolean;
+  optionsArray: {
+    id: string;
+    name: string;
+    checked: boolean;
+    toggle: () => void;
+  }[];
 }
 
-export default function InstallerStepInfo({
+const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
   dnp,
   onInstall,
   disableInstallation,
   optionsArray
-}) {
+}) => {
   const [showResolveStatus, setShowResolveStatus] = useState(false);
   const [showAvailableStatus, setShowAvailableStatus] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
 
-  const { resolving, manifest, requestResult, tag } = dnp || {};
-  const { name } = manifest || {};
+  const {
+    name,
+    request,
+    metadata,
+    isUpdated,
+    isInstalled,
+    avatar = defaultAvatar,
+    imageSize,
+    origin
+  } = dnp || {};
 
   // Otherwise, show info an allow an install
-  const { avatar = defaultAvatar, origin } = dnp || {};
   const {
     shortDescription,
     description,
     author,
     version,
-    upstreamVersion,
-    image
-  } = manifest || {};
-  const { size } = image || {};
+    upstreamVersion
+  } = metadata;
+
+  const tagDisplay = isUpdated ? "UPDATED" : isInstalled ? "UPDATE" : "INSTALL";
+
   // If the repoSlug is invalid, it will be returned as null
-  const repoSlug = getRepoSlugFromManifest(manifest);
+  const repoSlug = getRepoSlugFromManifest(metadata);
 
   // Resolution status
-  const compatible = !isEmpty((requestResult || {}).dnps);
-  const notCompatible = !isEmpty((requestResult || {}).error);
+  const isCompatible = request.compatible.isCompatible;
+  const resolvingCompatibility = request.compatible.resolving;
+  const compatibilityError = request.compatible.error;
 
   /**
    * Construct expandable pannels
@@ -75,8 +105,8 @@ export default function InstallerStepInfo({
       Component: () => (
         <Dependencies
           noCard
-          request={requestResult || {}}
-          resolving={resolving || false}
+          request={request.compatible.dnps}
+          resolving={resolvingCompatibility}
         />
       )
     },
@@ -90,16 +120,19 @@ export default function InstallerStepInfo({
       name: "Special options",
       show: showOptions,
       close: () => setShowOptions(false),
-      Component: () =>
-        optionsArray.map(({ id, name, checked, toggle }) => (
-          <Switch
-            key={id}
-            checked={checked}
-            onToggle={toggle}
-            label={name}
-            id={"switch-" + id}
-          />
-        ))
+      Component: () => (
+        <div>
+          {optionsArray.map(({ id, name, checked, toggle }) => (
+            <Switch
+              key={id}
+              checked={checked}
+              onToggle={toggle}
+              label={name}
+              id={"switch-" + id}
+            />
+          ))}
+        </div>
+      )
     }
   ].filter(panel => panel.show);
 
@@ -117,14 +150,14 @@ export default function InstallerStepInfo({
                 <div className="subtle-header">{shortAuthor(author)}</div>
                 <div className="right-bottom">
                   <OkBadge
-                    loading={resolving}
-                    ok={compatible}
+                    loading={resolvingCompatibility}
+                    ok={isCompatible}
                     msg={
-                      compatible
+                      isCompatible
                         ? "Compatible"
-                        : resolving
+                        : resolvingCompatibility
                         ? "Resolving"
-                        : notCompatible
+                        : compatibilityError
                         ? "Not compatible"
                         : "Error"
                     }
@@ -154,7 +187,7 @@ export default function InstallerStepInfo({
                   onClick={onInstall}
                   disabled={disableInstallation}
                 >
-                  {tag}
+                  {tagDisplay}
                 </Button>
               </div>
             </div>
@@ -188,7 +221,7 @@ export default function InstallerStepInfo({
           {/* Right */}
           <div>
             <div className="subtle-header">SIZE</div>
-            <div>{humanFileSize(size)}</div>
+            <div>{humanFileSize(imageSize)}</div>
             <div className="subtle-header">VERSION</div>
             <div>
               {repoSlug && version ? (
@@ -211,8 +244,6 @@ export default function InstallerStepInfo({
       </Card>
     </>
   );
-}
-
-InstallerStepInfo.propTypes = {
-  dnp: PropTypes.object
 };
+
+export default InstallerStepInfo;
