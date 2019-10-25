@@ -1,4 +1,4 @@
-import autobahn from "autobahn-browser";
+import autobahn from "autobahn";
 import store from "../store";
 import subscriptions from "./subscriptions";
 import {
@@ -15,9 +15,9 @@ import { stringIncludes } from "utils/strings";
 const url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
 const realm = "dappnode_admin";
 
-let sessionCache;
+let sessionCache: autobahn.Session;
 
-export const getSession = () => sessionCache;
+export const getSession = (): autobahn.Session | undefined => sessionCache;
 
 export default function start() {
   const connection = new autobahn.Connection({ url, realm });
@@ -29,6 +29,7 @@ export default function start() {
     // Start subscriptions
     subscriptions(session);
     // For testing:
+    // @ts-ignore
     window.call = (event, kwargs = {}) => session.call(event, [], kwargs);
   };
 
@@ -45,6 +46,7 @@ export default function start() {
       })
     );
     console.error("CONNECTION_CLOSE", { reason, details });
+    return false;
   };
 
   connection.open();

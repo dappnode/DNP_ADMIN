@@ -1,4 +1,5 @@
 import store from "../store";
+import autobahn from "autobahn";
 // Schema
 import * as schemas from "schemas";
 import Joi from "joi";
@@ -15,7 +16,7 @@ import {
 } from "services/isInstallingLogs/actions";
 import { updateAutoUpdateData } from "services/dappnodeStatus/actions";
 
-export default function subscriptions(session) {
+export default function subscriptions(session: autobahn.Session) {
   /**
    * Utilities to encode arguments to publish with the Crossbar format (args, kwargs)
    * - Publisher:
@@ -29,11 +30,11 @@ export default function subscriptions(session) {
   //   // session.publish(topic, args, kwargs, options)
   //   session.publish(event, args);
   // }
-  function subscribe(event, cb) {
+  function subscribe<T>(event: string, cb: (arg: T) => void) {
     // session.subscribe(topic, function(args, kwargs, details) )
-    session.subscribe(event, args => {
+    session.subscribe(event, (arg: T) => {
       try {
-        cb(...args);
+        cb(arg);
       } catch (e) {
         console.error(`Error on WAMP ${event}: ${e.stack}`);
       }
@@ -99,13 +100,11 @@ export default function subscriptions(session) {
    *   message: "Downloading 75%", {string} log message
    * }
    */
-  subscribe(
-    "log.dappmanager.dnp.dappnode.eth",
-    ({ id, name: dnpName, message: log, clear }) => {
-      if (clear) store.dispatch(clearIsInstallingLogsById(id));
-      else store.dispatch(updateIsInstallingLog({ id, dnpName, log }));
-    }
-  );
+  subscribe("log.dappmanager.dnp.dappnode.eth", (progressLog: any) => {
+    const { id, name: dnpName, message: log, clear } = progressLog;
+    if (clear) store.dispatch(clearIsInstallingLogsById(id));
+    else store.dispatch(updateIsInstallingLog({ id, dnpName, log }));
+  });
 
   /**
    * @param {array} dnpInstalled = res.result = [{
@@ -128,7 +127,7 @@ export default function subscriptions(session) {
    *     ...
    *   }, ... }
    */
-  subscribe("directory.dappmanager.dnp.dappnode.eth", dnpDirectory => {
+  subscribe("directory.dappmanager.dnp.dappnode.eth", (dnpDirectory: any) => {
     Joi.assert(Object.values(dnpDirectory), schemas.dnpDirectory);
     store.dispatch(updateDnpDirectory(dnpDirectory));
   });
