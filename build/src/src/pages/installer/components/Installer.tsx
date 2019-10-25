@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
+import * as api from "API/calls";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import withTitle from "components/hoc/withTitle";
 import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
-import { isEmpty } from "lodash";
+import { isEmpty, throttle } from "lodash";
 import { Switch, Route, Redirect } from "react-router-dom";
 // This module
 import * as s from "../selectors";
@@ -29,9 +30,8 @@ import Permissions from "./Steps/Permissions";
 import Disclaimer from "./Steps/Disclaimer";
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
-// ### Move out
-import "./stepper.scss";
 import Title from "components/Title";
+import HorizontalStepper from "./HorizontalStepper";
 import { RequestedDnp } from "types";
 
 interface InstallerInterfaceProps {
@@ -68,6 +68,20 @@ const InstallerInterface: React.FunctionComponent<
   const requiresCoreUpdate = dnp.request.compatible.requiresCoreUpdate;
 
   /**
+   * Call the install method with the gathered data
+   */
+  function onInstall() {
+    api
+      .installPackage(
+        { name, version },
+        { toastMessage: `Installing ${shortNameCapitalized(name)}...` }
+      )
+      .catch(console.error);
+  }
+  // Prevent a burst of install calls
+  const onInstallThrottle = useMemo(() => throttle(onInstall, 1000), []);
+
+  /**
    * Construct disclaimer
    */
   const disclaimers: { name: string; message: string }[] = [];
@@ -101,14 +115,6 @@ const InstallerInterface: React.FunctionComponent<
       toggle: () =>
         setOptions(x => ({ ...x, [option.id]: !options[option.id] }))
     }));
-
-  /**
-   * Call the install method with the gathered data
-   */
-  function onInstall() {
-    // install({ name, version, userSet: userSetFormData, options });
-    console.log("INSTALLING!!");
-  }
 
   /**
    * Filter options according to the current package
@@ -201,7 +207,7 @@ const InstallerInterface: React.FunctionComponent<
     // When going to the last step "install", redirect to home and install
     if (nextIndex >= availableRoutes.length - 1) {
       history.push(match.url);
-      onInstall();
+      onInstallThrottle();
     } else {
       const nextStep = availableRoutes[nextIndex];
       if (nextStep) history.push(`${match.url}/${nextStep.subPath}`);
@@ -227,33 +233,10 @@ const InstallerInterface: React.FunctionComponent<
       )}
 
       {currentIndex >= 0 && availableRoutes.length > 1 && (
-        <div className="horizontal-stepper">
-          {availableRoutes.map((route, i) => {
-            const active = currentIndex === i;
-            const completed = currentIndex > i;
-            return (
-              <div
-                key={route.name}
-                className={`steps-step ${joinCssClass({
-                  active,
-                  completed
-                })}`}
-              >
-                <div className="connector">
-                  <span />
-                </div>
-                <span className="step-label">
-                  <span className="icon-container circle">
-                    {completed ? <span>✔</span> : <span>{i + 1}</span>}
-                  </span>
-                  <span className="text-container">
-                    <span className="text">{route.name}</span>
-                  </span>
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        <HorizontalStepper
+          routes={availableRoutes.map(route => route.name)}
+          currentIndex={currentIndex}
+        />
       )}
 
       <Switch>

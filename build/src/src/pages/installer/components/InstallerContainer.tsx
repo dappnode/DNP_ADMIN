@@ -16,8 +16,6 @@ import Title from "components/Title";
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
 import { RequestedDnp, RequestStatus } from "types";
-// ### Move out
-import "./stepper.scss";
 
 function getIdFromMatch(match?: { params: { id: string } }) {
   return decodeURIComponent(((match || {}).params || {}).id || "");

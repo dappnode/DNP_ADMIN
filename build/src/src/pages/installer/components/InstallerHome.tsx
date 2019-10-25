@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
+import { throttle } from "lodash";
 // This page
 import * as a from "../actions";
 import * as s from "../selectors";
@@ -57,11 +58,17 @@ const InstallerHome: React.FunctionComponent<
     {} as SelectedCategories
   );
 
+  // Limit the number of requests [TESTED]
+  const fetchQueryThrottled = useMemo(
+    () => throttle(fetchPackageDataFromQuery, 500),
+    [fetchPackageDataFromQuery]
+  );
+
   useEffect(() => {
+    fetchQueryThrottled(query);
     // If the packageLink is a valid IPFS hash preload it's info
-    if (isIpfsHash(query) || isDnpDomain(query))
-      fetchPackageDataFromQuery(query);
-  }, [query, fetchPackageDataFromQuery]);
+    if (isIpfsHash(query) || isDnpDomain(query)) fetchQueryThrottled(query);
+  }, [query, fetchQueryThrottled]);
 
   function openDnp(id: string) {
     const dnp = directory.find(({ name }) => name === id);
