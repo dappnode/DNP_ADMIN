@@ -1,11 +1,23 @@
 import React from "react";
-import PropTypes from "prop-types";
 import onEnterKey from "utils/onEnterKey";
 import "./input.css";
 
-const Input = ({
+interface InputProps {
+  onEnterPress: () => void;
+  onValueChange: (value: string) => void;
+  value: string;
+  lock?: boolean;
+  prepend?: string | React.ReactElement;
+  append?: string | React.ReactElement;
+  className?: string;
+}
+
+const Input: React.FunctionComponent<
+  InputProps & React.HTMLAttributes<HTMLInputElement>
+> = ({
   onEnterPress,
   onValueChange,
+  value,
   lock,
   prepend,
   append,
@@ -21,6 +33,7 @@ const Input = ({
       className={`form-control ${className}`}
       onChange={e => onValueChange(e.target.value)}
       onKeyPress={onEnterKey(onEnterPress)}
+      value={value}
       // Lock props
       readOnly={lock}
       {...props}
@@ -84,23 +97,6 @@ const Input = ({
    * Return the final component
    */
   return inputWithPreAndAppend;
-};
-
-Input.propTypes = {
-  onEnterPress: PropTypes.func,
-  onValueChange: PropTypes.func,
-  lock: PropTypes.bool,
-  prepend: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-    PropTypes.object
-  ]),
-  append: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-    PropTypes.object
-  ]),
-  className: PropTypes.string
 };
 
 export default Input;

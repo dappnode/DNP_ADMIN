@@ -11,9 +11,9 @@ import { stripVersion } from "./utils";
  * [Note]: The arguments MUST be kwargs, because there are too many
  * and there is risk of confusing the order
  *
- * @param {string} id: Reference id that bundles all the logs of this process
- * @param {string} dnpName: Specific DNP name to which this log belongs to
- * @param {string} log: "Downloading 45%"
+ * @param id: Reference id that bundles all the logs of this process
+ * @param dnpName: Specific DNP name to which this log belongs to
+ * @param log: "Downloading 45%"
  */
 export const updateIsInstallingLog = ({ id, dnpName, log }) => ({
   type: t.UPDATE_IS_INSTALLING_LOG,

@@ -5,7 +5,7 @@ import "./toastStyle.css";
 // External
 import { activityPath } from "pages/support/data";
 
-const errorElement = message => (
+const errorElement = (message: string) => (
   <div>
     {message}
     <NavLink to={activityPath}>
@@ -16,7 +16,7 @@ const errorElement = message => (
   </div>
 );
 
-const pendingElement = message => (
+const pendingElement = (message: string) => (
   <div>
     <div style={{ minHeight: "35px" }}>{message}</div>
     <div className="slider">
@@ -28,16 +28,23 @@ const pendingElement = message => (
   </div>
 );
 
-export default function Toast({
+interface ToastProps {
+  message: string;
+  pending?: boolean;
+  success?: boolean;
+  hideDetailsButton?: boolean;
+}
+
+const Toast = ({
   message,
-  pending = false,
+  pending,
   success,
   hideDetailsButton
-}) {
+}: ToastProps) => {
   const { SUCCESS, ERROR } = toast.TYPE;
   const position = toast.POSITION.BOTTOM_RIGHT;
   const autoClose = 5000;
-  let id;
+  let id: number | null = null;
 
   if (pending) {
     id = toast(pendingElement(message), {
@@ -61,7 +68,7 @@ export default function Toast({
 
   return {
     id,
-    resolve: res => {
+    resolve: (res: { success: boolean; message: string }) => {
       // Prevent racing condition if the toast is resolved too fast
       const defaultMsg = "Broken response, missing res message";
       setTimeout(() => {
@@ -97,4 +104,6 @@ export default function Toast({
       }, 10);
     }
   };
-}
+};
+
+export default Toast;

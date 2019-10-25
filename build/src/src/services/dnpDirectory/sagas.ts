@@ -2,19 +2,21 @@ import { put, call } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import APIcall from "API/rpcMethods";
 import * as a from "./actions";
-import * as t from "./actionTypes";
 import { wrapErrorsAndLoading } from "services/loadingStatus/sagas";
 import * as loadingIds from "services/loadingStatus/loadingIds";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
+import { FETCH_DNP_DIRECTORY } from "./types";
 
 // Service > dnpDirectory
 
 // It's okay, because all non-handled sagas are wrapped on a try/catch
 
+const APIcallTemp: any = APIcall;
+
 const fetchDnpDirectory = wrapErrorsAndLoading(
   loadingIds.dnpDirectory,
   function*() {
-    const dnps = yield call(APIcall.fetchDirectory, {
+    const dnps = yield call(APIcallTemp.fetchDirectory, {
       toastOnError: true,
       throw: true
     });
@@ -28,5 +30,5 @@ const fetchDnpDirectory = wrapErrorsAndLoading(
 // takeEvery(actionType, watchers[actionType])
 export default rootWatcher([
   [CONNECTION_OPEN, fetchDnpDirectory],
-  [t.FETCH_DNP_DIRECTORY, fetchDnpDirectory]
+  [FETCH_DNP_DIRECTORY, fetchDnpDirectory]
 ]);

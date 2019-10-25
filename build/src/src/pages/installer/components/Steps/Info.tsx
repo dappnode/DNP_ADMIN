@@ -105,8 +105,9 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
       Component: () => (
         <Dependencies
           noCard
-          request={request.compatible.dnps}
           resolving={resolvingCompatibility}
+          error={compatibilityError}
+          dnps={request.compatible.dnps}
         />
       )
     },
@@ -196,7 +197,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
 
         <div className="expandable-info">
           {expandablePanels.map(panel => (
-            <div>
+            <div key={panel.name}>
               <div className="subtle-header">
                 <span>{panel.name}</span>
                 <MdClose onClick={panel.close} />

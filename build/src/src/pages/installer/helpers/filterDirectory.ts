@@ -1,36 +1,41 @@
+import { DirectoryItem } from "types";
+import { SelectedCategories } from "../types";
+
 /**
  * Filters directory by:
  * 1. Search bar. If search bar is empty, return all
  * 2. Selected types: If no types selected, return all
  *
- * @param {array} directory = [{
+ * @param directory = [{
  *   name: "bitcoin.dnp.dappnode.eth",
  *   version: "0.1.0",
  *   manifest: <manifestObj>,
  *   whitelisted: true
  * }, ... ]
- * @param {string} query = "bitco"
- * @param {object} selectedCategories = { library: false, service: true }
- * @returns {array} some elements of directory
+ * @param query = "bitco"
+ * @param selectedCategories = { library: false, service: true }
+ * @returns some elements of directory
  * [Tested]
  */
 export default function filterDirectory({
   directory,
   query,
   selectedCategories
-}) {
+}: {
+  directory: DirectoryItem[];
+  query: string;
+  selectedCategories: SelectedCategories;
+}): DirectoryItem[] {
   const isSomeCategorySelected = Object.values(selectedCategories).reduce(
     (acc, val) => acc || val,
     false
   );
   return directory
-    .filter(dnp => !query || includesSafe(dnp.manifest, query))
+    .filter(dnp => !query || includesSafe(dnp, query))
     .filter(
       dnp =>
         !isSomeCategorySelected ||
-        ((dnp.manifest || {}).categories || []).some(
-          category => selectedCategories[category]
-        )
+        (dnp.categories || []).some(category => selectedCategories[category])
     );
 }
 
@@ -43,7 +48,7 @@ export default function filterDirectory({
  * @returns {Boolean} = true
  * [Tested]
  */
-function includesSafe(sourceObj, target) {
+function includesSafe(sourceObj: any, target: string): boolean {
   try {
     return JSON.stringify(sourceObj).includes(target);
   } catch (e) {

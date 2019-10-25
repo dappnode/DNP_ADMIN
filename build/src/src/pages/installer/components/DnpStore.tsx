@@ -15,7 +15,7 @@ function DnpStore({
 }: {
   directory: DirectoryItem[];
   openDnp: (id: string) => void;
-  featured: boolean;
+  featured?: boolean;
 }) {
   // If there are no DNPs, don't render the component to prevent wierd empty spaces
   if (!directory.length) return null;

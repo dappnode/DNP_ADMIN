@@ -25,52 +25,33 @@ import { stringSplit, stringIncludes } from "utils/strings";
 
 /***************************** Subroutines ************************************/
 
-export function* install({ id, userSetFormData, options }) {
+export function* install({ name, version, userSetFormData, options }) {
   try {
     // Prevent double installations: check if the package is in the blacklist
-    if (yield select(getIsInstallingByDnp, id)) {
-      return console.error(`DAppNode Package ${id} is already installing`);
+    if (yield select(getIsInstallingByDnp, name)) {
+      return console.error(`DAppNode Package ${name} is already installing`);
     }
 
-    // Deal with IPFS DNP by retrieving the actual DNP
-    const dnp = yield select(getDnpDirectoryById, id);
-    let idToInstall;
-    if (isIpfsHash(id)) {
-      if (!dnp || !dnp.name)
-        throw Error(`No DAppNode Package found for IPFS hash ${id}`);
-      idToInstall = `${dnp.name}@${id}`;
-    } else if (isEnsDomain(id)) {
-      idToInstall = id;
-    } else {
-      throw Error(
-        `id to install: "${id}" must be an ENS domain or an IPFS hash`
-      );
-    }
+    const id = version ? `${name}@${version}` : name;
 
     // Blacklist the current package, via starting the isInstallingLog
-    yield put(
-      updateIsInstallingLog({
-        id: idToInstall,
-        dnpName: stringSplit(idToInstall, "@")[0],
-        log: "Starting..."
-      })
-    );
+    yield put(updateIsInstallingLog({ id, dnpName: name, log: "Starting..." }));
 
     // Fire call
-    const toastMessage = `Adding ${shortName(idToInstall)}...`;
+    const toastMessage = `Adding ${shortName(name)}...`;
     yield call(
       api.installPackage,
-      { id: idToInstall, userSet: userSetFormData, options },
+      { id, userSet: userSetFormData, options },
       { toastMessage }
     );
 
     // Clear progressLogs, + Removes DNP from blacklist
-    yield put(clearIsInstallingLogsById(idToInstall));
+    yield put(clearIsInstallingLogsById(id));
 
     // Fetch directory
     yield put(actionFetchDnpDirectory);
   } catch (e) {
-    console.error(`Error on install(${id}): ${e.stack}`);
+    console.error(`Error on install(${name}): ${e.stack}`);
   }
 }
 
@@ -116,53 +97,12 @@ export function* fetchPackageRequest({ id }) {
       }
     }
 
-    yield put(updateDnpDirectoryById(id, { loading: true }));
-
     // If package is already loaded, skip
     /**
      * - Check if the DNP is already loaded in the directory
      * - If not, request its manifest to the DAPPMANAGER
      * - If still there is no manifest, throw
      */
-    const dnp = yield select(getDnpDirectoryById, id);
-    let manifest = (dnp || {}).manifest;
-    if (!manifest) manifest = yield call(fetchPackageData, { id });
-    yield put(updateDnpDirectoryById(id, { loading: false }));
-    // Stop request if manifest is not defined
-    if (!manifest) {
-      throw Error(
-        "Manifest is not defined. This maybe due to an outdated version of DNP_DAPPMANAGER. Please update your system: https://github.com/dappnode/DAppNode/wiki/DAppNode-Installation-Guide#3-how-to-restore-an-installed-dappnode-to-the-latest-version"
-      );
-    }
-
-    // Resolve the request to install
-    const { name, version } = manifest;
-    yield put(updateDnpDirectoryById(id, { resolving: true }));
-    try {
-      const { state, alreadyUpdated } = yield call(api.resolveRequest, {
-        req: { name, ver: isIpfsHash(id) ? id : version }
-      });
-      const dnps = { ...(state || {}), ...(alreadyUpdated || {}) };
-      yield put(
-        updateDnpDirectoryById(id, {
-          resolving: false,
-          requestResult: { dnps, error: null }
-        })
-      );
-      // Fetch package data of the dependencies. fetchPackageData updates the store
-      for (const [depName, depVersion] of Object.entries(state)) {
-        if (depName === name) continue; // Don't refetch requested DNP
-        yield put(a.fetchPackageData(`${depName}@${depVersion}`));
-      }
-    } catch (e) {
-      // if api.resolveRequest fails, it will throw. Display this error in the UI
-      yield put(
-        updateDnpDirectoryById(id, {
-          resolving: false,
-          requestResult: { error: e.message }
-        })
-      );
-    }
   } catch (e) {
     console.error(`Èrror on fetchPackageRequest(${id}): ${e.stack}`);
   }
@@ -187,22 +127,7 @@ export function* fetchPackageData({ id, dontLogError }) {
     // Add ipfs hash inside the manifest too, so it is searchable
     if (manifest) manifest.origin = isIpfsHash(id) ? id : null;
     // Update directory
-    yield put(
-      updateDnpDirectoryById(id, {
-        name: manifest.name,
-        manifest,
-        avatar,
-        origin: isIpfsHash(id) ? id : null,
-        url: encodeURIComponent(id)
-      })
-    );
-    return manifest;
   } catch (e) {
-    try {
-      yield put(updateDnpDirectoryById(id, { error: e.message }));
-    } catch (e) {
-      console.error(`Error on fetchPackageData catch block: ${e.stack} `);
-    }
     console.error(`Error on fetchPackageData(${id}): ${e.stack}`);
   }
 }

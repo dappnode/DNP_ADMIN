@@ -3,10 +3,7 @@ import { createSelector } from "reselect";
 import merge from "deepmerge";
 import semver from "semver";
 // Selectors
-import {
-  getDnpDirectory,
-  getDnpDirectoryWhitelisted
-} from "services/dnpDirectory/selectors";
+import { getDnpDirectory } from "services/dnpDirectory/selectors";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 import { getDappnodeParams } from "services/dappnodeStatus/selectors";
 import { getCoreCurrentVersion } from "services/coreUpdate/selectors";
@@ -301,7 +298,7 @@ const categories = {
  */
 
 const getDnpDirectoryWithTags = createSelector(
-  getDnpDirectoryWhitelisted,
+  getDnpDirectory,
   getDnpInstalled,
   (dnpDirectory, dnpInstalled) => {
     return Object.entries(dnpDirectory)
@@ -333,7 +330,7 @@ export const getDnpDirectoryWithTagsNonCores = createSelector(
 );
 
 export const directoryLoaded = createSelector(
-  getDnpDirectoryWhitelisted,
+  getDnpDirectory,
   dnpDirectory => Boolean(Object.keys(dnpDirectory).length)
 );
 

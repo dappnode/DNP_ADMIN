@@ -11,17 +11,39 @@ import { mountPoint as isInstallingLogsMountPoint } from "services/isInstallingL
 import { mountPoint as loadingStatusMountPoint } from "services/loadingStatus/data";
 import { mountPoint as notificationsMountPoint } from "services/notifications/data";
 import { mountPoint as userActionLogsMountPoint } from "services/userActionLogs/data";
+import { DnpRequestState } from "services/dnpRequest/types";
+import { DnpDirectoryState } from "services/dnpDirectory/types";
 
-function getDescription(manifest) {
+function getDescription(manifest: {
+  shortDescription?: string;
+  description: string;
+}) {
   return manifest.shortDescription || manifest.description;
 }
 
 /**
- * Manifests
+ * Avatars
+ * =======
+ */
+
+const bitcoinAvatar = "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png";
+const lightningNetworkAvatar = "https://i.ibb.co/Twjv2f3/ln.png";
+const raidenAvatar = "https://i.ibb.co/Y0YzyrG/raiden300-min.png";
+const raidenTestnetAvatar = "https://i.ibb.co/2ynnctD/raiden-testnet-300.png";
+const vipnodeAvatar =
+  "https://i.ibb.co/ypjjMVJ/Qmen3sr-ZXEHnc-MM2-RPsg-VKk-Pbk-JPTMN9-SNFVEAQQY4a7-Nf.png";
+const trustlinesAvatar = "https://i.ibb.co/vLBbdGZ/avatar-min.png";
+
+/**
+ * Metadatas
  * =========
  */
 
-const manifestLn = {
+/**
+ * Lightning network
+ */
+
+const lightningNetworkMetadata = {
   name: "lightning-network.dnp.dappnode.eth",
   version: "0.0.3",
   upstreamVersion: "0.6.1-beta",
@@ -30,30 +52,7 @@ const manifestLn = {
     "The Lightning Network DAppNodePackage (lnd + RTL). The Lightning Network is a decentralized system for instant, high-volume micropayments that removes the risk of delegating custody of funds to trusted third parties.",
   avatar: "/ipfs/QmVrjV1ANxjYVqRJzycYKcCUAH8nU337UsMVir1CnZYNa8",
   type: "service",
-  image: {
-    path: "",
-    hash: "",
-    size: "",
-    ports: ["9735:9735"],
-    volumes: ["lndconfig_data:/root/.lnd/"],
-    restart: "always",
-    environment: [
-      "RTL_PASSWORD=changeme",
-      "RPCUSER=dappnode",
-      "RPCPASS=dappnode",
-      "BITCOIND_HOST=my.bitcoin.dnp.dappnode.eth",
-      "NETWORK=mainnet",
-      "ALIAS=",
-      "COLOR=#5ACDC5",
-      "EXT_IP="
-    ]
-  },
-  backup: [
-    {
-      name: "data",
-      path: "/root/.lnd/data"
-    }
-  ],
+  backup: [{ name: "data", path: "/root/.lnd/data" }],
   style: {
     featuredBackground: "linear-gradient(67deg, #090909, #2f1354)",
     featuredColor: "#eee"
@@ -89,7 +88,27 @@ const manifestLn = {
   }
 };
 
-const manifestVipnode = {
+const lightningNetworkSetup = {
+  ports: ["9735:9735"],
+  volumes: ["lndconfig_data:/root/.lnd/"],
+  restart: "always",
+  environment: [
+    "RTL_PASSWORD=changeme",
+    "RPCUSER=dappnode",
+    "RPCPASS=dappnode",
+    "BITCOIND_HOST=my.bitcoin.dnp.dappnode.eth",
+    "NETWORK=mainnet",
+    "ALIAS=",
+    "COLOR=#5ACDC5",
+    "EXT_IP="
+  ]
+};
+
+/**
+ * Vipnode
+ */
+
+const vipnodeMetadata = {
   name: "vipnode.dnp.dappnode.eth",
   version: "0.1.0",
   upstreamVersion: "2.2.1",
@@ -98,41 +117,13 @@ const manifestVipnode = {
     "[Vipnode](https://vipnode.org)'s goal is to allow the Ethereum network to remain decentralized by creating a financial marketplace for more people to run full nodes and serve native light clients. Check this [medium article](https://medium.com/vipnode/an-economic-incentive-for-running-ethereum-full-nodes-ecc0c9ebe22) to understand the motivation behind this project and this [2.0 release article](https://medium.com/vipnode/vipnode-2-0-released-9af1d65b4552) for a tutorial on how to use Vipnode.",
   avatar: "https://ipfs.io/ipfs/Qmen3srZXEHncMM2RPsgVKkPbkJPTMN9SNFVEAQQY4a7Nf",
   type: "service",
-  image: {
-    path: "vipnode.dnp.dappnode.eth_0.0.1.tar.xz",
-    hash: "/ipfs/QmYnj7JtmDn4KuQADDNSAo2UwM9npjATjsX8AK12LewhyQ",
-    size: 7848217,
-    restart: "always",
-    environment: ["PAYOUT_ADDRESS="],
-    external_vol: ["dncore_ethchaindnpdappnodeeth_data:/app/.ethchain:ro"]
-  },
   author:
     "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
   categories: ["Economic incentive"],
   links: {
     homepage: "https://github.com/dappnode/DAppNodePackage-vipnode"
   },
-  wizard: {
-    description: `This setup wizard will help you start. In case of problems: https://vipnode.io`,
-    type: "object",
-    required: ["payoutAddress"],
-    properties: {
-      payoutAddress: {
-        target: {
-          type: "environment",
-          name: "PAYOUT_ADDRESS"
-        },
-        type: "string",
-        title: "Payout address",
-        description: "Define an Ethereum mainnet address to get rewards to",
-        pattern: "^0x[a-fA-F0-9]{40}$",
-        customErrors: {
-          pattern: "Must be an address 0x1234... 40 bytes"
-        },
-        "ui:help": "Don't use your main address"
-      }
-    }
-  },
+  wizard: {},
   disclaimer: {
     message:
       "This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package."
@@ -147,7 +138,44 @@ const manifestVipnode = {
   license: "GPL-3.0"
 };
 
-const manifestRaiden = {
+const vipnodeSetup = {
+  restart: "always",
+  environment: ["PAYOUT_ADDRESS="],
+  external_vol: ["dncore_ethchaindnpdappnodeeth_data:/app/.ethchain:ro"]
+};
+
+const vipnodeSetupSchema = {
+  description: `This setup wizard will help you start. In case of problems: https://vipnode.io`,
+  type: "object",
+  required: ["payoutAddress"],
+  properties: {
+    payoutAddress: {
+      target: {
+        type: "environment",
+        name: "PAYOUT_ADDRESS"
+      },
+      type: "string",
+      title: "Payout address",
+      description: "Define an Ethereum mainnet address to get rewards to",
+      pattern: "^0x[a-fA-F0-9]{40}$",
+      customErrors: {
+        pattern: "Must be an address 0x1234... 40 bytes"
+      }
+    }
+  }
+};
+
+const vipnodeSetupUiSchema = {
+  payoutAddress: {
+    "ui:help": "Don't use your main address"
+  }
+};
+
+/**
+ * Raiden
+ */
+
+const raidenMetadata = {
   name: "raiden.dnp.dappnode.eth",
   version: "0.0.1",
   upstreamVersion: "0.100.3",
@@ -156,20 +184,6 @@ const manifestRaiden = {
     "The Raiden Network is an off-chain scaling solution, enabling near-instant, low-fee and scalable payments. It’s complementary to the Ethereum blockchain and works with any ERC20 compatible token. \n\n\n **Getting started** \n\n Once you have installed the Raiden DAppNode Package you **must** upload your own keystore. Go to this [getting started guide](https://github.com/dappnode/DAppNodePackage-raiden) to learn how to do so.  \n\n\n All set? Check out the [documentation and introductory guides](https://raiden-network.readthedocs.io/en/stable/#how-to-get-started) to quickly get started doing payments.",
   avatar: "/ipfs/QmaqgLyZXpETXYzhWcebNJnh6vPs4WqiCJbZY3EY1fXqer",
   type: "service",
-  image: {
-    path: "raiden.dnp.dappnode.eth_0.0.1.tar.xz",
-    hash: "/ipfs/QmZR6Fqo1S3opX1ZRpCVFwz9YywNuRHPUbDsnJqeUyZZyE",
-    size: 24469186,
-    restart: "always",
-    ports: [],
-    volumes: ["data:/root/.raiden"],
-    environment: [
-      "RAIDEN_KEYSTORE_PASSWORD=",
-      "RAIDEN_ADDRESS=",
-      "EXTRA_OPTS=--disable-debug-logfile"
-    ],
-    keywords: ["Raiden", "Ethereum"]
-  },
   dependencies: {},
   requirements: {
     minimumDappnodeVersion: "0.2.4"
@@ -200,29 +214,28 @@ const manifestRaiden = {
   license: "MIT License"
 };
 
-const manifestRaidenTestnet = {
+const raidenSetup = {
+  restart: "always",
+  ports: [],
+  volumes: ["data:/root/.raiden"],
+  environment: [
+    "RAIDEN_KEYSTORE_PASSWORD=",
+    "RAIDEN_ADDRESS=",
+    "EXTRA_OPTS=--disable-debug-logfile"
+  ]
+};
+
+/**
+ * Raiden testnet
+ */
+
+const raidenTestnetMetadata = {
   name: "raiden-testnet.dnp.dappnode.eth",
   version: "0.0.2",
   description:
     "The Raiden Network is an off-chain scaling solution, enabling near-instant, low-fee and scalable payments. It’s complementary to the Ethereum blockchain and works with any ERC20 compatible token. \n\n\n **Getting started** \n\n Once you have installed the Raiden DAppNode Package you **must** upload your own keystore. Go to this [getting started guide](https://github.com/dappnode/DAppNodePackage-raiden) to learn how to do so.  \n\n\n All set? Check out the [documentation and introductory guides](https://raiden-network.readthedocs.io/en/stable/#how-to-get-started) to quickly get started doing payments.",
   avatar: "/ipfs/QmaqgLyZXpETXYzhWcebNJnh6vPs4WqiCJbZY3EY1fXqer",
   type: "service",
-  image: {
-    path: "",
-    hash: "",
-    size: "",
-    restart: "always",
-    ports: [],
-    volumes: ["data:/root/.raiden"],
-    environment: [
-      "RAIDEN_ADDRESS=",
-      "RAIDEN_KEYSTORE_PASSWORD=",
-      "RAIDEN_ETH_RPC_ENDPOINT=http://goerli-geth.dappnode:8545",
-      "RAIDEN_NETWORK_ID=goerli",
-      "EXTRA_OPTS=--disable-debug-logfile"
-    ],
-    keywords: ["Raiden", "Ethereum", "Testnet", "Goerli"]
-  },
   author:
     "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
   contributors: ["Abel Boldú (@vdo)", "Eduardo Antuña (@eduadiez)"],
@@ -248,26 +261,30 @@ const manifestRaidenTestnet = {
   }
 };
 
-const manifestBitcoin = {
+const raidenTestnetSetup = {
+  restart: "always",
+  ports: [],
+  volumes: ["data:/root/.raiden"],
+  environment: [
+    "RAIDEN_ADDRESS=",
+    "RAIDEN_KEYSTORE_PASSWORD=",
+    "RAIDEN_ETH_RPC_ENDPOINT=http://goerli-geth.dappnode:8545",
+    "RAIDEN_NETWORK_ID=goerli",
+    "EXTRA_OPTS=--disable-debug-logfile"
+  ]
+};
+
+/**
+ * Bitcoin
+ */
+
+const bitcoinMetadata = {
   name: "bitcoin.dnp.dappnode.eth",
   version: "0.1.3",
   description:
     "The Bitcoin Core daemon (0.18.0). Bitcoind is a program that implements the Bitcoin protocol for remote procedure call (RPC) use.",
   avatar: "/ipfs/QmNrfF93ppvjDGeabQH8H8eeCDLci2F8fptkvj94WN78pt",
   type: "service",
-  image: {
-    path: "bitcoin.dnp.dappnode.eth_0.1.3.tar.xz",
-    hash: "/ipfs/QmYjngn4Tr21rcBqet9pHiZ7HPqBszwdpWvvdVuipYk4Sy",
-    size: 9349894,
-    ports: ["8333:8333"],
-    volumes: ["bitcoin_data:/root/.bitcoin"],
-    environment: [
-      "BTC_RPCUSER=dappnode",
-      "BTC_RPCPASSWORD=dappnode",
-      "BTC_TXINDEX=1",
-      "BTC_PRUNE=0"
-    ]
-  },
   style: {
     featuredBackground: "linear-gradient(to right, #4b3317, #cb6e00)",
     featuredColor: "white"
@@ -293,7 +310,22 @@ const manifestBitcoin = {
   license: "GPL-3.0"
 };
 
-const manifestEthchain = {
+const bitcoinSetup = {
+  ports: ["8333:8333"],
+  volumes: ["bitcoin_data:/root/.bitcoin"],
+  environment: [
+    "BTC_RPCUSER=dappnode",
+    "BTC_RPCPASSWORD=dappnode",
+    "BTC_TXINDEX=1",
+    "BTC_PRUNE=0"
+  ]
+};
+
+/**
+ * Ethchain
+ */
+
+const ethchainMetadata = {
   name: "ethchain.dnp.dappnode.eth",
   version: "0.2.6",
   description:
@@ -302,20 +334,6 @@ const manifestEthchain = {
   type: "dncore",
   chain: "ethereum",
   upstreamVersion: "v2.5.8-stable",
-  image: {
-    path: "ethchain.dnp.dappnode.eth_0.2.6.tar.xz",
-    hash: "/ipfs/QmbEFEC12zFYZduZB4Q2zh2GLuox9SQjKtjcLLs8BzK2YQ",
-    size: 11680248,
-    volumes: [
-      "ethchaindnpdappnodeeth_data:/root/.local/share/io.parity.ethereum/",
-      "ethchaindnpdappnodeeth_geth:/root/.ethereum/"
-    ],
-    ports: ["30303:30303", "30303:30303/udp", "30304:30304/udp"],
-    environment: ["EXTRA_OPTS_PARITY=", "EXTRA_OPTS_GETH=", "DEFAULT_CLIENT="],
-    restart: "always",
-    subnet: "172.33.0.0/16",
-    ipv4_address: "172.33.1.6"
-  },
   author:
     "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
   contributors: [
@@ -336,7 +354,23 @@ const manifestEthchain = {
   license: "GPL-3.0"
 };
 
-const manifestTrustlines = {
+const ethchainSetup = {
+  volumes: [
+    "ethchaindnpdappnodeeth_data:/root/.local/share/io.parity.ethereum/",
+    "ethchaindnpdappnodeeth_geth:/root/.ethereum/"
+  ],
+  ports: ["30303:30303", "30303:30303/udp", "30304:30304/udp"],
+  environment: ["EXTRA_OPTS_PARITY=", "EXTRA_OPTS_GETH=", "DEFAULT_CLIENT="],
+  restart: "always",
+  subnet: "172.33.0.0/16",
+  ipv4_address: "172.33.1.6"
+};
+
+/**
+ * Trustlines metadata
+ */
+
+const trustlinesMetadata = {
   name: "trustlines.dnp.dappnode.eth",
   version: "0.0.1",
   upstreamVersion: "release4044",
@@ -346,24 +380,10 @@ const manifestTrustlines = {
   avatar: "/ipfs/QmcpEAc5CsaSD5jc1rkmiGtjtpxDaWDMHUWWh2tUgXFhDC",
   type: "service",
   chain: "ethereum",
-  image: {
-    path: "trustlines.dnp.dappnode.eth_0.0.1.tar.xz",
-    hash: "/ipfs/QmQm8jkGDtefmVmtBBGY5HJ9cMS5EoHKA53cXWXgeK7yyD",
-    size: 25629780,
-    restart: "always",
-    volumes: ["data:/data", "config:/config/custom"],
-    environment: ["ROLE=observer", "ADDRESS", "PASSWORD"],
-    ports: ["30300", "30300/udp"]
-  },
   requirements: {
     minimumDappnodeVersion: "0.2.10"
   },
-  backup: [
-    {
-      name: "config",
-      path: "/config"
-    }
-  ],
+  backup: [{ name: "config", path: "/config" }],
   style: {
     featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
     featuredColor: "white"
@@ -389,10 +409,448 @@ const manifestTrustlines = {
   license: "GPL-3.0"
 };
 
+const trustlinesSetup = {
+  restart: "always",
+  volumes: ["data:/data", "config:/config/custom"],
+  environment: ["ROLE=observer", "ADDRESS", "PASSWORD"],
+  ports: ["30300", "30300/udp"]
+};
+
 /**
  * Actual mockState
  * ================
  */
+
+const coreUpdateState = {
+  coreDeps: {
+    "admin.dnp.dappnode.eth": { version: "0.2.1" },
+    "vpn.dnp.dappnode.eth": { version: "0.2.1" }
+  },
+  coreMetadata: {
+    version: "0.2.1",
+    changelog:
+      "Major improvements to the 0.2 version https://github.com/dappnode/DAppNode/wiki/DAppNode-Migration-guide-to-OpenVPN",
+    warnings: {
+      onInstall: "Your VPN will be restarted and you may lose connection"
+    }
+  }
+};
+
+const dappnodeStatusState = {
+  params: {},
+  stats: {},
+  diagnose: {},
+  pingReturns: {},
+  ipfsConnectionStatus: {},
+  wifiStatus: { running: true },
+  passwordIsInsecure: true,
+  autoUpdateData: {
+    settings: {
+      "system-packages": { enabled: true },
+      "my-packages": { enabled: true },
+      "bitcoin.dnp.dappnode.eth": { enabled: false },
+      "lightning-network.dnp.dappnode.eth": { enabled: true }
+    },
+    registry: {
+      "core.dnp.dappnode.eth": {
+        "0.2.4": { updated: 1563304834738, successful: true },
+        "0.2.5": { updated: 1563304834738, successful: false }
+      },
+      "bitcoin.dnp.dappnode.eth": {
+        "0.1.1": { updated: 1563304834738, successful: true },
+        "0.1.2": { updated: 1563304834738, successful: true }
+      },
+      "lightning-network.dnp.dappnode.eth": {
+        "0.1.1": { updated: 1565284039677, successful: true }
+      }
+    },
+    pending: {
+      "core.dnp.dappnode.eth": {
+        version: "0.2.4",
+        firstSeen: 1563218436285,
+        scheduledUpdate: 1563304834738,
+        completedDelay: true
+      },
+      "bitcoin.dnp.dappnode.eth": {
+        version: "0.1.2",
+        firstSeen: 1563218436285,
+        scheduledUpdate: 1563304834738,
+        completedDelay: false
+      }
+    },
+
+    dnpsToShow: [
+      {
+        id: "system-packages",
+        displayName: "System packages",
+        enabled: true,
+        feedback: { scheduled: 1566645310441 }
+      },
+      {
+        id: "my-packages",
+        displayName: "My packages",
+        enabled: true,
+        feedback: {}
+      },
+      {
+        id: "bitcoin.dnp.dappnode.eth",
+        displayName: "Bitcoin",
+        enabled: false,
+        feedback: { updated: 1563304834738 }
+      },
+      {
+        id: "lightning-network.dnp.dappnode.eth",
+        displayName: "LN",
+        enabled: true,
+        feedback: {
+          inQueue: true,
+          errorMessage:
+            "Error updating LN: Mainnet is still syncing. More lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
+        }
+      }
+    ]
+  }
+};
+
+const devicesState = [
+  { id: "test-name", admin: true },
+  { id: "other-user", admin: false, url: "link-to-otp/?id=617824#hdfuisf" }
+];
+
+const dnpDirectoryState: DnpDirectoryState = [
+  {
+    name: "bitcoin.dnp.dappnode.eth",
+    description: getDescription(bitcoinMetadata),
+    avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png",
+    isInstalled: false,
+    isUpdated: false,
+    whitelisted: true,
+    isFeatured: false,
+    categories: ["Blockchain"]
+  },
+  {
+    name: "lightning-network.dnp.dappnode.eth",
+    description: getDescription(lightningNetworkMetadata),
+    avatar: lightningNetworkAvatar,
+    isInstalled: false,
+    isUpdated: false,
+    whitelisted: true,
+    isFeatured: false,
+    categories: ["Payment channels", "Economic incentive"]
+  },
+  {
+    name: "raiden.dnp.dappnode.eth",
+    description: getDescription(raidenMetadata),
+    avatar: raidenAvatar,
+    isInstalled: true,
+    isUpdated: true,
+    whitelisted: true,
+    isFeatured: false,
+    categories: ["Payment channels"]
+  },
+  {
+    name: "raiden-testnet.dnp.dappnode.eth",
+    description: getDescription(raidenTestnetMetadata),
+    avatar: raidenTestnetAvatar,
+    isInstalled: true,
+    isUpdated: false,
+    whitelisted: true,
+    isFeatured: false,
+    categories: ["Developer tools"]
+  },
+  {
+    name: "vipnode.dnp.dappnode.eth",
+    description: getDescription(vipnodeMetadata),
+    avatar: vipnodeAvatar,
+    isInstalled: false,
+    isUpdated: false,
+    whitelisted: true,
+    isFeatured: false,
+    categories: ["Economic incentive"]
+  },
+  {
+    name: "trustlines.dnp.dappnode.eth",
+    description: getDescription(trustlinesMetadata),
+    avatar: trustlinesAvatar,
+    isInstalled: false,
+    isUpdated: false,
+    whitelisted: true,
+    isFeatured: true,
+    featuredStyle: {
+      featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
+      featuredColor: "white"
+    },
+    categories: ["Blockchain"]
+  }
+];
+
+const dnpInstalledState = [
+  {
+    name: "admin.dnp.dappnode.eth",
+    isCore: true,
+    state: "exited"
+  },
+  {
+    name: "core.dnp.dappnode.eth",
+    isCore: true,
+    version: "0.2.3",
+    state: "exited"
+  },
+  {
+    name: "lightning-network.dnp.dappnode.eth",
+    isDnp: true,
+    version: "0.1.0",
+    state: "running",
+    ports: [
+      {
+        host: "30303",
+        container: "30303",
+        protocol: "TCP"
+      },
+      {
+        host: "30303",
+        container: "30303",
+        protocol: "UDP"
+      }
+    ],
+    volumes: [
+      {
+        type: "volume",
+        path:
+          "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
+        dest: "/app/.ethchain",
+        name: "dncore_ethchaindnpdappnodeeth_data",
+        users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
+        owner: "ethchain.dnp.dappnode.eth",
+        isOwner: false,
+        links: "2",
+        size: "71.57GB"
+      }
+    ],
+    manifest: lightningNetworkMetadata,
+    envs: {
+      ENV_NAME: "ENV_VALUE"
+    }
+  },
+  {
+    name: "wifi.dnp.dappnode.eth",
+    isCore: true,
+    envs: {
+      SSID: "DAppNodeWIFI",
+      WPA_PASSPHRASE: "dappnode"
+    }
+  },
+  {
+    name: "ethchain.dnp.dappnode.eth",
+    isCore: true,
+    version: "0.2.6",
+    state: "running",
+    ports: [
+      {
+        host: "30303",
+        container: "30303",
+        protocol: "TCP"
+      },
+      {
+        host: "30303",
+        container: "30303",
+        protocol: "UDP"
+      }
+    ],
+    volumes: [
+      {
+        type: "volume",
+        path:
+          "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
+        dest: "/app/.ethchain",
+        name: "dncore_ethchaindnpdappnodeeth_data",
+        users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
+        owner: "ethchain.dnp.dappnode.eth",
+        isOwner: true,
+        links: "2",
+        size: "71.57GB"
+      },
+      {
+        type: "volume",
+        path:
+          "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_geth/_data",
+        dest: "/root/.ethereum/",
+        name: "dncore_ethchaindnpdappnodeeth_geth",
+        users: ["ethchain.dnp.dappnode.eth"],
+        owner: "ethchain.dnp.dappnode.eth",
+        isOwner: true,
+        links: "1",
+        size: "94.62GB"
+      }
+    ],
+    envs: {
+      DEFAULT_CLIENT: "GETH"
+    },
+    manifest: ethchainMetadata
+  }
+];
+
+/**
+ * ==========
+ * dnpRequest
+ * ==========
+ */
+
+const dnpRequestState: DnpRequestState = {
+  dnps: {
+    "bitcoin.dnp.dappnode.eth": {
+      name: "bitcoin.dnp.dappnode.eth",
+      version: "0.2.5",
+      origin: null,
+      avatar: bitcoinAvatar,
+      metadata: bitcoinMetadata,
+
+      imageSize: 37273582,
+      isUpdated: false,
+      isInstalled: false,
+
+      settings: {},
+      request: {
+        compatible: {
+          requiresCoreUpdate: false,
+          resolving: false,
+          isCompatible: true,
+          error: "",
+          dnps: {
+            "bitcoin.dnp.dappnode.eth": { from: "0.2.10", to: "0.2.5" },
+            "dependency.dnp.dappnode.eth": { from: "0.0.0", to: "1.2.0" }
+          }
+        },
+        available: {
+          isAvailable: true,
+          message: ""
+        }
+      }
+    },
+    "vipnode.dnp.dappnode.eth": {
+      name: vipnodeMetadata.name,
+      version: vipnodeMetadata.version,
+      origin: null,
+      avatar: vipnodeAvatar,
+      metadata: vipnodeMetadata,
+
+      imageSize: 10000000,
+      isUpdated: false,
+      isInstalled: true,
+
+      settings: {},
+      // @ts-ignore
+      setupSchema: vipnodeSetupSchema,
+      setupUiSchema: vipnodeSetupUiSchema,
+
+      request: {
+        compatible: {
+          requiresCoreUpdate: false,
+          resolving: false,
+          isCompatible: true,
+          error: "",
+          dnps: {
+            "vipnode.dnp.dappnode.eth": { from: "0.2.0", to: "0.2.5" }
+          }
+        },
+        available: {
+          isAvailable: true,
+          message: ""
+        }
+      }
+    },
+    "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy": {
+      name: vipnodeMetadata.name,
+      version: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
+      origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
+      avatar: vipnodeAvatar,
+      metadata: vipnodeMetadata,
+
+      imageSize: 10000000,
+      isUpdated: false,
+      isInstalled: true,
+
+      settings: {},
+      // @ts-ignore
+      setupSchema: vipnodeSetupSchema,
+      setupUiSchema: vipnodeSetupUiSchema,
+
+      request: {
+        compatible: {
+          requiresCoreUpdate: false,
+          resolving: false,
+          isCompatible: true,
+          error: "",
+          dnps: {
+            "vipnode.dnp.dappnode.eth": { from: "0.2.0", to: "0.2.5" }
+          }
+        },
+        available: {
+          isAvailable: true,
+          message: ""
+        }
+      }
+    }
+  },
+  requestStatus: {
+    "lightning-network.dnp.dappnode.eth": {
+      loading: true
+    },
+    "raiden-testnet.dnp.dappnode.eth": {
+      error: "Demo error to simulate load failure"
+    }
+  }
+};
+
+const isInstallingState = {
+  /* Core update */
+  "core.dnp.dappnode.eth": {
+    id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
+    log: "Downloading 54%"
+  },
+  "vpn.dnp.dappnode.eth": {
+    id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
+    log: "Downloading 54%"
+  },
+  "admin.dnp.dappnode.eth": {
+    id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
+    log: "Loading..."
+  },
+  /* Regular install of non-core*/
+  "bitcoin.dnp.dappnode.eth": {
+    id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
+    log: "Downloading 87%"
+  }
+};
+
+const notificationsState = {
+  "diskSpaceRanOut-stoppedPackages": {
+    id: "diskSpaceRanOut-stoppedPackages",
+    type: "danger",
+    title: "Disk space ran out, stopped packages",
+    body: "Available disk space gone wrong ".repeat(10),
+    timestamp: 153834824,
+    viewed: false,
+    fromDappmanager: true
+  }
+};
+
+const userActionLogsState = [
+  {
+    event: "installPackage.dappmanager.dnp.dappnode.eth",
+    kwargs: {
+      id: "rinkeby.dnp.dappnode.eth",
+      userSetVols: {},
+      userSetPorts: {},
+      options: {}
+    },
+    level: "error",
+    message: "Timeout to cancel expired",
+    name: "Error",
+    stack: "Error: Timeout to cancel expired↵  ...",
+    timestamp: "2019-02-01T19:09:16.503Z"
+  }
+];
 
 export const mockState = {
   /* chainData */
@@ -404,366 +862,14 @@ export const mockState = {
     session: {}
   },
 
-  /* coreUpdate */
-  [coreUpdateMountPoint]: {
-    coreDeps: {
-      "admin.dnp.dappnode.eth": { version: "0.2.1" },
-      "vpn.dnp.dappnode.eth": { version: "0.2.1" }
-    },
-    coreManifest: {
-      version: "0.2.1",
-      changelog:
-        "Major improvements to the 0.2 version https://github.com/dappnode/DAppNode/wiki/DAppNode-Migration-guide-to-OpenVPN",
-      warnings: {
-        onInstall: "Your VPN will be restarted and you may lose connection"
-      }
-    }
-  },
-
-  /* dappnodeStatus */
-  [dappnodeStatusMountPoint]: {
-    params: {},
-    stats: {},
-    diagnose: {},
-    pingReturns: {},
-    ipfsConnectionStatus: {},
-    wifiStatus: { running: true },
-    passwordIsInsecure: true,
-    autoUpdateData: {
-      settings: {
-        "system-packages": { enabled: true },
-        "my-packages": { enabled: true },
-        "bitcoin.dnp.dappnode.eth": { enabled: false },
-        "ln.dnp.dappnode.eth": { enabled: true }
-      },
-      registry: {
-        "core.dnp.dappnode.eth": {
-          "0.2.4": { updated: 1563304834738, successful: true },
-          "0.2.5": { updated: 1563304834738, successful: false }
-        },
-        "bitcoin.dnp.dappnode.eth": {
-          "0.1.1": { updated: 1563304834738, successful: true },
-          "0.1.2": { updated: 1563304834738, successful: true }
-        },
-        "ln.dnp.dappnode.eth": {
-          "0.1.1": { updated: 1565284039677, successful: true }
-        }
-      },
-      pending: {
-        "core.dnp.dappnode.eth": {
-          version: "0.2.4",
-          firstSeen: 1563218436285,
-          scheduledUpdate: 1563304834738,
-          completedDelay: true
-        },
-        "bitcoin.dnp.dappnode.eth": {
-          version: "0.1.2",
-          firstSeen: 1563218436285,
-          scheduledUpdate: 1563304834738,
-          completedDelay: false
-        }
-      },
-
-      dnpsToShow: [
-        {
-          id: "system-packages",
-          displayName: "System packages",
-          enabled: true,
-          feedback: { scheduled: 1566645310441 }
-        },
-        {
-          id: "my-packages",
-          displayName: "My packages",
-          enabled: true,
-          feedback: {}
-        },
-        {
-          id: "bitcoin.dnp.dappnode.eth",
-          displayName: "Bitcoin",
-          enabled: false,
-          feedback: { updated: 1563304834738 }
-        },
-        {
-          id: "ln.dnp.dappnode.eth",
-          displayName: "LN",
-          enabled: true,
-          feedback: {
-            inQueue: true,
-            errorMessage:
-              "Error updating LN: Mainnet is still syncing. More lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
-          }
-        }
-      ]
-    }
-  },
-
-  /* devices */
-  [devicesMountPoint]: [
-    { id: "test-name", admin: true },
-    { id: "other-user", admin: false, url: "link-to-otp/?id=617824#hdfuisf" }
-  ],
-
-  /* requests */
-  [dnpRequestMountPoint]: {
-    "bitcoin.dnp.dappnode.eth": {
-      name: "bitcoin.dnp.dappnode.eth",
-      origin: null,
-      avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png",
-      metadata: manifestBitcoin,
-      settings: {
-        "bitcoin.dnp.dappnode.eth": {
-          ports: { "8333": "8333" },
-          volumes: { bitcoin_data: "" },
-          environment: {
-            BTC_RPCUSER: "dappnode",
-            BTC_RPCPASSWORD: "dappnode",
-            BTC_TXINDEX: "1",
-            BTC_PRUNE: "0"
-          }
-        }
-      },
-      request: {
-        compatible: {
-          isCompatible: true,
-          message: "",
-          dnps: {
-            "bitcoin.dnp.dappnode.eth": {
-              from: "0.2.5",
-              to: "0.2.6"
-            }
-          }
-        },
-        available: {
-          isAvailable: true,
-          message: ""
-        }
-      }
-    }
-  },
-
-  /* dnpDirectory */
-  [dnpDirectoryMountPoint]: [
-    {
-      name: "bitcoin.dnp.dappnode.eth",
-      description: getDescription(manifestBitcoin),
-      avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png",
-      isInstalled: false,
-      isUpdated: false,
-      whitelisted: true,
-      isFeatured: false
-    },
-    {
-      name: "ln.dnp.dappnode.eth",
-      description: getDescription(manifestLn),
-      avatar: "https://i.ibb.co/Twjv2f3/ln.png",
-      isInstalled: false,
-      isUpdated: false,
-      whitelisted: true,
-      isFeatured: false
-    },
-    {
-      name: "raiden.dnp.dappnode.eth",
-      description: getDescription(manifestRaiden),
-      avatar: "https://i.ibb.co/Y0YzyrG/raiden300-min.png",
-      isInstalled: true,
-      isUpdated: true,
-      whitelisted: true,
-      isFeatured: false
-    },
-    {
-      name: "raiden-testnet.dnp.dappnode.eth",
-      description: getDescription(manifestRaidenTestnet),
-      avatar: "https://i.ibb.co/2ynnctD/raiden-testnet-300.png",
-      isInstalled: true,
-      isUpdated: false,
-      whitelisted: true,
-      isFeatured: false
-    },
-    {
-      name: "vipnode.dnp.dappnode.eth",
-      description: getDescription(manifestVipnode),
-      avatar:
-        "https://i.ibb.co/ypjjMVJ/Qmen3sr-ZXEHnc-MM2-RPsg-VKk-Pbk-JPTMN9-SNFVEAQQY4a7-Nf.png",
-      isInstalled: false,
-      isUpdated: false,
-      whitelisted: true,
-      isFeatured: false
-    },
-    {
-      name: "trustlines.dnp.dappnode.eth",
-      description: getDescription(manifestTrustlines),
-      avatar: "https://i.ibb.co/vLBbdGZ/avatar-min.png",
-      isInstalled: false,
-      isUpdated: false,
-      whitelisted: true,
-      isFeatured: true,
-      featuredStyle: {
-        featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
-        featuredColor: "white"
-      }
-    }
-  ],
-
-  /* dnpInstalled */
-  [dnpInstalledMountPoint]: [
-    {
-      name: "admin.dnp.dappnode.eth",
-      isCore: true,
-      state: "exited"
-    },
-    {
-      name: "core.dnp.dappnode.eth",
-      isCore: true,
-      version: "0.2.3",
-      state: "exited"
-    },
-    {
-      name: "ln.dnp.dappnode.eth",
-      isDnp: true,
-      version: "0.1.0",
-      state: "running",
-      ports: [
-        {
-          host: "30303",
-          container: "30303",
-          protocol: "TCP"
-        },
-        {
-          host: "30303",
-          container: "30303",
-          protocol: "UDP"
-        }
-      ],
-      volumes: [
-        {
-          type: "volume",
-          path:
-            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
-          dest: "/app/.ethchain",
-          name: "dncore_ethchaindnpdappnodeeth_data",
-          users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
-          owner: "ethchain.dnp.dappnode.eth",
-          isOwner: false,
-          links: "2",
-          size: "71.57GB"
-        }
-      ],
-      manifest: manifestLn,
-      envs: {
-        ENV_NAME: "ENV_VALUE"
-      }
-    },
-    {
-      name: "wifi.dnp.dappnode.eth",
-      isCore: true,
-      envs: {
-        SSID: "DAppNodeWIFI",
-        WPA_PASSPHRASE: "dappnode"
-      }
-    },
-    {
-      name: "ethchain.dnp.dappnode.eth",
-      isCore: true,
-      version: "0.2.6",
-      state: "running",
-      ports: [
-        {
-          host: "30303",
-          container: "30303",
-          protocol: "TCP"
-        },
-        {
-          host: "30303",
-          container: "30303",
-          protocol: "UDP"
-        }
-      ],
-      volumes: [
-        {
-          type: "volume",
-          path:
-            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
-          dest: "/app/.ethchain",
-          name: "dncore_ethchaindnpdappnodeeth_data",
-          users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
-          owner: "ethchain.dnp.dappnode.eth",
-          isOwner: true,
-          links: "2",
-          size: "71.57GB"
-        },
-        {
-          type: "volume",
-          path:
-            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_geth/_data",
-          dest: "/root/.ethereum/",
-          name: "dncore_ethchaindnpdappnodeeth_geth",
-          users: ["ethchain.dnp.dappnode.eth"],
-          owner: "ethchain.dnp.dappnode.eth",
-          isOwner: true,
-          links: "1",
-          size: "94.62GB"
-        }
-      ],
-      envs: {
-        DEFAULT_CLIENT: "GETH"
-      },
-      manifest: manifestEthchain
-    }
-  ],
-
-  /* isInstallingLogs */
-  [isInstallingLogsMountPoint]: {
-    /* Core update */
-    "core.dnp.dappnode.eth": {
-      id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
-      log: "Downloading 54%"
-    },
-    "vpn.dnp.dappnode.eth": {
-      id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
-      log: "Downloading 54%"
-    },
-    "admin.dnp.dappnode.eth": {
-      id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
-      log: "Loading..."
-    },
-    /* Regular install of non-core*/
-    "bitcoin.dnp.dappnode.eth": {
-      id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
-      log: "Downloading 87%"
-    }
-  },
-
-  /* loadingStatus */
+  [coreUpdateMountPoint]: coreUpdateState,
+  [dappnodeStatusMountPoint]: dappnodeStatusState,
+  [devicesMountPoint]: devicesState,
+  [dnpRequestMountPoint]: dnpRequestState,
+  [dnpDirectoryMountPoint]: dnpDirectoryState,
+  [dnpInstalledMountPoint]: dnpInstalledState,
+  [isInstallingLogsMountPoint]: isInstallingState,
   [loadingStatusMountPoint]: {},
-
-  /* notifications */
-  [notificationsMountPoint]: {
-    "diskSpaceRanOut-stoppedPackages": {
-      id: "diskSpaceRanOut-stoppedPackages",
-      type: "danger",
-      title: "Disk space ran out, stopped packages",
-      body: "Available disk space gone wrong ".repeat(10),
-      timestamp: 153834824,
-      viewed: false,
-      fromDappmanager: true
-    }
-  },
-
-  /* userActionLogs */
-  [userActionLogsMountPoint]: [
-    {
-      event: "installPackage.dappmanager.dnp.dappnode.eth",
-      kwargs: {
-        id: "rinkeby.dnp.dappnode.eth",
-        userSetVols: {},
-        userSetPorts: {},
-        options: {}
-      },
-      level: "error",
-      message: "Timeout to cancel expired",
-      name: "Error",
-      stack: "Error: Timeout to cancel expired↵  ...",
-      timestamp: "2019-02-01T19:09:16.503Z"
-    }
-  ]
+  [notificationsMountPoint]: notificationsState,
+  [userActionLogsMountPoint]: userActionLogsState
 };

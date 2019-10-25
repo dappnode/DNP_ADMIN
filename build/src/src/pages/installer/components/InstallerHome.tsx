@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import withTitle from "components/hoc/withTitle";
-import { compose } from "redux";
+import { RouteComponentProps } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
 // This page
 import * as a from "../actions";
@@ -17,6 +14,7 @@ import NoPackageFound from "./NoPackageFound";
 import CategoryFilter from "./CategoryFilter";
 import DnpStore from "./DnpStore";
 // Components
+import Title from "components/Title";
 import Input from "components/Input";
 import { ButtonLight } from "components/Button";
 import Loading from "components/generic/Loading";
@@ -31,8 +29,20 @@ import { rootPath as packagesRootPath } from "pages/packages/data";
 // Styles
 import "./installer.scss";
 import IsSyncing from "./IsSyncing";
+import { DirectoryItem } from "types";
+import { SelectedCategories } from "../types";
 
-function InstallerHome({
+interface InstallerHomeProps {
+  directory: DirectoryItem[];
+  mainnetIsSyncing: boolean;
+  loading: boolean;
+  error: string;
+  fetchPackageDataFromQuery: (query: string) => void;
+}
+
+const InstallerHome: React.FunctionComponent<
+  InstallerHomeProps & RouteComponentProps
+> = ({
   // variables
   directory,
   mainnetIsSyncing,
@@ -40,11 +50,12 @@ function InstallerHome({
   error,
   history,
   // Actions
-  fetchPackageData,
   fetchPackageDataFromQuery
-}) {
+}) => {
   const [query, setQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState({});
+  const [selectedCategories, setSelectedCategories] = useState(
+    {} as SelectedCategories
+  );
 
   useEffect(() => {
     // If the packageLink is a valid IPFS hash preload it's info
@@ -52,18 +63,14 @@ function InstallerHome({
       fetchPackageDataFromQuery(query);
   }, [query, fetchPackageDataFromQuery]);
 
-  function openDnp(id) {
+  function openDnp(id: string) {
     const dnp = directory.find(({ name }) => name === id);
-    if ((dnp || {}).tag === "UPDATED") {
-      history.push(packagesRootPath + "/" + dnp.name);
-    } else {
-      fetchPackageData(id);
-      history.push(rootPath + "/" + encodeURIComponent(id));
-    }
+    if (dnp && dnp.isUpdated) history.push(packagesRootPath + "/" + dnp.name);
+    else history.push(rootPath + "/" + encodeURIComponent(id));
   }
 
-  function onCategoryChange(category) {
-    setSelectedCategories(ts => ({ ...ts, [category]: !ts[category] }));
+  function onCategoryChange(category: string) {
+    setSelectedCategories(x => ({ ...x, [category]: !x[category] }));
   }
 
   const directoryFiltered = filterDirectory({
@@ -85,57 +92,29 @@ function InstallerHome({
   }
 
   const categories = {
-    ...directory.reduce((obj, { manifest = {} }) => {
-      for (const category of manifest.categories || []) obj[category] = false;
+    ...directory.reduce((obj: SelectedCategories, { categories }) => {
+      for (const category of categories) obj[category] = false;
       return obj;
     }, {}),
     ...selectedCategories
   };
 
   /**
-   * Isolate the switching logic:
+   * Switching logic:
    * 1. If there is a search and it's empty show "NoDnp"
    * 2. If it is still syncing, show "IsSyncing"
    * 3. If it is loading, show "Loading"
    * 0. Else show the DnpStore
    */
-  function Body() {
-    if (directory.length) {
-      if (!directoryFiltered.length) return <NoPackageFound query={query} />;
-      // All is good, display actual DnpStore
-      const isFeatured = dnp => dnp.isFeatured;
-      const directoryFeatured = directoryFiltered.filter(dnp =>
-        isFeatured(dnp)
-      );
-      const directoryNotFeatured = directoryFiltered.filter(
-        dnp => !isFeatured(dnp)
-      );
-      return (
-        <>
-          <DnpStore
-            directory={directoryFeatured}
-            openDnp={openDnp}
-            featured={true}
-          />
-          <DnpStore directory={directoryNotFeatured} openDnp={openDnp} />
-        </>
-      );
-    } else {
-      if (mainnetIsSyncing) return <IsSyncing />;
-      if (error)
-        return <Error msg={`Error loading DAppNode Packages: ${error}`} />;
-      if (loading) return <Loading msg="Loading DAppNode Packages..." />;
-    }
-    // Fallback
-    return <Error msg={`Unknown error`} />;
-  }
 
   return (
     <>
+      <Title title="Installer" />
+
       <Input
         placeholder="DAppNode Package's name or IPFS hash"
         value={query}
-        onValueChange={value => setQuery(correctPackageName(value))}
+        onValueChange={(value: string) => setQuery(correctPackageName(value))}
         onEnterPress={runQuery}
         append={<ButtonLight onClick={runQuery}>Search</ButtonLight>}
       />
@@ -145,23 +124,33 @@ function InstallerHome({
         onCategoryChange={onCategoryChange}
       />
 
-      <Body />
+      {directory.length ? (
+        !directoryFiltered.length ? (
+          <NoPackageFound query={query} />
+        ) : (
+          <>
+            <DnpStore
+              directory={directoryFiltered.filter(dnp => dnp.isFeatured)}
+              openDnp={openDnp}
+              featured
+            />
+            <DnpStore
+              directory={directoryFiltered.filter(dnp => !dnp.isFeatured)}
+              openDnp={openDnp}
+            />
+          </>
+        )
+      ) : mainnetIsSyncing ? (
+        <IsSyncing />
+      ) : error ? (
+        <Error msg={`Error loading DAppNode Packages: ${error}`} />
+      ) : loading ? (
+        <Loading msg="Loading DAppNode Packages..." />
+      ) : (
+        <Error msg={`Unknown error`} />
+      )}
     </>
   );
-}
-
-InstallerHome.propTypes = {
-  // State -> props
-  directory: PropTypes.array.isRequired,
-  directoryLoaded: PropTypes.bool.isRequired,
-  mainnetIsSyncing: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
-  error: PropTypes.string.isRequired,
-  // Dispatch -> props
-  fetchPackageData: PropTypes.func.isRequired,
-  fetchPackageDataFromQuery: PropTypes.func.isRequired,
-  // withRouter
-  history: PropTypes.object.isRequired
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -173,15 +162,10 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = {
-  fetchPackageData: a.fetchPackageData,
   fetchPackageDataFromQuery: a.fetchPackageDataFromQuery
 };
 
-export default compose(
-  withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  withTitle("Installer")
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
 )(InstallerHome);

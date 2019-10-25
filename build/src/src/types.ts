@@ -32,6 +32,13 @@ export interface DirectoryItem {
     featuredColor?: string;
     featuredAvatarFilter?: string;
   };
+  categories: string[];
+}
+
+export interface RequestStatus {
+  loading?: boolean;
+  error?: string;
+  success?: boolean;
 }
 
 export interface RequestedDnp {

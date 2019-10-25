@@ -107,6 +107,7 @@ const InstallerInterface: React.FunctionComponent<
    */
   function onInstall() {
     // install({ name, version, userSet: userSetFormData, options });
+    console.log("INSTALLING!!");
   }
 
   /**
