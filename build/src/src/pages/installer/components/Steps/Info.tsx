@@ -18,7 +18,7 @@ import Switch from "components/Switch";
 import DnpNameVerified from "components/DnpNameVerified";
 import Ok from "components/Ok";
 import defaultAvatar from "img/defaultAvatar.png";
-import { MdMoreHoriz, MdClose } from "react-icons/md";
+import { MdExpandMore, MdClose, MdExpandLess } from "react-icons/md";
 // Styles
 import "./info.scss";
 import { RequestedDnp } from "types";
@@ -99,6 +99,24 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
    */
   const expandablePanels = [
     {
+      name: "Special options",
+      show: showOptions,
+      close: () => setShowOptions(false),
+      Component: () => (
+        <div>
+          {optionsArray.map(({ id, name, checked, toggle }) => (
+            <Switch
+              key={id}
+              checked={checked}
+              onToggle={toggle}
+              label={name}
+              id={"switch-" + id}
+            />
+          ))}
+        </div>
+      )
+    },
+    {
       name: "Compatible status",
       show: showResolveStatus,
       close: () => setShowResolveStatus(false),
@@ -116,24 +134,6 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
       show: showAvailableStatus,
       close: () => setShowAvailableStatus(false),
       Component: () => <Ok ok={true} msg={"All package resources available"} />
-    },
-    {
-      name: "Special options",
-      show: showOptions,
-      close: () => setShowOptions(false),
-      Component: () => (
-        <div>
-          {optionsArray.map(({ id, name, checked, toggle }) => (
-            <Switch
-              key={id}
-              checked={checked}
-              onToggle={toggle}
-              label={name}
-              id={"switch-" + id}
-            />
-          ))}
-        </div>
-      )
     }
   ].filter(panel => panel.show);
 
@@ -172,16 +172,6 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
                 </div>
               </div>
               <div className="actions">
-                {optionsArray.length > 0 && (
-                  <div
-                    className="subtle-header more-options"
-                    onClick={() => setShowOptions(x => !x)}
-                  >
-                    <MdMoreHoriz />
-                    <span>options</span>
-                  </div>
-                )}
-
                 <Button
                   className="install"
                   variant="dappnode"
@@ -194,6 +184,18 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
             </div>
           </div>
         </div>
+
+        {optionsArray.length > 0 && (
+          <div>
+            <div
+              className="subtle-header more-options"
+              onClick={() => setShowOptions(x => !x)}
+            >
+              {showOptions ? <MdExpandLess /> : <MdExpandMore />}
+              <span>Advanced options</span>
+            </div>
+          </div>
+        )}
 
         <div className="expandable-info">
           {expandablePanels.map(panel => (

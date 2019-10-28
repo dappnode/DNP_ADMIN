@@ -21,7 +21,7 @@
       }
 
       > * {
-        margin-bottom: var(--default-spacing);
+        margin-bottom: 0.75rem;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -66,25 +66,9 @@
 
       .actions {
         justify-content: flex-end;
+        margin-bottom: 0.4rem;
         .install {
           flex: none;
-        }
-        .more-options {
-          display: flex;
-          align-items: center;
-          cursor: pointer;
-          font-size: 0.8rem;
-          svg {
-            font-size: 1.5rem;
-          }
-          transition: color ease 150ms;
-          &:hover {
-            color: black;
-          }
-          align-self: flex-end;
-          @media screen and (max-width: 40rem) {
-            align-self: inherit;
-          }
         }
       }
     }
@@ -139,6 +123,29 @@
         width: 100%;
         height: 100%;
         border-radius: 8px;
+      }
+    }
+  }
+
+  .more-options {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+    svg {
+      font-size: 1.5rem;
+    }
+    transition: color ease 150ms;
+    &:hover {
+      color: black;
+    }
+    align-self: flex-end;
+    @media screen and (max-width: 40rem) {
+      justify-content: flex-start;
+      margin-left: calc(var(--avatar-size) + var(--default-spacing));
+      svg {
+        order: 2;
       }
     }
   }
