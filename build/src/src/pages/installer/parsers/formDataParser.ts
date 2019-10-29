@@ -14,7 +14,7 @@ export function formDataToUserSettings(
 ): UserSettingsAllDnps {
   return mapValues(formData, (formDataDnp, dnpName) => {
     const userSettings: UserSettings = {};
-    const schema = setupSchema.properties[dnpName];
+    const schema = setupSchema[dnpName];
     if (!schema || !schema.properties) return {};
     for (const [propId, value] of Object.entries(formDataDnp)) {
       const propSchema = schema.properties[propId];
@@ -60,7 +60,7 @@ export function userSettingsToFormData(
   userSettingsAllDnps: UserSettingsAllDnps,
   setupSchema: SetupSchemaAllDnps
 ): SetupWizardFormDataReturn {
-  return mapValues(setupSchema.properties, (dnpSchema, dnpName) => {
+  return mapValues(setupSchema, (dnpSchema, dnpName) => {
     const userSettings = userSettingsAllDnps[dnpName];
     if (!userSettings || !dnpSchema.properties) return {};
     const {

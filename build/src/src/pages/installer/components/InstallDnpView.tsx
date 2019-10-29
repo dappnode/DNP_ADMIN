@@ -1,12 +1,17 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import * as api from "API/calls";
-import { withRouter, RouteComponentProps } from "react-router-dom";
-import { isEmpty, throttle } from "lodash";
-import { Switch, Route, Redirect } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  Redirect,
+  withRouter,
+  RouteComponentProps
+} from "react-router-dom";
+import { isEmpty, throttle, pick } from "lodash";
+import { difference, isDeepEmpty } from "utils/lodashExtended";
+import { shortNameCapitalized, isDnpVerified } from "utils/format";
 // This module
 import ProgressLogs from "./InstallCardComponents/ProgressLogs";
-// Utils
-import { shortNameCapitalized, isDnpVerified } from "utils/format";
 // Parsers
 import parseSpecialPermissions from "../parsers/parseSpecialPermissions";
 // Components
@@ -16,8 +21,6 @@ import Permissions from "./Steps/Permissions";
 import Disclaimer from "./Steps/Disclaimer";
 import HorizontalStepper from "./HorizontalStepper";
 import { RequestedDnp, UserSettingsAllDnps } from "types";
-import { difference } from "utils/lodashExtended";
-import { setupSchemaIsEmpty } from "../parsers/setupSchemaParser";
 
 const BYPASS_CORE_RESTRICTION = "BYPASS_CORE_RESTRICTION";
 const SHOW_ADVANCED_EDITOR = "SHOW_ADVANCED_EDITOR";
@@ -54,36 +57,40 @@ const InstallDnpView: React.FunctionComponent<
   const setupUiSchema = dnp.setupUiSchema;
   const permissions = parseSpecialPermissions(metadata);
   const requiresCoreUpdate = dnp.request.compatible.requiresCoreUpdate;
-  const wizardAvailable = !!setupSchema && !setupSchemaIsEmpty(setupSchema);
+  const wizardAvailable = !!setupSchema && !isDeepEmpty(setupSchema);
   const oldEditorAvailable = Boolean(userSettings);
 
   useEffect(() => {
     setUserSettings(settings || {});
   }, [settings, setUserSettings]);
 
-  /**
-   * Call the install method with the gathered data
-   */
-  const onInstall = useCallback(() => {
-    // To only send / log the relevant data
-    // Prevent sending settings that are equal to the current
-    const userSettingsDiff = difference(settings || {}, userSettings);
-    console.log("Installing DNP", { name, version, userSettingsDiff });
-    api
-      .installPackage(
-        { name, version, userSettings: userSettingsDiff },
-        { toastMessage: `Installing ${shortNameCapitalized(name)}...` }
-      )
-      .catch(console.error);
-  }, [name, version, settings, userSettings]);
-  // Prevent a burst of install calls
-  const onInstallThrottle = useMemo(() => throttle(onInstall, 1000), [
-    onInstall
-  ]);
+  const onInstall = (newData?: { newUserSettings: UserSettingsAllDnps }) => {
+    // Since React update order is not guaranteed, pass newUserSettings as a
+    // parameter if necessary to ensure it has the latest state
+    const _userSettings =
+      newData && newData.newUserSettings
+        ? newData.newUserSettings
+        : userSettings;
 
-  /**
-   * Construct disclaimer
-   */
+    const kwargs = {
+      name,
+      version,
+      // Send only relevant data, ignoring settings that are equal to the current
+      userSettings: difference(settings || {}, _userSettings),
+      // Prevent sending the SHOW_ADVANCED_EDITOR option
+      options: pick(options, [BYPASS_CORE_RESTRICTION])
+    };
+
+    console.log("Installing DNP", kwargs);
+    api
+      .installPackage(kwargs, {
+        toastMessage: `Installing ${shortNameCapitalized(name)}...`
+      })
+      .catch(console.error);
+  };
+  // Prevent a burst of install calls
+  const onInstallThrottle = throttle(onInstall, 1000);
+
   const disclaimers: { name: string; message: string }[] = [];
   // Default disclaimer for public DNPs
   if (!isDnpVerified(dnp.name) || dnp.origin)
@@ -135,14 +142,14 @@ const InstallDnpView: React.FunctionComponent<
       subPath: setupSubPath,
       render: () => (
         <SetupWizard
-          setupSchema={setupSchema || { type: "object", properties: {} }}
+          setupSchema={setupSchema || {}}
           setupUiSchema={setupUiSchema || {}}
           userSettings={userSettings}
           wizardAvailable={wizardAvailable}
           onSubmit={(newUserSettings: UserSettingsAllDnps) => {
             console.log("Set new userSettings", newUserSettings);
             setUserSettings(newUserSettings);
-            goNext();
+            goNext({ newUserSettings });
           }}
           goBack={goBack}
         />
@@ -202,12 +209,13 @@ const InstallDnpView: React.FunctionComponent<
   //   if (isQueryDnpUpdated && name) history.push(packagesRootPath + "/" + name);
   // }, [tag, name, isQueryDnpUpdated, history]);
 
-  function goNext() {
+  function goNext(newData?: { newUserSettings: UserSettingsAllDnps }) {
     const nextIndex = currentIndex + 1;
     // When going to the last step "install", redirect to home and install
     if (nextIndex >= availableRoutes.length - 1) {
-      history.push(match.url);
-      onInstallThrottle();
+      // Prevent re-renders and pushing the same route
+      if (location.pathname !== match.url) history.push(match.url);
+      onInstallThrottle(newData);
     } else {
       const nextStep = availableRoutes[nextIndex];
       if (nextStep) history.push(`${match.url}/${nextStep.subPath}`);

@@ -255,15 +255,13 @@ const raidenMetadata = {
   license: "MIT License"
 };
 
-const raidenSetup = {
-  restart: "always",
-  ports: [],
-  volumes: ["data:/root/.raiden"],
-  environment: [
-    "RAIDEN_KEYSTORE_PASSWORD=",
-    "RAIDEN_ADDRESS=",
-    "EXTRA_OPTS=--disable-debug-logfile"
-  ]
+const raidenSetup: UserSettings = {
+  namedVolumePath: { data: "" },
+  environment: {
+    RAIDEN_KEYSTORE_PASSWORD: "",
+    RAIDEN_ADDRESS: "",
+    EXTRA_OPTS: "--disable-debug-logfile"
+  }
 };
 
 /**
@@ -302,17 +300,15 @@ const raidenTestnetMetadata = {
   }
 };
 
-const raidenTestnetSetup = {
-  restart: "always",
-  ports: [],
-  volumes: ["data:/root/.raiden"],
-  environment: [
-    "RAIDEN_ADDRESS=",
-    "RAIDEN_KEYSTORE_PASSWORD=",
-    "RAIDEN_ETH_RPC_ENDPOINT=http://goerli-geth.dappnode:8545",
-    "RAIDEN_NETWORK_ID=goerli",
-    "EXTRA_OPTS=--disable-debug-logfile"
-  ]
+const raidenTestnetSetup: UserSettings = {
+  namedVolumePath: { data: "" },
+  environment: {
+    RAIDEN_ADDRESS: "",
+    RAIDEN_KEYSTORE_PASSWORD: "",
+    RAIDEN_ETH_RPC_ENDPOINT: "http://goerli-geth.dappnode:8545",
+    RAIDEN_NETWORK_ID: "goerli",
+    EXTRA_OPTS: "--disable-debug-logfile"
+  }
 };
 
 /**
@@ -424,17 +420,17 @@ const ethchainMetadata = {
   license: "GPL-3.0"
 };
 
-const ethchainSetup = {
-  volumes: [
-    "ethchaindnpdappnodeeth_data:/root/.local/share/io.parity.ethereum/",
-    "ethchaindnpdappnodeeth_geth:/root/.ethereum/"
-  ],
-  ports: ["30303:30303", "30303:30303/udp", "30304:30304/udp"],
-  environment: ["EXTRA_OPTS_PARITY=", "EXTRA_OPTS_GETH=", "DEFAULT_CLIENT="],
-  restart: "always",
-  subnet: "172.33.0.0/16",
-  ipv4_address: "172.33.1.6"
-};
+// const ethchainSetup = {
+//   volumes: [
+//     "ethchaindnpdappnodeeth_data:/root/.local/share/io.parity.ethereum/",
+//     "ethchaindnpdappnodeeth_geth:/root/.ethereum/"
+//   ],
+//   ports: ["30303:30303", "30303:30303/udp", "30304:30304/udp"],
+//   environment: ["EXTRA_OPTS_PARITY=", "EXTRA_OPTS_GETH=", "DEFAULT_CLIENT="],
+//   restart: "always",
+//   subnet: "172.33.0.0/16",
+//   ipv4_address: "172.33.1.6"
+// };
 
 /**
  * Trustlines metadata
@@ -480,10 +476,9 @@ const trustlinesMetadata = {
 };
 
 const trustlinesSetup = {
-  restart: "always",
-  volumes: ["data:/data", "config:/config/custom"],
-  environment: ["ROLE=observer", "ADDRESS", "PASSWORD"],
-  ports: ["30300", "30300/udp"]
+  environment: { ROLE: "observer", ADDRESS: "", PASSWORD: "" },
+  portMapping: { "30300": "", "30300/udp": "" },
+  namedVolumePath: { data: "", config: "" }
 };
 
 // Fake is installing package
@@ -494,6 +489,55 @@ const isInstallingMetadata = {
   name: isInstallingDnp,
   version: "0.1.0",
   description: "Mock DNP that is installing"
+};
+
+// Fake loading error package
+const inErrorDnp = "is-on-error.dnp.dappnode.eth";
+const inErrorAvatar =
+  "https://i.ibb.co/TMHKsQV/error-success-ok-34166614-w-XOz-Jop-GD.png";
+
+// Fake in loading status package
+const inLoadingDnp = "is-loading.dnp.dappnode.eth";
+const inLoadingAvatar = "https://i.ibb.co/RSjySdv/1ug4oj.jpg";
+
+// Fake in updated state package
+const isUpdatedDnp = "is-updated.dnp.dappnode.eth";
+const isUpdatedAvatar = "https://i.ibb.co/W2mtHcS/thisisfine-1.jpg";
+
+const sampleRequestState = {
+  name: "demo-name",
+  version: "0.0.0",
+  origin: null,
+  avatar: "",
+  metadata: { name: "demo-name", version: "0.0.0", description: "demo" },
+  imageSize: 10000000,
+  isUpdated: false,
+  isInstalled: true,
+  settings: {},
+  setupSchema: {},
+  setupUiSchema: {},
+
+  request: {
+    compatible: {
+      requiresCoreUpdate: false,
+      resolving: false,
+      isCompatible: true,
+      error: "",
+      dnps: { "demo-name": { from: null, to: "0.0.0" } }
+    },
+    available: { isAvailable: true, message: "" }
+  }
+};
+
+const sampleDirectoryState = {
+  name: "demo-name",
+  description: "Demo description",
+  avatar: "",
+  isInstalled: false,
+  isUpdated: false,
+  whitelisted: true,
+  isFeatured: false,
+  categories: ["Blockchain"]
 };
 
 /**
@@ -599,62 +643,45 @@ const devicesState = [
 
 const dnpDirectoryState: DnpDirectoryState = [
   {
+    ...sampleDirectoryState,
     name: "bitcoin.dnp.dappnode.eth",
     description: getDescription(bitcoinMetadata),
-    avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png",
-    isInstalled: false,
-    isUpdated: false,
-    whitelisted: true,
-    isFeatured: false,
-    categories: ["Blockchain"]
+    avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png"
   },
   {
+    ...sampleDirectoryState,
     name: "lightning-network.dnp.dappnode.eth",
     description: getDescription(lightningNetworkMetadata),
     avatar: lightningNetworkAvatar,
-    isInstalled: false,
-    isUpdated: false,
-    whitelisted: true,
-    isFeatured: false,
     categories: ["Payment channels", "Economic incentive"]
   },
   {
+    ...sampleDirectoryState,
     name: "raiden.dnp.dappnode.eth",
     description: getDescription(raidenMetadata),
     avatar: raidenAvatar,
-    isInstalled: true,
-    isUpdated: true,
-    whitelisted: true,
-    isFeatured: false,
     categories: ["Payment channels"]
   },
   {
+    ...sampleDirectoryState,
     name: "raiden-testnet.dnp.dappnode.eth",
     description: getDescription(raidenTestnetMetadata),
     avatar: raidenTestnetAvatar,
     isInstalled: true,
-    isUpdated: false,
-    whitelisted: true,
-    isFeatured: false,
     categories: ["Developer tools"]
   },
   {
+    ...sampleDirectoryState,
     name: "vipnode.dnp.dappnode.eth",
     description: getDescription(vipnodeMetadata),
     avatar: vipnodeAvatar,
-    isInstalled: false,
-    isUpdated: false,
-    whitelisted: true,
-    isFeatured: false,
     categories: ["Economic incentive"]
   },
   {
+    ...sampleDirectoryState,
     name: "trustlines.dnp.dappnode.eth",
     description: getDescription(trustlinesMetadata),
     avatar: trustlinesAvatar,
-    isInstalled: false,
-    isUpdated: false,
-    whitelisted: true,
     isFeatured: true,
     featuredStyle: {
       featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
@@ -663,14 +690,30 @@ const dnpDirectoryState: DnpDirectoryState = [
     categories: ["Blockchain"]
   },
   {
+    ...sampleDirectoryState,
+    name: isUpdatedDnp,
+    description: "Sample package in udpated state",
+    isInstalled: true,
+    isUpdated: true,
+    avatar: isUpdatedAvatar
+  },
+  {
+    ...sampleDirectoryState,
     name: isInstallingDnp,
     description: getDescription(isInstallingMetadata),
-    avatar: isInstallingAvatar,
-    isInstalled: false,
-    isUpdated: false,
-    whitelisted: true,
-    isFeatured: false,
-    categories: ["Blockchain"]
+    avatar: isInstallingAvatar
+  },
+  {
+    ...sampleDirectoryState,
+    name: inErrorDnp,
+    description: "Sample package in error state",
+    avatar: inErrorAvatar
+  },
+  {
+    ...sampleDirectoryState,
+    name: inLoadingDnp,
+    description: "Sample package in loading state",
+    avatar: inLoadingAvatar
   }
 ];
 
@@ -805,11 +848,8 @@ const dnpRequestState: DnpRequestState = {
       },
       // @ts-ignore
       setupSchema: {
-        type: "object",
-        properties: {
-          "lightning-network.dnp.dappnode.eth": lightningNetworkSetupSchema,
-          "bitcoin.dnp.dappnode.eth": bitcoinSetupSchema
-        }
+        "lightning-network.dnp.dappnode.eth": lightningNetworkSetupSchema,
+        "bitcoin.dnp.dappnode.eth": bitcoinSetupSchema
       },
       setupUiSchema: {
         "lightning-network.dnp.dappnode.eth": lightningNetworkSetupUiSchema,
@@ -884,10 +924,7 @@ const dnpRequestState: DnpRequestState = {
 
       // @ts-ignore
       setupSchema: {
-        type: "object",
-        properties: {
-          "vipnode.dnp.dappnode.eth": vipnodeSetupSchema
-        }
+        "vipnode.dnp.dappnode.eth": vipnodeSetupSchema
       },
       // setupSchema: vipnodeSetupSchema,
       setupUiSchema: { "vipnode.dnp.dappnode.eth": vipnodeSetupUiSchema },
@@ -907,6 +944,54 @@ const dnpRequestState: DnpRequestState = {
           message: ""
         }
       }
+    },
+
+    [trustlinesMetadata.name]: {
+      ...sampleRequestState,
+      name: trustlinesMetadata.name,
+      version: trustlinesMetadata.version,
+      origin: null,
+      avatar: trustlinesAvatar,
+      metadata: trustlinesMetadata,
+
+      settings: {
+        [trustlinesMetadata.name]: trustlinesSetup
+      },
+
+      setupSchema: {},
+      setupUiSchema: {}
+    },
+
+    [raidenMetadata.name]: {
+      ...sampleRequestState,
+      name: raidenMetadata.name,
+      version: raidenMetadata.version,
+      origin: null,
+      avatar: raidenAvatar,
+      metadata: raidenMetadata,
+
+      settings: {
+        [raidenMetadata.name]: raidenSetup
+      },
+
+      setupSchema: {},
+      setupUiSchema: {}
+    },
+
+    [raidenTestnetMetadata.name]: {
+      ...sampleRequestState,
+      name: raidenTestnetMetadata.name,
+      version: raidenTestnetMetadata.version,
+      origin: null,
+      avatar: raidenTestnetAvatar,
+      metadata: raidenTestnetMetadata,
+
+      settings: {
+        [raidenTestnetMetadata.name]: raidenTestnetSetup
+      },
+
+      setupSchema: {},
+      setupUiSchema: {}
     },
 
     "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy": {
@@ -946,43 +1031,22 @@ const dnpRequestState: DnpRequestState = {
     },
 
     [isInstallingDnp]: {
+      ...sampleRequestState,
       name: isInstallingDnp,
       version: "0.1.0",
-      origin: null,
       avatar: isInstallingAvatar,
-      metadata: isInstallingMetadata,
-
-      imageSize: 10000000,
-      isUpdated: false,
-      isInstalled: true,
-
-      settings: {},
-      // @ts-ignore
-      setupSchema: {},
-      setupUiSchema: {},
-
-      request: {
-        compatible: {
-          requiresCoreUpdate: false,
-          resolving: false,
-          isCompatible: true,
-          error: "",
-          dnps: {
-            [isInstallingDnp]: { from: null, to: "0.1.0" }
-          }
-        },
-        available: {
-          isAvailable: true,
-          message: ""
-        }
-      }
+      metadata: isInstallingMetadata
     }
   },
+
   requestStatus: {
     "lightning-network.dnp.dappnode.eth": {
       loading: true
     },
-    "raiden-testnet.dnp.dappnode.eth": {
+    [inLoadingDnp]: {
+      loading: true
+    },
+    [inErrorDnp]: {
       error: "Demo error to simulate load failure"
     }
   }

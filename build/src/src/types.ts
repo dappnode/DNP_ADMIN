@@ -42,6 +42,10 @@ export interface RequestStatus {
 }
 
 export interface SetupSchemaAllDnps {
+  [dnpName: string]: SetupSchema;
+}
+
+export interface SetupSchemaAllDnpsFormated {
   type: "object";
   properties: { [dnpName: string]: SetupSchema };
 }
@@ -50,13 +54,11 @@ export interface SetupUiSchemaAllDnps {
   [dnpName: string]: SetupUiSchema;
 }
 
-export interface UserSettingTarget {
-  type: "environment" | "portMapping" | "namedVolumePath" | "fileUpload";
-  name?: string;
-  containerPort?: string;
-  volumeName?: string;
-  path?: string;
-}
+export type UserSettingTarget =
+  | { type: "environment"; name: string }
+  | { type: "portMapping"; containerPort: string }
+  | { type: "namedVolumePath"; volumeName: string }
+  | { type: "fileUpload"; path: string };
 
 // Settings must include the previous user settings
 

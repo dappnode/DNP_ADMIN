@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { mapValues } from "lodash";
 // Components
 import Card from "components/Card";
@@ -6,7 +6,8 @@ import FormJsonSchema from "./FormJsonSchema";
 import {
   SetupSchemaAllDnps,
   SetupUiSchemaAllDnps,
-  UserSettingsAllDnps
+  UserSettingsAllDnps,
+  SetupSchemaAllDnpsFormated
 } from "types";
 import { shortNameCapitalized } from "utils/format";
 import OldEditor from "./OldEditor";
@@ -92,14 +93,16 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   }, [onSubmit, setupSchema, wizardAvailable, wizardData, editorData]);
 
   // Pretify the titles of the DNP sections
-  if (setupSchema && setupSchema.properties)
-    setupSchema.properties = mapValues(
-      setupSchema.properties,
-      (schema, dnpName) => ({
+  // and convert it to a valid JSON schema where the top properties are each DNP
+  const setupSchemaFormated: SetupSchemaAllDnpsFormated = useMemo(() => {
+    return {
+      type: "object",
+      properties: mapValues(setupSchema, (schema, dnpName) => ({
         title: shortNameCapitalized(dnpName),
         ...schema
-      })
-    );
+      }))
+    };
+  }, [setupSchema]);
 
   return (
     <Card spacing>
@@ -114,7 +117,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
         />
       ) : (
         <FormJsonSchema
-          schema={setupSchema}
+          schema={setupSchemaFormated}
           uiSchema={setupUiSchema}
           formData={wizardData}
           // onChange={() => {}}

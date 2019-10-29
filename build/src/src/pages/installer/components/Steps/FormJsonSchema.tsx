@@ -5,7 +5,7 @@ import Form, { FormValidation, AjvError } from "react-jsonschema-form";
 import Button from "components/Button";
 import ReactMarkdown from "react-markdown";
 import "./formJsonSchema.scss";
-import { SetupSchema, SetupUiSchema } from "types";
+import { SetupSchema, SetupUiSchema, SetupSchemaAllDnpsFormated } from "types";
 
 interface PropWithCustomErrors extends SetupSchema {
   customErrors: { [errorName: string]: string };
@@ -19,7 +19,7 @@ const CustomDescriptionField: React.FunctionComponent<any> = ({
 }) => useMemo(() => <ReactMarkdown source={description} />, [description]);
 
 interface FormJsonSchemaProps {
-  schema: SetupSchema;
+  schema: SetupSchemaAllDnpsFormated;
   uiSchema: SetupUiSchema;
   formData: any;
   onChange?: (formData: any) => void;
