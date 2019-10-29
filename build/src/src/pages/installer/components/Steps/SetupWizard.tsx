@@ -16,7 +16,6 @@ import {
 } from "pages/installer/parsers/formDataParser";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
 import deepmerge from "deepmerge";
-import useTraceUpdate from "utils/useTraceUpdate";
 
 interface SetupWizardProps {
   setupSchema: SetupSchemaAllDnps;
@@ -39,18 +38,14 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   const [editorData, setEditorData] = useState({} as UserSettingsAllDnps);
   const [wizardData, setWizardData] = useState({} as SetupWizardFormDataReturn);
 
-  useTraceUpdate({
-    setupSchema,
-    setupUiSchema,
-    userSettings,
-    onSubmit,
-    goBack
-  });
-
   useEffect(() => {
     setEditorData(userSettings);
     setWizardData(userSettingsToFormData(userSettings, setupSchema));
   }, [userSettings, setupSchema]);
+
+  // [NOTE]: All handlers for the FormJsonSchema are memoized to prevent
+  // expensive re-renders that cause serious performance issues
+  // (100% CPU + freezing for 200-500 ms)
 
   // Move data from the wizard to the editor
   // Deepmerge to include settings not found in the wizard schema

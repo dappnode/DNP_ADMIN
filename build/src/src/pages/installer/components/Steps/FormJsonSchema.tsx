@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { get, isEmpty } from "lodash";
 import Error from "components/generic/Error";
 import Form, { FormValidation, AjvError } from "react-jsonschema-form";
@@ -11,11 +11,12 @@ interface PropWithCustomErrors extends SetupSchema {
   customErrors: { [errorName: string]: string };
 }
 
+// Memo this component to prevent expensive MarkDown parsing
+// on every single keystroke. After analyzing performance, this component
+// was responsible for 20-40% of the work
 const CustomDescriptionField: React.FunctionComponent<any> = ({
   description
-}) => {
-  return <ReactMarkdown source={description} />;
-};
+}) => useMemo(() => <ReactMarkdown source={description} />, [description]);
 
 interface FormJsonSchemaProps {
   schema: SetupSchema;
