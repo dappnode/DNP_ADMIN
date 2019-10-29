@@ -1,11 +1,11 @@
+import { UserSettingsAllDnps } from "types";
+
 export const route = "installPackage.dappmanager.dnp.dappnode.eth";
 
 export interface RequestData {
   name: string;
   version: string;
-  userSetEnvs?: {};
-  userSetVols?: {};
-  userSetPorts?: {};
+  userSettings: UserSettingsAllDnps;
   options?: {
     BYPASS_RESOLVER?: boolean;
     BYPASS_CORE_RESTRICTION?: boolean;

@@ -1,27 +1,23 @@
 import { call, put, select } from "redux-saga/effects";
 import api from "API/rpcMethods";
 import * as t from "./actionTypes";
-import * as a from "./actions";
 // Actions
 import { fetchDnpDirectory as actionFetchDnpDirectory } from "services/dnpDirectory/actions";
-import { updateDnpDirectoryById } from "services/dnpDirectory/actions";
 import {
   clearIsInstallingLogsById,
   updateIsInstallingLog
 } from "services/isInstallingLogs/actions";
 // Selectors
 import { getUpnpAvailable } from "services/dappnodeStatus/selectors";
-import { getDnpDirectoryById } from "services/dnpDirectory/selectors";
 import { getIsInstallingByDnp } from "services/isInstallingLogs/selectors";
 // Utils
 import { rootWatcher, assertAction, assertConnectionOpen } from "utils/redux";
 import { shortName } from "utils/format";
 import isSyncing from "utils/isSyncing";
 import isIpfsHash from "utils/isIpfsHash";
-import isEnsDomain from "utils/isEnsDomain";
 import uniqArray from "utils/uniqArray";
 import Joi from "joi";
-import { stringSplit, stringIncludes } from "utils/strings";
+import { stringIncludes } from "utils/strings";
 
 /***************************** Subroutines ************************************/
 
@@ -117,7 +113,7 @@ export function* fetchPackageData({ id, dontLogError }) {
   try {
     // If connection is not open yet, wait for it to open.
     yield call(assertConnectionOpen);
-    const { manifest, avatar } = yield call(api.fetchPackageData, {
+    const { manifest } = yield call(api.fetchPackageData, {
       id,
       ...(dontLogError ? { dontLogError } : {})
     });

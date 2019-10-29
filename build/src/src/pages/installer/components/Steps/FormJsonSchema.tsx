@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { isEmpty } from "lodash";
+import React, { useState, useEffect, useRef } from "react";
 import { get } from "lodash";
 import Error from "components/generic/Error";
 import Form, { FormValidation, AjvError } from "react-jsonschema-form";
 import Button from "components/Button";
-import Alert from "react-bootstrap/Alert";
 import ReactMarkdown from "react-markdown";
 import "./formJsonSchema.scss";
 import { SetupSchema, SetupUiSchema } from "types";
@@ -22,8 +20,10 @@ const CustomDescriptionField: React.FunctionComponent<any> = ({
 interface FormJsonSchemaProps {
   schema: SetupSchema;
   uiSchema: SetupUiSchema;
-  initialFormData: any;
+  formData: any;
+  onChange?: (formData: any) => void;
   onSubmit: (formData: any) => void;
+  onShowAdvancedEditor: (formData: any) => void;
   onCancel: () => void;
   onSubmitLabel?: string;
   onCancelLabel?: string;
@@ -32,18 +32,47 @@ interface FormJsonSchemaProps {
 const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
   schema,
   uiSchema,
-  initialFormData,
+  formData,
+  onChange,
   onSubmit,
+  onShowAdvancedEditor,
   onCancel,
   onSubmitLabel = "Submit",
   onCancelLabel = "Cancel"
 }) => {
-  const [errors, setErrors] = useState([] as AjvError[]);
-  const [formData, setFormData] = useState(undefined);
+  /**
+   * Ugly hack to be able to get the formData when switching editors
+   * If the formData is kept in state either in this component or its
+   * parent the performance suffers extremely, with CPU usage of 100%
+   * on fast types
+   * [NOTE]: It's necessary to keep an internalFormData or the formData
+   * will be replaced by the prop
+   */
+  const [internalFormData, setInternalFormData] = useState({} as any);
+  const [callShowAdvancedEditor, setCallShowAdvancedEditor] = useState(false);
+  const componentIsMounted = useRef(true);
+  const formRef = useRef();
 
   useEffect(() => {
-    if (!isEmpty(initialFormData)) setFormData(initialFormData);
-  }, [initialFormData]);
+    setInternalFormData(formData);
+  }, [formData, setInternalFormData]);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
+
+  function _onShowAdvancedEditor() {
+    setCallShowAdvancedEditor(true);
+    setImmediate(() => {
+      // @ts-ignore
+      if (formRef && formRef.current) formRef.current.submit();
+      setImmediate(() => {
+        if (componentIsMounted.current) setCallShowAdvancedEditor(false);
+      });
+    });
+  }
 
   /**
    * Sanitize schema
@@ -130,36 +159,45 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
   return (
     <>
       <Form
+        // @ts-ignore
+        ref={formRef}
         schema={schema}
         uiSchema={uiSchema}
-        // onChange={e => {
-        //   if (onChange) onChange(e.formData);
-        //   // console.log("Changed", e.formData, e.errors);
-        // }}
+        onChange={e => {
+          if (onChange) onChange(e.formData);
+          setInternalFormData(e.formData);
+        }}
         onSubmit={e => {
           if (!e.formData) return false;
-          setErrors([]);
-          setFormData(e.formData);
-          onSubmit(e.formData);
+          if (callShowAdvancedEditor) onShowAdvancedEditor(e.formData);
+          else onSubmit(e.formData);
         }}
-        onError={setErrors}
         liveValidate
-        showErrorList={false}
+        // showErrorList={false}
+        // onError={console.log}
         transformErrors={transformErrors}
         validate={validate}
         fields={fields}
-        formData={formData} // To prevent losing the info on submit
+        formData={internalFormData}
       >
-        {onCancel && (
-          <Button className="cancel-button" onClick={onCancel}>
-            {onCancelLabel}
-          </Button>
-        )}
-        <Button type={"sumbit" as "submit"} variant="dappnode">
-          {onSubmitLabel}
-        </Button>
+        <div className="bottom-buttons">
+          <div>
+            {onCancel && (
+              <Button className="cancel-button" onClick={onCancel}>
+                {onCancelLabel}
+              </Button>
+            )}
+            <Button type={"sumbit" as "submit"} variant="dappnode">
+              {onSubmitLabel}
+            </Button>
+          </div>
+          <div className="subtle-header" onClick={_onShowAdvancedEditor}>
+            Show advanced editor
+          </div>
+        </div>
       </Form>
-      {errors.length > 0 && (
+
+      {/* {errors.length > 0 && (
         <Alert variant="danger">
           <Alert.Heading>Errors</Alert.Heading>
           <ul>
@@ -176,9 +214,9 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
             })}
           </ul>
         </Alert>
-      )}
+      )} */}
     </>
   );
 };
 
-export default FormJsonSchema;
+export default React.memo(FormJsonSchema);

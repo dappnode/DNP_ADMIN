@@ -41,6 +41,41 @@ export interface RequestStatus {
   success?: boolean;
 }
 
+export interface SetupSchemaAllDnps {
+  type: "object";
+  properties: { [dnpName: string]: SetupSchema };
+}
+
+export interface SetupUiSchemaAllDnps {
+  [dnpName: string]: SetupUiSchema;
+}
+
+export interface UserSettingTarget {
+  type: "environment" | "portMapping" | "namedVolumePath" | "fileUpload";
+  name?: string;
+  containerPort?: string;
+  volumeName?: string;
+  path?: string;
+}
+
+// Settings must include the previous user settings
+
+export interface UserSettings {
+  environment?: { [envName: string]: string };
+  portMapping?: { [containerPortAndType: string]: string };
+  namedVolumePath?: { [volumeName: string]: string };
+  fileUpload?: { [containerPath: string]: string };
+}
+// "bitcoin.dnp.dappnode.eth": {
+//   environment: { MODE: "VALUE_SET_BEFORE" }
+//   portMappings: { "8443": "8443"; "8443/udp": "8443" },
+//   namedVolumePaths: { data: "" }
+//   fileUploads: { "/usr/src/app/config.json": "data:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D" }
+// };
+export interface UserSettingsAllDnps {
+  [dnpName: string]: UserSettings;
+}
+
 export interface RequestedDnp {
   name: string; // "bitcoin.dnp.dappnode.eth"
   version: string; // "0.2.5", "/ipfs/Qm"
@@ -48,36 +83,14 @@ export interface RequestedDnp {
   avatar: string; // "http://dappmanager.dappnode/avatar/Qm7763518d4";
   metadata: PackageReleaseMetadata;
   // Setup wizard
-  setupSchema?: SetupSchema;
-  setupUiSchema?: SetupUiSchema;
+  setupSchema?: SetupSchemaAllDnps;
+  setupUiSchema?: SetupUiSchemaAllDnps;
   // Additional data
   imageSize: number;
   isUpdated: boolean;
   isInstalled: boolean;
   // Settings must include the previous user settings
-  settings: {
-    envs?: {
-      [dnpName: string]: {
-        [envName: string]: string;
-      };
-      // "bitcoin.dnp.dappnode.eth": { MODE: "VALUE_SET_BEFORE" };
-      // "ln.dnp.dappnode.eth": { WALLET: "" };
-    };
-    ports?: {
-      [dnpName: string]: {
-        [containerPortAndType: string]: string;
-      };
-      // "bitcoin.dnp.dappnode.eth": { "8443": "8443"; "8443/udp": "8443" };
-      // "ln.dnp.dappnode.eth": { "7007": "" };
-    };
-    vols?: {
-      [dnpName: string]: {
-        [volumeName: string]: string;
-      };
-      // "bitcoin.dnp.dappnode.eth": { data: "" };
-      // "ln.dnp.dappnode.eth": { data: "" };
-    };
-  };
+  settings: UserSettingsAllDnps;
   request: {
     compatible: {
       requiresCoreUpdate: boolean;

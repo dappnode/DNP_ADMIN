@@ -1,5 +1,10 @@
 import merge from "deepmerge";
-import { UPDATE_DNP_REQUEST, AllActionTypes, DnpRequestState } from "./types";
+import {
+  UPDATE_DNP_REQUEST,
+  SET_DNP_REQUEST,
+  AllActionTypes,
+  DnpRequestState
+} from "./types";
 
 // Service > dnpRequest
 
@@ -18,7 +23,7 @@ export default (state = initialState, action: AllActionTypes) => {
         }
       };
 
-    case UPDATE_DNP_REQUEST:
+    case SET_DNP_REQUEST:
       return {
         ...state,
         dnps: {

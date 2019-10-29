@@ -1,0 +1,19 @@
+.old-editor-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -0.5rem;
+
+  button {
+    margin-top: var(--default-spacing);
+  }
+
+  .subtle-header {
+    margin-top: var(--default-spacing);
+    cursor: pointer;
+    transition: color ease 150ms;
+    &:hover {
+      color: black;
+    }
+  }
+}

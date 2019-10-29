@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import ReactMarkdown from "react-markdown";
-import { isEmpty } from "lodash";
 // This module
 import Dependencies from "../InstallCardComponents/Dependencies";
 // Utils

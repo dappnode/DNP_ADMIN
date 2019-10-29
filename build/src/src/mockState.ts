@@ -13,6 +13,7 @@ import { mountPoint as notificationsMountPoint } from "services/notifications/da
 import { mountPoint as userActionLogsMountPoint } from "services/userActionLogs/data";
 import { DnpRequestState } from "services/dnpRequest/types";
 import { DnpDirectoryState } from "services/dnpDirectory/types";
+import { UserSettings } from "types";
 
 function getDescription(manifest: {
   shortDescription?: string;
@@ -88,20 +89,49 @@ const lightningNetworkMetadata = {
   }
 };
 
-const lightningNetworkSetup = {
-  ports: ["9735:9735"],
-  volumes: ["lndconfig_data:/root/.lnd/"],
-  restart: "always",
-  environment: [
-    "RTL_PASSWORD=changeme",
-    "RPCUSER=dappnode",
-    "RPCPASS=dappnode",
-    "BITCOIND_HOST=my.bitcoin.dnp.dappnode.eth",
-    "NETWORK=mainnet",
-    "ALIAS=",
-    "COLOR=#5ACDC5",
-    "EXT_IP="
-  ]
+const lightningNetworkSetupSchema = {
+  description: `This setup wizard will help you start. In case of problems: https://vipnode.io`,
+  type: "object",
+  required: ["network"],
+  properties: {
+    rtlPassword: {
+      target: {
+        type: "environment",
+        name: "RTL_PASSWORD"
+      },
+      type: "string",
+      title: "RTL password",
+      description: "Password to protect RTL",
+      minLength: 8
+    },
+    network: {
+      target: {
+        type: "environment",
+        name: "NETWORK"
+      },
+      type: "string",
+      title: "Network",
+      description: "Choose which network to connect to",
+      default: "mainnet",
+      enum: ["mainnet", "testnet"]
+    }
+  }
+};
+const lightningNetworkSetupUiSchema = {};
+
+const lightningNetworkSetup: UserSettings = {
+  portMapping: { "9735": "9735" },
+  namedVolumePath: { lndconfig_data: "" },
+  environment: {
+    RTL_PASSWORD: "changeme",
+    RPCUSER: "dappnode",
+    RPCPASS: "dappnode",
+    BITCOIND_HOST: "my.bitcoin.dnp.dappnode.eth",
+    NETWORK: "mainnet",
+    ALIAS: "",
+    COLOR: "#5ACDC5",
+    EXT_IP: ""
+  }
 };
 
 /**
@@ -138,10 +168,8 @@ const vipnodeMetadata = {
   license: "GPL-3.0"
 };
 
-const vipnodeSetup = {
-  restart: "always",
-  environment: ["PAYOUT_ADDRESS="],
-  external_vol: ["dncore_ethchaindnpdappnodeeth_data:/app/.ethchain:ro"]
+const vipnodeSetup: UserSettings = {
+  environment: { PAYOUT_ADDRESS: "" }
 };
 
 const vipnodeSetupSchema = {
@@ -160,6 +188,19 @@ const vipnodeSetupSchema = {
       pattern: "^0x[a-fA-F0-9]{40}$",
       customErrors: {
         pattern: "Must be an address 0x1234... 40 bytes"
+      }
+    },
+    keychain: {
+      target: {
+        type: "fileUpload",
+        path: "/usr/src/app"
+      },
+      type: "string",
+      format: "data-url",
+      title: "Keychain",
+      description: "Key chain containing the private key of this node",
+      "ui:options": {
+        accept: ".pdf"
       }
     }
   }
@@ -310,15 +351,44 @@ const bitcoinMetadata = {
   license: "GPL-3.0"
 };
 
-const bitcoinSetup = {
-  ports: ["8333:8333"],
-  volumes: ["bitcoin_data:/root/.bitcoin"],
-  environment: [
-    "BTC_RPCUSER=dappnode",
-    "BTC_RPCPASSWORD=dappnode",
-    "BTC_TXINDEX=1",
-    "BTC_PRUNE=0"
-  ]
+const bitcoinSetup: UserSettings = {
+  portMapping: { "8333": "8333" },
+  namedVolumePath: { bitcoin_data: "/dev1/custom-path-previously-set" },
+  environment: {
+    BTC_RPCUSER: "dappnode",
+    BTC_RPCPASSWORD: "dappnode",
+    BTC_TXINDEX: "1",
+    BTC_PRUNE: "0"
+  }
+};
+
+const bitcoinSetupSchema = {
+  description: `Bitcoin setup https://docs.bitcoin.io`,
+  type: "object",
+  required: ["txIndex"],
+  properties: {
+    txIndex: {
+      target: {
+        type: "environment",
+        name: "BTC_TXINDEX"
+      },
+      type: "string",
+      title: "TX index",
+      description: "Choose the TX index",
+      default: "1",
+      enum: ["0", "1", "2"]
+    },
+    bitcoinData: {
+      target: {
+        type: "namedVolumePath",
+        volumeName: "bitcoin_data"
+      },
+      type: "string",
+      title: "Custom volume data path",
+      description:
+        "If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive."
+    }
+  }
 };
 
 /**
@@ -698,6 +768,52 @@ const dnpInstalledState = [
 
 const dnpRequestState: DnpRequestState = {
   dnps: {
+    "lightning-network.dnp.dappnode.eth": {
+      name: "lightning-network.dnp.dappnode.eth",
+      version: "0.2.2",
+      origin: null,
+      avatar: lightningNetworkAvatar,
+      metadata: lightningNetworkMetadata,
+
+      imageSize: 19872630,
+      isUpdated: false,
+      isInstalled: false,
+
+      settings: {
+        "lightning-network.dnp.dappnode.eth": lightningNetworkSetup,
+        "bitcoin.dnp.dappnode.eth": bitcoinSetup
+      },
+      // @ts-ignore
+      setupSchema: {
+        type: "object",
+        properties: {
+          "lightning-network.dnp.dappnode.eth": lightningNetworkSetupSchema,
+          "bitcoin.dnp.dappnode.eth": bitcoinSetupSchema
+        }
+      },
+      setupUiSchema: {
+        "lightning-network.dnp.dappnode.eth": lightningNetworkSetupUiSchema,
+        "bitcoin.dnp.dappnode.eth": {}
+      },
+
+      request: {
+        compatible: {
+          requiresCoreUpdate: false,
+          resolving: false,
+          isCompatible: true,
+          error: "",
+          dnps: {
+            "lightning-network.dnp.dappnode.eth": { from: null, to: "0.2.2" },
+            "bitcoin.dnp.dappnode.eth": { from: "0.2.5", to: "0.2.5" }
+          }
+        },
+        available: {
+          isAvailable: true,
+          message: ""
+        }
+      }
+    },
+
     "bitcoin.dnp.dappnode.eth": {
       name: "bitcoin.dnp.dappnode.eth",
       version: "0.2.5",
@@ -707,7 +823,7 @@ const dnpRequestState: DnpRequestState = {
 
       imageSize: 37273582,
       isUpdated: false,
-      isInstalled: false,
+      isInstalled: true,
 
       settings: {},
       request: {
@@ -727,6 +843,7 @@ const dnpRequestState: DnpRequestState = {
         }
       }
     },
+
     "vipnode.dnp.dappnode.eth": {
       name: vipnodeMetadata.name,
       version: vipnodeMetadata.version,
@@ -738,10 +855,19 @@ const dnpRequestState: DnpRequestState = {
       isUpdated: false,
       isInstalled: true,
 
-      settings: {},
+      settings: {
+        "vipnode.dnp.dappnode.eth": vipnodeSetup
+      },
+
       // @ts-ignore
-      setupSchema: vipnodeSetupSchema,
-      setupUiSchema: vipnodeSetupUiSchema,
+      setupSchema: {
+        type: "object",
+        properties: {
+          "vipnode.dnp.dappnode.eth": vipnodeSetupSchema
+        }
+      },
+      // setupSchema: vipnodeSetupSchema,
+      setupUiSchema: { "vipnode.dnp.dappnode.eth": vipnodeSetupUiSchema },
 
       request: {
         compatible: {
@@ -759,6 +885,7 @@ const dnpRequestState: DnpRequestState = {
         }
       }
     },
+
     "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy": {
       name: vipnodeMetadata.name,
       version: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",

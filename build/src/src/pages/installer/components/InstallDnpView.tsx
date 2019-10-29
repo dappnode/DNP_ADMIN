@@ -1,40 +1,24 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { connect } from "react-redux";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import * as api from "API/calls";
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import withTitle from "components/hoc/withTitle";
-import { compose } from "redux";
-import { createStructuredSelector } from "reselect";
 import { isEmpty, throttle } from "lodash";
 import { Switch, Route, Redirect } from "react-router-dom";
 // This module
-import * as s from "../selectors";
-import * as a from "../actions";
 import ProgressLogs from "./InstallCardComponents/ProgressLogs";
 // Utils
 import { shortNameCapitalized, isDnpVerified } from "utils/format";
-import { joinCssClass } from "utils/css";
 // Parsers
 import parseSpecialPermissions from "../parsers/parseSpecialPermissions";
-// Selectors
-import {
-  getProgressLogsByDnp,
-  getIsInstallingLogs
-} from "services/isInstallingLogs/selectors";
-import { rootPath as packagesRootPath } from "pages/packages/data";
-import { getDnpRequest } from "services/dnpRequest/selectors";
 // Components
 import Info from "./Steps/Info";
 import SetupWizard from "./Steps/SetupWizard";
 import Permissions from "./Steps/Permissions";
 import Disclaimer from "./Steps/Disclaimer";
-import Loading from "components/generic/Loading";
-import Error from "components/generic/Error";
-import Title from "components/Title";
 import HorizontalStepper from "./HorizontalStepper";
-import { RequestedDnp } from "types";
+import { RequestedDnp, UserSettingsAllDnps } from "types";
+import difference from "../parsers/difference";
 
-interface InstallerInterfaceProps {
+interface InstallDnpViewProps {
   dnp: RequestedDnp;
   progressLogs: { [dnpName: string]: string };
 }
@@ -47,8 +31,8 @@ interface InstallerInterfaceProps {
 //   "dappnode-user-set-form-data-" + dnp.origin ||
 //   (dnp.manifest || {}).name + (dnp.manifest || {}).version;
 
-const InstallerInterface: React.FunctionComponent<
-  InstallerInterfaceProps & RouteComponentProps
+const InstallDnpView: React.FunctionComponent<
+  InstallDnpViewProps & RouteComponentProps
 > = ({
   dnp,
   progressLogs,
@@ -57,29 +41,39 @@ const InstallerInterface: React.FunctionComponent<
   location,
   match
 }) => {
-  const [userSetFormData, setUserSetFormData] = useState({});
+  const [userSettings, setUserSettings] = useState({} as UserSettingsAllDnps);
   const [options, setOptions] = useState({} as { [optionId: string]: boolean });
 
-  const { name, version, origin, metadata } = dnp;
+  const { name, version, settings, metadata } = dnp;
   const type = metadata.type;
   const setupSchema = dnp.setupSchema;
   const setupUiSchema = dnp.setupUiSchema;
   const permissions = parseSpecialPermissions(metadata);
   const requiresCoreUpdate = dnp.request.compatible.requiresCoreUpdate;
 
+  useEffect(() => {
+    setUserSettings(settings || {});
+  }, [settings, setUserSettings]);
+
   /**
    * Call the install method with the gathered data
    */
-  function onInstall() {
+  const onInstall = useCallback(() => {
+    // To only send / log the relevant data
+    // Prevent sending settings that are equal to the current
+    const userSettingsDiff = difference(settings || {}, userSettings);
+    console.log("Installing DNP", { name, version, userSettingsDiff });
     api
       .installPackage(
-        { name, version },
+        { name, version, userSettings: userSettingsDiff },
         { toastMessage: `Installing ${shortNameCapitalized(name)}...` }
       )
       .catch(console.error);
-  }
+  }, [name, version, settings, userSettings]);
   // Prevent a burst of install calls
-  const onInstallThrottle = useMemo(() => throttle(onInstall, 1000), []);
+  const onInstallThrottle = useMemo(() => throttle(onInstall, 1000), [
+    onInstall
+  ]);
 
   /**
    * Construct disclaimer
@@ -100,12 +94,13 @@ const InstallerInterface: React.FunctionComponent<
 
   /**
    * Construct options
+   * 1. If package is core and from ipfs, show "BYPASS_CORE_RESTRICTION" option
    */
   const optionsArray = [
     {
       name: "Bypass core restriction",
       id: "BYPASS_CORE_RESTRICTION",
-      available: dnp.origin && type === "dncore"
+      available: true || (dnp.origin && type === "dncore")
     }
   ]
     .filter(option => option.available)
@@ -115,14 +110,6 @@ const InstallerInterface: React.FunctionComponent<
       toggle: () =>
         setOptions(x => ({ ...x, [option.id]: !options[option.id] }))
     }));
-
-  /**
-   * Filter options according to the current package
-   * 1. If package is core and from ipfs, show "BYPASS_CORE_RESTRICTION" option
-   */
-  const availableOptions = [];
-  if (origin && type === "dncore")
-    availableOptions.push("BYPASS_CORE_RESTRICTION");
 
   const disableInstallation = !isEmpty(progressLogs) || requiresCoreUpdate;
 
@@ -135,18 +122,20 @@ const InstallerInterface: React.FunctionComponent<
     {
       name: "Setup",
       subPath: setupSubPath,
-      render: () => (
-        <SetupWizard
-          setupSchema={setupSchema || {}}
-          setupUiSchema={setupUiSchema || {}}
-          onSubmit={(formData: any) => {
-            setUserSetFormData(formData);
-            goNext();
-          }}
-          goBack={goBack}
-          initialFormData={userSetFormData}
-        />
-      ),
+      render: () =>
+        setupSchema ? (
+          <SetupWizard
+            setupSchema={setupSchema}
+            setupUiSchema={setupUiSchema || {}}
+            onSubmit={(newUserSettings: UserSettingsAllDnps) => {
+              console.log("Set new userSettings", newUserSettings);
+              setUserSettings(newUserSettings);
+              goNext();
+            }}
+            userSettings={userSettings}
+            goBack={goBack}
+          />
+        ) : null,
       available: !isEmpty(setupSchema)
     },
     {
@@ -269,23 +258,4 @@ const InstallerInterface: React.FunctionComponent<
   );
 };
 
-// Container
-
-const getIdFromOwnProps = (ownProps: { match?: { params: { id: string } } }) =>
-  ((ownProps.match || {}).params || {}).id || "";
-
-const mapStateToProps = createStructuredSelector({
-  dnp: (state: any, ownProps: any) =>
-    getDnpRequest(state, getIdFromOwnProps(ownProps))
-});
-
-// Uses bindActionCreators to wrap action creators with dispatch
-const mapDispatchToProps = {
-  install: a.install,
-  clearUserSet: a.clearUserSet,
-  fetchPackageRequest: a.fetchPackageRequest
-};
-
-export default withRouter(InstallerInterface);
-
-// ##### TODO: - Implement the loading HOC for the specific DNP fetch
+export default withRouter(InstallDnpView);

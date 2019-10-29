@@ -1,4 +1,4 @@
-import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { ThunkAction } from "redux-thunk";
 import { AnyAction } from "redux";
 import * as api from "API/calls";
 import { RequestedDnp, RequestStatus } from "types";

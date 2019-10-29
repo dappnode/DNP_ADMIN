@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 // Components
 import CardList from "components/CardList";
 import SubTitle from "components/SubTitle";

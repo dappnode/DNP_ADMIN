@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
 // This module
-import InstallerInterface from "./Installer";
+import InstallDnpView from "./InstallDnpView";
 import * as a from "../actions";
 // Utils
 import { shortNameCapitalized } from "utils/format";
@@ -21,7 +21,7 @@ function getIdFromMatch(match?: { params: { id: string } }) {
   return decodeURIComponent(((match || {}).params || {}).id || "");
 }
 
-interface InstallerContainerProps {
+interface InstallDnpContainerProps {
   id: string;
   dnp?: RequestedDnp;
   requestStatus?: RequestStatus;
@@ -35,8 +35,8 @@ interface InstallerRouteParams {
   id: string;
 }
 
-const InstallerContainer: React.FunctionComponent<
-  InstallerContainerProps & RouteComponentProps<InstallerRouteParams>
+const InstallDnpContainer: React.FunctionComponent<
+  InstallDnpContainerProps & RouteComponentProps<InstallerRouteParams>
 > = ({
   dnp,
   match,
@@ -60,7 +60,7 @@ const InstallerContainer: React.FunctionComponent<
       />
 
       {dnp ? (
-        <InstallerInterface dnp={dnp} progressLogs={{}} />
+        <InstallDnpView dnp={dnp} progressLogs={{}} />
       ) : loading ? (
         <Loading msg={"Loading DAppNode Package data..."} />
       ) : error ? (
@@ -89,6 +89,6 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InstallerContainer);
+)(InstallDnpContainer);
 
 // ##### TODO: - Implement the loading HOC for the specific DNP fetch
