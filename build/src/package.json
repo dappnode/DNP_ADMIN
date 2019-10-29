@@ -80,7 +80,8 @@
     "react-hot-loader": "^4.3.3",
     "redux-mock-store": "^1.5.3",
     "redux-saga-test-plan": "^4.0.0-beta.2",
-    "source-map-explorer": "^1.6.0"
+    "source-map-explorer": "^1.6.0",
+    "why-did-you-update": "0.1.1"
   },
   "browserslist": [
     ">0.2%",

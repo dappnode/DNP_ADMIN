@@ -1,6 +1,5 @@
 import React from "react";
 import { orderBy, isEmpty } from "lodash";
-import styled from "styled-components";
 // Components
 import TableInputs from "components/TableInputs";
 import { UserSettingsAllDnps } from "types";
@@ -8,14 +7,6 @@ import { shortNameCapitalized } from "utils/format";
 import Button from "components/Button";
 import deepmerge from "deepmerge";
 import "./oldEditor.scss";
-
-const DnpSubtitle = styled.div`
-  margin-bottom: 0.5rem;
-  font-size: 1.5rem;
-  line-height: inherit;
-  color: inherit;
-  white-space: normal;
-`;
 
 interface StringValues {
   [valueId: string]: string;
@@ -80,7 +71,9 @@ const OldEditor: React.FunctionComponent<OldEditorProps> = ({
     <>
       {Object.entries(userSettings).map(([dnpName, dnpSettings]) => (
         <React.Fragment key={dnpName}>
-          <DnpSubtitle>{shortNameCapitalized(dnpName)}</DnpSubtitle>
+          <div className="old-editor-subtitle">
+            {shortNameCapitalized(dnpName)}
+          </div>
           <EditableTable
             headers={["Env name", "Env value"]}
             placeholder="enter value..."
