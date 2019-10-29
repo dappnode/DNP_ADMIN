@@ -486,6 +486,16 @@ const trustlinesSetup = {
   ports: ["30300", "30300/udp"]
 };
 
+// Fake is installing package
+const isInstallingDnp = "is-installing.dnp.dappnode.eth";
+const isInstallingAvatar =
+  "https://image.flaticon.com/icons/png/512/18/18229.png";
+const isInstallingMetadata = {
+  name: isInstallingDnp,
+  version: "0.1.0",
+  description: "Mock DNP that is installing"
+};
+
 /**
  * Actual mockState
  * ================
@@ -650,6 +660,16 @@ const dnpDirectoryState: DnpDirectoryState = [
       featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
       featuredColor: "white"
     },
+    categories: ["Blockchain"]
+  },
+  {
+    name: isInstallingDnp,
+    description: getDescription(isInstallingMetadata),
+    avatar: isInstallingAvatar,
+    isInstalled: false,
+    isUpdated: false,
+    whitelisted: true,
+    isFeatured: false,
     categories: ["Blockchain"]
   }
 ];
@@ -917,6 +937,39 @@ const dnpRequestState: DnpRequestState = {
           message: ""
         }
       }
+    },
+
+    [isInstallingDnp]: {
+      name: isInstallingDnp,
+      version: "0.1.0",
+      origin: null,
+      avatar: isInstallingAvatar,
+      metadata: isInstallingMetadata,
+
+      imageSize: 10000000,
+      isUpdated: false,
+      isInstalled: true,
+
+      settings: {},
+      // @ts-ignore
+      setupSchema: {},
+      setupUiSchema: {},
+
+      request: {
+        compatible: {
+          requiresCoreUpdate: false,
+          resolving: false,
+          isCompatible: true,
+          error: "",
+          dnps: {
+            [isInstallingDnp]: { from: null, to: "0.1.0" }
+          }
+        },
+        available: {
+          isAvailable: true,
+          message: ""
+        }
+      }
     }
   },
   requestStatus: {
@@ -947,6 +1000,9 @@ const isInstallingState = {
   "bitcoin.dnp.dappnode.eth": {
     id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
     log: "Downloading 87%"
+  },
+  [isInstallingDnp]: {
+    [isInstallingDnp]: "Downloading 47%"
   }
 };
 

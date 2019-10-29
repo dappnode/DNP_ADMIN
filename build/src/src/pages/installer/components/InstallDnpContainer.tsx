@@ -16,15 +16,33 @@ import Title from "components/Title";
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
 import { RequestedDnp, RequestStatus } from "types";
+import {
+  getProgressLogsByDnp,
+  getIsInstallingLogs
+} from "services/isInstallingLogs/selectors";
 
 function getIdFromMatch(match?: { params: { id: string } }) {
   return decodeURIComponent(((match || {}).params || {}).id || "");
+}
+
+interface IsInstallingLogs {
+  [progressLogId: string]: {
+    [dnpName: string]: string;
+  };
+}
+
+function getProgressLogs(isInstallingLogs: IsInstallingLogs, dnpName: string) {
+  const progressLogId = Object.keys(isInstallingLogs).find(
+    id => (isInstallingLogs[id] || {})[dnpName]
+  );
+  if (progressLogId) return isInstallingLogs[progressLogId];
 }
 
 interface InstallDnpContainerProps {
   id: string;
   dnp?: RequestedDnp;
   requestStatus?: RequestStatus;
+  isInstallingLogs?: any;
   progressLogs: { [dnpName: string]: string };
   install: (x: any) => void;
   clearUserSet: () => void;
@@ -41,9 +59,12 @@ const InstallDnpContainer: React.FunctionComponent<
   dnp,
   match,
   requestStatus,
+  isInstallingLogs,
   // Actions
   fetchDnpRequest
 }) => {
+  console.log(isInstallingLogs);
+
   const id = getIdFromMatch(match);
 
   const { loading, error } = requestStatus || {};
@@ -51,6 +72,11 @@ const InstallDnpContainer: React.FunctionComponent<
   useEffect(() => {
     fetchDnpRequest(id);
   }, [id, fetchDnpRequest]);
+
+  const progressLogs =
+    dnp && dnp.name ? getProgressLogs(isInstallingLogs, dnp.name) : undefined;
+
+  // Get progressLogs
 
   return (
     <>
@@ -60,7 +86,7 @@ const InstallDnpContainer: React.FunctionComponent<
       />
 
       {dnp ? (
-        <InstallDnpView dnp={dnp} progressLogs={{}} />
+        <InstallDnpView dnp={dnp} progressLogs={progressLogs} />
       ) : loading ? (
         <Loading msg={"Loading DAppNode Package data..."} />
       ) : error ? (
@@ -76,7 +102,8 @@ const mapStateToProps = createStructuredSelector({
   dnp: (state: any, ownProps: any) =>
     getDnpRequest(state, getIdFromMatch(ownProps.match)),
   requestStatus: (state: any, ownProps: any) =>
-    getDnpRequestStatus(state, getIdFromMatch(ownProps.match))
+    getDnpRequestStatus(state, getIdFromMatch(ownProps.match)),
+  isInstallingLogs: getIsInstallingLogs
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch

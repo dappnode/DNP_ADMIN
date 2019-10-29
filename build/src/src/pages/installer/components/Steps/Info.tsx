@@ -77,7 +77,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
   const {
     shortDescription,
     description,
-    author,
+    author = "Unknown",
     version,
     upstreamVersion
   } = metadata;

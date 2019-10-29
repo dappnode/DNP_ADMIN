@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import Error from "components/generic/Error";
 import Form, { FormValidation, AjvError } from "react-jsonschema-form";
 import Button from "components/Button";
@@ -47,13 +47,16 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
    * on fast types
    * [NOTE]: It's necessary to keep an internalFormData or the formData
    * will be replaced by the prop
+   * [NOTE]: internalFormData must be undefined or null to start with,
+   * or it will trigger validation before typing
    */
-  const [internalFormData, setInternalFormData] = useState({} as any);
+  const [internalFormData, setInternalFormData] = useState(undefined);
   const [callShowAdvancedEditor, setCallShowAdvancedEditor] = useState(false);
   const componentIsMounted = useRef(true);
   const formRef = useRef();
 
   useEffect(() => {
+    if (isEmpty(formData) || Object.values(formData).every(isEmpty)) return;
     setInternalFormData(formData);
   }, [formData, setInternalFormData]);
 
@@ -155,6 +158,8 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
     }
     return _errors;
   }
+
+  console.log({ internalFormData });
 
   return (
     <>

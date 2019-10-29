@@ -20,7 +20,7 @@ import difference from "../parsers/difference";
 
 interface InstallDnpViewProps {
   dnp: RequestedDnp;
-  progressLogs: { [dnpName: string]: string };
+  progressLogs?: { [dnpName: string]: string };
 }
 
 /**
@@ -100,7 +100,12 @@ const InstallDnpView: React.FunctionComponent<
     {
       name: "Bypass core restriction",
       id: "BYPASS_CORE_RESTRICTION",
-      available: true || (dnp.origin && type === "dncore")
+      available: dnp.origin && type === "dncore"
+    },
+    {
+      name: "Show advanced editor",
+      id: "SHOW_ADVANCED_EDITOR",
+      available: isEmpty(setupSchema)
     }
   ]
     .filter(option => option.available)
@@ -211,7 +216,7 @@ const InstallDnpView: React.FunctionComponent<
 
   return (
     <>
-      <ProgressLogs progressLogs={progressLogs} />
+      {progressLogs && <ProgressLogs progressLogs={progressLogs} />}
 
       {requiresCoreUpdate && (
         <div className="alert alert-danger">

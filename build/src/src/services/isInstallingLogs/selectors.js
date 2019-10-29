@@ -6,7 +6,7 @@ import { stripVersion } from "./utils";
 
 export const getIsInstallingLogs = createSelector(
   state => state[mountPoint],
-  userActionLogs => userActionLogs
+  isInstallingLogs => isInstallingLogs
 );
 
 /**
@@ -51,14 +51,13 @@ export const getProgressLogsById = createSelector(
  * }
  * [Tested]
  */
-export const getProgressLogsByDnp = createSelector(
-  getIsInstallingLogs,
+export const getProgressLogsByDnp =
+  (getIsInstallingLogs,
   (_, dnpName) => stripVersion(dnpName),
   (isInstallingLogs, dnpName) => {
     const id = (isInstallingLogs[dnpName] || {}).id;
     return id ? gatherLogsById(isInstallingLogs, id) : {};
-  }
-);
+  });
 
 // Utilitiy
 
