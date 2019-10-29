@@ -845,7 +845,10 @@ const dnpRequestState: DnpRequestState = {
       isUpdated: false,
       isInstalled: true,
 
-      settings: {},
+      settings: {
+        "bitcoin.dnp.dappnode.eth": bitcoinSetup
+      },
+
       request: {
         compatible: {
           requiresCoreUpdate: false,
@@ -919,9 +922,12 @@ const dnpRequestState: DnpRequestState = {
 
       settings: {},
       // @ts-ignore
-      setupSchema: vipnodeSetupSchema,
-      setupUiSchema: vipnodeSetupUiSchema,
-
+      setupSchema: {
+        [vipnodeMetadata.name]: vipnodeSetupSchema
+      },
+      setupUiSchema: {
+        [vipnodeMetadata.name]: vipnodeSetupUiSchema
+      },
       request: {
         compatible: {
           requiresCoreUpdate: false,

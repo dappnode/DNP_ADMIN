@@ -61,6 +61,7 @@ interface OldEditorProps {
   onChange: (newUserSettings: UserSettingsAllDnps) => void;
   onCancel: () => void;
   onHideAdvancedEditor: () => void;
+  canBeHidded: boolean;
 }
 
 const OldEditor: React.FunctionComponent<OldEditorProps> = ({
@@ -68,7 +69,8 @@ const OldEditor: React.FunctionComponent<OldEditorProps> = ({
   onCancel,
   onSubmit,
   onChange,
-  onHideAdvancedEditor
+  onHideAdvancedEditor,
+  canBeHidded
 }) => {
   function setSettingsMerge(newSetting: UserSettingsAllDnps) {
     onChange(deepmerge(userSettings, newSetting));
@@ -132,9 +134,11 @@ const OldEditor: React.FunctionComponent<OldEditorProps> = ({
           </Button>
         </div>
 
-        <div className="subtle-header" onClick={onHideAdvancedEditor}>
-          Hide advanced editor
-        </div>
+        {canBeHidded && (
+          <div className="subtle-header" onClick={onHideAdvancedEditor}>
+            Hide advanced editor
+          </div>
+        )}
       </div>
     </>
   );

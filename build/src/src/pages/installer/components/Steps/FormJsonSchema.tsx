@@ -159,8 +159,6 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
     return _errors;
   }
 
-  console.log({ internalFormData });
-
   return (
     <>
       <Form

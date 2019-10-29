@@ -16,10 +16,7 @@ import Title from "components/Title";
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
 import { RequestedDnp, RequestStatus } from "types";
-import {
-  getProgressLogsByDnp,
-  getIsInstallingLogs
-} from "services/isInstallingLogs/selectors";
+import { getIsInstallingLogs } from "services/isInstallingLogs/selectors";
 
 function getIdFromMatch(match?: { params: { id: string } }) {
   return decodeURIComponent(((match || {}).params || {}).id || "");
@@ -63,8 +60,6 @@ const InstallDnpContainer: React.FunctionComponent<
   // Actions
   fetchDnpRequest
 }) => {
-  console.log(isInstallingLogs);
-
   const id = getIdFromMatch(match);
 
   const { loading, error } = requestStatus || {};
@@ -73,10 +68,9 @@ const InstallDnpContainer: React.FunctionComponent<
     fetchDnpRequest(id);
   }, [id, fetchDnpRequest]);
 
+  // Get progressLogs
   const progressLogs =
     dnp && dnp.name ? getProgressLogs(isInstallingLogs, dnp.name) : undefined;
-
-  // Get progressLogs
 
   return (
     <>

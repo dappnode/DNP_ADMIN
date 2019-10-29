@@ -16,7 +16,11 @@ import Permissions from "./Steps/Permissions";
 import Disclaimer from "./Steps/Disclaimer";
 import HorizontalStepper from "./HorizontalStepper";
 import { RequestedDnp, UserSettingsAllDnps } from "types";
-import difference from "../parsers/difference";
+import { difference } from "utils/lodashExtended";
+import { setupSchemaIsEmpty } from "../parsers/setupSchemaParser";
+
+const BYPASS_CORE_RESTRICTION = "BYPASS_CORE_RESTRICTION";
+const SHOW_ADVANCED_EDITOR = "SHOW_ADVANCED_EDITOR";
 
 interface InstallDnpViewProps {
   dnp: RequestedDnp;
@@ -50,6 +54,8 @@ const InstallDnpView: React.FunctionComponent<
   const setupUiSchema = dnp.setupUiSchema;
   const permissions = parseSpecialPermissions(metadata);
   const requiresCoreUpdate = dnp.request.compatible.requiresCoreUpdate;
+  const wizardAvailable = !!setupSchema && !setupSchemaIsEmpty(setupSchema);
+  const oldEditorAvailable = Boolean(userSettings);
 
   useEffect(() => {
     setUserSettings(settings || {});
@@ -98,14 +104,14 @@ const InstallDnpView: React.FunctionComponent<
    */
   const optionsArray = [
     {
-      name: "Bypass core restriction",
-      id: "BYPASS_CORE_RESTRICTION",
-      available: dnp.origin && type === "dncore"
+      name: "Show advanced editor",
+      id: SHOW_ADVANCED_EDITOR,
+      available: !wizardAvailable && oldEditorAvailable
     },
     {
-      name: "Show advanced editor",
-      id: "SHOW_ADVANCED_EDITOR",
-      available: isEmpty(setupSchema)
+      name: "Bypass core restriction",
+      id: BYPASS_CORE_RESTRICTION,
+      available: dnp.origin && type === "dncore"
     }
   ]
     .filter(option => option.available)
@@ -127,21 +133,21 @@ const InstallDnpView: React.FunctionComponent<
     {
       name: "Setup",
       subPath: setupSubPath,
-      render: () =>
-        setupSchema ? (
-          <SetupWizard
-            setupSchema={setupSchema}
-            setupUiSchema={setupUiSchema || {}}
-            onSubmit={(newUserSettings: UserSettingsAllDnps) => {
-              console.log("Set new userSettings", newUserSettings);
-              setUserSettings(newUserSettings);
-              goNext();
-            }}
-            userSettings={userSettings}
-            goBack={goBack}
-          />
-        ) : null,
-      available: !isEmpty(setupSchema)
+      render: () => (
+        <SetupWizard
+          setupSchema={setupSchema || { type: "object", properties: {} }}
+          setupUiSchema={setupUiSchema || {}}
+          userSettings={userSettings}
+          wizardAvailable={wizardAvailable}
+          onSubmit={(newUserSettings: UserSettingsAllDnps) => {
+            console.log("Set new userSettings", newUserSettings);
+            setUserSettings(newUserSettings);
+            goNext();
+          }}
+          goBack={goBack}
+        />
+      ),
+      available: wizardAvailable || options[SHOW_ADVANCED_EDITOR]
     },
     {
       name: "Permissions",

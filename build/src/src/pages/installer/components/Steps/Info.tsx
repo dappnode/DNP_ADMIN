@@ -97,7 +97,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
    */
   const expandablePanels = [
     {
-      name: "Special options",
+      name: "Advanced options",
       show: showOptions,
       close: () => setShowOptions(false),
       Component: () => (

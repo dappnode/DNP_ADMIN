@@ -16,11 +16,13 @@ import {
 } from "pages/installer/parsers/formDataParser";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
 import deepmerge from "deepmerge";
+import useTraceUpdate from "utils/useTraceUpdate";
 
 interface SetupWizardProps {
   setupSchema: SetupSchemaAllDnps;
   setupUiSchema: SetupUiSchemaAllDnps;
   userSettings: UserSettingsAllDnps;
+  wizardAvailable: boolean;
   onSubmit: (newUserSettings: UserSettingsAllDnps) => void;
   goBack: () => void;
 }
@@ -29,60 +31,73 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   setupSchema,
   setupUiSchema,
   userSettings,
+  wizardAvailable,
   onSubmit,
   goBack
 }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [oldEditorData, setOldEditorData] = useState({} as UserSettingsAllDnps);
-  const [wizardFormData, setWizardFormData] = useState(
-    {} as SetupWizardFormDataReturn
-  );
+  const [editorData, setEditorData] = useState({} as UserSettingsAllDnps);
+  const [wizardData, setWizardData] = useState({} as SetupWizardFormDataReturn);
+
+  useTraceUpdate({
+    setupSchema,
+    setupUiSchema,
+    userSettings,
+    onSubmit,
+    goBack
+  });
 
   useEffect(() => {
-    setOldEditorData(userSettings);
-    setWizardFormData(userSettingsToFormData(userSettings, setupSchema));
+    setEditorData(userSettings);
+    setWizardData(userSettingsToFormData(userSettings, setupSchema));
   }, [userSettings, setupSchema]);
 
+  // Move data from the wizard to the editor
+  // Deepmerge to include settings not found in the wizard schema
+  // Store the wizard data for cache in the case th user switches back
   const onShowAdvancedEditor = useCallback(
     formData => {
-      setOldEditorData(_oldEditorData =>
-        deepmerge(_oldEditorData, formDataToUserSettings(formData, setupSchema))
+      setEditorData(_editorData =>
+        deepmerge(_editorData, formDataToUserSettings(formData, setupSchema))
       );
-      setWizardFormData(formData);
+      setWizardData(formData);
       setShowAdvanced(true);
     },
-    [setupSchema, setOldEditorData, setWizardFormData, setShowAdvanced]
+    [setupSchema, setEditorData, setWizardData, setShowAdvanced]
   );
 
+  // Move data from the editor to the wizard
+  // Deepmerge to include data not found in the user settings (fileUploads)
   const onHideAdvancedEditor = useCallback(() => {
-    setWizardFormData(_wizardFormData =>
-      deepmerge(
-        _wizardFormData,
-        userSettingsToFormData(oldEditorData, setupSchema)
-      )
+    setWizardData(_wizardData =>
+      deepmerge(_wizardData, userSettingsToFormData(editorData, setupSchema))
     );
     setShowAdvanced(false);
-  }, [setupSchema, setWizardFormData, oldEditorData, setShowAdvanced]);
+  }, [setupSchema, setWizardData, editorData, setShowAdvanced]);
 
+  // Merge wizard data with the editor data. Give priority to the wizard data
   const onWizardSubmit = useCallback(
     formData => {
       console.log("Submited wizard editor");
       const wizardSettings = formDataToUserSettings(formData, setupSchema);
-      // If submitted from wizard, give priority to wizard settings
-      onSubmit(deepmerge(oldEditorData, wizardSettings));
+      onSubmit(deepmerge(editorData, wizardSettings));
     },
-    [onSubmit, setupSchema, oldEditorData]
+    [onSubmit, setupSchema, editorData]
   );
 
+  // Merge editor data with the wizard data. Give priority to the editor data
   const onOldEditorSubmit = useCallback(() => {
     console.log("Submited old editor");
-    const wizardSettings = formDataToUserSettings(wizardFormData, setupSchema);
-    // If submitted from old editor, give priority to old editor
-    onSubmit(deepmerge(wizardSettings, oldEditorData));
-  }, [onSubmit, setupSchema, wizardFormData, oldEditorData]);
+    if (wizardAvailable) {
+      const wizardSettings = formDataToUserSettings(wizardData, setupSchema);
+      onSubmit(deepmerge(wizardSettings, editorData));
+    } else {
+      onSubmit(editorData);
+    }
+  }, [onSubmit, setupSchema, wizardAvailable, wizardData, editorData]);
 
   // Pretify the titles of the DNP sections
-  if (setupSchema.properties)
+  if (setupSchema && setupSchema.properties)
     setupSchema.properties = mapValues(
       setupSchema.properties,
       (schema, dnpName) => ({
@@ -93,19 +108,20 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
 
   return (
     <Card spacing>
-      {showAdvanced ? (
+      {showAdvanced || !wizardAvailable ? (
         <OldEditor
-          userSettings={oldEditorData}
+          userSettings={editorData}
           onCancel={goBack}
-          onChange={setOldEditorData}
+          onChange={setEditorData}
           onSubmit={onOldEditorSubmit}
           onHideAdvancedEditor={onHideAdvancedEditor}
+          canBeHidded={wizardAvailable}
         />
       ) : (
         <FormJsonSchema
           schema={setupSchema}
           uiSchema={setupUiSchema}
-          formData={wizardFormData}
+          formData={wizardData}
           // onChange={() => {}}
           onSubmit={onWizardSubmit}
           onShowAdvancedEditor={onShowAdvancedEditor}
