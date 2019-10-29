@@ -48,7 +48,7 @@
     "dev": "REACT_APP_MOCK_DATA=true yarn start",
     "build": "react-scripts build",
     "gzip": "gzip -r -k build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "TEST=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
