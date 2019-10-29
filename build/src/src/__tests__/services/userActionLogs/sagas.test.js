@@ -6,7 +6,7 @@ import reducer from "../../../services/userActionLogs/reducer";
 
 /* eslint-disable redux-saga/no-unhandled-errors */
 
-describe("service > userActionLogs > sagas", () => {
+describe.skip("service > userActionLogs > sagas", () => {
   describe("fetchUserActionLogs", () => {
     it("Should return parsed and ordered action logs", async () => {
       const log = {
