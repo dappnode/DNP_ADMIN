@@ -111,3 +111,13 @@ export interface RequestedDnp {
     };
   };
 }
+
+// Installing types
+
+export interface ProgressLogs {
+  [dnpName: string]: string;
+}
+
+export interface ProgressLogsByDnp {
+  [dnpName: string]: ProgressLogs;
+}

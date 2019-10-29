@@ -4,12 +4,12 @@ import * as t from "./actionTypes";
 // Actions
 import { fetchDnpDirectory as actionFetchDnpDirectory } from "services/dnpDirectory/actions";
 import {
-  clearIsInstallingLogsById,
+  clearIsInstallingLog,
   updateIsInstallingLog
 } from "services/isInstallingLogs/actions";
 // Selectors
 import { getUpnpAvailable } from "services/dappnodeStatus/selectors";
-import { getIsInstallingByDnp } from "services/isInstallingLogs/selectors";
+import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 // Utils
 import { rootWatcher, assertAction, assertConnectionOpen } from "utils/redux";
 import { shortName } from "utils/format";
@@ -24,9 +24,9 @@ import { stringIncludes } from "utils/strings";
 export function* install({ name, version, userSetFormData, options }) {
   try {
     // Prevent double installations: check if the package is in the blacklist
-    if (yield select(getIsInstallingByDnp, name)) {
+    const progressLogsByDnp = yield select(getProgressLogsByDnp);
+    if (progressLogsByDnp[name])
       return console.error(`DAppNode Package ${name} is already installing`);
-    }
 
     const id = version ? `${name}@${version}` : name;
 
@@ -42,7 +42,7 @@ export function* install({ name, version, userSetFormData, options }) {
     );
 
     // Clear progressLogs, + Removes DNP from blacklist
-    yield put(clearIsInstallingLogsById(id));
+    yield put(clearIsInstallingLog({ id }));
 
     // Fetch directory
     yield put(actionFetchDnpDirectory);

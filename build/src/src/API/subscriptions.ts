@@ -11,7 +11,7 @@ import { updateDnpDirectory } from "services/dnpDirectory/actions";
 import { updateDnpInstalled } from "services/dnpInstalled/actions";
 import { pushUserActionLog } from "services/userActionLogs/actions";
 import {
-  clearIsInstallingLogsById,
+  clearIsInstallingLog,
   updateIsInstallingLog
 } from "services/isInstallingLogs/actions";
 import { updateAutoUpdateData } from "services/dappnodeStatus/actions";
@@ -100,11 +100,19 @@ export default function subscriptions(session: autobahn.Session) {
    *   message: "Downloading 75%", {string} log message
    * }
    */
-  subscribe("log.dappmanager.dnp.dappnode.eth", (progressLog: any) => {
-    const { id, name: dnpName, message: log, clear } = progressLog;
-    if (clear) store.dispatch(clearIsInstallingLogsById(id));
-    else store.dispatch(updateIsInstallingLog({ id, dnpName, log }));
-  });
+  subscribe(
+    "log.dappmanager.dnp.dappnode.eth",
+    (progressLog: {
+      id: string;
+      name: string;
+      message: string;
+      clear: boolean;
+    }) => {
+      const { id, name: dnpName, message: log, clear } = progressLog;
+      if (clear) store.dispatch(clearIsInstallingLog({ id }));
+      else store.dispatch(updateIsInstallingLog({ id, dnpName, log }));
+    }
+  );
 
   /**
    * @param {array} dnpInstalled = res.result = [{

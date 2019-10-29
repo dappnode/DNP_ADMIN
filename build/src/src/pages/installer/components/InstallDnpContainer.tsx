@@ -15,32 +15,18 @@ import { fetchDnpRequest } from "services/dnpRequest/actions";
 import Title from "components/Title";
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
-import { RequestedDnp, RequestStatus } from "types";
-import { getIsInstallingLogs } from "services/isInstallingLogs/selectors";
+import { RequestedDnp, RequestStatus, ProgressLogsByDnp } from "types";
+import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 
 function getIdFromMatch(match?: { params: { id: string } }) {
   return decodeURIComponent(((match || {}).params || {}).id || "");
-}
-
-interface IsInstallingLogs {
-  [progressLogId: string]: {
-    [dnpName: string]: string;
-  };
-}
-
-function getProgressLogs(isInstallingLogs: IsInstallingLogs, dnpName: string) {
-  const progressLogId = Object.keys(isInstallingLogs).find(
-    id => (isInstallingLogs[id] || {})[dnpName]
-  );
-  if (progressLogId) return isInstallingLogs[progressLogId];
 }
 
 interface InstallDnpContainerProps {
   id: string;
   dnp?: RequestedDnp;
   requestStatus?: RequestStatus;
-  isInstallingLogs?: any;
-  progressLogs: { [dnpName: string]: string };
+  progressLogsByDnp: ProgressLogsByDnp;
   install: (x: any) => void;
   clearUserSet: () => void;
   fetchDnpRequest: (id: string) => void;
@@ -56,7 +42,7 @@ const InstallDnpContainer: React.FunctionComponent<
   dnp,
   match,
   requestStatus,
-  isInstallingLogs,
+  progressLogsByDnp,
   // Actions
   fetchDnpRequest
 }) => {
@@ -70,7 +56,7 @@ const InstallDnpContainer: React.FunctionComponent<
 
   // Get progressLogs
   const progressLogs =
-    dnp && dnp.name ? getProgressLogs(isInstallingLogs, dnp.name) : undefined;
+    dnp && dnp.name ? progressLogsByDnp[dnp.name] : undefined;
 
   return (
     <>
@@ -97,7 +83,7 @@ const mapStateToProps = createStructuredSelector({
     getDnpRequest(state, getIdFromMatch(ownProps.match)),
   requestStatus: (state: any, ownProps: any) =>
     getDnpRequestStatus(state, getIdFromMatch(ownProps.match)),
-  isInstallingLogs: getIsInstallingLogs
+  progressLogsByDnp: getProgressLogsByDnp
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch

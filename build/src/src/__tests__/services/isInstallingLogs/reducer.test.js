@@ -91,12 +91,5 @@ describe("services > isInstallingLogs > reducer", () => {
       state = reducer(stateFull, action);
       expect(state).toEqual({});
     });
-
-    it("Should clear all logs - clearAllIsInstallingLogs", () => {
-      const action = a.clearAllIsInstallingLogs();
-      // it's empty on purpose because it's just starting to fetch posts
-      state = reducer(stateFull, action);
-      expect(state).toEqual({});
-    });
   });
 });

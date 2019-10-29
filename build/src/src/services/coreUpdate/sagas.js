@@ -12,7 +12,7 @@ import {
 } from "services/loadingStatus/actions";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 import { pushNotification } from "services/notifications/actions";
-import { clearIsInstallingLogsById } from "services/isInstallingLogs/actions";
+import { clearIsInstallingLog } from "services/isInstallingLogs/actions";
 // Utilities
 import isSyncing from "utils/isSyncing";
 
@@ -140,7 +140,7 @@ function* updateCore() {
     yield put(a.updateUpdatingCore(false));
 
     // Clear progressLogs, + Removes DNP from blacklist
-    yield put(clearIsInstallingLogsById(coreName));
+    yield put(clearIsInstallingLog({ id: coreName }));
 
     // Call checkCoreUpdate to compute hide the "Update" warning and buttons
     yield call(checkCoreUpdate);

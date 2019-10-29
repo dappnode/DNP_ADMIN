@@ -14,6 +14,7 @@ import { mountPoint as userActionLogsMountPoint } from "services/userActionLogs/
 import { DnpRequestState } from "services/dnpRequest/types";
 import { DnpDirectoryState } from "services/dnpDirectory/types";
 import { UserSettings } from "types";
+import { IsInstallingLogsState } from "services/isInstallingLogs/types";
 
 function getDescription(manifest: {
   shortDescription?: string;
@@ -1052,27 +1053,22 @@ const dnpRequestState: DnpRequestState = {
   }
 };
 
-const isInstallingState = {
+const isInstallingState: IsInstallingLogsState = {
   /* Core update */
-  "core.dnp.dappnode.eth": {
-    id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
-    log: "Downloading 54%"
+  logs: {
+    "core.dnp.dappnode.eth": {
+      "core.dnp.dappnode.eth": "Downloading 54%",
+      "vpn.dnp.dappnode.eth": "Downloading 99%",
+      "admin.dnp.dappnode.eth": "Loading..."
+    },
+
+    /* Regular install of non-core*/
+    [isInstallingDnp]: {
+      [isInstallingDnp]: "Downloading 47%"
+    }
   },
-  "vpn.dnp.dappnode.eth": {
-    id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
-    log: "Downloading 54%"
-  },
-  "admin.dnp.dappnode.eth": {
-    id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
-    log: "Loading..."
-  },
-  /* Regular install of non-core*/
-  "bitcoin.dnp.dappnode.eth": {
-    id: "834d5e59-664b-46b9-8906-fbc5341d1acf",
-    log: "Downloading 87%"
-  },
-  [isInstallingDnp]: {
-    [isInstallingDnp]: "Downloading 47%"
+  dnpNameToLogId: {
+    [isInstallingDnp]: isInstallingDnp
   }
 };
 
