@@ -1,12 +1,16 @@
-export default {
-  otpUrl: "https://github.com/dappnode/Dappnode/",
-  color: {
-    main: "#027bf4",
-    grey: "#757575",
-    background: "white"
-  }
-};
+// WIFI
+export const wifiDefaultSSID = "DAppNodeWIFI";
+export const wifiDefaultWPA_PASSPHRASE = "dappnode";
+export const wifiEnvWPA_PASSPHRASE = "WPA_PASSPHRASE";
+export const wifiEnvSSID = "SSID";
 
-// Original main: #03a9f4
-// Paypal blue: #003087
-// In-between option: #027bf4
+// DNP names
+export const wifiName = "wifi.dnp.dappnode.eth";
+export const ethchainName = "ethchain.dnp.dappnode.eth";
+export const ipfsName = "ipfs.dnp.dappnode.eth";
+
+// NACL keys
+export const adminNaclSecretKey =
+  "DAppNodeDAppNodeDAppNodeDAppNodeDAppNodeDao=";
+export const adminNaclPublicKey =
+  "cYo1NA7/+PQ22PeqrRNGhs1B84SY/fuomNtURj5SUmQ=";

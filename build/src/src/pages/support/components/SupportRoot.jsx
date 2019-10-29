@@ -1,7 +1,7 @@
 import React from "react";
 import withTitle from "components/hoc/withTitle";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
-import { rootPath, title } from "../data";
+import { title } from "../data";
 // Components
 import AutoDiagnose from "./AutoDiagnose";
 import Report from "./Report";
@@ -9,28 +9,24 @@ import Activity from "./Activity";
 // Styles
 import "./support.css";
 
-function SupportHome() {
+function SupportRoot({ match }) {
   const routes = [
     {
       name: "Auto Diagnose",
       subPath: "auto-diagnose",
-      render: () => <AutoDiagnose />
+      component: AutoDiagnose
     },
     {
       name: "Report",
       subPath: "report",
-      render: () => <Report />
+      component: Report
     },
     {
       name: "Activity",
       subPath: "activity",
-      render: () => <Activity />
+      component: Activity
     }
-  ].map(route => ({
-    ...route,
-    path: `${rootPath}/${route.subPath}`,
-    to: `${rootPath}/${route.subPath}`
-  }));
+  ];
 
   return (
     <>
@@ -38,7 +34,7 @@ function SupportHome() {
         {routes.map(route => (
           <button key={route.subPath} className="item-container">
             <NavLink
-              to={route.to}
+              to={`${match.url}/${route.subPath}`}
               className="item no-a-style"
               style={{ whiteSpace: "nowrap" }}
             >
@@ -53,17 +49,17 @@ function SupportHome() {
           {routes.map(route => (
             <Route
               key={route.subPath}
-              path={route.path}
-              render={route.render}
+              path={`${match.path}/${route.subPath}`}
+              component={route.component}
             />
           ))}
           {/* Redirect automatically to the first route. DO NOT hardcode 
               to prevent typos and causing infinite loops */}
-          <Redirect to={`${rootPath}/${routes[0].subPath}`} />
+          <Redirect to={`${match.path}/${routes[0].subPath}`} />
         </Switch>
       </div>
     </>
   );
 }
 
-export default withTitle(title)(SupportHome);
+export default withTitle(title)(SupportRoot);

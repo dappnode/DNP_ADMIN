@@ -2,18 +2,17 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import ClipboardJS from "clipboard";
-// Pages
-import { rootPath as systemRootPath, addIpfsPeerPath } from "pages/system/data";
+import styled from "styled-components";
+import { ipfsApiUrl } from "../../data";
 // Components
 import Card from "components/Card";
 import Button from "components/Button";
 import Input from "components/Input";
+import Ok from "components/Ok";
 // Icons
 import { GoClippy } from "react-icons/go";
 // Selectors
 import { getDappnodeParams } from "services/dappnodeStatus/selectors";
-
-const ipfsApiUrl = "http://ipfs.dappnode:5001/api/v0";
 
 /**
  * curl "http://ipfs.dappnode:5001/api/v0/id"
@@ -40,14 +39,33 @@ const ipfsApiUrl = "http://ipfs.dappnode:5001/api/v0";
  * - /dnsaddr/
  */
 
-function IpfsDnpDappnodeEth({ dappnodeParams }) {
+const ErrMsg = styled.div`
+  color: var(--danger-color);
+`;
+
+function ShareIpfsPeer({ dappnodeParams, matchUrl }) {
   const { staticIp, domain } = dappnodeParams || {};
 
   const [peerId, setPeerId] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   useEffect(() => {
-    fetch(`${ipfsApiUrl}/id`)
-      .then(res => res.json())
-      .then(data => setPeerId(data.ID));
+    async function getPeerId() {
+      try {
+        setLoading(true);
+        const res = await fetch(`${ipfsApiUrl}/id`);
+        if (!res.ok) throw Error(res.statusText);
+        const data = await res.json();
+        setPeerId(data.ID);
+      } catch (e) {
+        console.error(`Error on getPeerId: ${e.stack}`);
+        setErrorMessage(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    getPeerId();
   }, []);
 
   // Activate the copy functionality
@@ -55,42 +73,60 @@ function IpfsDnpDappnodeEth({ dappnodeParams }) {
     new ClipboardJS(".copy-input-copy");
   }, []);
 
-  let peerMultiAddress;
-  if (peerId && (staticIp || domain)) {
-    const origin = staticIp ? `/ip4/${staticIp}` : `/dns4/${domain}`;
-    peerMultiAddress = `${origin}/tcp/4001/ipfs/${peerId}`;
-  }
+  const origin = staticIp
+    ? `/ip4/${staticIp}`
+    : domain
+    ? `/dns4/${domain}`
+    : "";
+  const peerMultiAddressEncoded =
+    origin && peerId
+      ? encodeURIComponent(`${origin}/tcp/4001/ipfs/${peerId}`)
+      : "";
 
   // http://my.dappnode/#/system/add-ipfs-peer/%2Fip4%2F1.9.207.246%2Ftcp%2F4001%2Fipfs%2FQmQnwHU6nj1v47mZQWeej4rBtYYTPrMJft88vKp9BAV38L
-  const addMyPeerUrl = `http://my.dappnode/#${systemRootPath}/${addIpfsPeerPath}/${encodeURIComponent(
-    peerMultiAddress
-  )}`;
+  const addMyPeerUrl = `http://my.dappnode/#${matchUrl}/${peerMultiAddressEncoded}`;
 
-  /**
-   * Title:
-   * Connect with peers
-   */
   return (
-    <Card>
-      <div className="help-text" style={{ marginBottom: "1rem" }}>
+    <Card spacing>
+      <div>
         Share this link with another DAppNode admin to automatically
         peer-connect your two IPFS nodes. Use this resource to mitigate slow
-        IPFS propagation
+        IPFS propagation.
       </div>
 
-      <Input
-        disabled={true}
-        value={addMyPeerUrl || ""}
-        className="copy-input"
-        append={
-          <Button
-            className="copy-input-copy"
-            data-clipboard-text={addMyPeerUrl}
-          >
-            <GoClippy />
-          </Button>
-        }
-      />
+      {peerId ? (
+        <>
+          {origin && peerId ? (
+            <Input
+              disabled={true}
+              value={addMyPeerUrl}
+              className="copy-input"
+              append={
+                <Button
+                  className="copy-input-copy"
+                  data-clipboard-text={addMyPeerUrl}
+                >
+                  <GoClippy />
+                </Button>
+              }
+            />
+          ) : null}
+          {!origin ? (
+            <ErrMsg>Could not fetch domain or static IP</ErrMsg>
+          ) : null}
+          {!peerId ? <ErrMsg>Could not fetch peer ID</ErrMsg> : null}
+        </>
+      ) : (
+        <Ok
+          loading={loading}
+          ok={peerId}
+          msg={
+            loading
+              ? "Fetching peer ID..."
+              : `Error getting your peer multiaddress: ${errorMessage}`
+          }
+        />
+      )}
     </Card>
   );
 }
@@ -99,5 +135,4 @@ const mapStateToProps = createStructuredSelector({
   dappnodeParams: getDappnodeParams
 });
 
-// withLoading is applied at DevicesRoot
-export default connect(mapStateToProps)(IpfsDnpDappnodeEth);
+export default connect(mapStateToProps)(ShareIpfsPeer);

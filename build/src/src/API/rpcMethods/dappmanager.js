@@ -239,6 +239,23 @@ export default {
   },
 
   /**
+   * [getParams]
+   * Returns the current DAppNode identity
+   *
+   * @returns = {
+   *   ip: "85.84.83.82",
+   *   name: "My-DAppNode",
+   *   staticIp: "85.84.83.82" | null,
+   *   domain: "1234acbd.dyndns.io",
+   *   upnpAvailable: true | false,
+   *   noNatLoopback: true | false,
+   *   alertToOpenPorts: true | false,
+   *   internalIp: 192.168.0.1,
+   * }
+   */
+  getParams: {},
+
+  /**
    * [getStats]
    * Computes the current usage % of cpu, memory and disk
    *
@@ -409,6 +426,15 @@ export default {
   },
 
   /**
+   * Returns the public key of nacl's asymmetric encryption,
+   * to be used by the ADMIN UI to send sensitive data in a slightly
+   * more protected way.
+   *
+   * @param {string} publicKey
+   */
+  naclEncryptionGetPublicKey: {},
+
+  /**
    * [notificationsGet]
    * Returns not viewed notifications
    *
@@ -540,6 +566,38 @@ export default {
    */
   restartPackageVolumes: {
     mandatoryKwargs: ["id"]
+  },
+
+  /**
+   * Returns the public key of the seedPhrase currently stored if any.
+   * If it's not stored yet, it's an empty string
+   *
+   * @returns {string} publicKey
+   */
+  seedPhraseGetPublicKey: {},
+
+  /**
+   * Receives an encrypted message containing the seed phrase of
+   * 12 word mnemonic ethereum account. The extra layer of encryption
+   * slightly increases the security of the exchange while the WAMP
+   * module works over HTTP.
+   *
+   * @param {string} seedPhraseEncrypted tweetnacl base64 box with nonce
+   */
+  seedPhraseSet: {
+    mandatoryKwargs: ["seedPhraseEncrypted"]
+  },
+
+  /**
+   * [setStaticIp]
+   * Sets the static IP
+   *
+   * @param {string} staticIp New static IP
+   * - To enable: "85.84.83.82"
+   * - To disable: ""
+   */
+  setStaticIp: {
+    mandatoryKwargs: ["staticIp"]
   },
 
   /**

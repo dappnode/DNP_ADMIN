@@ -29,6 +29,10 @@ export const getAutoUpdateData = createSelectorSubProp(
   getLocal,
   "autoUpdateData"
 );
+export const getIdentityAddress = createSelectorSubProp(
+  getLocal,
+  "identityAddress"
+);
 
 // Sub-sub local properties
 export const getDappmanagerVersionData = createSelectorSubProp(

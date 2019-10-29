@@ -97,34 +97,5 @@ export default {
    *   admin: true {bool}
    * }]
    */
-  listDevices: {},
-
-  /**
-   * [getParams]
-   * Returns the current DAppNode identity
-   *
-   * @returns {object} result: {
-   *   ip: '85.84.83.82',
-   *   name: 'My-DAppNode',
-   *   staticIp: '85.84.83.82', (Optional)
-   *   domain: '1234acbd.dyndns.io (Optional)
-   *   upnpAvailable: true / false,
-   *   noNatLoopback: true / false,
-   *   alertToOpenPorts: true / false,
-   *   internalIp: 192.168.0.1,
-   * }
-   */
-  getParams: {},
-
-  /**
-   * [setStaticIp]
-   * Sets the static IP
-   *
-   * @param {(string|null)} staticIp New static IP
-   * - To enable: "85.84.83.82"
-   * - To disable: null
-   */
-  setStaticIp: {
-    mandatoryKwargs: ["staticIp"]
-  }
+  listDevices: {}
 };

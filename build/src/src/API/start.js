@@ -39,7 +39,7 @@ export default function start() {
         error: [reason, (details || {}).message].filter(x => x).join(" - "),
         session: connection,
         isNotAdmin: stringIncludes(
-          details.messagem,
+          details.message,
           "could not authenticate session"
         )
       })

@@ -3,8 +3,6 @@ import { select, take, takeEvery, throttle, all } from "redux-saga/effects";
 import { getIsConnectionOpen } from "services/connectionStatus/selectors";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 
-/* eslint-disable redux-saga/no-unhandled-errors */
-
 /**
  * Blocks the execution of a saga until the WAMP connection is open
  */
