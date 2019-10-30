@@ -1,4 +1,4 @@
-import { mapValues } from "lodash";
+import { mapValues, pickBy } from "lodash";
 import { mountPoint } from "./data";
 import { IsInstallingLogsState } from "./types";
 import { ProgressLogsByDnp } from "types";
@@ -14,8 +14,8 @@ const getLocal = (state: any): IsInstallingLogsState => state[mountPoint];
  */
 export const getProgressLogsByDnp = (state: any): ProgressLogsByDnp => {
   const isInstallingLogs = getLocal(state);
-  return mapValues(
-    isInstallingLogs.dnpNameToLogId,
-    id => isInstallingLogs.logs[id]
+  return pickBy(
+    mapValues(isInstallingLogs.dnpNameToLogId, id => isInstallingLogs.logs[id]),
+    progressLogs => progressLogs
   );
 };

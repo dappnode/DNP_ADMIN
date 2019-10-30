@@ -15,9 +15,7 @@ async function getLatestVersion(repoAddress) {
     .then(res => res.semanticVersion.join("."))
     .catch(e => {
       // Rename error for user comprehension
-      e.message = `Error getting latest version of ${repoAddress}: ${
-        e.message
-      }`;
+      e.message = `Error getting latest version of ${repoAddress}: ${e.message}`;
       throw e;
     });
 }
@@ -33,9 +31,7 @@ async function isAllowed(repoAddress, address) {
     .call()
     .catch(e => {
       // Rename error for user comprehension
-      e.message = `Error checking if account ${address} is allowed at ${repoAddress}: ${
-        e.message
-      }`;
+      e.message = `Error checking if account ${address} is allowed at ${repoAddress}: ${e.message}`;
       throw e;
     });
 }

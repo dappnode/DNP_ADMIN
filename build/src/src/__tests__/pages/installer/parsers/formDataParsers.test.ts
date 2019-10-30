@@ -1,13 +1,9 @@
 import {
   formDataToUserSettings,
   userSettingsToFormData
-} from "../../../../pages/installer/parsers/formDataParser";
+} from "pages/installer/parsers/formDataParser";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
-import {
-  SetupSchemaAllDnps,
-  UserSettingsAllDnps,
-  UserSettingTarget
-} from "types";
+import { SetupSchemaAllDnps, UserSettingsAllDnps } from "types";
 import deepmerge from "deepmerge";
 
 describe("formDataToUserSettings", () => {
@@ -15,83 +11,80 @@ describe("formDataToUserSettings", () => {
   const depName = "bitcoin.dnp.dappnode.eth";
 
   const setupSchema: SetupSchemaAllDnps = {
-    type: "object",
-    properties: {
-      [dnpName]: {
-        type: "object",
-        properties: {
-          payoutAddress: {
-            // @ts-ignore
-            target: {
-              type: "environment",
-              name: "PAYOUT_ADDRESS"
-            },
-            type: "string",
-            title: "Payout address"
+    [dnpName]: {
+      type: "object",
+      properties: {
+        payoutAddress: {
+          // @ts-ignore
+          target: {
+            type: "environment",
+            name: "PAYOUT_ADDRESS"
           },
-          unfilledProp: {
-            // @ts-ignore
-            target: {
-              type: "environment",
-              name: "UNFILLED_PROP"
-            },
-            type: "string",
-            title: "Payout address"
+          type: "string",
+          title: "Payout address"
+        },
+        unfilledProp: {
+          // @ts-ignore
+          target: {
+            type: "environment",
+            name: "UNFILLED_PROP"
           },
-          configFile: {
-            // @ts-ignore
-            target: {
-              type: "fileUpload",
-              path: "/usr/src/app/config.json"
-            },
-            type: "string",
-            format: "data-url",
-            title: "Config file"
-          }
+          type: "string",
+          title: "Payout address"
+        },
+        configFile: {
+          // @ts-ignore
+          target: {
+            type: "fileUpload",
+            path: "/usr/src/app/config.json"
+          },
+          type: "string",
+          format: "data-url",
+          title: "Config file"
         }
-      },
-      [depName]: {
-        type: "object",
-        properties: {
-          uiPort: {
-            // @ts-ignore
-            target: {
-              type: "portMapping",
-              containerPort: "8080"
-            },
-            type: "string",
-            title: "UI port"
+      }
+    },
+    [depName]: {
+      type: "object",
+      properties: {
+        uiPort: {
+          // @ts-ignore
+          target: {
+            type: "portMapping",
+            containerPort: "8080"
           },
-          p2pPort: {
-            // @ts-ignore
-            target: {
-              type: "portMapping",
-              containerPort: "5555/udp"
-            },
-            type: "string",
-            title: "P2P port"
+          type: "string",
+          title: "UI port"
+        },
+        p2pPort: {
+          // @ts-ignore
+          target: {
+            type: "portMapping",
+            containerPort: "5555/udp"
           },
-          dataVolume: {
-            // @ts-ignore
-            target: {
-              type: "namedVolumePath",
-              volumeName: "bitcoin_data"
-            },
-            type: "string",
-            title: "Custom volume path"
+          type: "string",
+          title: "P2P port"
+        },
+        dataVolume: {
+          // @ts-ignore
+          target: {
+            type: "namedVolumePath",
+            volumeName: "bitcoin_data"
           },
-          txIndex: {
-            // @ts-ignore
-            target: {
-              type: "environment",
-              name: "BTC_TXINDEX"
-            },
-            type: "string",
-            title: "TX index",
-            description: "Choose the TX index",
-            default: "1",
-            enum: ["0", "1", "2"]
-          }
+          type: "string",
+          title: "Custom volume path"
+        },
+        txIndex: {
+          // @ts-ignore
+          target: {
+            type: "environment",
+            name: "BTC_TXINDEX"
+          },
+          type: "string",
+          title: "TX index",
+          description: "Choose the TX index",
+          default: "1",
+          enum: ["0", "1", "2"]
         }
       }
     }

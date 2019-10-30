@@ -1,4 +1,4 @@
-import { omit } from "lodash";
+import { omit, omitBy } from "lodash";
 import {
   UPDATE_IS_INSTALLING_LOG,
   AllActionTypes,
@@ -41,7 +41,8 @@ export default function(
     case CLEAR_IS_INSTALLING_LOG:
       return {
         ...state,
-        logs: omit(state.logs, action.id)
+        logs: omit(state.logs, action.id),
+        dnpNameToLogId: omitBy(state.dnpNameToLogId, id => id === action.id)
       };
 
     default:
