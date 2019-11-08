@@ -16,6 +16,7 @@ import {
   getIsLoading,
   getLoadingError
 } from "services/loadingStatus/selectors";
+import { getDnpInstalledStatus } from "services/dnpInstalled/selectors";
 // Icons
 import { MdRefresh, MdOpenInNew } from "react-icons/md";
 // Utils
@@ -32,8 +33,7 @@ const PackagesList = ({
   moduleName,
   coreDnps,
   dnpsAvatars,
-  loading,
-  error,
+  requestStatus: { loading, error },
   restartPackage
 }) => {
   if (!dnps.length) {
@@ -86,9 +86,7 @@ const PackagesList = ({
 PackagesList.propTypes = {
   dnps: PropTypes.array.isRequired,
   moduleName: PropTypes.string.isRequired,
-  coreDnps: PropTypes.bool,
-  loading: PropTypes.bool.isRequired,
-  error: PropTypes.string.isRequired
+  coreDnps: PropTypes.bool
 };
 
 // Container
@@ -96,6 +94,7 @@ PackagesList.propTypes = {
 const mapStateToProps = createStructuredSelector({
   dnps: s.getFilteredPackages,
   dnpsAvatars: s.getPackagesAvatars,
+  requestStatus: getDnpInstalledStatus,
   loading: getIsLoading.dnpInstalled,
   error: getLoadingError.dnpInstalled
 });

@@ -164,6 +164,7 @@ export interface VolumeMapping extends BasicVolumeMapping {
   users?: string[];
   owner?: string;
   isOwner?: boolean;
+  size?: number;
 }
 
 export interface Dependencies {

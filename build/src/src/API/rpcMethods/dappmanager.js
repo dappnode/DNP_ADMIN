@@ -196,21 +196,6 @@ export default {
   fetchCoreUpdateData: {},
 
   /**
-   * [fetchDirectory]
-   * Fetches all package names in the custom dappnode directory.
-   * This feature helps the ADMIN UI load the directory data faster.
-   *
-   * @returns {array} A formated success message.
-   * result: packages = [{
-   *   name: "bitcoin.dnp.dappnode.eth", {string}
-   *   status: "preparing", {string}
-   *   manifest: <manifest object>, {object}
-   *   avatar: <base64 image>, {string}
-   * }, ... ]
-   */
-  fetchDirectory: {},
-
-  /**
    * [fetchPackageVersions]
    * Fetches all available version manifests from a package APM repo
    *
@@ -291,46 +276,6 @@ export default {
   getVersionData: {},
 
   /**
-   * [installPackage]
-   * Installs a package. It resolves dependencies, downloads
-   * manifests and images, loads the images to docker, and calls
-   * docker up on each package.
-   * It has extra functionality for special cases
-   * - allowCore: If a manifest requests a package to be core
-   *   it will only be granted if
-   *   1. Its manifest comes from APM and .dnp.dappnode.eth
-   *   2. It comes from IPFS and the BYPASS_CORE_RESTRICTION env is true
-   * - Special versions: It needs to deal with two cases
-   *   1. ver = "latest"
-   *   2. ver = "/ipfs/QmZ87fb2..."
-   *
-   * @param {string} id DNP .eth name
-   * @param {object} userSetEnvs
-   * userSetEnvs= {
-   *   "kovan.dnp.dappnode.eth": {
-   *     "ENV_NAME": "VALUE1"
-   * }, ... }
-   * @param {object} userSetVols user set volumes
-   * userSetVols = {
-   *   "kovan.dnp.dappnode.eth": {
-   *     "kovan:/root/.local/share/io.parity.ethereum/": "different_name"
-   * }, ... }
-   * @param {object} userSetPorts user set ports
-   * userSetPorts = {
-   *   "kovan.dnp.dappnode.eth": {
-   *     "30303": "31313:30303",
-   *     "30303/udp": "31313:30303/udp"
-   * }, ... }
-   * @param {object} options install options
-   * - BYPASS_RESOLVER {bool}: Skips dappGet and just fetches first level dependencies
-   * - BYPASS_CORE_RESTRICTION {bool}: Allows dncore DNPs from unverified sources (IPFS)
-   * options = { BYPASS_RESOLVER: true, BYPASS_CORE_RESTRICTION: true }
-   */
-  installPackage: {
-    mandatoryKwargs: ["id"]
-  },
-
-  /**
    * [installPackageSafe]
    * Installs a package in safe mode, by setting options.BYPASS_RESOLVER = true
    *
@@ -343,46 +288,6 @@ export default {
   installPackageSafe: {
     mandatoryKwargs: ["id"]
   },
-
-  /**
-   * [listPackages]
-   * Returns the list of current containers associated to packages
-   *
-   * @returns {array} dnpInstalled = [{
-   *   id: "923852...", {string}
-   *   packageName: "DAppNodePackage-admin...", {string}
-   *   version: "0.1.8", {string}
-   *   isDnp: true, {bool}
-   *   isCore: false, {bool}
-   *   created: <data string>, {string}
-   *   image: "admin.dnp.dappnode.eth-0.1.8", {string}
-   *   name: "admin.dnp.dappnode.eth", {string}
-   *   shortName: "admin", {string}
-   *   ports: [{
-   *     host: 2222, {number}
-   *     container: 3333, {number}
-   *     protocol: "TCP" {string}
-   *   }, ... ], {array}
-   *   volumes: [{
-   *     type: "bind", {string}
-   *     name: "admin_data", {string}
-   *     path: "source path" {string}
-   *   }, ... ] {array}
-   *   state: "running", {string}
-   *   running: true, {bool}
-   *
-   *   // From labels
-   *   origin: "/ipfs/Qmabcd...", {string}
-   *   chain: "ethereum", {string}
-   *   dependencies: { dependency.dnp.dappnode.eth: "0.1.8" }, {object}
-   *   portsToClose: [ {portNumber: 30303, protocol: 'UDP'}, ...], {array}
-   *
-   *   // Appended on RPC call
-   *   envs: { ENV_NAME: "ENV_VALUE" }, {object}
-   *   manifest: <manifest object> {object}
-   * }, ... ]
-   */
-  listPackages: {},
 
   /**
    * [logPackage]

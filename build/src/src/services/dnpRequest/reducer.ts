@@ -14,10 +14,10 @@ const initialState: DnpRequestState = {
   requestStatus: {}
 };
 
-export default (
+export default function(
   state = initialState,
   action: AllActionTypes
-): DnpRequestState => {
+): DnpRequestState {
   switch (action.type) {
     case UPDATE_DNP_REQUEST:
       return {
@@ -49,4 +49,4 @@ export default (
     default:
       return state;
   }
-};
+}

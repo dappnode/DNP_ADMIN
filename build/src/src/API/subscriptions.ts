@@ -5,18 +5,22 @@ import { pushNotificationFromDappmanager } from "services/notifications/actions"
 import { updateChainData } from "services/chainData/actions";
 import { updateDevices } from "services/devices/actions";
 import { setDnpDirectory } from "services/dnpDirectory/actions";
-import { updateDnpInstalled } from "services/dnpInstalled/actions";
 import { pushUserActionLog } from "services/userActionLogs/actions";
 import {
   clearIsInstallingLog,
   updateIsInstallingLog
 } from "services/isInstallingLogs/actions";
 import { updateAutoUpdateData } from "services/dappnodeStatus/actions";
-import { ProgressLog, DirectoryItem } from "types";
+import { ProgressLog, DirectoryItem, PackageContainer } from "types";
 import { returnDataSchema as directorySchema } from "../route-types/fetchDirectory";
+import { returnDataSchema as dnpInstalledSchema } from "../route-types/listPackages";
 import { getValidator } from "utils/schemaValidation";
+import { setDnpInstalled } from "services/dnpInstalled/actions";
 
 const validateDirectory = getValidator<DirectoryItem[]>(directorySchema);
+const validateDnpInstalled = getValidator<PackageContainer[]>(
+  dnpInstalledSchema
+);
 
 export default function subscriptions(session: autobahn.Session) {
   /**
@@ -110,26 +114,12 @@ export default function subscriptions(session: autobahn.Session) {
     }
   );
 
-  /**
-   * @param {array} dnpInstalled = res.result = [{
-   *   id: '927623894...',
-   *   isDnp: true,
-   *   name: otpweb.dnp.dappnode.eth,
-   *   ... (see `api/rpcMethods/dappmanager#listPackages` for more details)
-   * }, ... ]
-   */
-  subscribe("packages.dappmanager.dnp.dappnode.eth", dnpInstalled => {
-    store.dispatch(updateDnpInstalled(dnpInstalled));
+  subscribe("packages.dappmanager.dnp.dappnode.eth", (arg: any) => {
+    console.log({ arg });
+    const dnpInstalled = validateDnpInstalled(arg);
+    store.dispatch(setDnpInstalled(dnpInstalled));
   });
 
-  /**
-   * @param {object} dnps {
-   *   "dnpName.dnp.dappnode.eth": {
-   *     name: "dnpName.dnp.dappnode.eth",
-   *     manifest: { ... },
-   *     ...
-   *   }, ... }
-   */
   subscribe("directory.dappmanager.dnp.dappnode.eth", ([arg]: any) => {
     const dnpDirectory = validateDirectory(arg);
     store.dispatch(setDnpDirectory(dnpDirectory));
