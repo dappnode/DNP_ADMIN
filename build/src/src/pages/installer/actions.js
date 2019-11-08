@@ -5,11 +5,6 @@ export const fetchDirectory = () => ({
   type: t.FETCH_DIRECTORY
 });
 
-export const fetchPackageData = id => ({
-  type: t.FETCH_PACKAGE_DATA,
-  id
-});
-
 // Special action that uses a feature to suppress errors on
 // DAPPMANAGER internal and userActionLogs
 export const fetchPackageDataFromQuery = query => ({

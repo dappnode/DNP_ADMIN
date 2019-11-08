@@ -1,4 +1,4 @@
-import { RequestedDnp } from "types";
+import { RequestedDnp } from "../types";
 
 export const route = "fetchDnpRequest.dappmanager.dnp.dappnode.eth";
 
@@ -21,10 +21,8 @@ export const returnDataSchema = {
   properties: {}
 };
 
-// Demo for testing
+// Samples for testing
 
-// export const requestData: RequestData = {
-//   email: "as@gmail.com",
-//   phone: "9939393",
-//   age: 12
-// };
+export const requestDataSample: RequestData = {
+  id: "name"
+};

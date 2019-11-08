@@ -1,17 +1,33 @@
 import {
   DnpDirectoryState,
   AllReducerActions,
-  UPDATE_DNP_DIRECTORY
+  SET_DNP_DIRECTORY,
+  UPDATE_DIRECTORY_STATUS
 } from "./types";
 
 // Service > dnpDirectory
 
-const initialState: DnpDirectoryState = [];
+const initialState: DnpDirectoryState = {
+  directory: [],
+  requestStatus: {}
+};
 
-export default (state = initialState, action: AllReducerActions) => {
+export default (
+  state = initialState,
+  action: AllReducerActions
+): DnpDirectoryState => {
   switch (action.type) {
-    case UPDATE_DNP_DIRECTORY:
-      return action.directory;
+    case SET_DNP_DIRECTORY:
+      return {
+        ...state,
+        directory: action.directory
+      };
+
+    case UPDATE_DIRECTORY_STATUS:
+      return {
+        ...state,
+        requestStatus: action.requestStatus
+      };
 
     default:
       return state;

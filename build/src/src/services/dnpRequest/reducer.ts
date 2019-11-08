@@ -3,7 +3,8 @@ import {
   UPDATE_DNP_REQUEST,
   SET_DNP_REQUEST,
   AllActionTypes,
-  DnpRequestState
+  DnpRequestState,
+  UPDATE_DNP_REQUEST_STATUS
 } from "./types";
 
 // Service > dnpRequest
@@ -13,12 +14,16 @@ const initialState: DnpRequestState = {
   requestStatus: {}
 };
 
-export default (state = initialState, action: AllActionTypes) => {
+export default (
+  state = initialState,
+  action: AllActionTypes
+): DnpRequestState => {
   switch (action.type) {
     case UPDATE_DNP_REQUEST:
       return {
         ...state,
         dnps: {
+          ...state.dnps,
           [action.id]: merge(state.dnps[action.id] || {}, action.dnp)
         }
       };
@@ -27,7 +32,17 @@ export default (state = initialState, action: AllActionTypes) => {
       return {
         ...state,
         dnps: {
+          ...state.dnps,
           [action.id]: action.dnp
+        }
+      };
+
+    case UPDATE_DNP_REQUEST_STATUS:
+      return {
+        ...state,
+        requestStatus: {
+          ...state.requestStatus,
+          [action.id]: action.requestStatus
         }
       };
 

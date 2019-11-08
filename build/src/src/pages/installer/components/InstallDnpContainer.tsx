@@ -48,7 +48,7 @@ const InstallDnpContainer: React.FunctionComponent<
 }) => {
   const id = getIdFromMatch(match);
 
-  const { loading, error } = requestStatus || {};
+  const { loading, error, success } = requestStatus || {};
 
   useEffect(() => {
     fetchDnpRequest(id);
@@ -71,6 +71,8 @@ const InstallDnpContainer: React.FunctionComponent<
         <Loading msg={"Loading DAppNode Package data..."} />
       ) : error ? (
         <Error msg={error} />
+      ) : success ? (
+        <Error msg={"Package loaded but is not found"} />
       ) : null}
     </>
   );

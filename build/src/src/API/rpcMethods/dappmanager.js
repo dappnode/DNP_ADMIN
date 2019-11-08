@@ -211,20 +211,6 @@ export default {
   fetchDirectory: {},
 
   /**
-   * [fetchPackageData]
-   * Fetches the manifest of the latest version and its avatar.
-   *
-   * @param {string} id DNP .eth name
-   * @returns {object} result = {
-   *   avatar: "data:image/png;base64..." {string},
-   *   manifest: <manifest object> {object}
-   * }
-   */
-  fetchPackageData: {
-    mandatoryKwargs: ["id"]
-  },
-
-  /**
    * [fetchPackageVersions]
    * Fetches all available version manifests from a package APM repo
    *

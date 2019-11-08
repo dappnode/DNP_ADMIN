@@ -5,4 +5,6 @@ import { DnpDirectoryState } from "./types";
 
 const getLocal = (state: any): DnpDirectoryState => state[mountPoint];
 
-export const getDnpDirectory = getLocal;
+export const getDnpDirectory = (state: any) => getLocal(state).directory;
+export const getDirectoryRequestStatus = (state: any) =>
+  getLocal(state).requestStatus;

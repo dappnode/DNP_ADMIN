@@ -51,7 +51,7 @@ const InstallDnpView: React.FunctionComponent<
   const [userSettings, setUserSettings] = useState({} as UserSettingsAllDnps);
   const [options, setOptions] = useState({} as { [optionId: string]: boolean });
 
-  const { name, version, settings, metadata } = dnp;
+  const { name, reqVersion, settings, metadata } = dnp;
   const type = metadata.type;
   const setupSchema = dnp.setupSchema;
   const setupUiSchema = dnp.setupUiSchema;
@@ -64,7 +64,9 @@ const InstallDnpView: React.FunctionComponent<
     setUserSettings(settings || {});
   }, [settings, setUserSettings]);
 
-  const onInstall = (newData?: { newUserSettings: UserSettingsAllDnps }) => {
+  const onInstall = async (newData?: {
+    newUserSettings: UserSettingsAllDnps;
+  }) => {
     // Since React update order is not guaranteed, pass newUserSettings as a
     // parameter if necessary to ensure it has the latest state
     const _userSettings =
@@ -74,19 +76,25 @@ const InstallDnpView: React.FunctionComponent<
 
     const kwargs = {
       name,
-      version,
+      version: reqVersion,
       // Send only relevant data, ignoring settings that are equal to the current
       userSettings: difference(settings || {}, _userSettings),
       // Prevent sending the SHOW_ADVANCED_EDITOR option
       options: pick(options, [BYPASS_CORE_RESTRICTION])
     };
 
+    // Do the process here to control when the installation finishes,
+    // and do some nice transition to the package
     console.log("Installing DNP", kwargs);
-    api
-      .installPackage(kwargs, {
+    try {
+      await api.installPackage(kwargs, {
         toastMessage: `Installing ${shortNameCapitalized(name)}...`
-      })
-      .catch(console.error);
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      // Clean is installing logs
+    }
   };
   // Prevent a burst of install calls
   const onInstallThrottle = throttle(onInstall, 1000);

@@ -93,7 +93,7 @@ const lightningNetworkMetadata = {
 const lightningNetworkSetupSchema = {
   description: `This setup wizard will help you start. In case of problems: https://vipnode.io`,
   type: "object",
-  required: ["network"],
+  required: ["rtlPassword", "network"],
   properties: {
     rtlPassword: {
       target: {
@@ -121,8 +121,8 @@ const lightningNetworkSetupSchema = {
 const lightningNetworkSetupUiSchema = {};
 
 const lightningNetworkSetup: UserSettings = {
-  portMapping: { "9735": "9735" },
-  namedVolumePath: { lndconfig_data: "" },
+  portMappings: { "9735": "9735" },
+  namedVolumePaths: { lndconfig_data: "" },
   environment: {
     RTL_PASSWORD: "changeme",
     RPCUSER: "dappnode",
@@ -257,7 +257,7 @@ const raidenMetadata = {
 };
 
 const raidenSetup: UserSettings = {
-  namedVolumePath: { data: "" },
+  namedVolumePaths: { data: "" },
   environment: {
     RAIDEN_KEYSTORE_PASSWORD: "",
     RAIDEN_ADDRESS: "",
@@ -302,7 +302,7 @@ const raidenTestnetMetadata = {
 };
 
 const raidenTestnetSetup: UserSettings = {
-  namedVolumePath: { data: "" },
+  namedVolumePaths: { data: "" },
   environment: {
     RAIDEN_ADDRESS: "",
     RAIDEN_KEYSTORE_PASSWORD: "",
@@ -349,8 +349,8 @@ const bitcoinMetadata = {
 };
 
 const bitcoinSetup: UserSettings = {
-  portMapping: { "8333": "8333" },
-  namedVolumePath: { bitcoin_data: "/dev1/custom-path-previously-set" },
+  portMappings: { "8333": "8333" },
+  namedVolumePaths: { bitcoin_data: "/dev1/custom-path-previously-set" },
   environment: {
     BTC_RPCUSER: "dappnode",
     BTC_RPCPASSWORD: "dappnode",
@@ -507,8 +507,8 @@ const isUpdatedAvatar = "https://i.ibb.co/W2mtHcS/thisisfine-1.jpg";
 
 const sampleRequestState = {
   name: "demo-name",
-  version: "0.0.0",
-  origin: null,
+  semVersion: "0.0.0",
+  reqVersion: "0.0.0",
   avatar: "",
   metadata: { name: "demo-name", version: "0.0.0", description: "demo" },
   imageSize: 10000000,
@@ -524,7 +524,7 @@ const sampleRequestState = {
       resolving: false,
       isCompatible: true,
       error: "",
-      dnps: { "demo-name": { from: null, to: "0.0.0" } }
+      dnps: { "demo-name": { to: "0.0.0" } }
     },
     available: { isAvailable: true, message: "" }
   }
@@ -642,81 +642,84 @@ const devicesState = [
   { id: "other-user", admin: false, url: "link-to-otp/?id=617824#hdfuisf" }
 ];
 
-const dnpDirectoryState: DnpDirectoryState = [
-  {
-    ...sampleDirectoryState,
-    name: "bitcoin.dnp.dappnode.eth",
-    description: getDescription(bitcoinMetadata),
-    avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png"
-  },
-  {
-    ...sampleDirectoryState,
-    name: "lightning-network.dnp.dappnode.eth",
-    description: getDescription(lightningNetworkMetadata),
-    avatar: lightningNetworkAvatar,
-    categories: ["Payment channels", "Economic incentive"]
-  },
-  {
-    ...sampleDirectoryState,
-    name: "raiden.dnp.dappnode.eth",
-    description: getDescription(raidenMetadata),
-    avatar: raidenAvatar,
-    categories: ["Payment channels"]
-  },
-  {
-    ...sampleDirectoryState,
-    name: "raiden-testnet.dnp.dappnode.eth",
-    description: getDescription(raidenTestnetMetadata),
-    avatar: raidenTestnetAvatar,
-    isInstalled: true,
-    categories: ["Developer tools"]
-  },
-  {
-    ...sampleDirectoryState,
-    name: "vipnode.dnp.dappnode.eth",
-    description: getDescription(vipnodeMetadata),
-    avatar: vipnodeAvatar,
-    categories: ["Economic incentive"]
-  },
-  {
-    ...sampleDirectoryState,
-    name: "trustlines.dnp.dappnode.eth",
-    description: getDescription(trustlinesMetadata),
-    avatar: trustlinesAvatar,
-    isFeatured: true,
-    featuredStyle: {
-      featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
-      featuredColor: "white"
+const dnpDirectoryState: DnpDirectoryState = {
+  requestStatus: {},
+  directory: [
+    {
+      ...sampleDirectoryState,
+      name: "bitcoin.dnp.dappnode.eth",
+      description: getDescription(bitcoinMetadata),
+      avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png"
     },
-    categories: ["Blockchain"]
-  },
-  {
-    ...sampleDirectoryState,
-    name: isUpdatedDnp,
-    description: "Sample package in udpated state",
-    isInstalled: true,
-    isUpdated: true,
-    avatar: isUpdatedAvatar
-  },
-  {
-    ...sampleDirectoryState,
-    name: isInstallingDnp,
-    description: getDescription(isInstallingMetadata),
-    avatar: isInstallingAvatar
-  },
-  {
-    ...sampleDirectoryState,
-    name: inErrorDnp,
-    description: "Sample package in error state",
-    avatar: inErrorAvatar
-  },
-  {
-    ...sampleDirectoryState,
-    name: inLoadingDnp,
-    description: "Sample package in loading state",
-    avatar: inLoadingAvatar
-  }
-];
+    {
+      ...sampleDirectoryState,
+      name: "lightning-network.dnp.dappnode.eth",
+      description: getDescription(lightningNetworkMetadata),
+      avatar: lightningNetworkAvatar,
+      categories: ["Payment channels", "Economic incentive"]
+    },
+    {
+      ...sampleDirectoryState,
+      name: "raiden.dnp.dappnode.eth",
+      description: getDescription(raidenMetadata),
+      avatar: raidenAvatar,
+      categories: ["Payment channels"]
+    },
+    {
+      ...sampleDirectoryState,
+      name: "raiden-testnet.dnp.dappnode.eth",
+      description: getDescription(raidenTestnetMetadata),
+      avatar: raidenTestnetAvatar,
+      isInstalled: true,
+      categories: ["Developer tools"]
+    },
+    {
+      ...sampleDirectoryState,
+      name: "vipnode.dnp.dappnode.eth",
+      description: getDescription(vipnodeMetadata),
+      avatar: vipnodeAvatar,
+      categories: ["Economic incentive"]
+    },
+    {
+      ...sampleDirectoryState,
+      name: "trustlines.dnp.dappnode.eth",
+      description: getDescription(trustlinesMetadata),
+      avatar: trustlinesAvatar,
+      isFeatured: true,
+      featuredStyle: {
+        featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
+        featuredColor: "white"
+      },
+      categories: ["Blockchain"]
+    },
+    {
+      ...sampleDirectoryState,
+      name: isUpdatedDnp,
+      description: "Sample package in udpated state",
+      isInstalled: true,
+      isUpdated: true,
+      avatar: isUpdatedAvatar
+    },
+    {
+      ...sampleDirectoryState,
+      name: isInstallingDnp,
+      description: getDescription(isInstallingMetadata),
+      avatar: isInstallingAvatar
+    },
+    {
+      ...sampleDirectoryState,
+      name: inErrorDnp,
+      description: "Sample package in error state",
+      avatar: inErrorAvatar
+    },
+    {
+      ...sampleDirectoryState,
+      name: inLoadingDnp,
+      description: "Sample package in loading state",
+      avatar: inLoadingAvatar
+    }
+  ]
+};
 
 const dnpInstalledState = [
   {
@@ -835,7 +838,6 @@ const dnpRequestState: DnpRequestState = {
     "lightning-network.dnp.dappnode.eth": {
       name: "lightning-network.dnp.dappnode.eth",
       version: "0.2.2",
-      origin: null,
       avatar: lightningNetworkAvatar,
       metadata: lightningNetworkMetadata,
 
@@ -864,7 +866,7 @@ const dnpRequestState: DnpRequestState = {
           isCompatible: true,
           error: "",
           dnps: {
-            "lightning-network.dnp.dappnode.eth": { from: null, to: "0.2.2" },
+            "lightning-network.dnp.dappnode.eth": { to: "0.2.2" },
             "bitcoin.dnp.dappnode.eth": { from: "0.2.5", to: "0.2.5" }
           }
         },
@@ -877,8 +879,8 @@ const dnpRequestState: DnpRequestState = {
 
     "bitcoin.dnp.dappnode.eth": {
       name: "bitcoin.dnp.dappnode.eth",
-      version: "0.2.5",
-      origin: null,
+      reqVersion: "0.2.5",
+      semVersion: "0.2.5",
       avatar: bitcoinAvatar,
       metadata: bitcoinMetadata,
 
@@ -911,7 +913,6 @@ const dnpRequestState: DnpRequestState = {
     "vipnode.dnp.dappnode.eth": {
       name: vipnodeMetadata.name,
       version: vipnodeMetadata.version,
-      origin: null,
       avatar: vipnodeAvatar,
       metadata: vipnodeMetadata,
 
@@ -1034,7 +1035,8 @@ const dnpRequestState: DnpRequestState = {
     [isInstallingDnp]: {
       ...sampleRequestState,
       name: isInstallingDnp,
-      version: "0.1.0",
+      reqVersion: "0.1.0",
+      semVersion: "0.1.0",
       avatar: isInstallingAvatar,
       metadata: isInstallingMetadata
     }

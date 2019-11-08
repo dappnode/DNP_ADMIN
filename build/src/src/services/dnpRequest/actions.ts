@@ -5,10 +5,10 @@ import { RequestedDnp, RequestStatus } from "types";
 import {
   UpdateDnpRequest,
   SetDnpRequest,
-  UpdateRequestStatus,
+  UpdateDnpRequestStatus,
   UPDATE_DNP_REQUEST,
   SET_DNP_REQUEST,
-  UPDATE_REQUEST_STATUS
+  UPDATE_DNP_REQUEST_STATUS
 } from "./types";
 
 export function updateDnpRequest(
@@ -30,14 +30,14 @@ export function setDnpRequest(id: string, dnp: RequestedDnp): SetDnpRequest {
   };
 }
 
-export function updateRequestStatus(
-  id: string,
-  requestStatus: RequestStatus
-): UpdateRequestStatus {
+export function updateStatus(
+  requestStatus: RequestStatus,
+  id: string
+): UpdateDnpRequestStatus {
   return {
-    type: UPDATE_REQUEST_STATUS,
-    id,
-    requestStatus
+    type: UPDATE_DNP_REQUEST_STATUS,
+    requestStatus,
+    id
   };
 }
 
@@ -47,11 +47,10 @@ export const fetchDnpRequest = (
   id: string
 ): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
   try {
-    dispatch(updateRequestStatus(id, { loading: true }));
-    const dnp = await api.fetchDnpRequest({ id });
-    dispatch(setDnpRequest(id, dnp));
-    dispatch(updateRequestStatus(id, { loading: false, success: true }));
+    dispatch(updateStatus({ loading: true }, id));
+    dispatch(setDnpRequest(id, await api.fetchDnpRequest({ id })));
+    dispatch(updateStatus({ loading: false, success: true }, id));
   } catch (e) {
-    dispatch(updateRequestStatus(id, { loading: false, error: e.message }));
+    dispatch(updateStatus({ loading: false, error: e.message }, id));
   }
 };

@@ -7,6 +7,7 @@ import {
   UserSettingTarget
 } from "types";
 import { SetupWizardFormDataReturn } from "../types";
+import { getHostPortMappings } from "services/dnpInstalled/selectors";
 
 export function formDataToUserSettings(
   formData: SetupWizardFormDataReturn,
@@ -31,22 +32,22 @@ export function formDataToUserSettings(
             break;
           case "portMapping":
             if (target.containerPort)
-              userSettings.portMapping = deepmerge(
-                userSettings.portMapping || {},
+              userSettings.portMappings = deepmerge(
+                userSettings.portMappings || {},
                 { [target.containerPort]: value }
               );
             break;
           case "namedVolumePath":
             if (target.volumeName)
-              userSettings.namedVolumePath = deepmerge(
-                userSettings.namedVolumePath || {},
+              userSettings.namedVolumePaths = deepmerge(
+                userSettings.namedVolumePaths || {},
                 { [target.volumeName]: value }
               );
             break;
           case "fileUpload":
             if (target.path)
-              userSettings.fileUpload = deepmerge(
-                userSettings.fileUpload || {},
+              userSettings.fileUploads = deepmerge(
+                userSettings.fileUploads || {},
                 { [target.path]: value }
               );
             break;
@@ -65,9 +66,9 @@ export function userSettingsToFormData(
     if (!userSettings || !dnpSchema.properties) return {};
     const {
       environment = {},
-      portMapping = {},
-      namedVolumePath = {},
-      fileUpload = {}
+      portMappings = {},
+      namedVolumePaths = {},
+      fileUploads = {}
     } = userSettings;
     const formDataDnp: { [propId: string]: string } = {};
     for (const [propId, propSchema] of Object.entries(dnpSchema.properties)) {
@@ -76,20 +77,24 @@ export function userSettingsToFormData(
       if (target && target.type) {
         switch (target.type) {
           case "environment":
-            if (target.name && target.name in environment)
-              formDataDnp[propId] = environment[target.name];
+            const { name } = target;
+            if (name && name in environment)
+              formDataDnp[propId] = environment[name];
             break;
           case "portMapping":
-            if (target.containerPort && target.containerPort in portMapping)
-              formDataDnp[propId] = portMapping[target.containerPort];
+            const { containerPort } = target;
+            if (containerPort && containerPort in getHostPortMappings)
+              formDataDnp[propId] = portMappings[containerPort];
             break;
           case "namedVolumePath":
-            if (target.volumeName && target.volumeName in namedVolumePath)
-              formDataDnp[propId] = namedVolumePath[target.volumeName];
+            const { volumeName } = target;
+            if (volumeName && volumeName in namedVolumePaths)
+              formDataDnp[propId] = namedVolumePaths[volumeName];
             break;
           case "fileUpload":
-            if (target.path && target.path in fileUpload)
-              formDataDnp[propId] = fileUpload[target.path];
+            const { path } = target;
+            if (path && path in fileUploads)
+              formDataDnp[propId] = fileUploads[path];
             break;
         }
       }

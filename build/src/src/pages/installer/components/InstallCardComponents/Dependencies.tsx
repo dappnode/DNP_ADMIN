@@ -5,16 +5,13 @@ import SubTitle from "components/SubTitle";
 import Ok from "components/Ok";
 import DependencyList from "./DependencyList";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import { CompatibleDnps } from "types";
 
 interface DependenciesProps {
   noCard?: boolean;
   resolving: boolean;
   error: string | undefined;
-  dnps: {
-    [dnpName: string]: { from: string | null; to: string };
-    // "bitcoin.dnp.dappnode.eth": { from: "0.2.5"; to: "0.2.6" };
-    // "ln.dnp.dappnode.eth": { from: null; to: "0.2.2" };
-  };
+  dnps: CompatibleDnps;
 }
 
 const Dependencies: React.FunctionComponent<DependenciesProps> = ({

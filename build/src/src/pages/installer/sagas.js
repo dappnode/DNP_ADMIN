@@ -14,7 +14,6 @@ import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 import { rootWatcher, assertAction, assertConnectionOpen } from "utils/redux";
 import { shortName } from "utils/format";
 import isSyncing from "utils/isSyncing";
-import isIpfsHash from "utils/isIpfsHash";
 import uniqArray from "utils/uniqArray";
 import Joi from "joi";
 import { stringIncludes } from "utils/strings";
@@ -104,36 +103,11 @@ export function* fetchPackageRequest({ id }) {
   }
 }
 
-/**
- * [dontLogError] Is a special feature so the UI can instruct the DAPPMANAGER to
- * suppress noisy errors on recurring calls.
- * This is necessary for the fetchPackageData while the user is typing a name} param0
- */
-export function* fetchPackageData({ id, dontLogError }) {
-  try {
-    // If connection is not open yet, wait for it to open.
-    yield call(assertConnectionOpen);
-    const { manifest } = yield call(api.fetchPackageData, {
-      id,
-      ...(dontLogError ? { dontLogError } : {})
-    });
-    if (!manifest) {
-      throw Error(`Missing manifest for fetchPackageData: ${id}`);
-    }
-    // Add ipfs hash inside the manifest too, so it is searchable
-    if (manifest) manifest.origin = isIpfsHash(id) ? id : null;
-    // Update directory
-  } catch (e) {
-    console.error(`Error on fetchPackageData(${id}): ${e.stack}`);
-  }
-}
-
 /******************************* Watchers *************************************/
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 const watchers = [
-  [t.FETCH_PACKAGE_DATA, fetchPackageData],
   [t.FETCH_PACKAGE_REQUEST, fetchPackageRequest],
   [t.INSTALL, install],
   [t.MANAGE_PORTS, managePorts]

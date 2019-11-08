@@ -1,24 +1,45 @@
+import { ThunkAction } from "redux-thunk";
+import { AnyAction } from "redux";
+import * as api from "API/calls";
 import {
-  UpdateDnpDirectory,
-  FetchDnpDirectory,
-  UPDATE_DNP_DIRECTORY,
-  FETCH_DNP_DIRECTORY
+  SetDnpDirectory,
+  UpdateDirectoryStatus,
+  SET_DNP_DIRECTORY,
+  UPDATE_DIRECTORY_STATUS
 } from "./types";
-import { DirectoryItem } from "types";
+import { DirectoryItem, RequestStatus } from "types";
 
 // Service > dnpDirectory
 
-export function updateDnpDirectory(
-  directory: DirectoryItem[]
-): UpdateDnpDirectory {
+export function setDnpDirectory(directory: DirectoryItem[]): SetDnpDirectory {
   return {
-    type: UPDATE_DNP_DIRECTORY,
+    type: SET_DNP_DIRECTORY,
     directory
   };
 }
 
-export function fetchDnpDirectory(): FetchDnpDirectory {
+export function updateStatus(
+  requestStatus: RequestStatus
+): UpdateDirectoryStatus {
   return {
-    type: FETCH_DNP_DIRECTORY
+    type: UPDATE_DIRECTORY_STATUS,
+    requestStatus
   };
 }
+
+// Redux-thunk actions
+
+export const fetchDnpDirectory = (): ThunkAction<
+  void,
+  {},
+  null,
+  AnyAction
+> => async dispatch => {
+  try {
+    dispatch(updateStatus({ loading: true }));
+    dispatch(setDnpDirectory(await api.fetchDirectory({})));
+    dispatch(updateStatus({ loading: false, success: true }));
+  } catch (e) {
+    dispatch(updateStatus({ loading: false, error: e.message }));
+  }
+};

@@ -1,13 +1,10 @@
 import store from "../store";
 import autobahn from "autobahn";
-// Schema
-import * as schemas from "schemas";
-import Joi from "joi";
 // Actions to push received content
 import { pushNotificationFromDappmanager } from "services/notifications/actions";
 import { updateChainData } from "services/chainData/actions";
 import { updateDevices } from "services/devices/actions";
-import { updateDnpDirectory } from "services/dnpDirectory/actions";
+import { setDnpDirectory } from "services/dnpDirectory/actions";
 import { updateDnpInstalled } from "services/dnpInstalled/actions";
 import { pushUserActionLog } from "services/userActionLogs/actions";
 import {
@@ -15,6 +12,11 @@ import {
   updateIsInstallingLog
 } from "services/isInstallingLogs/actions";
 import { updateAutoUpdateData } from "services/dappnodeStatus/actions";
+import { ProgressLog, DirectoryItem } from "types";
+import { returnDataSchema as directorySchema } from "../route-types/fetchDirectory";
+import { getValidator } from "utils/schemaValidation";
+
+const validateDirectory = getValidator<DirectoryItem[]>(directorySchema);
 
 export default function subscriptions(session: autobahn.Session) {
   /**
@@ -88,7 +90,6 @@ export default function subscriptions(session: autobahn.Session) {
    * }
    */
   subscribe("logUserAction.dappmanager.dnp.dappnode.eth", userActionLog => {
-    Joi.assert(userActionLog, schemas.userActionLog);
     store.dispatch(pushUserActionLog(userActionLog));
   });
 
@@ -102,12 +103,7 @@ export default function subscriptions(session: autobahn.Session) {
    */
   subscribe(
     "log.dappmanager.dnp.dappnode.eth",
-    (progressLog: {
-      id: string;
-      name: string;
-      message: string;
-      clear: boolean;
-    }) => {
+    ([progressLog]: ProgressLog[]) => {
       const { id, name: dnpName, message: log, clear } = progressLog;
       if (clear) store.dispatch(clearIsInstallingLog({ id }));
       else store.dispatch(updateIsInstallingLog({ id, dnpName, log }));
@@ -123,7 +119,6 @@ export default function subscriptions(session: autobahn.Session) {
    * }, ... ]
    */
   subscribe("packages.dappmanager.dnp.dappnode.eth", dnpInstalled => {
-    Joi.assert(dnpInstalled, schemas.dnpInstalled);
     store.dispatch(updateDnpInstalled(dnpInstalled));
   });
 
@@ -135,9 +130,9 @@ export default function subscriptions(session: autobahn.Session) {
    *     ...
    *   }, ... }
    */
-  subscribe("directory.dappmanager.dnp.dappnode.eth", (dnpDirectory: any) => {
-    Joi.assert(Object.values(dnpDirectory), schemas.dnpDirectory);
-    store.dispatch(updateDnpDirectory(dnpDirectory));
+  subscribe("directory.dappmanager.dnp.dappnode.eth", ([arg]: any) => {
+    const dnpDirectory = validateDirectory(arg);
+    store.dispatch(setDnpDirectory(dnpDirectory));
   });
 
   /**
@@ -147,7 +142,6 @@ export default function subscriptions(session: autobahn.Session) {
    * }, ... ]
    */
   subscribe("devices.vpn.dnp.dappnode.eth", devices => {
-    Joi.assert(devices, schemas.devices);
     store.dispatch(updateDevices(devices));
   });
 
@@ -164,7 +158,6 @@ export default function subscriptions(session: autobahn.Session) {
    *   }, ... ]
    */
   subscribe("chainData.dappmanager.dnp.dappnode.eth", chainData => {
-    Joi.assert(chainData, schemas.chainData);
     store.dispatch(updateChainData(chainData));
   });
 
@@ -177,7 +170,6 @@ export default function subscriptions(session: autobahn.Session) {
    * }
    */
   subscribe("pushNotification.dappmanager.dnp.dappnode.eth", notification => {
-    Joi.assert(notification, schemas.notification);
     store.dispatch(pushNotificationFromDappmanager(notification));
   });
 }

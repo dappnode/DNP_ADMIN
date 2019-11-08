@@ -22,22 +22,20 @@ import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
 // Selectors
 import { getMainnet } from "services/chainData/selectors";
-import {
-  getIsLoading,
-  getLoadingError
-} from "services/loadingStatus/selectors";
 import { rootPath as packagesRootPath } from "pages/packages/data";
 // Styles
 import "./installer.scss";
 import IsSyncing from "./IsSyncing";
-import { DirectoryItem } from "types";
+import { DirectoryItem, RequestStatus } from "types";
 import { SelectedCategories } from "../types";
+import { getDirectoryRequestStatus } from "services/dnpDirectory/selectors";
+import { fetchDnpDirectory } from "services/dnpDirectory/actions";
 
 interface InstallerHomeProps {
   directory: DirectoryItem[];
   mainnetIsSyncing: boolean;
-  loading: boolean;
-  error: string;
+  requestStatus: RequestStatus;
+  fetchDnpDirectory: () => void;
   fetchPackageDataFromQuery: (query: string) => void;
 }
 
@@ -47,16 +45,20 @@ const InstallerHome: React.FunctionComponent<
   // variables
   directory,
   mainnetIsSyncing,
-  loading,
-  error,
+  requestStatus,
   history,
   // Actions
+  fetchDnpDirectory,
   fetchPackageDataFromQuery
 }) => {
   const [query, setQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState(
     {} as SelectedCategories
   );
+
+  useEffect(() => {
+    fetchDnpDirectory();
+  }, []);
 
   // Limit the number of requests [TESTED]
   const fetchQueryThrottled = useMemo(
@@ -149,27 +151,28 @@ const InstallerHome: React.FunctionComponent<
         )
       ) : mainnetIsSyncing ? (
         <IsSyncing />
-      ) : error ? (
-        <Error msg={`Error loading DAppNode Packages: ${error}`} />
-      ) : loading ? (
+      ) : requestStatus.error ? (
+        <Error
+          msg={`Error loading DAppNode Packages: ${requestStatus.error}`}
+        />
+      ) : requestStatus.loading ? (
         <Loading msg="Loading DAppNode Packages..." />
-      ) : (
-        <Error msg={`Unknown error`} />
-      )}
+      ) : requestStatus.success ? (
+        <Error msg={"Directory loaded but found no packages"} />
+      ) : null}
     </>
   );
 };
 
 const mapStateToProps = createStructuredSelector({
   directory: s.getDnpDirectoryWithTagsNonCores,
-  directoryLoaded: s.directoryLoaded,
-  mainnetIsSyncing: state => Boolean((getMainnet(state) || {}).syncing),
-  loading: getIsLoading.dnpDirectory,
-  error: getLoadingError.dnpDirectory
+  requestStatus: getDirectoryRequestStatus,
+  mainnetIsSyncing: state => Boolean((getMainnet(state) || {}).syncing)
 });
 
 const mapDispatchToProps = {
-  fetchPackageDataFromQuery: a.fetchPackageDataFromQuery
+  fetchPackageDataFromQuery: a.fetchPackageDataFromQuery,
+  fetchDnpDirectory
 };
 
 export default connect(

@@ -1,10 +1,12 @@
-import { PackageReleaseMetadata } from "types-dappmanager";
-import { UiSchema } from "react-jsonschema-form";
-import { JSONSchema6 } from "json-schema";
+import { SetupSchema, SetupUiSchema } from "./types-own";
 
-// Setup schema types
-export type SetupSchema = JSONSchema6;
-export type SetupUiSchema = UiSchema;
+/**
+ * ==============
+ * ==============
+ * ADMIN
+ * ==============
+ * ==============
+ */
 
 /**
  * [NOTE] Items MUST be ordered by the directory order
@@ -63,10 +65,10 @@ export type UserSettingTarget =
 // Settings must include the previous user settings
 
 export interface UserSettings {
-  environment?: { [envName: string]: string };
-  portMapping?: { [containerPortAndType: string]: string };
-  namedVolumePath?: { [volumeName: string]: string };
-  fileUpload?: { [containerPath: string]: string };
+  environment?: { [envName: string]: string }; // Env value
+  portMappings?: { [containerPortAndType: string]: string }; // Host port
+  namedVolumePaths?: { [volumeName: string]: string }; // Host absolute path
+  fileUploads?: { [containerPath: string]: string }; // dataURL
 }
 // "bitcoin.dnp.dappnode.eth": {
 //   environment: { MODE: "VALUE_SET_BEFORE" }
@@ -78,10 +80,17 @@ export interface UserSettingsAllDnps {
   [dnpName: string]: UserSettings;
 }
 
+export interface CompatibleDnps {
+  [dnpName: string]: { from?: string; to: string };
+  // "bitcoin.dnp.dappnode.eth": { from: "0.2.5"; to: "0.2.6" };
+  // "ln.dnp.dappnode.eth": { from: null; to: "0.2.2" };
+}
+
 export interface RequestedDnp {
   name: string; // "bitcoin.dnp.dappnode.eth"
-  version: string; // "0.2.5", "/ipfs/Qm"
-  origin: string | null; // "/ipfs/Qm"
+  reqVersion: string; // origin or semver: "/ipfs/Qm611" | "0.2.3"
+  semVersion: string; // Always a semver: "0.2.3"
+  origin?: string; // "/ipfs/Qm"
   avatar: string; // "http://dappmanager.dappnode/avatar/Qm7763518d4";
   metadata: PackageReleaseMetadata;
   // Setup wizard
@@ -99,11 +108,7 @@ export interface RequestedDnp {
       resolving: boolean;
       isCompatible: boolean; // false;
       error: string; // "LN requires incompatible dependency";
-      dnps: {
-        [dnpName: string]: { from: string | null; to: string };
-        // "bitcoin.dnp.dappnode.eth": { from: "0.2.5"; to: "0.2.6" };
-        // "ln.dnp.dappnode.eth": { from: null; to: "0.2.2" };
-      };
+      dnps: CompatibleDnps;
     };
     available: {
       isAvailable: boolean; // false;
@@ -120,4 +125,486 @@ export interface ProgressLogs {
 
 export interface ProgressLogsByDnp {
   [dnpName: string]: ProgressLogs;
+}
+
+/**
+ * ==============
+ * ==============
+ * DAPPMANAGER
+ * ==============
+ * ==============
+ */
+
+export type PortProtocol = "UDP" | "TCP";
+
+interface BasicPortMapping {
+  host?: number;
+  container: number;
+  protocol: PortProtocol;
+}
+
+export interface PortMapping extends BasicPortMapping {
+  ephemeral?: boolean;
+  ip?: string;
+  deletable?: boolean;
+}
+
+export interface PackagePort {
+  portNumber: number;
+  protocol: PortProtocol;
+}
+
+interface BasicVolumeMapping {
+  host: string; // path
+  container: string; // dest
+  name?: string;
+}
+
+export interface VolumeMapping extends BasicVolumeMapping {
+  users?: string[];
+  owner?: string;
+  isOwner?: boolean;
+}
+
+export interface Dependencies {
+  [dependencyName: string]: string;
+}
+
+export type ContainerStatus =
+  | "created" // created A container that has been created(e.g.with docker create) but not started
+  | "restarting" // restarting A container that is in the process of being restarted
+  | "running" // running A currently running container
+  | "paused" // paused A container whose processes have been paused
+  | "exited" // exited A container that ran and completed("stopped" in other contexts, although a created container is technically also "stopped")
+  | "dead"; // dead A container that the daemon tried and failed to stop(usually due to a busy device or resource used by the container)
+
+export interface PackageContainer {
+  id: string;
+  packageName: string;
+  version: string;
+  isDnp: boolean;
+  isCore: boolean;
+  created: number;
+  image: string;
+  name: string;
+  shortName: string;
+  state: ContainerStatus;
+  running: boolean;
+  origin?: string;
+  chain?: string;
+  dependencies: Dependencies;
+  manifest?: Manifest;
+  envs?: PackageEnvs;
+  ports: PortMapping[];
+  volumes: VolumeMapping[];
+  defaultEnvironment: PackageEnvs;
+  defaultPorts: PortMapping[];
+  defaultVolumes: VolumeMapping[];
+}
+
+export interface PackageEnvs {
+  [envName: string]: string;
+}
+
+export interface ManifestUpdateAlert {
+  from: string;
+  to: string;
+  message: string;
+}
+
+interface ManifestImage {
+  hash: string;
+  size: number;
+  path: string;
+  volumes?: string[];
+  external_vol?: string[];
+  ports?: string[];
+  environment?: string[];
+  restart?: string;
+  privileged?: boolean;
+  cap_add?: string[];
+  cap_drop?: string[];
+  devices?: string[];
+  subnet?: string;
+  ipv4_address?: string;
+  network_mode?: string;
+  command?: string;
+  labels?: string[];
+}
+export interface Manifest extends PackageReleaseMetadata {
+  name: string;
+  version: string;
+  avatar?: string;
+}
+
+export interface ManifestWithImage extends Manifest {
+  image: ManifestImage;
+}
+
+export interface ComposeVolumes {
+  // volumeName: "dncore_ethchaindnpdappnodeeth_data"
+  [volumeName: string]: {
+    external?: {
+      name: string; // "dncore_ethchaindnpdappnodeeth_data"
+    };
+  };
+}
+
+interface ComposeServiceBase {
+  container_name?: string; // "DAppNodeCore-dappmanager.dnp.dappnode.eth";
+  image?: string; // "dappmanager.dnp.dappnode.eth:0.2.6";
+  volumes?: string[]; // ["dappmanagerdnpdappnodeeth_data:/usr/src/app/dnp_repo/"];
+  ports?: string[];
+  environment?: string[];
+  labels?: { [labelName: string]: string };
+  // env_file: string; IGNORED, Use environment
+  // ipv4_address: "172.33.1.7";
+  networks?: string[] | { network: { ipv4_address: string } };
+  dns?: string; // "172.33.1.2";
+  restart?: string; // "always";
+  privileged?: boolean;
+  cap_add?: string[];
+  cap_drop?: string[];
+  devices?: string[];
+  network_mode?: string;
+  command?: string;
+}
+
+export interface ComposeServiceUnsafe extends ComposeServiceBase {
+  build?:
+    | {
+        context: string; // ".";
+        dockerfile: string; // "./build/Dockerfile";
+      }
+    | string;
+  container_name?: string; // "DAppNodeCore-dappmanager.dnp.dappnode.eth";
+  image?: string; // "dappmanager.dnp.dappnode.eth:0.2.6";
+}
+
+export interface ComposeService extends ComposeServiceBase {
+  container_name: string; // "DAppNodeCore-dappmanager.dnp.dappnode.eth";
+  image: string; // "dappmanager.dnp.dappnode.eth:0.2.6";
+  env_file?: string[];
+  logging: {
+    options: {
+      "max-size": string; // "10m",
+      "max-file": string; // "3"
+    };
+  };
+}
+
+interface ComposeBase {
+  version: string; // "3.4"
+  networks?: {
+    [networkName: string]: {
+      external?: boolean;
+      driver?: string; // "bridge";
+      ipam?: { config: { subnet: string }[] }; // { subnet: "172.33.0.0/16" }
+    };
+  };
+  volumes?: ComposeVolumes; // { dappmanagerdnpdappnodeeth_data: {} };
+}
+
+export interface ComposeUnsafe extends ComposeBase {
+  // dnpName: "dappmanager.dnp.dappnode.eth"
+  services: {
+    [dnpName: string]: ComposeServiceUnsafe;
+  };
+}
+
+export interface Compose extends ComposeBase {
+  // dnpName: "dappmanager.dnp.dappnode.eth"
+  services: {
+    [dnpName: string]: ComposeService;
+  };
+}
+
+export interface PackagePort {
+  portNumber: number;
+  protocol: PortProtocol;
+}
+
+export interface PackageRequest {
+  name: string;
+  ver: string;
+  req?: string;
+}
+
+export interface DappnodeParams {
+  DNCORE_DIR: string;
+  REPO_DIR: string;
+}
+
+export interface PackageBackup {
+  name: string;
+  path: string;
+}
+
+export type NotificationType = "danger" | "warning" | "success";
+export interface PackageNotification {
+  id: string; // "notification-id"
+  type: NotificationType;
+  title: string; // "Some notification"
+  body: string; // "Some text about notification"
+}
+
+export type UpdateType = "major" | "minor" | "patch" | null;
+
+export type DirectoryDnpStatus = "Deleted" | "Active" | "Developing";
+export interface DirectoryDnp {
+  name: string;
+  status: number;
+  statusName: DirectoryDnpStatus;
+  position: number;
+  directoryId: number;
+  isFeatured: boolean;
+  featuredIndex: number;
+  manifest?: Manifest;
+  avatar?: string;
+}
+
+export interface ChainData {
+  name: string; // Ethereum
+  syncing: boolean; // if chain is syncing
+  error: boolean; // If there was an error retrieving state
+  message: string; // "Blocks synced: 543000 / 654000"
+  progress?: number; // 0.83027522935
+}
+
+export interface ProgressLog {
+  id: string; // "ln.dnp.dappnode.eth@/ipfs/Qmabcdf", overall log id(to bundle multiple logs)
+  name: string; // "bitcoin.dnp.dappnode.eth", dnpName the log is referring to
+  message: string; // "Downloading 75%", log message
+  clear?: boolean; // to trigger the UI to clear the all logs of this id
+}
+
+export interface UserActionLog {
+  level: "info" | "error";
+  event: string; // "installPackage.dnp.dappnode.eth"
+  message: string; // "Successfully install DNP", { string } Returned message from the call function*
+  kwargs: any; // { id: "dnpName" }, { object } RPC key - word arguments
+  result?: any; // If success: { data: "contents" }, {*} Returned result from the call function
+  stack?: string; // If error: e.stack { string }
+}
+
+/**
+ * Docker
+ */
+
+export interface DockerOptionsInterface {
+  timeout?: number;
+  timestamps?: boolean;
+  volumes?: boolean;
+  v?: boolean;
+  core?: string;
+}
+
+/**
+ * Auto-update helper types
+ */
+
+export interface AutoUpdateSettings {
+  [dnpNameOrGroupId: string]: { enabled: boolean };
+}
+
+export interface AutoUpdateRegistryEntry {
+  updated?: number;
+  successful?: boolean;
+}
+export interface AutoUpdateRegistryDnp {
+  [version: string]: AutoUpdateRegistryEntry;
+}
+export interface AutoUpdateRegistry {
+  [dnpName: string]: AutoUpdateRegistryDnp;
+}
+
+export interface AutoUpdatePendingEntry {
+  version?: string;
+  firstSeen?: number;
+  scheduledUpdate?: number;
+  completedDelay?: boolean;
+  errorMessage?: string;
+}
+export interface AutoUpdatePending {
+  [dnpName: string]: AutoUpdatePendingEntry;
+}
+
+export interface AutoUpdateFeedback {
+  inQueue?: boolean;
+  manuallyUpdated?: boolean;
+  scheduled?: number;
+  updated?: number;
+  errorMessage?: string;
+}
+
+/**
+ * Releases types
+ */
+
+export interface ApmVersion {
+  version: string;
+  contentUri: string;
+}
+
+export interface PackageVersionData {
+  version?: string;
+  branch?: string;
+  commit?: string;
+}
+
+export type DistributedFileSource = "ipfs" | "swarm";
+export interface DistributedFile {
+  hash: string;
+  source: DistributedFileSource;
+  size: number;
+}
+
+export interface ReleaseWarnings {
+  unverifiedCore?: boolean;
+}
+
+export interface PackageRelease {
+  name: string;
+  reqVersion: string; // origin or semver: "/ipfs/Qm611" | "0.2.3"
+  semVersion: string; // Always a semver: "0.2.3"
+  // File info for downloads
+  manifestFile: DistributedFile;
+  imageFile: DistributedFile;
+  avatarFile?: DistributedFile;
+  // Data for release processing
+  metadata: PackageReleaseMetadata;
+  compose: Compose;
+  // Aditional
+  warnings: ReleaseWarnings;
+  origin?: string;
+  isCore: boolean;
+}
+
+export interface InstallPackageData extends PackageRelease {
+  // Paths
+  imagePath: string;
+  composePath: string;
+  composeNextPath: string;
+  manifestPath: string;
+  // Data to write
+  compose: Compose;
+  // User settings to be applied after running
+  fileUploads?: { [containerPath: string]: string };
+}
+
+export interface PackageReleaseMetadata {
+  name: string;
+  version: string;
+  upstreamVersion?: string;
+  shortDescription?: string;
+  description?: string;
+  type?: string;
+  chain?: string;
+  dependencies?: Dependencies;
+  runOrder?: string[];
+  requirements?: {
+    minimumDappnodeVersion: string;
+  };
+  globalEnvs?: {
+    all?: boolean;
+  };
+  backup?: PackageBackup[];
+  changelog?: string;
+  warnings?: {
+    onInstall?: string;
+    onUpdate?: string;
+    onReset?: string;
+    onRemove?: string;
+  };
+  updateAlerts?: ManifestUpdateAlert[];
+  disclaimer?: {
+    message: string;
+  };
+  style?: {
+    featuredBackground?: string;
+    featuredColor?: string;
+    featuredAvatarFilter?: string;
+  };
+  setupSchema?: SetupSchema;
+  setupUiSchema?: SetupUiSchema;
+  author?: string;
+  contributors?: string[];
+  categories?: string[];
+  keywords?: string[];
+  links?: {
+    homepage?: string;
+    ui?: string;
+    api?: string;
+    gateway?: string;
+  };
+  repository?: {
+    type?: string;
+    url?: string;
+    directory?: string;
+  };
+  bugs?: {
+    url: string;
+  };
+  license?: string;
+}
+
+export interface PackageReleaseImageData {
+  // Mergable properties (editable)
+  volumes?: string[];
+  ports?: string[];
+  environment?: string[];
+  // Non-mergable properties
+  external_vol?: string[];
+  restart?: string;
+  privileged?: boolean;
+  cap_add?: string[];
+  cap_drop?: string[];
+  devices?: string[];
+  subnet?: string;
+  ipv4_address?: string;
+  network_mode?: string;
+  command?: string;
+  labels?: string[];
+}
+
+/**
+ * RPC methods
+ * - Generic inteface with metadata types
+ * - `WithResult` to type the return value
+ * - `Generic` for higher order functions
+ * [NOTE]: All are wrapped in a promise before exporting
+ */
+
+interface RpcHandlerReturnInterface {
+  message: string;
+  logMessage?: boolean;
+  userAction?: boolean;
+  privateKwargs?: boolean;
+}
+interface RpcHandlerReturnWithResultInterface<R>
+  extends RpcHandlerReturnInterface {
+  result: R;
+}
+interface RpcHandlerReturnGenericInterface extends RpcHandlerReturnInterface {
+  result?: any;
+}
+export type RpcHandlerReturn = Promise<RpcHandlerReturnInterface>;
+export type RpcHandlerReturnWithResult<R> = Promise<
+  RpcHandlerReturnWithResultInterface<R>
+>;
+export type RpcHandlerReturnGeneric = Promise<RpcHandlerReturnGenericInterface>;
+
+/**
+ * HTTP Response
+ */
+
+export interface HttpResponseInterface {
+  data: any;
+  statusCode: number;
+}
+
+export interface IdentityInterface {
+  address: string;
+  privateKey: string;
+  publicKey: string;
 }

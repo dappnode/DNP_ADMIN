@@ -11,7 +11,7 @@ export interface DnpRequestState {
 
 export const UPDATE_DNP_REQUEST = "UPDATE_DNP_REQUEST";
 export const SET_DNP_REQUEST = "SET_DNP_REQUEST";
-export const UPDATE_REQUEST_STATUS = "UPDATE_REQUEST_STATUS";
+export const UPDATE_DNP_REQUEST_STATUS = "UPDATE_DNP_REQUEST_STATUS";
 
 export interface UpdateDnpRequest {
   type: typeof UPDATE_DNP_REQUEST;
@@ -25,10 +25,13 @@ export interface SetDnpRequest {
   dnp: RequestedDnp;
 }
 
-export interface UpdateRequestStatus {
-  type: typeof UPDATE_REQUEST_STATUS;
+export interface UpdateDnpRequestStatus {
+  type: typeof UPDATE_DNP_REQUEST_STATUS;
   id: string;
   requestStatus: RequestStatus;
 }
 
-export type AllActionTypes = UpdateDnpRequest | SetDnpRequest;
+export type AllActionTypes =
+  | UpdateDnpRequest
+  | SetDnpRequest
+  | UpdateDnpRequestStatus;

@@ -1,7 +1,13 @@
 import { wrapRoute } from "./wrapRoute";
 
-import * as _fetchDnpRequest from "./routes/fetchDnpRequest";
-import * as _installPackage from "./routes/installPackage";
+import * as _fetchDirectory from "../route-types/fetchDirectory";
+import * as _fetchDnpRequest from "../route-types/fetchDnpRequest";
+import * as _installPackage from "../route-types/installPackage";
+
+export const fetchDirectory = wrapRoute<
+  _fetchDirectory.RequestData,
+  _fetchDirectory.ReturnData
+>(_fetchDirectory);
 
 export const fetchDnpRequest = wrapRoute<
   _fetchDnpRequest.RequestData,

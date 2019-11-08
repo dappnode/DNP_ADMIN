@@ -89,11 +89,11 @@ const OldEditor: React.FunctionComponent<OldEditorProps> = ({
           <EditableTable
             headers={["Port - container", "Port - host"]}
             placeholder="Ephemeral port if unspecified"
-            values={dnpSettings.portMapping}
+            values={dnpSettings.portMappings}
             setValue={(valueId, value) =>
               setSettingsMerge({
                 [dnpName]: {
-                  portMapping: { [valueId]: value }
+                  portMappings: { [valueId]: value }
                 }
               })
             }
@@ -101,11 +101,11 @@ const OldEditor: React.FunctionComponent<OldEditorProps> = ({
           <EditableTable
             headers={["Volume name", "Custom path"]}
             placeholder="default docker location if unspecified"
-            values={dnpSettings.namedVolumePath}
+            values={dnpSettings.namedVolumePaths}
             setValue={(valueId, value) =>
               setSettingsMerge({
                 [dnpName]: {
-                  namedVolumePath: { [valueId]: value }
+                  namedVolumePaths: { [valueId]: value }
                 }
               })
             }

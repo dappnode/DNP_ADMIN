@@ -1,6 +1,7 @@
 import Ajv from "ajv";
 import { getSession } from "./start";
 import Toast from "components/toast/Toast";
+import { getValidator } from "utils/schemaValidation";
 
 const ajv = new Ajv();
 
@@ -27,7 +28,7 @@ export function wrapRoute<T, R>({
     ? ajv.compile(requestDataSchema)
     : null;
   const validateReturn = returnDataSchema
-    ? ajv.compile(returnDataSchema)
+    ? getValidator<R>(returnDataSchema, "result")
     : null;
 
   return async function wampCall(
@@ -66,12 +67,7 @@ export function wrapRoute<T, R>({
       if (!res.success) throw Error(res.message);
       if (pendingToast) pendingToast.resolve(res);
 
-      if (validateReturn) {
-        const validReturn = validateReturn(res.result);
-        if (!validReturn) console.error(validateReturn.errors);
-      }
-
-      return res.result;
+      return validateReturn ? validateReturn(res.result) : res.result;
     } catch (e) {
       // Intercept errors to resolve or create toasts
       // Re-throw the error afterwards

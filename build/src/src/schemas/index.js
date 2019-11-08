@@ -29,14 +29,14 @@ export const chainData = Joi.array()
 // Service > dappnodeStatus
 
 export const params = Joi.object({
-  ip: Joi.string(),
-  name: Joi.string(),
+  ip: Joi.string().allow(""),
+  name: Joi.string().allow(""),
   staticIp: Joi.string().allow("", null),
-  domain: Joi.string(),
+  domain: Joi.string().allow(""),
   upnpAvailable: Joi.boolean().required(),
   noNatLoopback: Joi.boolean().required(),
   alertToOpenPorts: Joi.boolean().required(),
-  internalIp: Joi.string().required()
+  internalIp: Joi.string().allow("")
 })
   .pattern(/./, Joi.any())
   .required();
@@ -58,9 +58,9 @@ export const diagnose = Joi.object({
 // const pingReturns
 
 export const versionData = Joi.object({
-  version: Joi.string().required(),
-  branch: Joi.string().required(),
-  commit: Joi.string().required()
+  version: Joi.string(),
+  branch: Joi.string(),
+  commit: Joi.string()
 });
 
 // const ipfsConnectionStatus
