@@ -1,17 +1,17 @@
 import store from "../store";
 import autobahn from "autobahn";
+import { registerSubscriptions } from "../registerSubscriptions";
 // Actions to push received content
 import { pushNotificationFromDappmanager } from "services/notifications/actions";
 import { updateChainData } from "services/chainData/actions";
 import { updateDevices } from "services/devices/actions";
-import { setDnpDirectory } from "services/dnpDirectory/actions";
 import { pushUserActionLog } from "services/userActionLogs/actions";
 import {
   clearIsInstallingLog,
   updateIsInstallingLog
 } from "services/isInstallingLogs/actions";
 import { updateAutoUpdateData } from "services/dappnodeStatus/actions";
-import { ProgressLog, DirectoryItem, PackageContainer } from "types";
+import { DirectoryItem, PackageContainer } from "types";
 import { returnDataSchema as directorySchema } from "../route-types/fetchDirectory";
 import { returnDataSchema as dnpInstalledSchema } from "../route-types/listPackages";
 import { getValidator } from "utils/schemaValidation";
@@ -23,6 +23,9 @@ const validateDnpInstalled = getValidator<PackageContainer[]>(
 );
 
 export default function subscriptions(session: autobahn.Session) {
+  const wampSubscriptions = registerSubscriptions(session, errorMessage => {
+    console.error(errorMessage);
+  });
   /**
    * Utilities to encode arguments to publish with the Crossbar format (args, kwargs)
    * - Publisher:
@@ -77,7 +80,7 @@ export default function subscriptions(session: autobahn.Session) {
    *   }, ... ]
    * }
    */
-  subscribe("autoUpdateData.dappmanager.dnp.dappnode.eth", autoUpdateData => {
+  wampSubscriptions.autoUpdateData.on(autoUpdateData => {
     store.dispatch(updateAutoUpdateData(autoUpdateData));
   });
 
@@ -93,7 +96,7 @@ export default function subscriptions(session: autobahn.Session) {
    *   stack: e.stack {string}
    * }
    */
-  subscribe("logUserAction.dappmanager.dnp.dappnode.eth", userActionLog => {
+  wampSubscriptions.userActionLog.on(userActionLog => {
     store.dispatch(pushUserActionLog(userActionLog));
   });
 
@@ -105,24 +108,14 @@ export default function subscriptions(session: autobahn.Session) {
    *   message: "Downloading 75%", {string} log message
    * }
    */
-  subscribe(
-    "log.dappmanager.dnp.dappnode.eth",
-    ([progressLog]: ProgressLog[]) => {
-      const { id, name: dnpName, message: log, clear } = progressLog;
-      if (clear) store.dispatch(clearIsInstallingLog({ id }));
-      else store.dispatch(updateIsInstallingLog({ id, dnpName, log }));
-    }
-  );
-
-  subscribe("packages.dappmanager.dnp.dappnode.eth", (arg: any) => {
-    console.log({ arg });
-    const dnpInstalled = validateDnpInstalled(arg);
-    store.dispatch(setDnpInstalled(dnpInstalled));
+  wampSubscriptions.progressLog.on(progressLog => {
+    const { id, name: dnpName, message: log, clear } = progressLog;
+    if (clear) store.dispatch(clearIsInstallingLog({ id }));
+    else store.dispatch(updateIsInstallingLog({ id, dnpName, log }));
   });
 
-  subscribe("directory.dappmanager.dnp.dappnode.eth", ([arg]: any) => {
-    const dnpDirectory = validateDirectory(arg);
-    store.dispatch(setDnpDirectory(dnpDirectory));
+  wampSubscriptions.packages.on(dnpsInstalled => {
+    store.dispatch(setDnpInstalled(dnpsInstalled));
   });
 
   /**
@@ -147,8 +140,8 @@ export default function subscriptions(session: autobahn.Session) {
    *     error: true {bool},
    *   }, ... ]
    */
-  subscribe("chainData.dappmanager.dnp.dappnode.eth", chainData => {
-    store.dispatch(updateChainData(chainData));
+  wampSubscriptions.chainData.on(chainsData => {
+    store.dispatch(updateChainData(chainsData));
   });
 
   /**
@@ -159,7 +152,7 @@ export default function subscriptions(session: autobahn.Session) {
    *   body: "Available disk space is less than a safe ... ",
    * }
    */
-  subscribe("pushNotification.dappmanager.dnp.dappnode.eth", notification => {
+  wampSubscriptions.pushNotification.on(notification => {
     store.dispatch(pushNotificationFromDappmanager(notification));
   });
 }

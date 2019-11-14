@@ -439,6 +439,20 @@ export interface AutoUpdateFeedback {
   errorMessage?: string;
 }
 
+export interface AutoUpdateDataDnpView {
+  id: string;
+  displayName: string;
+  enabled: boolean;
+  feedback: AutoUpdateFeedback;
+}
+
+export interface AutoUpdateDataView {
+  settings: AutoUpdateSettings;
+  registry: AutoUpdateRegistry;
+  pending: AutoUpdatePending;
+  dnpsToShow: AutoUpdateDataDnpView[];
+}
+
 /**
  * Releases types
  */
@@ -581,7 +595,6 @@ interface RpcHandlerReturnInterface {
   message: string;
   logMessage?: boolean;
   userAction?: boolean;
-  privateKwargs?: boolean;
 }
 interface RpcHandlerReturnWithResultInterface<R>
   extends RpcHandlerReturnInterface {

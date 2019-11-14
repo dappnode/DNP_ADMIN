@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import DataList from "./DataList";
 import { Soft } from "./Soft";
-import { prettyVolumeName } from "utils/format";
+import { prettyVolumeName, prettyBytes } from "utils/format";
 
 function Vols({ dnp }) {
   const { volumes = [] } = dnp;
@@ -23,7 +23,7 @@ function Vols({ dnp }) {
         // - /etc/hostname: - (bind)
         .map(({ name, path, size, type }) => ({
           name: name ? prettyVolumeName(name, dnp.name) : path || "Unknown",
-          size: size || (type === "bind" ? "(bind)" : "unknown")
+          size: size ? prettyBytes(size) : type === "bind" ? "(bind)" : "..."
         }))
         .map(({ name, size }) => (
           <>
@@ -43,7 +43,7 @@ function Vols({ dnp }) {
  *     name: "dncore_ethchaindnpdappnodeeth_data",
  *     path: "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
  *     links: "1",
- *     size: "45.13GB"}
+ *     size: 45134817123}
  * ]
  */
 
@@ -54,7 +54,7 @@ Vols.propTypes = {
         type: PropTypes.string.isRequired,
         path: PropTypes.string.isRequired,
         name: PropTypes.string,
-        size: PropTypes.string
+        size: PropTypes.number
       })
     ).isRequired
   }).isRequired

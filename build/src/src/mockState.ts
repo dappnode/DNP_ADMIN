@@ -20,6 +20,7 @@ import {
   DirectoryItem
 } from "types";
 import { IsInstallingLogsState } from "services/isInstallingLogs/types";
+import { DnpInstalledState } from "services/dnpInstalled/types";
 
 function getDescription(manifest: {
   shortDescription?: string;
@@ -129,7 +130,7 @@ const lightningNetworkSetup: UserSettings = {
   portMappings: { "9735": "9735" },
   namedVolumePaths: { lndconfig_data: "" },
   environment: {
-    RTL_PASSWORD: "changeme",
+    RTL_PASSWORD: "",
     RPCUSER: "dappnode",
     RPCPASS: "dappnode",
     BITCOIND_HOST: "my.bitcoin.dnp.dappnode.eth",
@@ -179,7 +180,7 @@ const vipnodeSetup: UserSettings = {
 };
 
 const vipnodeSetupSchema = {
-  description: `This setup wizard will help you start. In case of problems: https://vipnode.io`,
+  description: `This setup wizard will help you start. In case of problems: https://github.com/dappnode/DAppNodePackage-vipnode#installing-and-setting-up-vipnode`,
   type: "object",
   required: ["payoutAddress"],
   properties: {
@@ -194,19 +195,6 @@ const vipnodeSetupSchema = {
       pattern: "^0x[a-fA-F0-9]{40}$",
       customErrors: {
         pattern: "Must be an address 0x1234... 40 bytes"
-      }
-    },
-    keychain: {
-      target: {
-        type: "fileUpload",
-        path: "/usr/src/app"
-      },
-      type: "string",
-      format: "data-url",
-      title: "Keychain",
-      description: "Key chain containing the private key of this node",
-      "ui:options": {
-        accept: ".pdf"
       }
     }
   }
@@ -259,6 +247,49 @@ const raidenMetadata = {
       "This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package.\n\nThis package stores private keys, which will be stored in your DAppNode. Neither DAppNode Association nor the developers of this software can have access to your private key, nor help you recover it if you lose it. \n\nYou are solely responsible for keeping your private keys and password safe and to perform secure backups, as well as to restrict access to your computer and other equipment. To the extent permitted by applicable law, you agree to be responsible for all activities that have been conducted from your account. You must take all necessary steps to ensure that your private key, password, and recovery phrase remain confidential and secured. \n\nThis is an Alpha version of experimental open source software released as a test version under an MIT license and may contain errors and/or bugs. No guarantee or representations whatsoever is made regarding its suitability (or its use) for any purpose or regarding its compliance with any applicable laws and regulations. Use of the software is at your own risk and discretion and by using the software you acknowledge that you have read this disclaimer, understand its contents, assume all risk related thereto and hereby release, waive, discharge and covenant not to sue Brainbot Labs Establishment or any officers, employees or affiliates from and for any direct or indirect liability resulting from the use of the software as permissible by applicable laws and regulations.\n\nPrivacy Warning: Please be aware, that by using the Raiden Client, \namong others, your Ethereum address, channels, channel deposits, settlements and the Ethereum address of your channel counterparty will be stored on the Ethereum chain, i.e. on servers of Ethereum node operators and ergo are to a certain extent publicly available. The same might also be stored on systems of parties running Raiden nodes connected to the same token network. Data present in the Ethereum chain is very unlikely to be able to be changed, removed or deleted from the public arena.\n\nAlso be aware, that data on individual Raiden token transfers will be made available via the Matrix protocol to the recipient, intermediating nodes of a specific transfer as well as to the Matrix server operators."
   },
   license: "MIT License"
+};
+
+const raidenSetupSchema = {
+  description: `Raiden setup wizard https://github.com/dappnode/DAppNodePackage-raiden
+  
+In mainet you will have to install the mainet package and take into account that your Ethereum node should be running with this flags.
+
+\`--jsonrpc-apis=eth,net,web3,parity\` and the flag \`--no-ancient-blocks\` should not be activated.  
+  
+If you do not have a keystore file, you can create a new wallet in My Ether Wallet or MyCrypto, and then fund it with a bit of ETH / WETH (only token supported in mainet at the moment). Please be aware that the online creation of wallets via a keystore file is not such a good security practice. This can be mitigated if you download the MyCrypto local app and create the wallet offline. Do not leave significant value in wallets created through this method.
+`,
+  type: "object",
+  required: ["keystore", "keystorePassword", "keystoreAddress"],
+  properties: {
+    keystore: {
+      target: {
+        type: "fileUpload",
+        path: "/usr/src/app"
+      },
+      type: "string",
+      format: "data-url",
+      title: "Keystore",
+      description: "Keystore with the account to be used in your Raiden node"
+    },
+    keystorePassword: {
+      target: {
+        type: "environment",
+        name: "RAIDEN_KEYSTORE_PASSWORD"
+      },
+      type: "string",
+      title: "Keystore password",
+      description: "Password of the uploaded keystore"
+    },
+    keystoreAddress: {
+      target: {
+        type: "environment",
+        name: "RAIDEN_ADDRESS"
+      },
+      type: "string",
+      title: "Keystore address",
+      description: "Address of the uploaded keystore"
+    }
+  }
 };
 
 const raidenSetup: UserSettings = {
@@ -367,19 +398,7 @@ const bitcoinSetup: UserSettings = {
 const bitcoinSetupSchema = {
   description: `Bitcoin setup https://docs.bitcoin.io`,
   type: "object",
-  required: ["txIndex"],
   properties: {
-    txIndex: {
-      target: {
-        type: "environment",
-        name: "BTC_TXINDEX"
-      },
-      type: "string",
-      title: "TX index",
-      description: "Choose the TX index",
-      default: "1",
-      enum: ["0", "1", "2"]
-    },
     bitcoinData: {
       target: {
         type: "namedVolumePath",
@@ -487,6 +506,59 @@ const trustlinesSetup = {
   namedVolumePath: { data: "", config: "" }
 };
 
+const trustlinesSetupSchema = {
+  description: `Trustlines setup https://docs.trustlines.network/`,
+  type: "object",
+  required: ["role"],
+  properties: {
+    role: {
+      target: {
+        type: "environment",
+        name: "ROLE"
+      },
+      type: "string",
+      title: "Node role",
+      description:
+        "You can be observer (a node without an account), participant (a node with an address) or validator in case you are a Trustlines validator.",
+      default: "observer",
+      enum: ["observer", "participant"]
+    },
+    keychain: {
+      target: {
+        type: "fileUpload",
+        path: "/usr/src/app"
+      },
+      type: "string",
+      format: "data-url",
+      title: "Keystore",
+      description: "Key chain containing the private key of this node"
+    },
+    address: {
+      target: {
+        type: "environment",
+        name: "ADDRESS"
+      },
+      type: "string",
+      title: "Address to use",
+      description: "Address from the keystore to be used"
+    },
+    password: {
+      target: {
+        type: "environment",
+        name: "PASSWORD"
+      },
+      type: "string",
+      title: "Password",
+      description: "Password from the Keystore"
+    }
+  },
+  dependencies: {
+    keychain: ["address", "password"],
+    address: ["keychain", "password"],
+    password: ["address", "keychain"]
+  }
+};
+
 // Fake is installing package
 const isInstallingDnp = "is-installing.dnp.dappnode.eth";
 const isInstallingAvatar =
@@ -544,6 +616,27 @@ const sampleDirectoryState: DirectoryItem = {
   whitelisted: true,
   isFeatured: false,
   categories: ["Blockchain"]
+};
+
+const samplePackageContainer: PackageContainer = {
+  id: "7s51a",
+  packageName: "demo-name",
+  version: "0.0.0",
+  isDnp: true,
+  isCore: false,
+  created: 12316723123,
+  image: "demo-name:0.0.0",
+  name: "demo-name",
+  shortName: "demo-name",
+  state: "running",
+  running: true,
+  dependencies: {},
+  ports: [],
+  volumes: [],
+  defaultEnvironment: {},
+  defaultPorts: [],
+  defaultVolumes: [],
+  avatarUrl: ""
 };
 
 /**
@@ -967,7 +1060,9 @@ const dnpRequestState: DnpRequestState = {
         [trustlinesMetadata.name]: trustlinesSetup
       },
 
-      setupSchema: {},
+      setupSchema: {
+        [trustlinesMetadata.name]: trustlinesSetupSchema
+      },
       setupUiSchema: {}
     },
 
@@ -983,7 +1078,9 @@ const dnpRequestState: DnpRequestState = {
         [raidenMetadata.name]: raidenSetup
       },
 
-      setupSchema: {},
+      setupSchema: {
+        [raidenMetadata.name]: raidenSetupSchema
+      },
       setupUiSchema: {}
     },
 

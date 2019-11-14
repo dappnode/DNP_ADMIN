@@ -1,8 +1,5 @@
 import * as t from "./actionTypes";
-import { assertAction } from "utils/redux";
 import _ from "lodash";
-import Joi from "joi";
-import * as schemas from "schemas";
 
 // Service > notifications
 
@@ -24,13 +21,6 @@ import * as schemas from "schemas";
 export default function(state = {}, action) {
   switch (action.type) {
     case t.PUSH_NOTIFICATION:
-      assertAction(
-        action,
-        Joi.object({
-          notification: schemas.notification.required(),
-          fromDappmanager: Joi.bool().required()
-        })
-      );
       return {
         ...state,
         [action.notification.id]: formatNotification(

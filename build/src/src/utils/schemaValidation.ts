@@ -8,7 +8,9 @@ export function getValidator<T>(schema: any, dataVar?: string): (data: T) => T {
   if (schema.type === "array" && schema.items) {
     const validateItem = ajv.compile(schema.items);
     const itemName = schema.items.title || `${name} item`;
+    // @ts-ignore
     return data => {
+      if (!Array.isArray(data)) throw Error("data must be an array");
       let errorCache: string = "";
       // @ts-ignore
       const validItems = data.filter(item => {

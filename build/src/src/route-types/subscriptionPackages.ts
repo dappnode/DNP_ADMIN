@@ -1,10 +1,7 @@
 import { PackageContainer } from "../types";
 import { installedDnpsSchema, installedDnpsSample } from "../schemas";
 
-export const route = "listPackages.dappmanager.dnp.dappnode.eth";
-
-// No request arguments
-export type RequestData = {};
+export const route = "packages.dappmanager.dnp.dappnode.eth";
 
 export type ReturnData = PackageContainer[];
 
