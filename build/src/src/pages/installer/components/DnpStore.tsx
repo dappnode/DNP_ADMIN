@@ -26,7 +26,7 @@ function DnpStore({
         ({
           name,
           description,
-          avatar,
+          avatarUrl,
           isInstalled,
           isUpdated,
           featuredStyle
@@ -64,7 +64,7 @@ function DnpStore({
                   <div className="avatar-big">
                     <img
                       style={avatarStyle}
-                      src={avatar || defaultAvatar}
+                      src={avatarUrl || defaultAvatar}
                       alt="avatar"
                     />
                   </div>
@@ -79,7 +79,7 @@ function DnpStore({
               ) : (
                 <>
                   <div className="avatar">
-                    <img src={avatar || defaultAvatar} alt="avatar" />
+                    <img src={avatarUrl || defaultAvatar} alt="avatar" />
                   </div>
 
                   <DnpNameVerified name={name} />

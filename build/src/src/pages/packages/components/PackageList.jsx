@@ -32,7 +32,6 @@ const PackagesList = ({
   dnps = [],
   moduleName,
   coreDnps,
-  dnpsAvatars,
   requestStatus: { loading, error },
   restartPackage
 }) => {
@@ -57,28 +56,30 @@ const PackagesList = ({
       <header>Name</header>
       <header>Open</header>
       <header className="restart">Restart</header>
-      {filteredDnps.sort(sortByProp("name")).map(({ name, state }) => (
-        <React.Fragment key={name}>
-          <StateBadge state={state} />
-          <img
-            className="avatar"
-            src={dnpsAvatars[name] || (coreDnps ? dappnodeIcon : defaultAvatar)}
-            alt="Avatar"
-          />
-          <NavLink className="name" to={`/${modulePath}/${name}`}>
-            {shortNameCapitalized(name)}
-          </NavLink>
-          <NavLink className="open" to={`/${modulePath}/${name}`}>
-            <MdOpenInNew />
-          </NavLink>
-          <MdRefresh
-            className="restart"
-            style={{ fontSize: "1.05rem" }}
-            onClick={() => restartPackage(name)}
-          />
-          <hr />
-        </React.Fragment>
-      ))}
+      {filteredDnps
+        .sort(sortByProp("name"))
+        .map(({ name, state, avatarUrl }) => (
+          <React.Fragment key={name}>
+            <StateBadge state={state} />
+            <img
+              className="avatar"
+              src={avatarUrl || (coreDnps ? dappnodeIcon : defaultAvatar)}
+              alt="Avatar"
+            />
+            <NavLink className="name" to={`/${modulePath}/${name}`}>
+              {shortNameCapitalized(name)}
+            </NavLink>
+            <NavLink className="open" to={`/${modulePath}/${name}`}>
+              <MdOpenInNew />
+            </NavLink>
+            <MdRefresh
+              className="restart"
+              style={{ fontSize: "1.05rem" }}
+              onClick={() => restartPackage(name)}
+            />
+            <hr />
+          </React.Fragment>
+        ))}
     </Card>
   );
 };
@@ -93,7 +94,6 @@ PackagesList.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   dnps: s.getFilteredPackages,
-  dnpsAvatars: s.getPackagesAvatars,
   requestStatus: getDnpInstalledStatus,
   loading: getIsLoading.dnpInstalled,
   error: getLoadingError.dnpInstalled

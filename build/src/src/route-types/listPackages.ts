@@ -42,6 +42,7 @@ export const returnDataSample: ReturnData = [
     volumes: [],
     defaultEnvironment: {},
     defaultPorts: [],
-    defaultVolumes: []
+    defaultVolumes: [],
+    avatarUrl: "http://"
   }
 ];

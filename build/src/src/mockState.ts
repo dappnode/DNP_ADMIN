@@ -13,7 +13,12 @@ import { mountPoint as notificationsMountPoint } from "services/notifications/da
 import { mountPoint as userActionLogsMountPoint } from "services/userActionLogs/data";
 import { DnpRequestState } from "services/dnpRequest/types";
 import { DnpDirectoryState } from "services/dnpDirectory/types";
-import { UserSettings } from "types";
+import {
+  UserSettings,
+  PackageContainer,
+  RequestedDnp,
+  DirectoryItem
+} from "types";
 import { IsInstallingLogsState } from "services/isInstallingLogs/types";
 
 function getDescription(manifest: {
@@ -505,11 +510,11 @@ const inLoadingAvatar = "https://i.ibb.co/RSjySdv/1ug4oj.jpg";
 const isUpdatedDnp = "is-updated.dnp.dappnode.eth";
 const isUpdatedAvatar = "https://i.ibb.co/W2mtHcS/thisisfine-1.jpg";
 
-const sampleRequestState = {
+const sampleRequestState: RequestedDnp = {
   name: "demo-name",
   semVersion: "0.0.0",
   reqVersion: "0.0.0",
-  avatar: "",
+  avatarUrl: "",
   metadata: { name: "demo-name", version: "0.0.0", description: "demo" },
   imageSize: 10000000,
   isUpdated: false,
@@ -530,10 +535,10 @@ const sampleRequestState = {
   }
 };
 
-const sampleDirectoryState = {
+const sampleDirectoryState: DirectoryItem = {
   name: "demo-name",
   description: "Demo description",
-  avatar: "",
+  avatarUrl: "",
   isInstalled: false,
   isUpdated: false,
   whitelisted: true,
@@ -649,27 +654,27 @@ const dnpDirectoryState: DnpDirectoryState = {
       ...sampleDirectoryState,
       name: "bitcoin.dnp.dappnode.eth",
       description: getDescription(bitcoinMetadata),
-      avatar: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png"
+      avatarUrl: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png"
     },
     {
       ...sampleDirectoryState,
       name: "lightning-network.dnp.dappnode.eth",
       description: getDescription(lightningNetworkMetadata),
-      avatar: lightningNetworkAvatar,
+      avatarUrl: lightningNetworkAvatar,
       categories: ["Payment channels", "Economic incentive"]
     },
     {
       ...sampleDirectoryState,
       name: "raiden.dnp.dappnode.eth",
       description: getDescription(raidenMetadata),
-      avatar: raidenAvatar,
+      avatarUrl: raidenAvatar,
       categories: ["Payment channels"]
     },
     {
       ...sampleDirectoryState,
       name: "raiden-testnet.dnp.dappnode.eth",
       description: getDescription(raidenTestnetMetadata),
-      avatar: raidenTestnetAvatar,
+      avatarUrl: raidenTestnetAvatar,
       isInstalled: true,
       categories: ["Developer tools"]
     },
@@ -677,14 +682,14 @@ const dnpDirectoryState: DnpDirectoryState = {
       ...sampleDirectoryState,
       name: "vipnode.dnp.dappnode.eth",
       description: getDescription(vipnodeMetadata),
-      avatar: vipnodeAvatar,
+      avatarUrl: vipnodeAvatar,
       categories: ["Economic incentive"]
     },
     {
       ...sampleDirectoryState,
       name: "trustlines.dnp.dappnode.eth",
       description: getDescription(trustlinesMetadata),
-      avatar: trustlinesAvatar,
+      avatarUrl: trustlinesAvatar,
       isFeatured: true,
       featuredStyle: {
         featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
@@ -698,134 +703,136 @@ const dnpDirectoryState: DnpDirectoryState = {
       description: "Sample package in udpated state",
       isInstalled: true,
       isUpdated: true,
-      avatar: isUpdatedAvatar
+      avatarUrl: isUpdatedAvatar
     },
     {
       ...sampleDirectoryState,
       name: isInstallingDnp,
       description: getDescription(isInstallingMetadata),
-      avatar: isInstallingAvatar
+      avatarUrl: isInstallingAvatar
     },
     {
       ...sampleDirectoryState,
       name: inErrorDnp,
       description: "Sample package in error state",
-      avatar: inErrorAvatar
+      avatarUrl: inErrorAvatar
     },
     {
       ...sampleDirectoryState,
       name: inLoadingDnp,
       description: "Sample package in loading state",
-      avatar: inLoadingAvatar
+      avatarUrl: inLoadingAvatar
     }
   ]
 };
 
-const dnpInstalledState = [
-  {
-    name: "admin.dnp.dappnode.eth",
-    isCore: true,
-    state: "exited"
-  },
-  {
-    name: "core.dnp.dappnode.eth",
-    isCore: true,
-    version: "0.2.3",
-    state: "exited"
-  },
-  {
-    name: "lightning-network.dnp.dappnode.eth",
-    isDnp: true,
-    version: "0.1.0",
-    state: "running",
-    ports: [
-      {
-        host: "30303",
-        container: "30303",
-        protocol: "TCP"
-      },
-      {
-        host: "30303",
-        container: "30303",
-        protocol: "UDP"
-      }
-    ],
-    volumes: [
-      {
-        type: "volume",
-        path:
-          "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
-        dest: "/app/.ethchain",
-        name: "dncore_ethchaindnpdappnodeeth_data",
-        users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
-        owner: "ethchain.dnp.dappnode.eth",
-        isOwner: false,
-        links: "2",
-        size: "71.57GB"
-      }
-    ],
-    manifest: lightningNetworkMetadata,
-    envs: {
-      ENV_NAME: "ENV_VALUE"
-    }
-  },
-  {
-    name: "wifi.dnp.dappnode.eth",
-    isCore: true,
-    envs: {
-      SSID: "DAppNodeWIFI",
-      WPA_PASSPHRASE: "dappnode"
-    }
-  },
-  {
-    name: "ethchain.dnp.dappnode.eth",
-    isCore: true,
-    version: "0.2.6",
-    state: "running",
-    ports: [
-      {
-        host: "30303",
-        container: "30303",
-        protocol: "TCP"
-      },
-      {
-        host: "30303",
-        container: "30303",
-        protocol: "UDP"
-      }
-    ],
-    volumes: [
-      {
-        type: "volume",
-        path:
-          "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
-        dest: "/app/.ethchain",
-        name: "dncore_ethchaindnpdappnodeeth_data",
-        users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
-        owner: "ethchain.dnp.dappnode.eth",
-        isOwner: true,
-        links: "2",
-        size: "71.57GB"
-      },
-      {
-        type: "volume",
-        path:
-          "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_geth/_data",
-        dest: "/root/.ethereum/",
-        name: "dncore_ethchaindnpdappnodeeth_geth",
-        users: ["ethchain.dnp.dappnode.eth"],
-        owner: "ethchain.dnp.dappnode.eth",
-        isOwner: true,
-        links: "1",
-        size: "94.62GB"
-      }
-    ],
-    envs: {
-      DEFAULT_CLIENT: "GETH"
+const dnpInstalledState: DnpInstalledState = {
+  requestStatus: {},
+  dnpInstalled: [
+    {
+      ...samplePackageContainer,
+      name: "admin.dnp.dappnode.eth",
+      isCore: true,
+      state: "exited"
     },
-    manifest: ethchainMetadata
-  }
-];
+    {
+      ...samplePackageContainer,
+      name: "core.dnp.dappnode.eth",
+      isCore: true,
+      version: "0.2.3",
+      state: "exited"
+    },
+    {
+      ...samplePackageContainer,
+      name: "lightning-network.dnp.dappnode.eth",
+      isDnp: true,
+      version: "0.1.0",
+      state: "running",
+      ports: [
+        {
+          host: 30303,
+          container: 30303,
+          protocol: "TCP"
+        },
+        {
+          host: 30303,
+          container: 30303,
+          protocol: "UDP"
+        }
+      ],
+      volumes: [
+        {
+          host:
+            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
+          container: "/app/.ethchain",
+          name: "dncore_ethchaindnpdappnodeeth_data",
+          users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
+          owner: "ethchain.dnp.dappnode.eth",
+          isOwner: false,
+          size: 715847181273
+        }
+      ],
+      manifest: lightningNetworkMetadata,
+      envs: {
+        ENV_NAME: "ENV_VALUE"
+      }
+    },
+    {
+      ...samplePackageContainer,
+      name: "wifi.dnp.dappnode.eth",
+      isCore: true,
+      envs: {
+        SSID: "DAppNodeWIFI",
+        WPA_PASSPHRASE: "dappnode"
+      }
+    },
+    {
+      ...samplePackageContainer,
+      name: "ethchain.dnp.dappnode.eth",
+      isCore: true,
+      version: "0.2.6",
+      state: "running",
+      ports: [
+        {
+          host: 30303,
+          container: 30303,
+          protocol: "TCP"
+        },
+        {
+          host: 30303,
+          container: 30303,
+          protocol: "UDP"
+        }
+      ],
+      volumes: [
+        {
+          host:
+            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
+          container: "/app/.ethchain",
+          name: "dncore_ethchaindnpdappnodeeth_data",
+          users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
+          owner: "ethchain.dnp.dappnode.eth",
+          isOwner: true,
+          size: 71570000000
+        },
+        {
+          host:
+            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_geth/_data",
+          container: "/root/.ethereum/",
+          name: "dncore_ethchaindnpdappnodeeth_geth",
+          users: ["ethchain.dnp.dappnode.eth"],
+          owner: "ethchain.dnp.dappnode.eth",
+          isOwner: true,
+          size: 94620000000
+        }
+      ],
+      envs: {
+        DEFAULT_CLIENT: "GETH"
+      },
+      manifest: ethchainMetadata
+    }
+  ]
+};
 
 /**
  * ==========
@@ -838,7 +845,7 @@ const dnpRequestState: DnpRequestState = {
     "lightning-network.dnp.dappnode.eth": {
       name: "lightning-network.dnp.dappnode.eth",
       version: "0.2.2",
-      avatar: lightningNetworkAvatar,
+      avatarUrl: lightningNetworkAvatar,
       metadata: lightningNetworkMetadata,
 
       imageSize: 19872630,
@@ -881,7 +888,7 @@ const dnpRequestState: DnpRequestState = {
       name: "bitcoin.dnp.dappnode.eth",
       reqVersion: "0.2.5",
       semVersion: "0.2.5",
-      avatar: bitcoinAvatar,
+      avatarUrl: bitcoinAvatar,
       metadata: bitcoinMetadata,
 
       imageSize: 37273582,
@@ -913,7 +920,7 @@ const dnpRequestState: DnpRequestState = {
     "vipnode.dnp.dappnode.eth": {
       name: vipnodeMetadata.name,
       version: vipnodeMetadata.version,
-      avatar: vipnodeAvatar,
+      avatarUrl: vipnodeAvatar,
       metadata: vipnodeMetadata,
 
       imageSize: 10000000,
@@ -953,7 +960,7 @@ const dnpRequestState: DnpRequestState = {
       name: trustlinesMetadata.name,
       version: trustlinesMetadata.version,
       origin: null,
-      avatar: trustlinesAvatar,
+      avatarUrl: trustlinesAvatar,
       metadata: trustlinesMetadata,
 
       settings: {
@@ -969,7 +976,7 @@ const dnpRequestState: DnpRequestState = {
       name: raidenMetadata.name,
       version: raidenMetadata.version,
       origin: null,
-      avatar: raidenAvatar,
+      avatarUrl: raidenAvatar,
       metadata: raidenMetadata,
 
       settings: {
@@ -985,7 +992,7 @@ const dnpRequestState: DnpRequestState = {
       name: raidenTestnetMetadata.name,
       version: raidenTestnetMetadata.version,
       origin: null,
-      avatar: raidenTestnetAvatar,
+      avatarUrl: raidenTestnetAvatar,
       metadata: raidenTestnetMetadata,
 
       settings: {
@@ -1000,7 +1007,7 @@ const dnpRequestState: DnpRequestState = {
       name: vipnodeMetadata.name,
       version: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
       origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
-      avatar: vipnodeAvatar,
+      avatarUrl: vipnodeAvatar,
       metadata: vipnodeMetadata,
 
       imageSize: 10000000,
@@ -1037,7 +1044,7 @@ const dnpRequestState: DnpRequestState = {
       name: isInstallingDnp,
       reqVersion: "0.1.0",
       semVersion: "0.1.0",
-      avatar: isInstallingAvatar,
+      avatarUrl: isInstallingAvatar,
       metadata: isInstallingMetadata
     }
   },

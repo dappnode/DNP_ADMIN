@@ -68,7 +68,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
     metadata,
     isUpdated,
     isInstalled,
-    avatar = defaultAvatar,
+    avatarUrl,
     imageSize,
     origin
   } = dnp || {};
@@ -140,7 +140,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
       <Card className="installer-header">
         <div className="details-header">
           <div className="left avatar">
-            <img src={avatar} alt="Avatar" />
+            <img src={avatarUrl || defaultAvatar} alt="Avatar" />
           </div>
           <div className="right">
             <div className="right-top">
