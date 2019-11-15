@@ -12,6 +12,10 @@ interface PropWithCustomErrors extends SetupSchema {
   customErrors: { [errorName: string]: string };
 }
 
+interface AjvErrorWithPath extends AjvError {
+  schemaPath?: string; // "#/properties/vipnode.dnp.dappnode.eth/properties/payoutAddress/pattern"
+}
+
 // Memo this component to prevent expensive MarkDown parsing
 // on every single keystroke. After analyzing performance, this component
 // was responsible for 20-40% of the work
@@ -141,10 +145,16 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
   /**
    * Prettify errors if necessary
    */
-  function transformErrors(_errors: AjvError[]): AjvError[] {
+  function transformErrors(_errors: AjvErrorWithPath[]): AjvError[] {
     return _errors.map(error => {
-      const propPath = (error.property || "").replace(/^\./, "");
-      const prop = get(schema.properties, propPath) as PropWithCustomErrors;
+      if (!error.schemaPath) return error;
+      // Fetch the prop from the actual schema with schema path
+      const propPathArray = error.schemaPath
+        .replace(/#\//, "")
+        .replace(/^\/|\/$/g, "")
+        .split("/");
+      propPathArray.pop();
+      const prop = get(schema, propPathArray) as PropWithCustomErrors;
       const errorMessage = ((prop || {}).customErrors || {})[error.name];
       if (errorMessage) error.message = errorMessage;
       return error;
