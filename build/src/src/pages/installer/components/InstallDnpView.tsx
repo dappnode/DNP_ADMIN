@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as api from "API/calls";
 import {
   Switch,
@@ -21,6 +21,8 @@ import Permissions from "./Steps/Permissions";
 import Disclaimer from "./Steps/Disclaimer";
 import HorizontalStepper from "./HorizontalStepper";
 import { RequestedDnp, UserSettingsAllDnps } from "types";
+// External
+import { rootPath as packagesRootPath } from "pages/packages/data";
 
 const BYPASS_CORE_RESTRICTION = "BYPASS_CORE_RESTRICTION";
 const SHOW_ADVANCED_EDITOR = "SHOW_ADVANCED_EDITOR";
@@ -64,6 +66,14 @@ const InstallDnpView: React.FunctionComponent<
     setUserSettings(settings || {});
   }, [settings, setUserSettings]);
 
+  // Here's how we'll keep track of our component's mounted state
+  const componentIsMounted = useRef(true);
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []); // Using an empty dependency array ensures this only runs on unmount
+
   const onInstall = async (newData?: {
     newUserSettings: UserSettingsAllDnps;
   }) => {
@@ -90,10 +100,11 @@ const InstallDnpView: React.FunctionComponent<
       await api.installPackage(kwargs, {
         toastMessage: `Installing ${shortNameCapitalized(name)}...`
       });
+      // Re-direct user to package page if installation is successful
+      if (componentIsMounted.current)
+        history.push(packagesRootPath + "/" + name);
     } catch (e) {
       console.error(e);
-    } finally {
-      // Clean is installing logs
     }
   };
   // Prevent a burst of install calls
