@@ -195,7 +195,7 @@ const vipnodeSetupSchema = {
       description: "Define an Ethereum mainnet address to get rewards to",
       pattern: "^0x[a-fA-F0-9]{40}$",
       customErrors: {
-        pattern: "Must be an address 0x1234... 40 bytes"
+        pattern: "Must be a valid address (0x1fd16a...)"
       }
     }
   }
@@ -226,7 +226,7 @@ const raidenMetadata = {
   },
   backup: [{ name: "keystore", path: "/root/.raiden/keystore" }],
   style: {
-    featuredBackground: "linear-gradient(293deg, #000000, #313131)",
+    featuredBackground: "linear-gradient(67deg, #000000, #2f3c3e)",
     featuredColor: "white",
     featuredAvatarFilter: "invert(1)"
   },
@@ -519,17 +519,8 @@ const trustlinesSetup = {
 };
 
 const trustlinesSetupSchema = {
-  description: `Welcome to DAppNode's Trustlines Network configuration wizard!
-
-We'll help you set up your node according to your needs.
-The Trustlines Network node can operate in three different modes:
-  
-1. **Observer** - for a node without an address that just wants to monitor the activity in the network,
-2. **Participant** - for those nodes who have/want an address and want to actively broadcast transactions, and
-3. **Validator** - for those who successfully bid for a [Validator slot](https://medium.com/trustlines-foundation/trustlines-validator-spotlight-deep-dive-on-rewards-economics-and-opportunities-for-validators-ec75f81088a6) during Trustlines Foundation's Validator Auction and will be validating the network.
-  
-  
-Select your preferred option on the drop-down menu below. Please note you won't be able to Validate if your address was not whitelisted at the end of the Validator Slots auction.`,
+  description:
+    "Welcome to DAppNode's Trustlines Network configuration wizard!\n\nWe'll help you set up your node according to your needs, just follow the steps below:",
   type: "object",
   required: ["role"],
   properties: {
@@ -541,14 +532,14 @@ Select your preferred option on the drop-down menu below. Please note you won't 
       type: "string",
       title: "Node role",
       description:
-        "The different node roles are: observer (a node without an account), participant (a node with an address) or validator in case you are a [Trustlines validator](https://medium.com/trustlines-foundation/trustlines-validator-spotlight-deep-dive-on-rewards-economics-and-opportunities-for-validators-ec75f81088a6)",
+        "The Trustlines Network node can operate in three different modes:\n\n  1. **Observer** - for a node without an address that just wants to monitor the activity in the network,\n  2. **Participant** - for those nodes who have/want an address and want to actively broadcast transactions, and\n  3. **Validator** - for those who successfully bid for a [Validator slot](https://medium.com/trustlines-foundation/trustlines-validator-spotlight-deep-dive-on-rewards-economics-and-opportunities-for-validators-ec75f81088a6) during Trustlines Foundation's Validator Auction and will be validating the network.\n\n\nSelect your preferred option on the drop-down menu below. Please note you won't be able to Validate if your address was not whitelisted at the end of the Validator Slots auction.",
       default: "observer",
       enum: ["observer", "participant", "validator"]
     },
     keystore: {
       target: {
         type: "fileUpload",
-        path: "/usr/src/app"
+        path: "/config/custom/keys/Trustlines/main-keystore.json"
       },
       type: "string",
       format: "data-url",
@@ -562,9 +553,13 @@ Select your preferred option on the drop-down menu below. Please note you won't 
         name: "ADDRESS"
       },
       type: "string",
-      title: "Address to use",
-      description: `_(Only for participants and validators)_: Public address from the keystore. 
-      For validators, you will use this address to seal blocks so it must be an authorized validator address, you can check the valid addresses in this [list](https://github.com/trustlines-protocol/blockchain/blob/1c664ff7d28998b7070c9edb3b325062a5365aad/chain/tlbc/tlbc-spec.json#L11)`
+      title: "Public Address",
+      description:
+        "(Only for participants and validators)_: Public address from the keystore.\nFor validators, you will use this address to seal blocks so it must be an authorized validator address, you can check the valid addresses in [this list](https://github.com/trustlines-protocol/blockchain/blob/1c664ff7d28998b7070c9edb3b325062a5365aad/chain/tlbc/tlbc-spec.json#L11)",
+      pattern: "^0x[a-fA-F0-9]{40}$",
+      customErrors: {
+        pattern: "Must be a valid address (0x1fd16a...)"
+      }
     },
     password: {
       target: {
@@ -574,11 +569,17 @@ Select your preferred option on the drop-down menu below. Please note you won't 
       type: "string",
       title: "Password",
       description:
-        "_(Only for participants and validators)_: password to unlock the uploaded keystore"
+        "_(Only for participants and validators)_: Password to unlock the uploaded keystore"
     }
   },
   dependencies: {
-    keychain: ["address", "password"]
+    keystore: ["address", "password"]
+  }
+};
+
+const trustlinesSetupUiSchema = {
+  password: {
+    "ui:widget": "password"
   }
 };
 
@@ -787,7 +788,7 @@ const dnpDirectoryState: DnpDirectoryState = {
       avatarUrl: raidenAvatar,
       isFeatured: true,
       featuredStyle: {
-        featuredBackground: "linear-gradient(293deg, #000000, #313131)",
+        featuredBackground: "linear-gradient(67deg, #000000, #2f3c3e)",
         featuredColor: "white",
         featuredAvatarFilter: "invert(1)"
       },
@@ -1097,7 +1098,9 @@ const dnpRequestState: DnpRequestState = {
       setupSchema: {
         [trustlinesMetadata.name]: trustlinesSetupSchema
       },
-      setupUiSchema: {}
+      setupUiSchema: {
+        [trustlinesMetadata.name]: trustlinesSetupUiSchema
+      }
     },
 
     [raidenMetadata.name]: {

@@ -56,7 +56,7 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
    * [NOTE]: internalFormData must be undefined or null to start with,
    * or it will trigger validation before typing
    */
-  const [internalFormData, setInternalFormData] = useState(undefined);
+  const [internalFormData, setInternalFormData] = useState(undefined as any);
   const [callShowAdvancedEditor, setCallShowAdvancedEditor] = useState(false);
   const componentIsMounted = useRef(true);
   const formRef = useRef();
@@ -187,7 +187,8 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
           if (callShowAdvancedEditor) onShowAdvancedEditor(e.formData);
           else onSubmit(e.formData);
         }}
-        liveValidate
+        // // Disabled `liveValidate` to prevent pattern errors to show immediately, which is very annoying
+        // liveValidate
         // showErrorList={false}
         // onError={console.log}
         transformErrors={transformErrors}

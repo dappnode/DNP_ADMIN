@@ -1,6 +1,7 @@
 import {
   formDataToUserSettings,
-  userSettingsToFormData
+  userSettingsToFormData,
+  cleanInitialFormData
 } from "pages/installer/parsers/formDataParser";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
 import { SetupSchemaAllDnps, UserSettingsAllDnps } from "types";
@@ -178,5 +179,33 @@ describe("formDataToUserSettings", () => {
     );
 
     expect(formDataResult).toEqual(formData);
+  });
+});
+
+describe("cleanInitialFormData", () => {
+  it("should clean empty formData", () => {
+    const formData = {
+      "vipnode.dnp.dappnode.eth": {
+        payoutAddress: ""
+      }
+    };
+    expect(cleanInitialFormData(formData)).toEqual(undefined);
+  });
+
+  it("should not edit an properties with data", () => {
+    const formData = {
+      "vipnode.dnp.dappnode.eth": {
+        payoutAddress: "0x12356123",
+        emptyProp: ""
+      },
+      "dep.dnp.dappnode.eth": {
+        moreEmpty: ""
+      }
+    };
+    expect(cleanInitialFormData(formData)).toEqual({
+      "vipnode.dnp.dappnode.eth": {
+        payoutAddress: "0x12356123"
+      }
+    });
   });
 });

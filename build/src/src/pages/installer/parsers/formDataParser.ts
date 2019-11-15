@@ -1,4 +1,4 @@
-import { mapValues } from "lodash";
+import { mapValues, isEmpty, omitBy } from "lodash";
 import deepmerge from "deepmerge";
 import {
   SetupSchemaAllDnps,
@@ -128,4 +128,21 @@ export function userSettingsToFormData(
     }
     return formDataDnp;
   });
+}
+
+/**
+ * Removes empty keys to prevent react-json-schema-form to start validating
+ * empty fields before the user starts typing, resulting in bad UX
+ * @param formData
+ */
+export function cleanInitialFormData(
+  formData: SetupWizardFormDataReturn
+): SetupWizardFormDataReturn | undefined {
+  const _obj = omitBy(
+    mapValues(formData, formDataDnp =>
+      omitBy(formDataDnp, value => typeof value === "string" && !value)
+    ),
+    isEmpty
+  );
+  return isEmpty(_obj) ? undefined : _obj;
 }
