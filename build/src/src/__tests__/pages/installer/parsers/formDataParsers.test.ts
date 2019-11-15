@@ -95,17 +95,17 @@ describe("formDataToUserSettings", () => {
       environment: {
         PAYOUT_ADDRESS: "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B"
       },
-      fileUpload: {
+      fileUploads: {
         "/usr/src/app/config.json":
           "data:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D"
       }
     },
     [depName]: {
-      portMapping: {
+      portMappings: {
         "8080": "",
         "5555/udp": "5800"
       },
-      namedVolumePath: {
+      namedVolumePaths: {
         bitcoin_data: ""
       },
       environment: {
@@ -161,7 +161,6 @@ describe("formDataToUserSettings", () => {
         }
       },
       [dnpName]: {
-        ...formData[dnpName],
         environment: {
           unknownProp: "UNKNOWN"
         }
@@ -173,8 +172,11 @@ describe("formDataToUserSettings", () => {
       userSettingsUnknownProps
     );
 
-    expect(
-      userSettingsToFormData(userSettingsWithUnknownProps, setupSchema)
-    ).toEqual(formData);
+    const formDataResult = userSettingsToFormData(
+      userSettingsWithUnknownProps,
+      setupSchema
+    );
+
+    expect(formDataResult).toEqual(formData);
   });
 });

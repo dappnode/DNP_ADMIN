@@ -4,7 +4,6 @@ import { RouteComponentProps } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
 // This module
 import InstallDnpView from "./InstallDnpView";
-import * as a from "../actions";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 import {
@@ -27,8 +26,6 @@ interface InstallDnpContainerProps {
   dnp?: RequestedDnp;
   requestStatus?: RequestStatus;
   progressLogsByDnp: ProgressLogsByDnp;
-  install: (x: any) => void;
-  clearUserSet: () => void;
   fetchDnpRequest: (id: string) => void;
 }
 
@@ -90,8 +87,6 @@ const mapStateToProps = createStructuredSelector({
 
 // Uses bindActionCreators to wrap action creators with dispatch
 const mapDispatchToProps = {
-  install: a.install,
-  clearUserSet: a.clearUserSet,
   fetchDnpRequest
 };
 

@@ -1,9 +1,12 @@
 import { mountPoint } from "services/dnpDirectory/data";
 import reducer from "services/dnpDirectory/reducer";
-import * as a from "services/dnpDirectory/actions";
-import * as s from "services/dnpDirectory/selectors";
 import { DnpDirectoryState } from "services/dnpDirectory/types";
 import { DirectoryItem } from "types";
+
+// Redux imports
+
+import { setDnpDirectory } from "services/dnpDirectory/actions";
+import { getDnpDirectory } from "services/dnpDirectory/selectors";
 
 /**
  * The purpose of this test is to ensure consistency of the
@@ -12,12 +15,15 @@ import { DirectoryItem } from "types";
 
 describe("services > dnpDirectory, whitelisted mechanism", () => {
   it("Should add a dnpDirectory, whitelist it and retrieve it", () => {
-    let state: DnpDirectoryState = [];
+    let state: DnpDirectoryState = {
+      requestStatus: {},
+      directory: []
+    };
 
     const sampleDirectoryItem: DirectoryItem = {
       name: "demo-name",
       description: "Demo description",
-      avatar: "",
+      avatarUrl: "",
       isInstalled: false,
       isUpdated: false,
       whitelisted: true,
@@ -30,9 +36,9 @@ describe("services > dnpDirectory, whitelisted mechanism", () => {
       { ...sampleDirectoryItem, name: "dnpB" }
     ];
 
-    const action = a.updateDnpDirectory(dnps);
+    const action = setDnpDirectory(dnps);
     state = reducer(state, action);
 
-    expect(s.getDnpDirectory({ [mountPoint]: state })).toEqual(dnps);
+    expect(getDnpDirectory({ [mountPoint]: state })).toEqual(dnps);
   });
 });

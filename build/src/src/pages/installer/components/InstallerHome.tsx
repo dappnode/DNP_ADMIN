@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
 import { throttle } from "lodash";
+import { DirectoryItem, RequestStatus } from "types";
+import { SelectedCategories } from "../types";
 // This page
-import * as a from "../actions";
-import * as s from "../selectors";
 import isIpfsHash from "utils/isIpfsHash";
 import isDnpDomain from "utils/isDnpDomain";
 import { correctPackageName } from "../utils";
@@ -14,6 +14,7 @@ import { rootPath } from "../data";
 import NoPackageFound from "./NoPackageFound";
 import CategoryFilter from "./CategoryFilter";
 import DnpStore from "./DnpStore";
+import IsSyncing from "./IsSyncing";
 // Components
 import Title from "components/Title";
 import Input from "components/Input";
@@ -22,21 +23,20 @@ import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
 // Selectors
 import { getMainnet } from "services/chainData/selectors";
+import {
+  getDnpDirectory,
+  getDirectoryRequestStatus
+} from "services/dnpDirectory/selectors";
+import { fetchDnpDirectory } from "services/dnpDirectory/actions";
 import { rootPath as packagesRootPath } from "pages/packages/data";
 // Styles
 import "./installer.scss";
-import IsSyncing from "./IsSyncing";
-import { DirectoryItem, RequestStatus } from "types";
-import { SelectedCategories } from "../types";
-import { getDirectoryRequestStatus } from "services/dnpDirectory/selectors";
-import { fetchDnpDirectory } from "services/dnpDirectory/actions";
 
 interface InstallerHomeProps {
   directory: DirectoryItem[];
   mainnetIsSyncing: boolean;
   requestStatus: RequestStatus;
   fetchDnpDirectory: () => void;
-  fetchPackageDataFromQuery: (query: string) => void;
 }
 
 const InstallerHome: React.FunctionComponent<
@@ -48,8 +48,7 @@ const InstallerHome: React.FunctionComponent<
   requestStatus,
   history,
   // Actions
-  fetchDnpDirectory,
-  fetchPackageDataFromQuery
+  fetchDnpDirectory
 }) => {
   const [query, setQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState(
@@ -62,8 +61,9 @@ const InstallerHome: React.FunctionComponent<
 
   // Limit the number of requests [TESTED]
   const fetchQueryThrottled = useMemo(
-    () => throttle(fetchPackageDataFromQuery, 500),
-    [fetchPackageDataFromQuery]
+    () =>
+      throttle((query: string) => console.log(`Fake fetching: ${query}`), 500),
+    []
   );
 
   useEffect(() => {
@@ -165,13 +165,12 @@ const InstallerHome: React.FunctionComponent<
 };
 
 const mapStateToProps = createStructuredSelector({
-  directory: s.getDnpDirectoryWithTagsNonCores,
+  directory: getDnpDirectory,
   requestStatus: getDirectoryRequestStatus,
   mainnetIsSyncing: state => Boolean((getMainnet(state) || {}).syncing)
 });
 
 const mapDispatchToProps = {
-  fetchPackageDataFromQuery: a.fetchPackageDataFromQuery,
   fetchDnpDirectory
 };
 

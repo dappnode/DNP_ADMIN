@@ -5,7 +5,7 @@ import { SelectedCategories } from "pages/installer/types";
 const sampleDirectoryState: DirectoryItem = {
   name: "demo-name",
   description: "Demo description",
-  avatar: "",
+  avatarUrl: "",
   isInstalled: false,
   isUpdated: false,
   whitelisted: true,
