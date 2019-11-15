@@ -12,8 +12,6 @@ import { difference, isDeepEmpty } from "utils/lodashExtended";
 import { shortNameCapitalized, isDnpVerified } from "utils/format";
 // This module
 import ProgressLogs from "./InstallCardComponents/ProgressLogs";
-// Parsers
-import parseSpecialPermissions from "../parsers/parseSpecialPermissions";
 // Components
 import Info from "./Steps/Info";
 import SetupWizard from "./Steps/SetupWizard";
@@ -57,7 +55,7 @@ const InstallDnpView: React.FunctionComponent<
   const type = metadata.type;
   const setupSchema = dnp.setupSchema;
   const setupUiSchema = dnp.setupUiSchema;
-  const permissions = parseSpecialPermissions(metadata);
+  const permissions = dnp.specialPermissions;
   const requiresCoreUpdate = dnp.request.compatible.requiresCoreUpdate;
   const wizardAvailable = !!setupSchema && !isDeepEmpty(setupSchema);
   const oldEditorAvailable = Boolean(userSettings);

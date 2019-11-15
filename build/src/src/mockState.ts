@@ -17,7 +17,8 @@ import {
   UserSettings,
   PackageContainer,
   RequestedDnp,
-  DirectoryItem
+  DirectoryItem,
+  SpecialPermission
 } from "types";
 import { IsInstallingLogsState } from "services/isInstallingLogs/types";
 import { DnpInstalledState } from "services/dnpInstalled/types";
@@ -474,6 +475,9 @@ const trustlinesMetadata = {
   requirements: {
     minimumDappnodeVersion: "0.2.10"
   },
+  disclaimer: {
+    message: "asdasd"
+  },
   backup: [{ name: "config", path: "/config" }],
   style: {
     featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
@@ -500,6 +504,14 @@ const trustlinesMetadata = {
   license: "GPL-3.0"
 };
 
+const trustlinesSpecialPermissions: SpecialPermission[] = [
+  {
+    name: "Fake permissions of host access",
+    details:
+      "Fake permissions that does not mean anything\n\n - **markdown** _test_"
+  }
+];
+
 const trustlinesSetup = {
   environment: { ROLE: "observer", ADDRESS: "", PASSWORD: "" },
   portMapping: { "30300": "", "30300/udp": "" },
@@ -507,7 +519,17 @@ const trustlinesSetup = {
 };
 
 const trustlinesSetupSchema = {
-  description: `Trustlines setup https://docs.trustlines.network/`,
+  description: `Welcome to DAppNode's Trustlines Network configuration wizard!
+
+We'll help you set up your node according to your needs.
+The Trustlines Network node can operate in three different modes:
+  
+1. **Observer** - for a node without an address that just wants to monitor the activity in the network,
+2. **Participant** - for those nodes who have/want an address and want to actively broadcast transactions, and
+3. **Validator** - for those who successfully bid for a [Validator slot](https://medium.com/trustlines-foundation/trustlines-validator-spotlight-deep-dive-on-rewards-economics-and-opportunities-for-validators-ec75f81088a6) during Trustlines Foundation's Validator Auction and will be validating the network.
+  
+  
+Select your preferred option on the drop-down menu below. Please note you won't be able to Validate if your address was not whitelisted at the end of the Validator Slots auction.`,
   type: "object",
   required: ["role"],
   properties: {
@@ -519,11 +541,11 @@ const trustlinesSetupSchema = {
       type: "string",
       title: "Node role",
       description:
-        "You can be observer (a node without an account), participant (a node with an address) or validator in case you are a Trustlines validator.",
+        "The different node roles are: observer (a node without an account), participant (a node with an address) or validator in case you are a [Trustlines validator](https://medium.com/trustlines-foundation/trustlines-validator-spotlight-deep-dive-on-rewards-economics-and-opportunities-for-validators-ec75f81088a6)",
       default: "observer",
-      enum: ["observer", "participant"]
+      enum: ["observer", "participant", "validator"]
     },
-    keychain: {
+    keystore: {
       target: {
         type: "fileUpload",
         path: "/usr/src/app"
@@ -531,7 +553,8 @@ const trustlinesSetupSchema = {
       type: "string",
       format: "data-url",
       title: "Keystore",
-      description: "Key chain containing the private key of this node"
+      description:
+        "_(Only for participants and validators)_: Your Keystore/JSON file containing the private key that you want to use for this node"
     },
     address: {
       target: {
@@ -540,7 +563,8 @@ const trustlinesSetupSchema = {
       },
       type: "string",
       title: "Address to use",
-      description: "Address from the keystore to be used"
+      description: `_(Only for participants and validators)_: Public address from the keystore. 
+      For validators, you will use this address to seal blocks so it must be an authorized validator address, you can check the valid addresses in this [list](https://github.com/trustlines-protocol/blockchain/blob/1c664ff7d28998b7070c9edb3b325062a5365aad/chain/tlbc/tlbc-spec.json#L11)`
     },
     password: {
       target: {
@@ -549,13 +573,12 @@ const trustlinesSetupSchema = {
       },
       type: "string",
       title: "Password",
-      description: "Password from the Keystore"
+      description:
+        "_(Only for participants and validators)_: password to unlock the uploaded keystore"
     }
   },
   dependencies: {
-    keychain: ["address", "password"],
-    address: ["keychain", "password"],
-    password: ["address", "keychain"]
+    keychain: ["address", "password"]
   }
 };
 
@@ -588,6 +611,7 @@ const sampleRequestState: RequestedDnp = {
   reqVersion: "0.0.0",
   avatarUrl: "",
   metadata: { name: "demo-name", version: "0.0.0", description: "demo" },
+  specialPermissions: [],
   imageSize: 10000000,
   isUpdated: false,
   isInstalled: true,
@@ -761,6 +785,12 @@ const dnpDirectoryState: DnpDirectoryState = {
       name: "raiden.dnp.dappnode.eth",
       description: getDescription(raidenMetadata),
       avatarUrl: raidenAvatar,
+      isFeatured: true,
+      featuredStyle: {
+        featuredBackground: "linear-gradient(293deg, #000000, #313131)",
+        featuredColor: "white",
+        featuredAvatarFilter: "invert(1)"
+      },
       categories: ["Payment channels"]
     },
     {
@@ -936,6 +966,7 @@ const dnpInstalledState: DnpInstalledState = {
 const dnpRequestState: DnpRequestState = {
   dnps: {
     "lightning-network.dnp.dappnode.eth": {
+      ...sampleRequestState,
       name: "lightning-network.dnp.dappnode.eth",
       version: "0.2.2",
       avatarUrl: lightningNetworkAvatar,
@@ -978,6 +1009,7 @@ const dnpRequestState: DnpRequestState = {
     },
 
     "bitcoin.dnp.dappnode.eth": {
+      ...sampleRequestState,
       name: "bitcoin.dnp.dappnode.eth",
       reqVersion: "0.2.5",
       semVersion: "0.2.5",
@@ -1011,6 +1043,7 @@ const dnpRequestState: DnpRequestState = {
     },
 
     "vipnode.dnp.dappnode.eth": {
+      ...sampleRequestState,
       name: vipnodeMetadata.name,
       version: vipnodeMetadata.version,
       avatarUrl: vipnodeAvatar,
@@ -1055,6 +1088,7 @@ const dnpRequestState: DnpRequestState = {
       origin: null,
       avatarUrl: trustlinesAvatar,
       metadata: trustlinesMetadata,
+      specialPermissions: trustlinesSpecialPermissions,
 
       settings: {
         [trustlinesMetadata.name]: trustlinesSetup

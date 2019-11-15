@@ -4,9 +4,10 @@ import ReactMarkdown from "react-markdown";
 import Card from "components/Card";
 import Button from "components/Button";
 import StatusIcon from "components/StatusIcon";
+import { SpecialPermission } from "types";
 
 interface PermissionsProps {
-  permissions: { name: string; details: string }[];
+  permissions: SpecialPermission[];
   onAccept: () => void;
   goBack: () => void;
 }
@@ -26,11 +27,11 @@ const Permissions: React.FunctionComponent<PermissionsProps> = ({
   // "Requires no special permissions"
   return (
     <Card className="permissions-list" spacing divider>
-      {permissions.map(permission => (
-        <div key={permission.name}>
-          <strong>{permission.name}</strong>
+      {permissions.map(({ name, details }) => (
+        <div key={name}>
+          <strong>{name}</strong>
           <div className="no-p-style" style={{ opacity: 0.6 }}>
-            <ReactMarkdown source={permission.details} />
+            <ReactMarkdown source={details} />
           </div>
         </div>
       ))}
