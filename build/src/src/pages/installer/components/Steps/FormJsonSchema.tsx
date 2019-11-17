@@ -6,7 +6,7 @@ import Button from "components/Button";
 import ReactMarkdown from "react-markdown";
 import "./formJsonSchema.scss";
 import { SetupSchemaAllDnpsFormated } from "types";
-import { SetupSchema, SetupUiSchema } from "types-own";
+import { SetupSchema, SetupUiJson } from "types-own";
 
 interface PropWithCustomErrors extends SetupSchema {
   customErrors: { [errorName: string]: string };
@@ -25,7 +25,7 @@ const CustomDescriptionField: React.FunctionComponent<any> = ({
 
 interface FormJsonSchemaProps {
   schema: SetupSchemaAllDnpsFormated;
-  uiSchema: SetupUiSchema;
+  uiSchema: SetupUiJson;
   formData: any;
   onChange?: (formData: any) => void;
   onSubmit: (formData: any) => void;

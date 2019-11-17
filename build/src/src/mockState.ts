@@ -125,7 +125,7 @@ const lightningNetworkSetupSchema = {
     }
   }
 };
-const lightningNetworkSetupUiSchema = {};
+const lightningNetworkSetupUiJson = {};
 
 const lightningNetworkSetup: UserSettings = {
   portMappings: { "9735": "9735" },
@@ -201,7 +201,7 @@ const vipnodeSetupSchema = {
   }
 };
 
-const vipnodeSetupUiSchema = {
+const vipnodeSetupUiJson = {
   payoutAddress: {
     "ui:help": "Don't use your main address"
   }
@@ -577,7 +577,7 @@ const trustlinesSetupSchema = {
   }
 };
 
-const trustlinesSetupUiSchema = {
+const trustlinesSetupUiJson = {
   password: {
     "ui:widget": "password"
   }
@@ -618,7 +618,7 @@ const sampleRequestState: RequestedDnp = {
   isInstalled: true,
   settings: {},
   setupSchema: {},
-  setupUiSchema: {},
+  setupUiJson: {},
 
   request: {
     compatible: {
@@ -986,8 +986,8 @@ const dnpRequestState: DnpRequestState = {
         "lightning-network.dnp.dappnode.eth": lightningNetworkSetupSchema,
         "bitcoin.dnp.dappnode.eth": bitcoinSetupSchema
       },
-      setupUiSchema: {
-        "lightning-network.dnp.dappnode.eth": lightningNetworkSetupUiSchema,
+      setupUiJson: {
+        "lightning-network.dnp.dappnode.eth": lightningNetworkSetupUiJson,
         "bitcoin.dnp.dappnode.eth": {}
       },
 
@@ -1063,7 +1063,7 @@ const dnpRequestState: DnpRequestState = {
         "vipnode.dnp.dappnode.eth": vipnodeSetupSchema
       },
       // setupSchema: vipnodeSetupSchema,
-      setupUiSchema: { "vipnode.dnp.dappnode.eth": vipnodeSetupUiSchema },
+      setupUiJson: { "vipnode.dnp.dappnode.eth": vipnodeSetupUiJson },
 
       request: {
         compatible: {
@@ -1098,8 +1098,8 @@ const dnpRequestState: DnpRequestState = {
       setupSchema: {
         [trustlinesMetadata.name]: trustlinesSetupSchema
       },
-      setupUiSchema: {
-        [trustlinesMetadata.name]: trustlinesSetupUiSchema
+      setupUiJson: {
+        [trustlinesMetadata.name]: trustlinesSetupUiJson
       }
     },
 
@@ -1118,7 +1118,7 @@ const dnpRequestState: DnpRequestState = {
       setupSchema: {
         [raidenMetadata.name]: raidenSetupSchema
       },
-      setupUiSchema: {}
+      setupUiJson: {}
     },
 
     [raidenTestnetMetadata.name]: {
@@ -1134,7 +1134,7 @@ const dnpRequestState: DnpRequestState = {
       },
 
       setupSchema: {},
-      setupUiSchema: {}
+      setupUiJson: {}
     },
 
     "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy": {
@@ -1153,8 +1153,8 @@ const dnpRequestState: DnpRequestState = {
       setupSchema: {
         [vipnodeMetadata.name]: vipnodeSetupSchema
       },
-      setupUiSchema: {
-        [vipnodeMetadata.name]: vipnodeSetupUiSchema
+      setupUiJson: {
+        [vipnodeMetadata.name]: vipnodeSetupUiJson
       },
       request: {
         compatible: {

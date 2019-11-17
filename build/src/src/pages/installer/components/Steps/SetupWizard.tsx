@@ -5,7 +5,7 @@ import Card from "components/Card";
 import FormJsonSchema from "./FormJsonSchema";
 import {
   SetupSchemaAllDnps,
-  SetupUiSchemaAllDnps,
+  SetupUiJsonAllDnps,
   UserSettingsAllDnps,
   SetupSchemaAllDnpsFormated
 } from "types";
@@ -20,7 +20,7 @@ import deepmerge from "deepmerge";
 
 interface SetupWizardProps {
   setupSchema: SetupSchemaAllDnps;
-  setupUiSchema: SetupUiSchemaAllDnps;
+  setupUiJson: SetupUiJsonAllDnps;
   userSettings: UserSettingsAllDnps;
   wizardAvailable: boolean;
   onSubmit: (newUserSettings: UserSettingsAllDnps) => void;
@@ -29,7 +29,7 @@ interface SetupWizardProps {
 
 const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   setupSchema,
-  setupUiSchema,
+  setupUiJson,
   userSettings,
   wizardAvailable,
   onSubmit,
@@ -118,7 +118,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
       ) : (
         <FormJsonSchema
           schema={setupSchemaFormated}
-          uiSchema={setupUiSchema}
+          uiSchema={setupUiJson}
           formData={wizardData}
           // onChange={() => {}}
           onSubmit={onWizardSubmit}
