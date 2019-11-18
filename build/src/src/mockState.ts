@@ -18,10 +18,12 @@ import {
   PackageContainer,
   RequestedDnp,
   DirectoryItem,
-  SpecialPermission
+  SpecialPermission,
+  SetupTarget
 } from "types";
 import { IsInstallingLogsState } from "services/isInstallingLogs/types";
 import { DnpInstalledState } from "services/dnpInstalled/types";
+import { SetupSchema, SetupUiJson } from "types-own";
 
 function getDescription(manifest: {
   shortDescription?: string;
@@ -97,26 +99,18 @@ const lightningNetworkMetadata = {
   }
 };
 
-const lightningNetworkSetupSchema = {
+const lightningNetworkSetupSchema: SetupSchema = {
   description: `This setup wizard will help you start. In case of problems: https://vipnode.io`,
   type: "object",
   required: ["rtlPassword", "network"],
   properties: {
     rtlPassword: {
-      target: {
-        type: "environment",
-        name: "RTL_PASSWORD"
-      },
       type: "string",
       title: "RTL password",
       description: "Password to protect RTL",
       minLength: 8
     },
     network: {
-      target: {
-        type: "environment",
-        name: "NETWORK"
-      },
       type: "string",
       title: "Network",
       description: "Choose which network to connect to",
@@ -125,6 +119,18 @@ const lightningNetworkSetupSchema = {
     }
   }
 };
+
+const lightningNetworkSetupTarget: SetupTarget = {
+  rtlPassword: {
+    type: "environment",
+    name: "RTL_PASSWORD"
+  },
+  network: {
+    type: "environment",
+    name: "NETWORK"
+  }
+};
+
 const lightningNetworkSetupUiJson = {};
 
 const lightningNetworkSetup: UserSettings = {
@@ -180,30 +186,33 @@ const vipnodeSetup: UserSettings = {
   environment: { PAYOUT_ADDRESS: "" }
 };
 
-const vipnodeSetupSchema = {
+const vipnodeSetupSchema: SetupSchema = {
   description: `This setup wizard will help you start. In case of problems: https://github.com/dappnode/DAppNodePackage-vipnode#installing-and-setting-up-vipnode`,
   type: "object",
   required: ["payoutAddress"],
   properties: {
     payoutAddress: {
-      target: {
-        type: "environment",
-        name: "PAYOUT_ADDRESS"
-      },
       type: "string",
       title: "Payout address",
       description: "Define an Ethereum mainnet address to get rewards to",
-      pattern: "^0x[a-fA-F0-9]{40}$",
-      customErrors: {
-        pattern: "Must be a valid address (0x1fd16a...)"
-      }
+      pattern: "^0x[a-fA-F0-9]{40}$"
     }
   }
 };
 
-const vipnodeSetupUiJson = {
+const vipnodeSetupTarget: SetupTarget = {
   payoutAddress: {
-    "ui:help": "Don't use your main address"
+    type: "environment",
+    name: "PAYOUT_ADDRESS"
+  }
+};
+
+const vipnodeSetupUiJson: SetupUiJson = {
+  payoutAddress: {
+    "ui:help": "Don't use your main address",
+    errorMessages: {
+      pattern: "Must be a valid address (0x1fd16a...)"
+    }
   }
 };
 
@@ -250,7 +259,7 @@ const raidenMetadata = {
   license: "MIT License"
 };
 
-const raidenSetupSchema = {
+const raidenSetupSchema: SetupSchema = {
   description: `Raiden setup wizard https://github.com/dappnode/DAppNodePackage-raiden
   
 In mainet you will have to install the mainet package and take into account that your Ethereum node should be running with this flags.
@@ -263,33 +272,36 @@ If you do not have a keystore file, you can create a new wallet in My Ether Wall
   required: ["keystore", "keystorePassword", "keystoreAddress"],
   properties: {
     keystore: {
-      target: {
-        type: "fileUpload",
-        path: "/usr/src/app"
-      },
       type: "string",
       format: "data-url",
       title: "Keystore",
       description: "Keystore with the account to be used in your Raiden node"
     },
     keystorePassword: {
-      target: {
-        type: "environment",
-        name: "RAIDEN_KEYSTORE_PASSWORD"
-      },
       type: "string",
       title: "Keystore password",
       description: "Password of the uploaded keystore"
     },
     keystoreAddress: {
-      target: {
-        type: "environment",
-        name: "RAIDEN_ADDRESS"
-      },
       type: "string",
       title: "Keystore address",
       description: "Address of the uploaded keystore"
     }
+  }
+};
+
+const raidenSetupTarget: SetupTarget = {
+  keystore: {
+    type: "fileUpload",
+    path: "/usr/src/app"
+  },
+  keystorePassword: {
+    type: "environment",
+    name: "RAIDEN_KEYSTORE_PASSWORD"
+  },
+  keystoreAddress: {
+    type: "environment",
+    name: "RAIDEN_ADDRESS"
   }
 };
 
@@ -396,20 +408,23 @@ const bitcoinSetup: UserSettings = {
   }
 };
 
-const bitcoinSetupSchema = {
+const bitcoinSetupSchema: SetupSchema = {
   description: `Bitcoin setup https://docs.bitcoin.io`,
   type: "object",
   properties: {
     bitcoinData: {
-      target: {
-        type: "namedVolumePath",
-        volumeName: "bitcoin_data"
-      },
       type: "string",
       title: "Custom volume data path",
       description:
         "If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive."
     }
+  }
+};
+
+const bitcoinSetupTarget: SetupTarget = {
+  bitcoinData: {
+    type: "namedVolumePath",
+    volumeName: "bitcoin_data"
   }
 };
 
@@ -518,68 +533,92 @@ const trustlinesSetup = {
   namedVolumePath: { data: "", config: "" }
 };
 
-const trustlinesSetupSchema = {
+const trustlinesSetupSchema: SetupSchema = {
   description:
     "Welcome to DAppNode's Trustlines Network configuration wizard!\n\nWe'll help you set up your node according to your needs, just follow the steps below:",
   type: "object",
-  required: ["role"],
   properties: {
     role: {
-      target: {
-        type: "environment",
-        name: "ROLE"
-      },
       type: "string",
       title: "Node role",
       description:
         "The Trustlines Network node can operate in three different modes:\n\n  1. **Observer** - for a node without an address that just wants to monitor the activity in the network,\n  2. **Participant** - for those nodes who have/want an address and want to actively broadcast transactions, and\n  3. **Validator** - for those who successfully bid for a [Validator slot](https://medium.com/trustlines-foundation/trustlines-validator-spotlight-deep-dive-on-rewards-economics-and-opportunities-for-validators-ec75f81088a6) during Trustlines Foundation's Validator Auction and will be validating the network.\n\n\nSelect your preferred option on the drop-down menu below. Please note you won't be able to Validate if your address was not whitelisted at the end of the Validator Slots auction.",
-      default: "observer",
-      enum: ["observer", "participant", "validator"]
-    },
-    keystore: {
-      target: {
-        type: "fileUpload",
-        path: "/config/custom/keys/Trustlines/main-keystore.json"
-      },
-      type: "string",
-      format: "data-url",
-      title: "Keystore",
-      description:
-        "_(Only for participants and validators)_: Your Keystore/JSON file containing the private key that you want to use for this node"
-    },
-    address: {
-      target: {
-        type: "environment",
-        name: "ADDRESS"
-      },
-      type: "string",
-      title: "Public Address",
-      description:
-        "(Only for participants and validators)_: Public address from the keystore.\nFor validators, you will use this address to seal blocks so it must be an authorized validator address, you can check the valid addresses in [this list](https://github.com/trustlines-protocol/blockchain/blob/1c664ff7d28998b7070c9edb3b325062a5365aad/chain/tlbc/tlbc-spec.json#L11)",
-      pattern: "^0x[a-fA-F0-9]{40}$",
-      customErrors: {
-        pattern: "Must be a valid address (0x1fd16a...)"
-      }
-    },
-    password: {
-      target: {
-        type: "environment",
-        name: "PASSWORD"
-      },
-      type: "string",
-      title: "Password",
-      description:
-        "_(Only for participants and validators)_: Password to unlock the uploaded keystore"
+      enum: ["observer", "participant", "validator"],
+      default: "observer"
     }
   },
+  required: ["role"],
+  // @ts-ignore
   dependencies: {
-    keystore: ["address", "password"]
+    role: {
+      oneOf: [
+        {
+          properties: {
+            role: {
+              enum: ["observer"]
+            }
+          }
+        },
+        {
+          properties: {
+            role: {
+              enum: ["participant", "validator"]
+            },
+            keystore: {
+              type: "string",
+              format: "data-url",
+              title: "Keystore",
+              description:
+                "Your Keystore/JSON file containing the private key that you want to use for this node"
+            },
+            keystoreAddress: {
+              type: "string",
+              title: "Public Address",
+              description:
+                "Public address from the keystore.\nFor validators, you will use this address to seal blocks so it must be an authorized validator address, you can check the valid addresses in [this list](https://github.com/trustlines-protocol/blockchain/blob/1c664ff7d28998b7070c9edb3b325062a5365aad/chain/tlbc/tlbc-spec.json#L11)",
+              pattern: "^0x[a-fA-F0-9]{40}$"
+            },
+            keystorePassword: {
+              type: "string",
+              title: "Password",
+              description: "Password to unlock the uploaded keystore"
+            }
+          },
+          required: ["keystore", "keystoreAddress", "keystorePassword"]
+        }
+      ]
+    }
+  }
+};
+
+const trustlinesSetupTarget: SetupTarget = {
+  role: {
+    type: "environment",
+    name: "ROLE"
+  },
+  keystore: {
+    type: "fileUpload",
+    path: "/config/custom/keys/Trustlines/main-keystore.json"
+  },
+  keystoreAddress: {
+    type: "environment",
+    name: "ADDRESS"
+  },
+  keystorePassword: {
+    type: "environment",
+    name: "PASSWORD"
   }
 };
 
 const trustlinesSetupUiJson = {
-  password: {
+  "ui:order": ["role", "*"],
+  keystorePassword: {
     "ui:widget": "password"
+  },
+  keystoreAddress: {
+    errorMessages: {
+      pattern: "Must be a valid address (0x1fd16a...)"
+    }
   }
 };
 
@@ -618,6 +657,7 @@ const sampleRequestState: RequestedDnp = {
   isInstalled: true,
   settings: {},
   setupSchema: {},
+  setupTarget: {},
   setupUiJson: {},
 
   request: {
@@ -966,10 +1006,11 @@ const dnpInstalledState: DnpInstalledState = {
 
 const dnpRequestState: DnpRequestState = {
   dnps: {
-    "lightning-network.dnp.dappnode.eth": {
+    [lightningNetworkMetadata.name]: {
       ...sampleRequestState,
-      name: "lightning-network.dnp.dappnode.eth",
-      version: "0.2.2",
+      name: lightningNetworkMetadata.name,
+      reqVersion: lightningNetworkMetadata.version,
+      semVersion: lightningNetworkMetadata.version,
       avatarUrl: lightningNetworkAvatar,
       metadata: lightningNetworkMetadata,
 
@@ -978,17 +1019,20 @@ const dnpRequestState: DnpRequestState = {
       isInstalled: false,
 
       settings: {
-        "lightning-network.dnp.dappnode.eth": lightningNetworkSetup,
-        "bitcoin.dnp.dappnode.eth": bitcoinSetup
+        [lightningNetworkMetadata.name]: lightningNetworkSetup,
+        [bitcoinMetadata.name]: bitcoinSetup
       },
-      // @ts-ignore
       setupSchema: {
-        "lightning-network.dnp.dappnode.eth": lightningNetworkSetupSchema,
-        "bitcoin.dnp.dappnode.eth": bitcoinSetupSchema
+        [lightningNetworkMetadata.name]: lightningNetworkSetupSchema,
+        [bitcoinMetadata.name]: bitcoinSetupSchema
+      },
+      setupTarget: {
+        [lightningNetworkMetadata.name]: lightningNetworkSetupTarget,
+        [bitcoinMetadata.name]: bitcoinSetupTarget
       },
       setupUiJson: {
-        "lightning-network.dnp.dappnode.eth": lightningNetworkSetupUiJson,
-        "bitcoin.dnp.dappnode.eth": {}
+        [lightningNetworkMetadata.name]: lightningNetworkSetupUiJson,
+        [bitcoinMetadata.name]: {}
       },
 
       request: {
@@ -998,8 +1042,8 @@ const dnpRequestState: DnpRequestState = {
           isCompatible: true,
           error: "",
           dnps: {
-            "lightning-network.dnp.dappnode.eth": { to: "0.2.2" },
-            "bitcoin.dnp.dappnode.eth": { from: "0.2.5", to: "0.2.5" }
+            [lightningNetworkMetadata.name]: { to: "0.2.2" },
+            [bitcoinMetadata.name]: { from: "0.2.5", to: "0.2.5" }
           }
         },
         available: {
@@ -1009,11 +1053,11 @@ const dnpRequestState: DnpRequestState = {
       }
     },
 
-    "bitcoin.dnp.dappnode.eth": {
+    [bitcoinMetadata.name]: {
       ...sampleRequestState,
-      name: "bitcoin.dnp.dappnode.eth",
-      reqVersion: "0.2.5",
-      semVersion: "0.2.5",
+      name: bitcoinMetadata.name,
+      reqVersion: bitcoinMetadata.version,
+      semVersion: bitcoinMetadata.version,
       avatarUrl: bitcoinAvatar,
       metadata: bitcoinMetadata,
 
@@ -1022,7 +1066,7 @@ const dnpRequestState: DnpRequestState = {
       isInstalled: true,
 
       settings: {
-        "bitcoin.dnp.dappnode.eth": bitcoinSetup
+        [bitcoinMetadata.name]: bitcoinSetup
       },
 
       request: {
@@ -1032,7 +1076,7 @@ const dnpRequestState: DnpRequestState = {
           isCompatible: true,
           error: "",
           dnps: {
-            "bitcoin.dnp.dappnode.eth": { from: "0.2.10", to: "0.2.5" },
+            [bitcoinMetadata.name]: { from: "0.2.10", to: "0.2.5" },
             "dependency.dnp.dappnode.eth": { from: "0.0.0", to: "1.2.0" }
           }
         },
@@ -1043,10 +1087,11 @@ const dnpRequestState: DnpRequestState = {
       }
     },
 
-    "vipnode.dnp.dappnode.eth": {
+    [vipnodeMetadata.name]: {
       ...sampleRequestState,
       name: vipnodeMetadata.name,
-      version: vipnodeMetadata.version,
+      reqVersion: vipnodeMetadata.version,
+      semVersion: vipnodeMetadata.version,
       avatarUrl: vipnodeAvatar,
       metadata: vipnodeMetadata,
 
@@ -1055,15 +1100,17 @@ const dnpRequestState: DnpRequestState = {
       isInstalled: true,
 
       settings: {
-        "vipnode.dnp.dappnode.eth": vipnodeSetup
+        [vipnodeMetadata.name]: vipnodeSetup
       },
-
-      // @ts-ignore
       setupSchema: {
-        "vipnode.dnp.dappnode.eth": vipnodeSetupSchema
+        [vipnodeMetadata.name]: vipnodeSetupSchema
       },
-      // setupSchema: vipnodeSetupSchema,
-      setupUiJson: { "vipnode.dnp.dappnode.eth": vipnodeSetupUiJson },
+      setupTarget: {
+        [vipnodeMetadata.name]: vipnodeSetupTarget
+      },
+      setupUiJson: {
+        [vipnodeMetadata.name]: vipnodeSetupUiJson
+      },
 
       request: {
         compatible: {
@@ -1072,7 +1119,7 @@ const dnpRequestState: DnpRequestState = {
           isCompatible: true,
           error: "",
           dnps: {
-            "vipnode.dnp.dappnode.eth": { from: "0.2.0", to: "0.2.5" }
+            [vipnodeMetadata.name]: { from: "0.2.0", to: "0.2.5" }
           }
         },
         available: {
@@ -1085,8 +1132,8 @@ const dnpRequestState: DnpRequestState = {
     [trustlinesMetadata.name]: {
       ...sampleRequestState,
       name: trustlinesMetadata.name,
-      version: trustlinesMetadata.version,
-      origin: null,
+      reqVersion: trustlinesMetadata.version,
+      semVersion: trustlinesMetadata.version,
       avatarUrl: trustlinesAvatar,
       metadata: trustlinesMetadata,
       specialPermissions: trustlinesSpecialPermissions,
@@ -1094,9 +1141,11 @@ const dnpRequestState: DnpRequestState = {
       settings: {
         [trustlinesMetadata.name]: trustlinesSetup
       },
-
       setupSchema: {
         [trustlinesMetadata.name]: trustlinesSetupSchema
+      },
+      setupTarget: {
+        [trustlinesMetadata.name]: trustlinesSetupTarget
       },
       setupUiJson: {
         [trustlinesMetadata.name]: trustlinesSetupUiJson
@@ -1106,17 +1155,19 @@ const dnpRequestState: DnpRequestState = {
     [raidenMetadata.name]: {
       ...sampleRequestState,
       name: raidenMetadata.name,
-      version: raidenMetadata.version,
-      origin: null,
+      reqVersion: raidenMetadata.version,
+      semVersion: raidenMetadata.version,
       avatarUrl: raidenAvatar,
       metadata: raidenMetadata,
 
       settings: {
         [raidenMetadata.name]: raidenSetup
       },
-
       setupSchema: {
         [raidenMetadata.name]: raidenSetupSchema
+      },
+      setupTarget: {
+        [raidenMetadata.name]: raidenSetupTarget
       },
       setupUiJson: {}
     },
@@ -1124,22 +1175,20 @@ const dnpRequestState: DnpRequestState = {
     [raidenTestnetMetadata.name]: {
       ...sampleRequestState,
       name: raidenTestnetMetadata.name,
-      version: raidenTestnetMetadata.version,
-      origin: null,
+      reqVersion: raidenTestnetMetadata.version,
+      semVersion: raidenTestnetMetadata.version,
       avatarUrl: raidenTestnetAvatar,
       metadata: raidenTestnetMetadata,
 
       settings: {
         [raidenTestnetMetadata.name]: raidenTestnetSetup
-      },
-
-      setupSchema: {},
-      setupUiJson: {}
+      }
     },
 
     "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy": {
+      ...sampleRequestState,
       name: vipnodeMetadata.name,
-      version: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
+      reqVersion: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
       origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
       avatarUrl: vipnodeAvatar,
       metadata: vipnodeMetadata,
@@ -1149,9 +1198,12 @@ const dnpRequestState: DnpRequestState = {
       isInstalled: true,
 
       settings: {},
-      // @ts-ignore
+
       setupSchema: {
         [vipnodeMetadata.name]: vipnodeSetupSchema
+      },
+      setupTarget: {
+        [vipnodeMetadata.name]: vipnodeSetupTarget
       },
       setupUiJson: {
         [vipnodeMetadata.name]: vipnodeSetupUiJson

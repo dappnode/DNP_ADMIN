@@ -53,8 +53,7 @@ const InstallDnpView: React.FunctionComponent<
 
   const { name, reqVersion, settings, metadata } = dnp;
   const type = metadata.type;
-  const setupSchema = dnp.setupSchema;
-  const setupUiJson = dnp.setupUiJson;
+  const { setupSchema, setupTarget, setupUiJson } = dnp;
   const permissions = dnp.specialPermissions;
   const requiresCoreUpdate = dnp.request.compatible.requiresCoreUpdate;
   const wizardAvailable = !!setupSchema && !isDeepEmpty(setupSchema);
@@ -160,6 +159,7 @@ const InstallDnpView: React.FunctionComponent<
       render: () => (
         <SetupWizard
           setupSchema={setupSchema || {}}
+          setupTarget={setupTarget || {}}
           setupUiJson={setupUiJson || {}}
           userSettings={userSettings}
           wizardAvailable={wizardAvailable}

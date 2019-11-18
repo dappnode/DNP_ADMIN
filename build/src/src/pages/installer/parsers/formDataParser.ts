@@ -1,11 +1,6 @@
 import { mapValues, isEmpty, omitBy } from "lodash";
 import deepmerge from "deepmerge";
-import {
-  SetupSchemaAllDnps,
-  UserSettingsAllDnps,
-  UserSettings,
-  UserSettingTarget
-} from "types";
+import { UserSettingsAllDnps, UserSettings, SetupTargetAllDnps } from "types";
 import { SetupWizardFormDataReturn } from "../types";
 
 /**
@@ -19,18 +14,15 @@ import { SetupWizardFormDataReturn } from "../types";
  */
 export function formDataToUserSettings(
   formData: SetupWizardFormDataReturn,
-  setupSchema: SetupSchemaAllDnps
+  setupTarget: SetupTargetAllDnps
 ): UserSettingsAllDnps {
   return mapValues(formData, (formDataDnp, dnpName) => {
     const userSettings: UserSettings = {};
-    const schema = setupSchema[dnpName];
-    if (!schema || !schema.properties) return {};
+    const targets = setupTarget[dnpName];
+    if (!targets) return {};
 
     for (const [propId, value] of Object.entries(formDataDnp)) {
-      const propSchema = schema.properties[propId];
-      // @ts-ignore
-      const target: UserSettingTarget | undefined = (propSchema || {}).target;
-
+      const target = targets[propId];
       if (target && target.type)
         switch (target.type) {
           case "environment":
@@ -81,11 +73,11 @@ export function formDataToUserSettings(
  */
 export function userSettingsToFormData(
   userSettingsAllDnps: UserSettingsAllDnps,
-  setupSchema: SetupSchemaAllDnps
+  setupTarget: SetupTargetAllDnps
 ): SetupWizardFormDataReturn {
-  return mapValues(setupSchema, (dnpSchema, dnpName) => {
+  return mapValues(setupTarget, (targets, dnpName) => {
     const userSettings = userSettingsAllDnps[dnpName];
-    if (!userSettings || !dnpSchema.properties) return {};
+    if (!userSettings || !targets) return {};
     const {
       environment = {},
       portMappings = {},
@@ -94,10 +86,7 @@ export function userSettingsToFormData(
     } = userSettings;
     const formDataDnp: { [propId: string]: string } = {};
 
-    for (const [propId, propSchema] of Object.entries(dnpSchema.properties)) {
-      // @ts-ignore
-      const target: UserSettingTarget | undefined = (propSchema || {}).target;
-
+    for (const [propId, target] of Object.entries(targets)) {
       if (target && target.type) {
         switch (target.type) {
           case "environment":

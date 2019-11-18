@@ -5,11 +5,10 @@ import Form, { FormValidation, AjvError } from "react-jsonschema-form";
 import Button from "components/Button";
 import ReactMarkdown from "react-markdown";
 import "./formJsonSchema.scss";
-import { SetupSchemaAllDnpsFormated } from "types";
-import { SetupSchema, SetupUiJson } from "types-own";
+import { SetupUiJson, SetupSchemaAllDnpsFormated } from "types-own";
 
-interface PropWithCustomErrors extends SetupSchema {
-  customErrors: { [errorName: string]: string };
+interface PropWithErrorMessages extends SetupUiJson {
+  errorMessages: { [errorName: string]: string };
 }
 
 interface AjvErrorWithPath extends AjvError {
@@ -146,19 +145,21 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
    * Prettify errors if necessary
    */
   function transformErrors(_errors: AjvErrorWithPath[]): AjvError[] {
-    return _errors.map(error => {
-      if (!error.schemaPath) return error;
-      // Fetch the prop from the actual schema with schema path
-      const propPathArray = error.schemaPath
-        .replace(/#\//, "")
-        .replace(/^\/|\/$/g, "")
-        .split("/");
-      propPathArray.pop();
-      const prop = get(schema, propPathArray) as PropWithCustomErrors;
-      const errorMessage = ((prop || {}).customErrors || {})[error.name];
-      if (errorMessage) error.message = errorMessage;
-      return error;
-    });
+    return (
+      _errors
+        .map(error => {
+          if (!error.property) return error;
+          const prop = get(uiSchema, error.property) as PropWithErrorMessages;
+          const errorMessage = ((prop || {}).errorMessages || {})[error.name];
+          if (errorMessage) error.message = errorMessage;
+          return error;
+        })
+        // #### PATCH / TODO: Prevent confusing error with dependencies.oneOf formula
+        // used in trustlines to allow conditional fields
+        .filter(
+          error => error.message !== "should match exactly one schema in oneOf"
+        )
+    );
   }
 
   /**

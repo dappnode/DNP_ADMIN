@@ -11,82 +11,63 @@ describe("formDataToUserSettings", () => {
   const dnpName = "lightning-network.dnp.dappnode.eth";
   const depName = "bitcoin.dnp.dappnode.eth";
 
-  const setupSchema: SetupSchemaAllDnps = {
+  // const setupSchema: SetupSchemaAllDnps = {
+  //   [dnpName]: {
+  //     type: "object",
+  //     properties: {
+  //       payoutAddress: { type: "string", title: "Payout address" },
+  //       unfilledProp: { type: "string", title: "Payout address" },
+  //       configFile: { type: "string", format: "data-url", title: "Config file" }
+  //     }
+  //   },
+  //   [depName]: {
+  //     type: "object",
+  //     properties: {
+  //       uiPort: { type: "string", title: "UI port" },
+  //       p2pPort: { type: "string", title: "P2P port" },
+  //       dataVolume: { type: "string", title: "Custom volume path" },
+  //       txIndex: {
+  //         type: "string",
+  //         title: "TX index",
+  //         description: "Choose the TX index",
+  //         default: "1",
+  //         enum: ["0", "1", "2"]
+  //       }
+  //     }
+  //   }
+  // };
+
+  const setupTarget: SetupTargetAllDnps = {
     [dnpName]: {
-      type: "object",
-      properties: {
-        payoutAddress: {
-          // @ts-ignore
-          target: {
-            type: "environment",
-            name: "PAYOUT_ADDRESS"
-          },
-          type: "string",
-          title: "Payout address"
-        },
-        unfilledProp: {
-          // @ts-ignore
-          target: {
-            type: "environment",
-            name: "UNFILLED_PROP"
-          },
-          type: "string",
-          title: "Payout address"
-        },
-        configFile: {
-          // @ts-ignore
-          target: {
-            type: "fileUpload",
-            path: "/usr/src/app/config.json"
-          },
-          type: "string",
-          format: "data-url",
-          title: "Config file"
-        }
+      payoutAddress: {
+        type: "environment",
+        name: "PAYOUT_ADDRESS"
+      },
+      unfilledProp: {
+        type: "environment",
+        name: "UNFILLED_PROP"
+      },
+      configFile: {
+        type: "fileUpload",
+        path: "/usr/src/app/config.json"
       }
     },
     [depName]: {
-      type: "object",
-      properties: {
-        uiPort: {
-          // @ts-ignore
-          target: {
-            type: "portMapping",
-            containerPort: "8080"
-          },
-          type: "string",
-          title: "UI port"
-        },
-        p2pPort: {
-          // @ts-ignore
-          target: {
-            type: "portMapping",
-            containerPort: "5555/udp"
-          },
-          type: "string",
-          title: "P2P port"
-        },
-        dataVolume: {
-          // @ts-ignore
-          target: {
-            type: "namedVolumePath",
-            volumeName: "bitcoin_data"
-          },
-          type: "string",
-          title: "Custom volume path"
-        },
-        txIndex: {
-          // @ts-ignore
-          target: {
-            type: "environment",
-            name: "BTC_TXINDEX"
-          },
-          type: "string",
-          title: "TX index",
-          description: "Choose the TX index",
-          default: "1",
-          enum: ["0", "1", "2"]
-        }
+      uiPort: {
+        type: "portMapping",
+        containerPort: "8080"
+      },
+      p2pPort: {
+        type: "portMapping",
+        containerPort: "5555/udp"
+      },
+      dataVolume: {
+        type: "namedVolumePath",
+        volumeName: "bitcoin_data"
+      },
+      txIndex: {
+        type: "environment",
+        name: "BTC_TXINDEX"
       }
     }
   };
@@ -129,7 +110,7 @@ describe("formDataToUserSettings", () => {
   };
 
   it("Should convert form data to userSettings", () => {
-    expect(formDataToUserSettings(formData, setupSchema)).toEqual(userSettings);
+    expect(formDataToUserSettings(formData, setupTarget)).toEqual(userSettings);
   });
 
   it("Should convert form data to userSettings with unknown props", () => {
@@ -146,12 +127,12 @@ describe("formDataToUserSettings", () => {
     );
 
     expect(
-      formDataToUserSettings(formDataWithUnknownProps, setupSchema)
+      formDataToUserSettings(formDataWithUnknownProps, setupTarget)
     ).toEqual(userSettings);
   });
 
   it("Should convert userSettings to form data", () => {
-    expect(userSettingsToFormData(userSettings, setupSchema)).toEqual(formData);
+    expect(userSettingsToFormData(userSettings, setupTarget)).toEqual(formData);
   });
 
   it("Should convert userSettings to form data with unknown props", () => {
@@ -175,7 +156,7 @@ describe("formDataToUserSettings", () => {
 
     const formDataResult = userSettingsToFormData(
       userSettingsWithUnknownProps,
-      setupSchema
+      setupTarget
     );
 
     expect(formDataResult).toEqual(formData);

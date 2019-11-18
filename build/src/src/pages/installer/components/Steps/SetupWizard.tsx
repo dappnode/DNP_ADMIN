@@ -7,8 +7,9 @@ import {
   SetupSchemaAllDnps,
   SetupUiJsonAllDnps,
   UserSettingsAllDnps,
-  SetupSchemaAllDnpsFormated
+  SetupTargetAllDnps
 } from "types";
+import { SetupSchemaAllDnpsFormated } from "types-own";
 import { shortNameCapitalized } from "utils/format";
 import OldEditor from "./OldEditor";
 import {
@@ -20,6 +21,7 @@ import deepmerge from "deepmerge";
 
 interface SetupWizardProps {
   setupSchema: SetupSchemaAllDnps;
+  setupTarget: SetupTargetAllDnps;
   setupUiJson: SetupUiJsonAllDnps;
   userSettings: UserSettingsAllDnps;
   wizardAvailable: boolean;
@@ -29,6 +31,7 @@ interface SetupWizardProps {
 
 const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   setupSchema,
+  setupTarget,
   setupUiJson,
   userSettings,
   wizardAvailable,
@@ -41,8 +44,8 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
 
   useEffect(() => {
     setEditorData(userSettings);
-    setWizardData(userSettingsToFormData(userSettings, setupSchema));
-  }, [userSettings, setupSchema]);
+    setWizardData(userSettingsToFormData(userSettings, setupTarget));
+  }, [userSettings, setupTarget]);
 
   // [NOTE]: All handlers for the FormJsonSchema are memoized to prevent
   // expensive re-renders that cause serious performance issues
@@ -54,43 +57,43 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   const onShowAdvancedEditor = useCallback(
     formData => {
       setEditorData(_editorData =>
-        deepmerge(_editorData, formDataToUserSettings(formData, setupSchema))
+        deepmerge(_editorData, formDataToUserSettings(formData, setupTarget))
       );
       setWizardData(formData);
       setShowAdvanced(true);
     },
-    [setupSchema, setEditorData, setWizardData, setShowAdvanced]
+    [setupTarget, setEditorData, setWizardData, setShowAdvanced]
   );
 
   // Move data from the editor to the wizard
   // Deepmerge to include data not found in the user settings (fileUploads)
   const onHideAdvancedEditor = useCallback(() => {
     setWizardData(_wizardData =>
-      deepmerge(_wizardData, userSettingsToFormData(editorData, setupSchema))
+      deepmerge(_wizardData, userSettingsToFormData(editorData, setupTarget))
     );
     setShowAdvanced(false);
-  }, [setupSchema, setWizardData, editorData, setShowAdvanced]);
+  }, [setupTarget, setWizardData, editorData, setShowAdvanced]);
 
   // Merge wizard data with the editor data. Give priority to the wizard data
   const onWizardSubmit = useCallback(
     formData => {
       console.log("Submited wizard editor");
-      const wizardSettings = formDataToUserSettings(formData, setupSchema);
+      const wizardSettings = formDataToUserSettings(formData, setupTarget);
       onSubmit(deepmerge(editorData, wizardSettings));
     },
-    [onSubmit, setupSchema, editorData]
+    [onSubmit, setupTarget, editorData]
   );
 
   // Merge editor data with the wizard data. Give priority to the editor data
   const onOldEditorSubmit = useCallback(() => {
     console.log("Submited old editor");
     if (wizardAvailable) {
-      const wizardSettings = formDataToUserSettings(wizardData, setupSchema);
+      const wizardSettings = formDataToUserSettings(wizardData, setupTarget);
       onSubmit(deepmerge(wizardSettings, editorData));
     } else {
       onSubmit(editorData);
     }
-  }, [onSubmit, setupSchema, wizardAvailable, wizardData, editorData]);
+  }, [onSubmit, setupTarget, wizardAvailable, wizardData, editorData]);
 
   // Pretify the titles of the DNP sections
   // and convert it to a valid JSON schema where the top properties are each DNP
