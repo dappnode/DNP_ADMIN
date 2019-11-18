@@ -62,7 +62,9 @@ const InstallerHome: React.FunctionComponent<
   // Limit the number of requests [TESTED]
   const fetchQueryThrottled = useMemo(
     () =>
-      throttle((query: string) => console.log(`Fake fetching: ${query}`), 500),
+      throttle((query: string) => {
+        // #### TODO: provide feedback to the user if the query is found
+      }, 500),
     []
   );
 

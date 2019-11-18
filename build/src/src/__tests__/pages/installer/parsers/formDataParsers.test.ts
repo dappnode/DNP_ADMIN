@@ -4,7 +4,7 @@ import {
   cleanInitialFormData
 } from "pages/installer/parsers/formDataParser";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
-import { SetupSchemaAllDnps, UserSettingsAllDnps } from "types";
+import { UserSettingsAllDnps, SetupTargetAllDnps } from "types";
 import deepmerge from "deepmerge";
 
 describe("formDataToUserSettings", () => {

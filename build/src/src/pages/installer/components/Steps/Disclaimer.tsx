@@ -26,7 +26,9 @@ const Disclaimer: React.FunctionComponent<DisclaimerProps> = ({
     <Card spacing divider>
       {disclaimers.map(disclaimer => (
         <div key={disclaimer.name}>
-          <strong>{disclaimer.name} disclaimer</strong>
+          <p>
+            <strong>{disclaimer.name} disclaimer</strong>
+          </p>
           <div className="no-p-style">
             <ReactMarkdown source={disclaimer.message} />
           </div>

@@ -119,16 +119,6 @@ export default function subscriptions(session: autobahn.Session) {
   });
 
   /**
-   * @param {array} devices = [{
-   *   id: "MyPhone",
-   *   isAdmin: false
-   * }, ... ]
-   */
-  subscribe("devices.vpn.dnp.dappnode.eth", devices => {
-    store.dispatch(updateDevices(devices));
-  });
-
-  /**
    * Periodic updates of the state of all chains bundled together
    * `chainData` is an array and is sent as an `arg` not `kwarg`
    * @param {array} chainData = [{
@@ -154,5 +144,17 @@ export default function subscriptions(session: autobahn.Session) {
    */
   wampSubscriptions.pushNotification.on(notification => {
     store.dispatch(pushNotificationFromDappmanager(notification));
+  });
+
+  /**
+   * [VPN] (un-typed)
+   *
+   * @param {array} devices = [{
+   *   id: "MyPhone",
+   *   isAdmin: false
+   * }, ... ]
+   */
+  subscribe("devices.vpn.dnp.dappnode.eth", ([devices]: any[]) => {
+    store.dispatch(updateDevices(devices));
   });
 }
