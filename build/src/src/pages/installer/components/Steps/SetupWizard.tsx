@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { mapValues } from "lodash";
 // Components
 import Card from "components/Card";
+import Alert from "react-bootstrap/Alert";
 import FormJsonSchema from "./FormJsonSchema";
 import {
   SetupSchemaAllDnps,
@@ -14,7 +15,8 @@ import { shortNameCapitalized } from "utils/format";
 import OldEditor from "./OldEditor";
 import {
   formDataToUserSettings,
-  userSettingsToFormData
+  userSettingsToFormData,
+  getUserSettingsDataErrors
 } from "pages/installer/parsers/formDataParser";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
 import deepmerge from "deepmerge";
@@ -39,6 +41,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   goBack
 }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [dataErrors, setDataErrors] = useState([] as string[]);
   const [editorData, setEditorData] = useState({} as UserSettingsAllDnps);
   const [wizardData, setWizardData] = useState({} as SetupWizardFormDataReturn);
 
@@ -74,26 +77,35 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
     setShowAdvanced(false);
   }, [setupTarget, setWizardData, editorData, setShowAdvanced]);
 
+  const submit = useCallback(
+    (newUserSettings: UserSettingsAllDnps) => {
+      const errors = getUserSettingsDataErrors(newUserSettings);
+      setDataErrors(errors);
+      if (!errors.length) onSubmit(newUserSettings);
+      else console.log("data errors", errors);
+    },
+    [setDataErrors]
+  );
+
   // Merge wizard data with the editor data. Give priority to the wizard data
   const onWizardSubmit = useCallback(
     formData => {
       console.log("Submited wizard editor");
       const wizardSettings = formDataToUserSettings(formData, setupTarget);
-      onSubmit(deepmerge(editorData, wizardSettings));
+      submit(deepmerge(editorData, wizardSettings));
     },
-    [onSubmit, setupTarget, editorData]
+    [submit, setupTarget, editorData]
   );
 
   // Merge editor data with the wizard data. Give priority to the editor data
   const onOldEditorSubmit = useCallback(() => {
-    console.log("Submited old editor");
     if (wizardAvailable) {
       const wizardSettings = formDataToUserSettings(wizardData, setupTarget);
-      onSubmit(deepmerge(wizardSettings, editorData));
+      submit(deepmerge(wizardSettings, editorData));
     } else {
-      onSubmit(editorData);
+      submit(editorData);
     }
-  }, [onSubmit, setupTarget, wizardAvailable, wizardData, editorData]);
+  }, [submit, setupTarget, wizardAvailable, wizardData, editorData]);
 
   // Pretify the titles of the DNP sections
   // and convert it to a valid JSON schema where the top properties are each DNP
@@ -106,6 +118,8 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
       }))
     };
   }, [setupSchema]);
+
+  console.log(editorData);
 
   return (
     <Card spacing>
@@ -130,6 +144,13 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
           onSubmitLabel="Submit"
           onCancelLabel="Back"
         />
+      )}
+      {dataErrors.length > 0 && (
+        <Alert variant="danger" style={{ marginBottom: 0 }}>
+          {dataErrors.map(error => (
+            <div key={error}>{error}</div>
+          ))}
+        </Alert>
       )}
     </Card>
   );

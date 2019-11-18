@@ -135,3 +135,24 @@ export function cleanInitialFormData(
   );
   return isEmpty(_obj) ? undefined : _obj;
 }
+
+/**
+ * Enforces rules on user settings:
+ * - namedVolumePaths: must be absolute paths. Renaming for a different named volume is not allowed
+ */
+export function getUserSettingsDataErrors(
+  dataAllDnps: UserSettingsAllDnps
+): string[] {
+  const errors: string[] = [];
+  for (const [dnpName, data] of Object.entries(dataAllDnps)) {
+    if (data.namedVolumePaths) {
+      for (const [volName, volPath] of Object.entries(data.namedVolumePaths)) {
+        if (volPath && !/^\/[^\/]+/.test(volPath))
+          errors.push(
+            `volume path for '${dnpName}' '${volName}' must be an absolute path`
+          );
+      }
+    }
+  }
+  return errors;
+}

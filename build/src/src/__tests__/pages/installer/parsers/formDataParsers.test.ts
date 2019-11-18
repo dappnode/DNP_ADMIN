@@ -1,7 +1,8 @@
 import {
   formDataToUserSettings,
   userSettingsToFormData,
-  cleanInitialFormData
+  cleanInitialFormData,
+  getUserSettingsDataErrors
 } from "pages/installer/parsers/formDataParser";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
 import { UserSettingsAllDnps, SetupTargetAllDnps } from "types";
@@ -187,6 +188,43 @@ describe("cleanInitialFormData", () => {
       "vipnode.dnp.dappnode.eth": {
         payoutAddress: "0x12356123"
       }
+    });
+  });
+});
+
+describe("getUserSettingsDataErrors", () => {
+  describe("namedVolumePaths", () => {
+    const dnpName = "bitcoin.dnp.dappnode.eth";
+    const volName = "data";
+    const getUserSettings = (newPath: string): UserSettingsAllDnps => ({
+      [dnpName]: {
+        namedVolumePaths: { [volName]: newPath }
+      }
+    });
+    const errorMessage = `volume path for '${dnpName}' '${volName}' must be an absolute path`;
+
+    it("Should accept a new bind path", () => {
+      const newUserSettings = getUserSettings("/dev1/custom");
+      const errors = getUserSettingsDataErrors(newUserSettings);
+      expect(errors).toEqual([]);
+    });
+
+    it("Should accept an empty path", () => {
+      const newUserSettings = getUserSettings("");
+      const errors = getUserSettingsDataErrors(newUserSettings);
+      expect(errors).toEqual([]);
+    });
+
+    it("Should reject a name", () => {
+      const newUserSettings = getUserSettings("data2");
+      const errors = getUserSettingsDataErrors(newUserSettings);
+      expect(errors).toEqual([errorMessage]);
+    });
+
+    it("Should reject a relative path", () => {
+      const newUserSettings = getUserSettings("~/.root/data");
+      const errors = getUserSettingsDataErrors(newUserSettings);
+      expect(errors).toEqual([errorMessage]);
     });
   });
 });
