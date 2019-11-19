@@ -21,11 +21,15 @@ function Vols({ dnp }) {
         // Display style:
         // - dncore_vpndnpdappnodeeth_data: 866B
         // - /etc/hostname: - (bind)
-        .map(({ name, container, size }) => ({
+        .map(({ name, container, size, host }) => ({
           name: name
             ? prettyVolumeName(name, dnp.name)
             : container || "Unknown",
-          size: size ? prettyBytes(size) : !name ? "(bind)" : "..."
+          size: size
+            ? prettyBytes(size)
+            : !name
+            ? "(bind) " + host || ""
+            : "..."
         }))
         .map(({ name, size }) => (
           <>
