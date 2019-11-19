@@ -1,5 +1,5 @@
 import InstallerRoot from "./components/InstallerRoot";
-import ProgressLogs from "./components/InstallCardComponents/ProgressLogs";
+import ProgressLogsView from "./components/InstallCardComponents/ProgressLogsView";
 import * as data from "./data";
 
 export const rootPath = data.rootPath;
@@ -7,7 +7,7 @@ export const mountPoint = data.mountPoint;
 
 const components = {
   InstallerRoot,
-  ProgressLogs
+  ProgressLogsView
 };
 
 export default {

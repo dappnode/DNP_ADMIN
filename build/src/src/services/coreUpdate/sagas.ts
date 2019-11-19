@@ -1,9 +1,6 @@
 import { put, call, select } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import api from "API/rpcMethods";
-import * as a from "./actions";
-import * as t from "./actionTypes";
-import * as s from "./selectors";
+import * as api from "API/calls";
 import { loadingId, coreName } from "./data";
 // Actions
 import {
@@ -15,6 +12,10 @@ import { pushNotification } from "services/notifications/actions";
 import { clearIsInstallingLog } from "services/isInstallingLogs/actions";
 // Utilities
 import isSyncing from "utils/isSyncing";
+import { CoreUpdateData } from "types";
+import { UPDATE_CORE } from "./types";
+import { updateCoreUpdateData, updateUpdatingCore } from "./actions";
+import { getUpdatingCore } from "./selectors";
 
 // Service > coreUpdate
 
@@ -30,10 +31,17 @@ import isSyncing from "utils/isSyncing";
  * And refresh the page
  */
 
+declare global {
+  interface Window {
+    setCoreVersion: (version: string) => string;
+    restoreCoreId: () => string;
+  }
+}
+
 const coreVersionLocalStorageTag = "DEVONLY-core-version";
 const coreVersionDevSet = localStorage.getItem(coreVersionLocalStorageTag);
 // Methods to edit the coreID
-window.setCoreVersion = version => {
+window.setCoreVersion = (version: string) => {
   localStorage.setItem(coreVersionLocalStorageTag, version);
   return `Set core version to version ${version}`;
 };
@@ -42,8 +50,7 @@ window.restoreCoreId = () => {
   return `Deleted custom DEVONLY core version setting`;
 };
 
-const coreVersion = coreVersionDevSet || "latest";
-const coreId = [coreName, coreVersion].join("@");
+const coreVersion = coreVersionDevSet || undefined;
 
 /***************************** Subroutines ************************************/
 
@@ -71,43 +78,26 @@ function* putMainnetIsStillSyncing() {
  */
 export function* checkCoreUpdate() {
   try {
+    console.log("Check core update");
     // If chain is not synced yet, cancel request.
     if (yield call(isSyncing)) {
-      return yield call(putMainnetIsStillSyncing);
+      yield call(putMainnetIsStillSyncing);
+      // Only stop if there is not a custom core version
+      if (!coreVersionDevSet) return;
     }
     yield put(updateIsLoading(loadingId));
 
-    /**
-     * @param {object} result = {
-     *   available: true {bool},
-     *   type: "minor",
-     *   packages: [
-     *     {
-     *       name: "core.dnp.dappnode.eth",
-     *       from: "0.2.5",
-     *       to: "0.2.6",
-     *       manifest: {}
-     *     },
-     *     {
-     *       name: "admin.dnp.dappnode.eth",
-     *       from: "0.2.2",
-     *       to: "0.2.3",
-     *       manifest: {}
-     *     }
-     *   ],
-     *   changelog: "Changelog text",
-     *   updateAlerts: [{ message: "Specific update alert"}, ... ],
-     *   versionId: "admin@0.2.6,core@0.2.8"
-     * }
-     */
-    const coreUpdateData = yield call(api.fetchCoreUpdateData);
-    yield put(a.updateCoreUpdateData(coreUpdateData));
+    const coreUpdateData: CoreUpdateData = yield call(api.fetchCoreUpdateData, {
+      version: coreVersion
+    });
+    console.log({ coreUpdateData });
+    yield put(updateCoreUpdateData(coreUpdateData));
 
     yield put(updateIsLoaded(loadingId));
 
     /* Log out current state */
     console.log(
-      `DAppNode ${coreId} (${coreUpdateData.versionId})`,
+      `DAppNode ${coreName} (${coreUpdateData.versionId})`,
       coreUpdateData
     );
   } catch (e) {
@@ -124,20 +114,24 @@ export function* checkCoreUpdate() {
 function* updateCore() {
   try {
     // Prevent double installations
-    if (yield select(s.getUpdatingCore)) {
+    if (yield select(getUpdatingCore)) {
       return console.error("Error: DAppNode core is already updating");
     }
 
     // blacklist the current package
-    yield put(a.updateUpdatingCore(true));
+    yield put(updateUpdatingCore(true));
 
     yield call(
-      api.installPackageSafe,
-      { id: coreId, options: { BYPASS_CORE_RESTRICTION: true } },
+      api.installPackage,
+      {
+        name: coreName,
+        version: coreVersion,
+        options: { BYPASS_CORE_RESTRICTION: true, BYPASS_RESOLVER: true }
+      },
       { toastMessage: "Updating DAppNode core..." }
     );
     // Remove package from blacklist
-    yield put(a.updateUpdatingCore(false));
+    yield put(updateUpdatingCore(false));
 
     // Clear progressLogs, + Removes DNP from blacklist
     yield put(clearIsInstallingLog({ id: coreName }));
@@ -155,5 +149,5 @@ function* updateCore() {
 // takeEvery(actionType, watchers[actionType])
 export default rootWatcher([
   [CONNECTION_OPEN, checkCoreUpdate],
-  [t.UPDATE_CORE, updateCore]
+  [UPDATE_CORE, updateCore]
 ]);

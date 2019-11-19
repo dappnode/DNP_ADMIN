@@ -1,7 +1,7 @@
 import { mapValues, pickBy } from "lodash";
 import { mountPoint } from "./data";
 import { IsInstallingLogsState } from "./types";
-import { ProgressLogsByDnp } from "types";
+import { ProgressLogsByDnp, ProgressLogs } from "types";
 
 // Service > isInstallingLogs
 
@@ -18,4 +18,12 @@ export const getProgressLogsByDnp = (state: any): ProgressLogsByDnp => {
     mapValues(isInstallingLogs.dnpNameToLogId, id => isInstallingLogs.logs[id]),
     progressLogs => progressLogs
   );
+};
+
+export const getProgressLogsOfDnp = (
+  state: any,
+  dnpName: string
+): ProgressLogs | undefined => {
+  const progressLogsByDnp = getProgressLogsByDnp(state);
+  return progressLogsByDnp[dnpName];
 };

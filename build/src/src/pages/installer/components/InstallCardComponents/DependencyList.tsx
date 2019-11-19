@@ -5,6 +5,7 @@ import computeSemverUpdateType from "utils/computeSemverUpdateType";
 import ReactMarkdown from "react-markdown";
 import styled from "styled-components";
 import { shortNameCapitalized } from "utils/format";
+import { DependencyListItem } from "types";
 
 const InfoContainer = styled.div`
   display: grid;
@@ -33,12 +34,7 @@ const SpanCenter = styled.span`
 // );
 
 interface DependencyListProps {
-  deps: {
-    name: string;
-    from?: string | null;
-    to: string;
-    onInstallAlert?: string;
-  }[];
+  deps: DependencyListItem[];
 }
 
 const DependencyList: React.FunctionComponent<DependencyListProps> = ({
@@ -51,7 +47,7 @@ const DependencyList: React.FunctionComponent<DependencyListProps> = ({
 
   return (
     <>
-      {sortBy(deps, "name").map(({ name, from, to, onInstallAlert }) => {
+      {sortBy(deps, "name").map(({ name, from, to, warningOnInstall }) => {
         const updateType = computeSemverUpdateType(from || "", to, false);
         return (
           <div key={name} className="dependency-list">
@@ -64,12 +60,15 @@ const DependencyList: React.FunctionComponent<DependencyListProps> = ({
                 ) : null}
               </SpanCenter>
             </InfoContainer>
-            {onInstallAlert && (
+            {warningOnInstall && (
               <div
                 className="alert alert-warning"
                 style={{ margin: "12px 0 6px 0" }}
               >
-                <ReactMarkdown className="no-p-style" source={onInstallAlert} />
+                <ReactMarkdown
+                  className="no-p-style"
+                  source={warningOnInstall}
+                />
               </div>
             )}
           </div>

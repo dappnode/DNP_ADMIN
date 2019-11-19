@@ -24,6 +24,7 @@ import {
 import { IsInstallingLogsState } from "services/isInstallingLogs/types";
 import { DnpInstalledState } from "services/dnpInstalled/types";
 import { SetupSchema, SetupUiJson } from "types-own";
+import { CoreUpdateState } from "services/coreUpdate/types";
 
 function getDescription(manifest: {
   shortDescription?: string;
@@ -31,6 +32,8 @@ function getDescription(manifest: {
 }) {
   return manifest.shortDescription || manifest.description;
 }
+
+const coreName = "core.dnp.dappnode.eth"
 
 /**
  * Avatars
@@ -709,19 +712,25 @@ const samplePackageContainer: PackageContainer = {
  * ================
  */
 
-const coreUpdateState = {
-  coreDeps: {
-    "admin.dnp.dappnode.eth": { version: "0.2.1" },
-    "vpn.dnp.dappnode.eth": { version: "0.2.1" }
+const coreUpdateState: CoreUpdateState = {
+  coreUpdateData: {
+    available: true,
+    type: "patch",
+    packages: [{
+      name: "admin.dnp.dappnode.eth",
+      from: "0.2.0",
+      to: "0.2.6",
+      warningOnInstall: "Warning on **install**",
+    }],
+    changelog:  "Major improvements to the 0.2 version https://github.com/dappnode/DAppNode/wiki/DAppNode-Migration-guide-to-OpenVPN",
+    updateAlerts: [{
+      from: "0.2.0",
+      to: "0.2.0",
+      message: "Conditional update alert: **Markdown**"
+    }],
+    versionId: "",
   },
-  coreMetadata: {
-    version: "0.2.1",
-    changelog:
-      "Major improvements to the 0.2 version https://github.com/dappnode/DAppNode/wiki/DAppNode-Migration-guide-to-OpenVPN",
-    warnings: {
-      onInstall: "Your VPN will be restarted and you may lose connection"
-    }
-  }
+  updatingCore: true
 };
 
 const dappnodeStatusState = {
@@ -740,7 +749,7 @@ const dappnodeStatusState = {
       "lightning-network.dnp.dappnode.eth": { enabled: true }
     },
     registry: {
-      "core.dnp.dappnode.eth": {
+      [coreName]: {
         "0.2.4": { updated: 1563304834738, successful: true },
         "0.2.5": { updated: 1563304834738, successful: false }
       },
@@ -753,7 +762,7 @@ const dappnodeStatusState = {
       }
     },
     pending: {
-      "core.dnp.dappnode.eth": {
+      [coreName]: {
         version: "0.2.4",
         firstSeen: 1563218436285,
         scheduledUpdate: 1563304834738,
@@ -901,7 +910,7 @@ const dnpInstalledState: DnpInstalledState = {
     },
     {
       ...samplePackageContainer,
-      name: "core.dnp.dappnode.eth",
+      name: coreName,
       isCore: true,
       version: "0.2.3",
       state: "exited"
@@ -1251,9 +1260,9 @@ const dnpRequestState: DnpRequestState = {
 const isInstallingState: IsInstallingLogsState = {
   /* Core update */
   logs: {
-    "core.dnp.dappnode.eth": {
-      "core.dnp.dappnode.eth": "Downloading 54%",
-      "vpn.dnp.dappnode.eth": "Downloading 99%",
+    [coreName]: {
+      [coreName]: "Downloading 54%",
+      "vpn.dnp.dappnode.eth": "Downloading 79%",
       "admin.dnp.dappnode.eth": "Loading..."
     },
 
@@ -1263,7 +1272,8 @@ const isInstallingState: IsInstallingLogsState = {
     }
   },
   dnpNameToLogId: {
-    [isInstallingDnp]: isInstallingDnp
+    [isInstallingDnp]: isInstallingDnp,
+    [coreName]: coreName
   }
 };
 

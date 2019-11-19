@@ -11,14 +11,14 @@ import { isEmpty, throttle, pick } from "lodash";
 import { difference, isDeepEmpty } from "utils/lodashExtended";
 import { shortNameCapitalized, isDnpVerified } from "utils/format";
 // This module
-import ProgressLogs from "./InstallCardComponents/ProgressLogs";
+import ProgressLogsView from "./InstallCardComponents/ProgressLogsView";
 // Components
 import Info from "./Steps/Info";
 import SetupWizard from "./Steps/SetupWizard";
 import Permissions from "./Steps/Permissions";
 import Disclaimer from "./Steps/Disclaimer";
 import HorizontalStepper from "./HorizontalStepper";
-import { RequestedDnp, UserSettingsAllDnps } from "types";
+import { RequestedDnp, UserSettingsAllDnps, ProgressLogs } from "types";
 // External
 import { rootPath as packagesRootPath } from "pages/packages/data";
 
@@ -27,7 +27,7 @@ const SHOW_ADVANCED_EDITOR = "SHOW_ADVANCED_EDITOR";
 
 interface InstallDnpViewProps {
   dnp: RequestedDnp;
-  progressLogs?: { [dnpName: string]: string };
+  progressLogs?: ProgressLogs;
 }
 
 /**
@@ -247,7 +247,7 @@ const InstallDnpView: React.FunctionComponent<
 
   return (
     <>
-      {progressLogs && <ProgressLogs progressLogs={progressLogs} />}
+      {progressLogs && <ProgressLogsView progressLogs={progressLogs} />}
 
       {requiresCoreUpdate && (
         <div className="alert alert-danger">

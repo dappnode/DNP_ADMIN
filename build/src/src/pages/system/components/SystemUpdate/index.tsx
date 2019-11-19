@@ -4,9 +4,9 @@ import { connect } from "react-redux";
 // Modules
 import installer from "pages/installer";
 // Selectors
-import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
+import { getProgressLogsOfDnp } from "services/isInstallingLogs/selectors";
 import { getIsLoadingStrictById } from "services/loadingStatus/selectors";
-import { getCoreDeps } from "services/coreUpdate/selectors";
+import { getCoreUpdateAvailable } from "services/coreUpdate/selectors";
 import {
   loadingId as loadingIdCoreUpdate,
   coreName
@@ -17,13 +17,22 @@ import StatusIcon from "components/StatusIcon";
 import SystemUpdateDetails from "./SystemUpdateDetails";
 import Loading from "components/generic/Loading";
 import SubTitle from "components/SubTitle";
+import { ProgressLogs } from "types";
 
-function SystemUpdate({ coreProgressLogs, isLoading, coreUpdateAvailable }) {
+function SystemUpdate({
+  coreProgressLogs,
+  isLoading,
+  coreUpdateAvailable
+}: {
+  coreProgressLogs: ProgressLogs | undefined;
+  isLoading: boolean;
+  coreUpdateAvailable: boolean;
+}) {
   return (
     <>
       <SubTitle>Update</SubTitle>
       {/* This component will automatically hide if logs are empty */}
-      <installer.components.ProgressLogs progressLogs={coreProgressLogs} />
+      <installer.components.ProgressLogsView progressLogs={coreProgressLogs} />
 
       {isLoading ? (
         <Loading msg="Checking core version..." />
@@ -41,9 +50,9 @@ function SystemUpdate({ coreProgressLogs, isLoading, coreUpdateAvailable }) {
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  coreProgressLogs: state => getProgressLogsByDnp(state, coreName),
+  coreProgressLogs: state => getProgressLogsOfDnp(state, coreName),
   isLoading: getIsLoadingStrictById(loadingIdCoreUpdate),
-  coreUpdateAvailable: state => (getCoreDeps(state) || []).length > 0
+  coreUpdateAvailable: getCoreUpdateAvailable
 });
 
 export default connect(
