@@ -2,9 +2,9 @@ import React from "react";
 import Input from "components/Input";
 import Select from "components/Select";
 import Button from "components/Button";
-import styled from "styled-components";
 import PropTypes from "prop-types";
 import { MdClose } from "react-icons/md";
+import "./tableInputs.scss";
 
 /**
  * Note to self:
@@ -12,15 +12,10 @@ import { MdClose } from "react-icons/md";
  * Otherwise the reference to an element will change every
  * render and react will re-render the entire underlying
  * component. For example, an input will cause it to lose focus
+ *
+ * [NOTE]: Avoiding style-components here since there were too
+ * many components re-rendering uselessly
  */
-const TableXN = styled.div`
-  display: grid;
-  grid-gap: 1em;
-`;
-const Header = styled.h6`
-  color: var(--light-text-color);
-  margin-bottom: 0;
-`;
 
 function TableInputs({ headers, content, numOfRows = 2, rowsTemplate }) {
   if (!Array.isArray(headers)) {
@@ -39,11 +34,14 @@ function TableInputs({ headers, content, numOfRows = 2, rowsTemplate }) {
   });
 
   return (
-    <TableXN
-      style={{ gridTemplateColumns: rowsTemplate || "auto ".repeat(numOfRows) }}
+    <div
+      className="table-xn"
+      style={{ gridTemplateColumns: rowsTemplate || "1fr ".repeat(numOfRows) }}
     >
       {headers.map((header, i) => (
-        <Header key={i}>{header}</Header>
+        <h6 key={i} className="small-header">
+          {header}
+        </h6>
       ))}
       {content.map((row, i) =>
         row.map((col, j) =>
@@ -69,7 +67,7 @@ function TableInputs({ headers, content, numOfRows = 2, rowsTemplate }) {
           )
         )
       )}
-    </TableXN>
+    </div>
   );
 }
 

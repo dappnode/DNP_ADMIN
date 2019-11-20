@@ -1,5 +1,6 @@
 import { capitalize, stringEndsWith } from "utils/strings";
 import { stringSplit } from "./strings";
+import prettyBytesLib from "pretty-bytes";
 
 export function shortName(ens) {
   if (!ens || typeof ens !== "string") return ens;
@@ -71,4 +72,14 @@ export function prettyVolumeName(volName, dnpName) {
     const volOwner = leadingString.split(coreString)[1];
     return `${capitalize(volOwner)} - ${capitalize(prettyVolName)}`;
   } else return volName;
+}
+
+/**
+ * Returns human readable bytes
+ * @param {number} bytes 32616256172
+ * @return {string} "32GB"
+ */
+export function prettyBytes(bytes) {
+  if (typeof bytes === "number") return prettyBytesLib(bytes);
+  else return bytes;
 }

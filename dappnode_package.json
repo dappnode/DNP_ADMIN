@@ -1,8 +1,8 @@
 {
   "name": "admin.dnp.dappnode.eth",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Dappnode package responsible for providing the administrative user interface",
-  "avatar": "/ipfs/QmToeWG2cwfJxbh6BjC2U5YR1sduLuPEhZKyrPUhFTKoNQ",
+  "avatar": "/ipfs/QmNrZu2rq6AwgDjHjFjEc3d7ZMiLTw4RDpMhRFQDEwtZcb",
   "type": "dncore",
   "image": {
     "path": "",

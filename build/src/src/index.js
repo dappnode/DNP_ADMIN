@@ -59,3 +59,9 @@ render(
   </Provider>,
   document.getElementById("root")
 );
+
+// ### DEBUG to check useless re-renders
+if (process.env.NODE_ENV !== "production") {
+  const { whyDidYouUpdate } = require("why-did-you-update");
+  whyDidYouUpdate(React);
+}

@@ -243,3 +243,11 @@ body,
   background-color: var(--color-background);
   min-height: 100vh;
 }
+
+/*************
+  Additional
+  ************
+*/
+.button-group > *:not(:last-child) {
+  margin-right: var(--default-spacing);
+}

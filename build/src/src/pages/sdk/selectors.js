@@ -210,9 +210,7 @@ function getManifestHashInput(state) {
       success.push(`Manifest successfully verified`);
     else
       error.push(
-        `Manifest verification failed. This manifest is for ${
-          manifest.name
-        } @ ${manifest.version}`
+        `Manifest verification failed. This manifest is for ${manifest.name} @ ${manifest.version}`
       );
   }
   return cleanArrays({ error, success });
