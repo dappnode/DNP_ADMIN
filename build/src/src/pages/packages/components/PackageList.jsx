@@ -16,6 +16,7 @@ import {
   getIsLoading,
   getLoadingError
 } from "services/loadingStatus/selectors";
+import { getDnpInstalledStatus } from "services/dnpInstalled/selectors";
 // Icons
 import { MdRefresh, MdOpenInNew } from "react-icons/md";
 // Utils
@@ -31,9 +32,7 @@ const PackagesList = ({
   dnps = [],
   moduleName,
   coreDnps,
-  dnpsAvatars,
-  loading,
-  error,
+  requestStatus: { loading, error },
   restartPackage
 }) => {
   if (!dnps.length) {
@@ -57,28 +56,30 @@ const PackagesList = ({
       <header>Name</header>
       <header>Open</header>
       <header className="restart">Restart</header>
-      {filteredDnps.sort(sortByProp("name")).map(({ name, state }) => (
-        <React.Fragment key={name}>
-          <StateBadge state={state} />
-          <img
-            className="avatar"
-            src={dnpsAvatars[name] || (coreDnps ? dappnodeIcon : defaultAvatar)}
-            alt="Avatar"
-          />
-          <NavLink className="name" to={`/${modulePath}/${name}`}>
-            {shortNameCapitalized(name)}
-          </NavLink>
-          <NavLink className="open" to={`/${modulePath}/${name}`}>
-            <MdOpenInNew />
-          </NavLink>
-          <MdRefresh
-            className="restart"
-            style={{ fontSize: "1.05rem" }}
-            onClick={() => restartPackage(name)}
-          />
-          <hr />
-        </React.Fragment>
-      ))}
+      {filteredDnps
+        .sort(sortByProp("name"))
+        .map(({ name, state, avatarUrl }) => (
+          <React.Fragment key={name}>
+            <StateBadge state={state} />
+            <img
+              className="avatar"
+              src={avatarUrl || (coreDnps ? dappnodeIcon : defaultAvatar)}
+              alt="Avatar"
+            />
+            <NavLink className="name" to={`/${modulePath}/${name}`}>
+              {shortNameCapitalized(name)}
+            </NavLink>
+            <NavLink className="open" to={`/${modulePath}/${name}`}>
+              <MdOpenInNew />
+            </NavLink>
+            <MdRefresh
+              className="restart"
+              style={{ fontSize: "1.05rem" }}
+              onClick={() => restartPackage(name)}
+            />
+            <hr />
+          </React.Fragment>
+        ))}
     </Card>
   );
 };
@@ -86,16 +87,14 @@ const PackagesList = ({
 PackagesList.propTypes = {
   dnps: PropTypes.array.isRequired,
   moduleName: PropTypes.string.isRequired,
-  coreDnps: PropTypes.bool,
-  loading: PropTypes.bool.isRequired,
-  error: PropTypes.string.isRequired
+  coreDnps: PropTypes.bool
 };
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
   dnps: s.getFilteredPackages,
-  dnpsAvatars: s.getPackagesAvatars,
+  requestStatus: getDnpInstalledStatus,
   loading: getIsLoading.dnpInstalled,
   error: getLoadingError.dnpInstalled
 });

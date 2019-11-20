@@ -13,7 +13,7 @@ import { shortNameCapitalized } from "utils/format";
 import { parseStaticDate, parseDiffDates } from "utils/dates";
 // External
 import { getAutoUpdateData } from "services/dappnodeStatus/selectors";
-import { getIsInstallingLogs } from "services/isInstallingLogs/selectors";
+import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 import { getMainnet } from "services/chainData/selectors";
 import { getIsMainnetDnpNotRunning } from "services/dnpInstalled/selectors";
 import { coreName } from "services/coreUpdate/data";
@@ -25,7 +25,7 @@ import "./autoUpdates.scss";
 
 const { MY_PACKAGES, SYSTEM_PACKAGES } = autoUpdateIds;
 
-function AutoUpdates({ autoUpdateData, progressLogs, mainnetBadStatus }) {
+function AutoUpdates({ autoUpdateData, progressLogsByDnp, mainnetBadStatus }) {
   const { dnpsToShow = [] } = autoUpdateData;
 
   // Force a re-render every 15 seconds for the timeFrom to show up correctly
@@ -80,7 +80,7 @@ function AutoUpdates({ autoUpdateData, progressLogs, mainnetBadStatus }) {
               enabled,
               feedback,
               isInstalling:
-                progressLogs[id === SYSTEM_PACKAGES ? coreName : id],
+                progressLogsByDnp[id === SYSTEM_PACKAGES ? coreName : id],
               isSinglePackage: id !== MY_PACKAGES && id !== SYSTEM_PACKAGES,
               // Actions
               setUpdateSettings
@@ -175,14 +175,14 @@ function AutoUpdateItem({
 
 AutoUpdates.propTypes = {
   autoUpdateData: PropTypes.object.isRequired,
-  progressLogs: PropTypes.object.isRequired
+  progressLogsByDnp: PropTypes.object.isRequired
 };
 
 // Container
 
 const mapStateToProps = createStructuredSelector({
   autoUpdateData: getAutoUpdateData,
-  progressLogs: getIsInstallingLogs,
+  progressLogsByDnp: getProgressLogsByDnp,
   mainnetBadStatus: createSelector(
     getMainnet,
     getIsMainnetDnpNotRunning,

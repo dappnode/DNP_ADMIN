@@ -1,0 +1,92 @@
+.cancel-button {
+  margin-right: var(--default-spacing);
+}
+
+.rjsf {
+  // In order to re-arrange the order position of the errors
+  display: flex;
+  flex-direction: column;
+
+  // Styles of the react-jsonschema-form library
+  .control-label {
+    font-weight: bold;
+  }
+
+  .has-error {
+    input {
+      border-color: var(--danger-color);
+    }
+  }
+  // Add a top divider if:
+  // - It's not a confirm block
+  // - It's not a single child
+  // - It's not the first child
+  .form-group
+    > fieldset
+    > .form-group:not(.confirm):not(:only-child):not(:first-child) {
+    padding-top: var(--default-spacing);
+    border-top: var(--border-style);
+  }
+
+  // Hide DNP titles if there's only one DNP
+  fieldset > .form-group:only-child > fieldset > legend {
+    display: none;
+  }
+
+  // Correct excesive spacing on the bottom buttons due to nesting
+  > .form-group > fieldset > .form-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .help-block {
+    display: block;
+    margin-top: 0.25rem;
+    color: #737373;
+    font-size: 85%;
+  }
+
+  ul.error-detail {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    li {
+      font-size: 85%;
+      width: 100%;
+      margin-top: 0.25rem;
+      list-style: none;
+    }
+  }
+
+  > .errors {
+    order: 2;
+    margin-bottom: var(--default-spacing);
+    > .panel-heading {
+      color: var(--danger-color);
+      display: none;
+    }
+    > ul > li {
+      background-color: #fff4f5;
+    }
+  }
+
+  .bottom-buttons {
+    order: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: calc(-1 * var(--default-spacing));
+
+    button {
+      margin-top: var(--default-spacing);
+    }
+
+    .subtle-header {
+      margin-top: var(--default-spacing);
+      cursor: pointer;
+      transition: color ease 150ms;
+      &:hover {
+        color: black;
+      }
+    }
+  }
+}

@@ -5,6 +5,7 @@ import dappnodeStatus from "./dappnodeStatus";
 import devices from "./devices";
 import dnpDirectory from "./dnpDirectory";
 import dnpInstalled from "./dnpInstalled";
+import dnpRequest from "./dnpRequest";
 import isInstallingLogs from "./isInstallingLogs";
 import loadingStatus from "./loadingStatus";
 import notifications from "./notifications";
@@ -18,6 +19,7 @@ export default {
   devices,
   dnpDirectory,
   dnpInstalled,
+  dnpRequest,
   isInstallingLogs,
   loadingStatus,
   notifications,

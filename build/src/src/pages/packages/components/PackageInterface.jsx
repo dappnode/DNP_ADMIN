@@ -24,18 +24,14 @@ import Error from "components/generic/Error";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 // Selectors
-import {
-  getIsLoading,
-  getLoadingError
-} from "services/loadingStatus/selectors";
+import { getDnpInstalledStatus } from "services/dnpInstalled/selectors";
 
 const PackageInterface = ({
   dnp,
   id,
   moduleName,
   areThereDnps,
-  loading,
-  error,
+  requestStatus: { loading, error },
   match
 }) => {
   if (!dnp) {
@@ -146,9 +142,7 @@ const PackageInterface = ({
 PackageInterface.propTypes = {
   dnp: PropTypes.object,
   id: PropTypes.string,
-  moduleName: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired,
-  error: PropTypes.string.isRequired
+  moduleName: PropTypes.string.isRequired
 };
 
 // Container
@@ -159,9 +153,7 @@ const mapStateToProps = createStructuredSelector({
   id: s.getUrlId,
   moduleName: s.getModuleName,
   areThereDnps: s.areThereDnps,
-  loadingDnps: getIsLoading.dnpInstalled,
-  loading: getIsLoading.dnpInstalled,
-  error: getLoadingError.dnpInstalled,
+  requestStatus: getDnpInstalledStatus,
   // For the withTitle HOC
   subtitle: (state, ownProps) =>
     shortNameCapitalized(s.getUrlId(state, ownProps))

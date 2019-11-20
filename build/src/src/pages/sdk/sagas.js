@@ -176,9 +176,7 @@ const inputHanlders = {
         yield put(a.updateQueryResult("manifest", { hash: value, manifest }));
       } else {
         throw Error(
-          `Error fetching manifest for publish form verification: ${
-            res.message
-          }`
+          `Error fetching manifest for publish form verification: ${res.message}`
         );
       }
     } catch (e) {
