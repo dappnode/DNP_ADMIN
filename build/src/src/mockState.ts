@@ -83,7 +83,8 @@ const lightningNetworkMetadata = {
     homepage:
       "https://github.com/dappnode/DAppNodePackage-LightningNetwork#readme",
     ui: "http://lightning-network.dappnode",
-    api: "http://lightning-network.dappnode:8080"
+    api: "http://lightning-network.dappnode:8080",
+    another: "http://lightning-network.dappnode"
   },
   repository: {
     type: "git",

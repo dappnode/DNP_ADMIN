@@ -1,13 +1,19 @@
 .links-icon {
   font-size: 1.2rem;
-  position: relative;
-  top: 3px;
   margin-right: 4px;
   color: var(--dappnode-color);
 }
 
 .links-url {
+  display: flex;
+  align-items: center;
   text-transform: capitalize;
+}
+
+.api-link-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .api-link-box {
@@ -17,4 +23,8 @@
   margin-left: 0.75rem;
   font-family: monospace;
   background-color: var(--color-background);
+}
+
+.unknown-link-container {
+  text-transform: capitalize;
 }

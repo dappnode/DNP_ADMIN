@@ -41,25 +41,22 @@ function Links({ dnp }) {
                 <MdSettingsRemote />
               ) : null}
             </span>
-            {name}
+            <span>{name}</span>
           </a>
         ) : name === "api" || name === "endpoint" ? (
-          <span>
+          <span className="api-link-container">
             <a href={url} {...newTabProps}>
               <span className="links-icon">
                 <MdSettings />
               </span>
-              Api
+              <span>Api</span>
             </a>
-            <span className="api-link-box">{url}</span>
+            <div className="api-link-box">{url}</div>
           </span>
         ) : (
-          <span>
-            <SoftCapitalized>{name || "unnamed"}:</SoftCapitalized>{" "}
-            <a href={url} {...newTabProps}>
-              {url}
-            </a>
-          </span>
+          <a className="unknown-link-container" href={url} {...newTabProps}>
+            {name || url || "unnamed"}
+          </a>
         )
       )}
     />
