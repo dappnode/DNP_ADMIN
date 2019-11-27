@@ -4,9 +4,10 @@ import newTabProps from "utils/newTabProps";
 // Items
 import { sidenavItems } from "components/navbar/navbarItems";
 // styles
-import "./home.css";
+import "./home.scss";
 
-const SURVEY_LINK = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
+const userGuideUrl = "https://dappnode.github.io/DAppNodeDocs/what-can-you-do/";
+const surveyUrl = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
 
 if (!Array.isArray(sidenavItems)) throw Error("sidenavItems must be an array");
 
@@ -14,20 +15,30 @@ export default class Home extends React.Component {
   render() {
     return (
       <>
-        <div className="jumbotron">
+        <div className="dappnode-home jumbotron">
           <h1 className="display-4">Welcome to DAppNode</h1>
           <p className="lead">
-            If you have just finished the installation, please help the team
-            telling us how it went in the survey below
+            Visit the user guide to get an overview of how you can do with your
+            DAppNode. Also, if you have just finished the installation, please
+            let us know how it went; your feedback helps us to improve.
           </p>
           <p className="lead">
             <a
               className="btn btn-dappnode"
-              href={SURVEY_LINK}
+              href={userGuideUrl}
               role="button"
               {...newTabProps}
             >
-              Fill survey
+              Read user guide
+            </a>
+
+            <a
+              className="btn btn-outline-dappnode"
+              href={surveyUrl}
+              role="button"
+              {...newTabProps}
+            >
+              Give feedback
             </a>
           </p>
         </div>

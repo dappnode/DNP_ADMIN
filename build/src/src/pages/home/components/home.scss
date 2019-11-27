@@ -1,6 +1,13 @@
-.jumbotron {
-  background-color: white;
-  border: 1px solid var(--border-color);
+.dappnode-home {
+  &.jumbotron {
+    background-color: white;
+    border: 1px solid var(--border-color);
+  }
+  .lead {
+    > a:not(:last-child) {
+      margin-right: 0.75rem;
+    }
+  }
 }
 
 .home-links {

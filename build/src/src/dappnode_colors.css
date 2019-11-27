@@ -71,7 +71,7 @@
 .btn-outline-dappnode:hover {
   color: var(--dappnode-white-color);
   background-color: var(--dappnode-darker-main-color);
-  border-color: var(--dappnode-darker-main-color);
+  border-color: var(--dappnode-darker-main-color) !important;
 }
 
 .btn-outline-dappnode:focus,
