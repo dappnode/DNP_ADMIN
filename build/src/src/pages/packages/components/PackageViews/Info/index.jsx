@@ -11,8 +11,8 @@ import "./info.scss";
 
 function Info({ dnp }) {
   if (!dnp) return null;
-  const { manifest, state } = dnp;
-  const { description, version, upstreamVersion, origin } = manifest || {};
+  const { manifest, state, origin } = dnp;
+  const { description, version, upstreamVersion } = manifest || {};
   return (
     <>
       <SubTitle>Details</SubTitle>

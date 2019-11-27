@@ -918,6 +918,7 @@ const dnpInstalledState: DnpInstalledState = {
     {
       ...samplePackageContainer,
       name: "lightning-network.dnp.dappnode.eth",
+      origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
       isDnp: true,
       version: "0.1.0",
       state: "running",
