@@ -237,5 +237,9 @@ p.no-p-style:last-child {
 /* Data-heavy card sections */
 .subtle-header {
   color: #757575;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+}
+.subtle-header.capitalize {
+  text-transform: capitalize;
 }

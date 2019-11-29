@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import api from "API/rpcMethods";
 // Components
 import Input from "components/Input";
-import { ButtonLight } from "components/Button";
+import Button from "components/Button";
 // Utils
 import { shortName } from "utils/format";
 import dataUriToBlob from "utils/dataUriToBlob";
@@ -47,18 +47,19 @@ function From({ id }) {
 
   return (
     <div className="card-subgroup">
-      <div className="section-card-subtitle">
-        Download from DAppNode Package
-      </div>
       {/* FROM, chose path */}
       <Input
         placeholder="Container from path"
         value={fromPath}
         onValueChange={setFromPath}
         append={
-          <ButtonLight onClick={downloadFile} disabled={!fromPath}>
+          <Button
+            onClick={downloadFile}
+            disabled={!fromPath}
+            variant="dappnode"
+          >
             Download
-          </ButtonLight>
+          </Button>
         }
       />
     </div>
