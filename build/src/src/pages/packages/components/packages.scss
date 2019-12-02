@@ -158,16 +158,19 @@
 // ####### the fit to screen breaks. The terminal grows beyond
 // ####### the screen size
 
-.packages-content .section-subtitle {
-  display: none;
-}
-
 .packages-body {
   display: flex;
 }
 
 .packages-content {
   flex: auto;
+  .section-subtitle:only-child,
+  .section-subtitle:first-child:nth-last-child(2) {
+    display: none;
+  }
+  > *:not(:last-child) {
+    margin-bottom: var(--default-spacing);
+  }
 }
 
 .horizontal-navbar {

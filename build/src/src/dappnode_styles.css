@@ -10,12 +10,15 @@ button.no-a-style:hover {
   text-decoration: inherit;
 }
 
-a {
+a,
+.a-style {
   color: var(--dappnode-links-color);
   text-decoration: inherit;
   transition: color ease 150ms;
+  cursor: pointer;
 }
-a:hover {
+a:hover,
+.a-style:hover {
   color: var(--dappnode-links-darker-color);
 }
 

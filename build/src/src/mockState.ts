@@ -33,7 +33,7 @@ function getDescription(manifest: {
   return manifest.shortDescription || manifest.description;
 }
 
-const coreName = "core.dnp.dappnode.eth"
+const coreName = "core.dnp.dappnode.eth";
 
 /**
  * Avatars
@@ -717,19 +717,24 @@ const coreUpdateState: CoreUpdateState = {
   coreUpdateData: {
     available: true,
     type: "patch",
-    packages: [{
-      name: "admin.dnp.dappnode.eth",
-      from: "0.2.0",
-      to: "0.2.6",
-      warningOnInstall: "Warning on **install**",
-    }],
-    changelog:  "Major improvements to the 0.2 version https://github.com/dappnode/DAppNode/wiki/DAppNode-Migration-guide-to-OpenVPN",
-    updateAlerts: [{
-      from: "0.2.0",
-      to: "0.2.0",
-      message: "Conditional update alert: **Markdown**"
-    }],
-    versionId: "",
+    packages: [
+      {
+        name: "admin.dnp.dappnode.eth",
+        from: "0.2.0",
+        to: "0.2.6",
+        warningOnInstall: "Warning on **install**"
+      }
+    ],
+    changelog:
+      "Major improvements to the 0.2 version https://github.com/dappnode/DAppNode/wiki/DAppNode-Migration-guide-to-OpenVPN",
+    updateAlerts: [
+      {
+        from: "0.2.0",
+        to: "0.2.0",
+        message: "Conditional update alert: **Markdown**"
+      }
+    ],
+    versionId: ""
   },
   updatingCore: true
 };
@@ -950,7 +955,9 @@ const dnpInstalledState: DnpInstalledState = {
       manifest: lightningNetworkMetadata,
       envs: {
         ENV_NAME: "ENV_VALUE"
-      }
+      },
+      gettingStarted:
+        "**Accessing the ADMIN UI**\n\nOnce the node is synced, you can access your LN node [admin UI here](https://lightning-network.dappnode)\n\n**How to download macaroons**\n\nUsually Lightning Network applications require files called *macaroons* for authorizations to perform operations on the LND node. There are many types depending on the level of access.\nTo download the admin macaroon, you should go to the Admin panel of DAppnode: \nPackages -> My packages -> Lightning-Network -> File manager\nThen input in the 'Download from DNP' field:\n```\n/config/data/chain/bitcoin/mainnet/admin.macaroon\n```\n\n**How to use Joule extension with DAppNode**\n\nJoule is an extension available for many browsers which lets you use your node to make payments, invoices, open channels and more. Check the website: https://lightningjoule.com/\n* To run Joule, first you need to download these macaroons in a safe folder, as described above:\n```\n/config/data/chain/bitcoin/mainnet/admin.macaroon\n/config/data/chain/bitcoin/mainnet/readonly.macaroon\n```\n* When asked on the type of node, select Remote and then enter the following url: \n   https://lightning-network.dappnode:8080\n   * You will need to accept the SSL certificate in the next step\n* Upload the macaroons, choose a password to encrypt the data, and you're ready to go!\n* **Enjoy!** But be aware both LND and RTL are beta software .Only use funds you can afford to lose.  Don't be completely #Reckless ;)\n"
     },
     {
       ...samplePackageContainer,

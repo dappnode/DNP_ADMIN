@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 import DataList from "./DataList";
 import { Soft } from "./Soft";
 import { prettyVolumeName, prettyBytes } from "utils/format";
+import { PackageContainer } from "types";
 
-function Vols({ dnp }) {
+function Vols({ dnp }: { dnp: PackageContainer }) {
   const { volumes = [] } = dnp;
   if (volumes && !Array.isArray(volumes)) {
     console.error("volumes must be an array ", volumes);
