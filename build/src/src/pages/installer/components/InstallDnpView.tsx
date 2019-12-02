@@ -18,9 +18,11 @@ import SetupWizard from "./Steps/SetupWizard";
 import Permissions from "./Steps/Permissions";
 import Disclaimer from "./Steps/Disclaimer";
 import HorizontalStepper from "./HorizontalStepper";
-import { RequestedDnp, UserSettingsAllDnps, ProgressLogs } from "types";
+import Card from "components/Card";
+import StatusIcon from "components/StatusIcon";
 // External
 import { rootPath as packagesRootPath } from "pages/packages/data";
+import { RequestedDnp, UserSettingsAllDnps, ProgressLogs } from "types";
 
 const BYPASS_CORE_RESTRICTION = "BYPASS_CORE_RESTRICTION";
 const SHOW_ADVANCED_EDITOR = "SHOW_ADVANCED_EDITOR";
@@ -50,6 +52,8 @@ const InstallDnpView: React.FunctionComponent<
 }) => {
   const [userSettings, setUserSettings] = useState({} as UserSettingsAllDnps);
   const [options, setOptions] = useState({} as { [optionId: string]: boolean });
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [isInstalling, setIsInstalling] = useState(false);
 
   const { name, reqVersion, settings, metadata } = dnp;
   const type = metadata.type;
@@ -94,12 +98,21 @@ const InstallDnpView: React.FunctionComponent<
     // and do some nice transition to the package
     console.log("Installing DNP", kwargs);
     try {
+      setIsInstalling(true);
       await api.installPackage(kwargs, {
         toastMessage: `Installing ${shortNameCapitalized(name)}...`
       });
       // Re-direct user to package page if installation is successful
-      if (componentIsMounted.current)
-        history.push(packagesRootPath + "/" + name);
+      if (componentIsMounted.current) {
+        setIsInstalling(false);
+        setShowSuccess(true);
+        setTimeout(() => {
+          if (componentIsMounted.current) {
+            setShowSuccess(false);
+            history.push(packagesRootPath + "/" + name);
+          }
+        }, 1000);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -247,7 +260,15 @@ const InstallDnpView: React.FunctionComponent<
 
   return (
     <>
-      {progressLogs && <ProgressLogsView progressLogs={progressLogs} />}
+      {progressLogs ? (
+        <ProgressLogsView progressLogs={progressLogs} />
+      ) : showSuccess ? (
+        <Card spacing>
+          <StatusIcon success={true} message="Successfully installed!" />
+        </Card>
+      ) : isInstalling ? (
+        <ProgressLogsView progressLogs={{ [name]: "..." }} />
+      ) : null}
 
       {requiresCoreUpdate && (
         <div className="alert alert-danger">
