@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { ContainerStatus } from "types";
 
-function StateBadge({ state }) {
+function StateBadge({ state }: { state: ContainerStatus }) {
   const styleColor =
     state === "running"
       ? "success"

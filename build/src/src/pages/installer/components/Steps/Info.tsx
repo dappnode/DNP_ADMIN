@@ -146,7 +146,9 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
             <div className="right-top">
               <div className="info">
                 <DnpNameVerified name={name} origin={origin} />
-                <div className="subtle-header">{shortAuthor(author)}</div>
+                <div className="subtle-header capitalize">
+                  {shortAuthor(author)}
+                </div>
                 <div className="right-bottom">
                   <OkBadge
                     loading={resolvingCompatibility}
@@ -186,7 +188,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
         {optionsArray.length > 0 && (
           <div>
             <div
-              className="subtle-header more-options"
+              className="subtle-header capitalize more-options"
               onClick={() => setShowOptions(x => !x)}
             >
               {showOptions ? <MdExpandLess /> : <MdExpandMore />}

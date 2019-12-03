@@ -10,12 +10,15 @@ button.no-a-style:hover {
   text-decoration: inherit;
 }
 
-a {
+a,
+.a-style {
   color: var(--dappnode-links-color);
   text-decoration: inherit;
   transition: color ease 150ms;
+  cursor: pointer;
 }
-a:hover {
+a:hover,
+.a-style:hover {
   color: var(--dappnode-links-darker-color);
 }
 
@@ -237,5 +240,9 @@ p.no-p-style:last-child {
 /* Data-heavy card sections */
 .subtle-header {
   color: #757575;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+}
+.subtle-header.capitalize {
+  text-transform: capitalize;
 }

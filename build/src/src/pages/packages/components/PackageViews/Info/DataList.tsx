@@ -1,7 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function DataList({ title, data }) {
+function DataList({
+  title,
+  data
+}: {
+  title: string;
+  data: React.ReactElement[];
+}) {
   if (!data.length) return null;
   return (
     <div>
