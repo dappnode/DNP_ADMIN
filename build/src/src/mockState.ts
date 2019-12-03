@@ -677,6 +677,7 @@ const sampleRequestState: RequestedDnp = {
 };
 
 const sampleDirectoryState: DirectoryItem = {
+  status: "ok",
   name: "demo-name",
   description: "Demo description",
   avatarUrl: "",
@@ -901,6 +902,20 @@ const dnpDirectoryState: DnpDirectoryState = {
       name: inLoadingDnp,
       description: "Sample package in loading state",
       avatarUrl: inLoadingAvatar
+    },
+    {
+      status: "loading",
+      name: "fetch-loads.dnp.dappnode.eth",
+      whitelisted: true,
+      isFeatured: false,
+      message: "Loading manifest and more stuff really long text that goes on and on and more stuff 57%"
+    },
+    {
+      status: "error",
+      name: "fetch-fails.dnp.dappnode.eth",
+      whitelisted: true,
+      isFeatured: false,
+      message: "Can't download manifest"
     }
   ]
 };

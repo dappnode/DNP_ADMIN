@@ -3,6 +3,7 @@ import { DirectoryItem } from "types";
 import { SelectedCategories } from "pages/installer/types";
 
 const sampleDirectoryState: DirectoryItem = {
+  status: "ok",
   name: "demo-name",
   description: "Demo description",
   avatarUrl: "",

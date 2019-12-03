@@ -1,12 +1,151 @@
 import React from "react";
-import PropTypes from "prop-types";
 // Imgs
 import defaultAvatar from "img/defaultAvatar.png";
+import loadingAvatar from "img/light-gray-square.png";
+import errorAvatar from "img/errorAvatarTrim.png";
 // Utility components
 import Card from "components/Card";
 import Button from "components/Button";
 import DnpNameVerified from "components/DnpNameVerified";
-import { DirectoryItem } from "types";
+import {
+  DirectoryItem,
+  DirectoryItemOk,
+  DirectoryItemLoading,
+  DirectoryItemError
+} from "types";
+import "./dnpStore.scss";
+
+function getTag({
+  isUpdated,
+  isInstalled
+}: {
+  isUpdated: boolean;
+  isInstalled: boolean;
+}) {
+  return isUpdated ? "UPDATED" : isInstalled ? "UPDATE" : "GET";
+}
+
+/**
+ * Featured DNPs. Their size will be double a normal DNP card
+ * Their style is customizable via the manifest
+ */
+function DnpCardFeaturedOk({
+  directoryItem: { name, description, avatarUrl, featuredStyle },
+  ...props
+}: {
+  directoryItem: DirectoryItemOk;
+}) {
+  const { featuredBackground, featuredColor, featuredAvatarFilter } =
+    featuredStyle || {};
+  return (
+    <Card
+      {...props}
+      style={{ background: featuredBackground, color: featuredColor }}
+    >
+      <div className="avatar-big">
+        <img
+          style={{ filter: featuredAvatarFilter }}
+          src={avatarUrl || defaultAvatar}
+          alt="avatar"
+        />
+      </div>
+      <div className="info-big">
+        <div className="badge gray featured">Featured</div>
+        <DnpNameVerified name={name} big />
+        <div className="description">{description}</div>
+      </div>
+    </Card>
+  );
+}
+
+function DnpCardFeaturedLoading({
+  directoryItem: { name, message },
+  className,
+  ...props
+}: {
+  directoryItem: DirectoryItemLoading;
+  className: string;
+}) {
+  return (
+    <Card {...props} className={`${className} loading`}>
+      <div className="avatar-big">
+        <img src={loadingAvatar} alt="avatar" />
+      </div>
+      <div className="info-big">
+        <div className="badge gray featured">Featured</div>
+        <DnpNameVerified name={name} big />
+        <div className="description">{message}</div>
+      </div>
+    </Card>
+  );
+}
+
+function DnpCardOk({
+  directoryItem,
+  ...props
+}: {
+  directoryItem: DirectoryItemOk;
+}) {
+  const { name, description, avatarUrl, isUpdated } = directoryItem;
+  return (
+    <Card {...props}>
+      <div className="avatar">
+        <img src={avatarUrl || defaultAvatar} alt="avatar" />
+      </div>
+      <DnpNameVerified name={name} />
+      {/* <div className="badge">New version available</div> */}
+      <div className="description">{description}</div>
+      {/* Show the button as disabled (gray) if it's updated */}
+      <Button className="action" variant="dappnode" disabled={isUpdated}>
+        {getTag(directoryItem)}
+      </Button>
+    </Card>
+  );
+}
+
+function DnpCardLoading({
+  directoryItem: { name, message },
+  className,
+  ...props
+}: {
+  directoryItem: DirectoryItemLoading;
+  className: string;
+}) {
+  return (
+    <Card {...props} className={`${className} loading`}>
+      <div className="avatar">
+        <img src={loadingAvatar} alt="avatar" />
+      </div>
+      <DnpNameVerified name={name} />
+      <div className="description">{message}</div>
+      <Button className="action" variant="dappnode" disabled={true}>
+        {"-"}
+      </Button>
+    </Card>
+  );
+}
+
+function DnpCardError({
+  directoryItem: { name, message },
+  className,
+  ...props
+}: {
+  directoryItem: DirectoryItemError;
+  className: string;
+}) {
+  return (
+    <Card {...props} className={`${className} error`}>
+      <div className="avatar">
+        <img src={errorAvatar} alt="avatar" />
+      </div>
+      <DnpNameVerified name={name} />
+      <div className="description">{message}</div>
+      <Button className="action" variant="dappnode" disabled={true}>
+        ERROR
+      </Button>
+    </Card>
+  );
+}
 
 function DnpStore({
   directory,
@@ -22,92 +161,36 @@ function DnpStore({
 
   return (
     <div className={`dnp-cards ${featured ? "featured" : ""}`}>
-      {directory.map(
-        ({
-          name,
-          description,
-          avatarUrl,
-          isInstalled,
-          isUpdated,
-          featuredStyle
-        }) => {
-          const tagDisplay = isUpdated
-            ? "UPDATED"
-            : isInstalled
-            ? "UPDATE"
-            : "GET";
+      {directory.map(directoryItem => {
+        const cardProps = {
+          onClick: () => openDnp(directoryItem.name),
+          className: "dnp-card",
+          shadow: true
+        };
 
-          /**
-           * Featured DNPs. Their size will be double a normal DNP card
-           * Their style is customizable via the manifest
-           */
-          const { featuredBackground, featuredColor, featuredAvatarFilter } =
-            featuredStyle || {};
-          const cardStyle = {
-            background: featuredBackground,
-            color: featuredColor
-          };
-          const avatarStyle = {
-            filter: featuredAvatarFilter
-          };
-
-          return (
-            <Card
-              key={name}
-              className="dnp-card"
-              shadow
-              onClick={() => openDnp(name)}
-              style={featured ? cardStyle : {}}
-            >
-              {featured ? (
-                <>
-                  <div className="avatar-big">
-                    <img
-                      style={avatarStyle}
-                      src={avatarUrl || defaultAvatar}
-                      alt="avatar"
-                    />
-                  </div>
-                  <div className="info-big">
-                    <div className="badge gray featured">Featured</div>
-
-                    <DnpNameVerified name={name} big />
-
-                    <div className="description">{description}</div>
-                  </div>
-                </>
+        return (
+          <React.Fragment key={directoryItem.name}>
+            {directoryItem.status === "ok" ? (
+              directoryItem.isFeatured ? (
+                <DnpCardFeaturedOk {...{ ...cardProps, directoryItem }} />
               ) : (
-                <>
-                  <div className="avatar">
-                    <img src={avatarUrl || defaultAvatar} alt="avatar" />
-                  </div>
-
-                  <DnpNameVerified name={name} />
-
-                  {/* <div className="badge">New version available</div> */}
-                  <div className="description">{description}</div>
-                  <Button
-                    className="action"
-                    variant="dappnode"
-                    /* Show the button as disabled (gray) if it's updated */
-                    disabled={isUpdated}
-                  >
-                    {tagDisplay}
-                  </Button>
-                </>
-              )}
-            </Card>
-          );
-        }
-      )}
+                <DnpCardOk {...{ ...cardProps, directoryItem }} />
+              )
+            ) : directoryItem.status === "loading" ? (
+              directoryItem.isFeatured ? (
+                <DnpCardFeaturedLoading {...{ ...cardProps, directoryItem }} />
+              ) : (
+                <DnpCardLoading {...{ ...cardProps, directoryItem }} />
+              )
+            ) : directoryItem.status === "error" ? (
+              <DnpCardError {...{ ...cardProps, directoryItem }} />
+            ) : null}
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 }
-
-DnpStore.propTypes = {
-  directory: PropTypes.array.isRequired,
-  openDnp: PropTypes.func.isRequired
-};
 
 // Use `compose` from "redux" if you need multiple HOC
 export default DnpStore;

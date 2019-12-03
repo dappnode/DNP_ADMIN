@@ -35,7 +35,8 @@ export default function filterDirectory({
     .filter(
       dnp =>
         !isSomeCategorySelected ||
-        (dnp.categories || []).some(category => selectedCategories[category])
+        (dnp.status === "ok" &&
+          (dnp.categories || []).some(category => selectedCategories[category]))
     );
 }
 
