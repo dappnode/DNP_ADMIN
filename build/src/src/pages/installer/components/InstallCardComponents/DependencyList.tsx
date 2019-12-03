@@ -2,7 +2,7 @@ import React from "react";
 import { sortBy } from "lodash";
 import Badge from "react-bootstrap/Badge";
 import computeSemverUpdateType from "utils/computeSemverUpdateType";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 import styled from "styled-components";
 import { shortNameCapitalized } from "utils/format";
 import { DependencyListItem } from "types";
@@ -65,10 +65,7 @@ const DependencyList: React.FunctionComponent<DependencyListProps> = ({
                 className="alert alert-warning"
                 style={{ margin: "12px 0 6px 0" }}
               >
-                <ReactMarkdown
-                  className="no-p-style"
-                  source={warningOnInstall}
-                />
+                <RenderMarkdown source={warningOnInstall} />
               </div>
             )}
           </div>

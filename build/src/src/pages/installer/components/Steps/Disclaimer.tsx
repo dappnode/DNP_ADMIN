@@ -1,5 +1,5 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 // Components
 import Card from "components/Card";
 import Button from "components/Button";
@@ -29,8 +29,8 @@ const Disclaimer: React.FunctionComponent<DisclaimerProps> = ({
           <p>
             <strong>{disclaimer.name} disclaimer</strong>
           </p>
-          <div className="no-p-style">
-            <ReactMarkdown source={disclaimer.message} />
+          <div>
+            <RenderMarkdown source={disclaimer.message} />
           </div>
         </div>
       ))}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 // This module
 import Dependencies from "../InstallCardComponents/Dependencies";
 // Utils
@@ -241,7 +241,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
               {origin || ""}
             </div>
             <div className="subtle-header">CREATED BY</div>
-            <ReactMarkdown className="no-p-style" source={author} />
+            <RenderMarkdown source={author} />
           </div>
         </Columns>
       </Card>

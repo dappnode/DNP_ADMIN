@@ -3,7 +3,7 @@ import * as api from "API/calls";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 import { MdClose, MdUndo } from "react-icons/md";
 import { GoPin } from "react-icons/go";
 // This
@@ -46,7 +46,7 @@ function Info({ dnp }: { dnp: PackageContainer }) {
 
   return (
     <>
-      {gettingStartedShowLocal ? (
+      {!gettingStarted ? null : gettingStartedShowLocal ? (
         <>
           <SubTitle
             className={`getting-started-header ${loading ? "loading" : ""}`}
@@ -61,7 +61,7 @@ function Info({ dnp }: { dnp: PackageContainer }) {
             </div>
           </SubTitle>
           <Card className="getting-started-content">
-            <ReactMarkdown className="no-p-style" source={gettingStarted} />
+            <RenderMarkdown source={gettingStarted} />
             {gettingStartedShowRemote && (
               <div className="subtle-header" onClick={hideGettingStarted}>
                 Dismiss

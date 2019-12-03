@@ -3,7 +3,7 @@ import { get, isEmpty } from "lodash";
 import Error from "components/generic/Error";
 import Form, { FormValidation, AjvError } from "react-jsonschema-form";
 import Button from "components/Button";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 import "./formJsonSchema.scss";
 import { SetupUiJson, SetupSchemaAllDnpsFormated } from "types-own";
 
@@ -20,7 +20,7 @@ interface AjvErrorWithPath extends AjvError {
 // was responsible for 20-40% of the work
 const CustomDescriptionField: React.FunctionComponent<any> = ({
   description
-}) => useMemo(() => <ReactMarkdown source={description} />, [description]);
+}) => useMemo(() => <RenderMarkdown source={description} />, [description]);
 
 interface FormJsonSchemaProps {
   schema: SetupSchemaAllDnpsFormated;
