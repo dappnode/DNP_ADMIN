@@ -4,11 +4,22 @@ import DataList from "./DataList";
 // Utils
 import newTabProps from "utils/newTabProps";
 import { MdHome, MdSettingsRemote, MdSettings, MdInfo } from "react-icons/md";
-import { PackageContainer } from "types";
+import { PackageContainer, Manifest } from "types";
+
+interface ManifestLegacyWithHomepage extends Manifest {
+  homepage?: { [linkName: string]: string };
+}
 
 function Links({ dnp }: { dnp: PackageContainer }) {
   // In the manifest, homepage = {userui: "http://some.link"}
-  const linksObj = dnp.manifest && dnp.manifest.links ? dnp.manifest.links : {};
+  const manifest = (dnp.manifest
+    ? dnp.manifest
+    : {}) as ManifestLegacyWithHomepage;
+  const linksObj = manifest.links
+    ? manifest.links
+    : manifest.homepage
+    ? manifest.homepage
+    : {};
   const links =
     typeof linksObj === "object"
       ? Object.entries(linksObj)
