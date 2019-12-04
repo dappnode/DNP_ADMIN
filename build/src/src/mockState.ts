@@ -33,7 +33,7 @@ function getDescription(manifest: {
   return manifest.shortDescription || manifest.description;
 }
 
-const coreName = "core.dnp.dappnode.eth"
+const coreName = "core.dnp.dappnode.eth";
 
 /**
  * Avatars
@@ -83,7 +83,8 @@ const lightningNetworkMetadata = {
     homepage:
       "https://github.com/dappnode/DAppNodePackage-LightningNetwork#readme",
     ui: "http://lightning-network.dappnode",
-    api: "http://lightning-network.dappnode:8080"
+    api: "http://lightning-network.dappnode:8080",
+    another: "http://lightning-network.dappnode"
   },
   repository: {
     type: "git",
@@ -676,6 +677,7 @@ const sampleRequestState: RequestedDnp = {
 };
 
 const sampleDirectoryState: DirectoryItem = {
+  status: "ok",
   name: "demo-name",
   description: "Demo description",
   avatarUrl: "",
@@ -716,19 +718,24 @@ const coreUpdateState: CoreUpdateState = {
   coreUpdateData: {
     available: true,
     type: "patch",
-    packages: [{
-      name: "admin.dnp.dappnode.eth",
-      from: "0.2.0",
-      to: "0.2.6",
-      warningOnInstall: "Warning on **install**",
-    }],
-    changelog:  "Major improvements to the 0.2 version https://github.com/dappnode/DAppNode/wiki/DAppNode-Migration-guide-to-OpenVPN",
-    updateAlerts: [{
-      from: "0.2.0",
-      to: "0.2.0",
-      message: "Conditional update alert: **Markdown**"
-    }],
-    versionId: "",
+    packages: [
+      {
+        name: "admin.dnp.dappnode.eth",
+        from: "0.2.0",
+        to: "0.2.6",
+        warningOnInstall: "Warning on **install**"
+      }
+    ],
+    changelog:
+      "Major improvements to the 0.2 version https://github.com/dappnode/DAppNode/wiki/DAppNode-Migration-guide-to-OpenVPN",
+    updateAlerts: [
+      {
+        from: "0.2.0",
+        to: "0.2.0",
+        message: "Conditional update alert: **Markdown**"
+      }
+    ],
+    versionId: ""
   },
   updatingCore: true
 };
@@ -895,6 +902,20 @@ const dnpDirectoryState: DnpDirectoryState = {
       name: inLoadingDnp,
       description: "Sample package in loading state",
       avatarUrl: inLoadingAvatar
+    },
+    {
+      status: "loading",
+      name: "fetch-loads.dnp.dappnode.eth",
+      whitelisted: true,
+      isFeatured: false,
+      message: "Loading manifest and more stuff really long text that goes on and on and more stuff 57%"
+    },
+    {
+      status: "error",
+      name: "fetch-fails.dnp.dappnode.eth",
+      whitelisted: true,
+      isFeatured: false,
+      message: "Can't download manifest"
     }
   ]
 };
@@ -918,6 +939,7 @@ const dnpInstalledState: DnpInstalledState = {
     {
       ...samplePackageContainer,
       name: "lightning-network.dnp.dappnode.eth",
+      origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
       isDnp: true,
       version: "0.1.0",
       state: "running",
@@ -948,7 +970,44 @@ const dnpInstalledState: DnpInstalledState = {
       manifest: lightningNetworkMetadata,
       envs: {
         ENV_NAME: "ENV_VALUE"
-      }
+      },
+      gettingStarted: `
+**Accessing the ADMIN UI**\n\nOnce the node is synced, you can access your LN node [admin UI here](https://lightning-network.dappnode)\n\n**How to download macaroons**\n\nUsually Lightning Network applications require files called *macaroons* for authorizations to perform operations on the LND node. There are many types depending on the level of access.\nTo download the admin macaroon, you should go to the Admin panel of DAppnode: \nPackages -> My packages -> Lightning-Network -> File manager\nThen input in the 'Download from DNP' field:\n\`\`\`\n/config/data/chain/bitcoin/mainnet/admin.macaroon\n\`\`\`\n\n**How to use Joule extension with DAppNode**\n\nJoule is an extension available for many browsers which lets you use your node to make payments, invoices, open channels and more. Check the website: https://lightningjoule.com/\n* To run Joule, first you need to download these macaroons in a safe folder, as described above:\n\`\`\`\n/config/data/chain/bitcoin/mainnet/admin.macaroon\n/config/data/chain/bitcoin/mainnet/readonly.macaroon\n\`\`\`\n* When asked on the type of node, select Remote and then enter the following url: \n   https://lightning-network.dappnode:8080\n   * You will need to accept the SSL certificate in the next step\n* Upload the macaroons, choose a password to encrypt the data, and you're ready to go!\n* **Enjoy!** But be aware both LND and RTL are beta software .Only use funds you can afford to lose.  Don't be completely #Reckless ;) \n\n <img src="https://i.imgur.com/66P7Aei.png" width="500px" height="100%"> \n\n ![](https://i.imgur.com/66P7Aei.png) \n\n\n ![](https://i.ibb.co/cvw9f9K/download.png)
+
+
+**Blockquotes**
+
+As Kanye West said:
+
+> We're living the future so
+> the present is our past.      
+
+
+**Syntax highlighting**
+
+\`\`\`js
+function fancyAlert(arg) {
+  if(arg) {
+    $.facebox({div:'#foo'})
+  }
+}
+\`\`\`
+
+
+**Task Lists**
+- [x]  this is a complete item
+- [ ]  this is an incomplete item
+
+
+**Tables**
+
+First Header | Second Header
+------------ | -------------
+Content from cell 1 | Content from cell 2
+Content in the first column | Content in the second column
+
+        `,
+      gettingStartedShow: true
     },
     {
       ...samplePackageContainer,

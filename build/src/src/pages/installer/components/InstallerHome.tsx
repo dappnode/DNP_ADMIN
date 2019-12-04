@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
-import { throttle } from "lodash";
+import { throttle, isEmpty } from "lodash";
 import { DirectoryItem, RequestStatus } from "types";
 import { SelectedCategories } from "../types";
 // This page
@@ -18,7 +18,7 @@ import IsSyncing from "./IsSyncing";
 // Components
 import Title from "components/Title";
 import Input from "components/Input";
-import { ButtonLight } from "components/Button";
+import Button, { ButtonLight } from "components/Button";
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
 // Selectors
@@ -54,6 +54,7 @@ const InstallerHome: React.FunctionComponent<
   const [selectedCategories, setSelectedCategories] = useState(
     {} as SelectedCategories
   );
+  const [showErrorDnps, setShowErrorDnps] = useState(false);
 
   useEffect(() => {
     fetchDnpDirectory();
@@ -76,7 +77,8 @@ const InstallerHome: React.FunctionComponent<
 
   function openDnp(id: string) {
     const dnp = directory.find(({ name }) => name === id);
-    if (dnp && dnp.isUpdated) history.push(packagesRootPath + "/" + dnp.name);
+    if (dnp && dnp.status === "ok" && dnp.isUpdated)
+      history.push(packagesRootPath + "/" + dnp.name);
     else history.push(rootPath + "/" + encodeURIComponent(id));
   }
 
@@ -103,8 +105,9 @@ const InstallerHome: React.FunctionComponent<
   }
 
   const categories = {
-    ...directory.reduce((obj: SelectedCategories, { categories }) => {
-      for (const category of categories) obj[category] = false;
+    ...directory.reduce((obj: SelectedCategories, dnp) => {
+      if (dnp.status === "ok")
+        for (const category of dnp.categories) obj[category] = false;
       return obj;
     }, {}),
     ...selectedCategories
@@ -118,6 +121,11 @@ const InstallerHome: React.FunctionComponent<
    * 0. Else show the DnpStore
    */
 
+  const dnpsNoError = directoryFiltered.filter(dnp => dnp.status !== "error");
+  const dnpsFeatured = dnpsNoError.filter(dnp => dnp.isFeatured);
+  const dnpsNormal = dnpsNoError.filter(dnp => !dnp.isFeatured);
+  const dnpsError = directoryFiltered.filter(dnp => dnp.status === "error");
+
   return (
     <>
       <Title title="Installer" />
@@ -130,26 +138,32 @@ const InstallerHome: React.FunctionComponent<
         append={<ButtonLight onClick={runQuery}>Search</ButtonLight>}
       />
 
-      <CategoryFilter
-        categories={categories}
-        onCategoryChange={onCategoryChange}
-      />
+      {isEmpty(categories) && directory.length ? (
+        <div className="type-filter placeholder" />
+      ) : (
+        <CategoryFilter
+          categories={categories}
+          onCategoryChange={onCategoryChange}
+        />
+      )}
 
       {directory.length ? (
         !directoryFiltered.length ? (
           <NoPackageFound query={query} />
         ) : (
-          <>
-            <DnpStore
-              directory={directoryFiltered.filter(dnp => dnp.isFeatured)}
-              openDnp={openDnp}
-              featured
-            />
-            <DnpStore
-              directory={directoryFiltered.filter(dnp => !dnp.isFeatured)}
-              openDnp={openDnp}
-            />
-          </>
+          <div className="dnps-container">
+            <DnpStore directory={dnpsFeatured} openDnp={openDnp} featured />
+            <DnpStore directory={dnpsNormal} openDnp={openDnp} />
+            {dnpsError.length ? (
+              showErrorDnps ? (
+                <DnpStore directory={dnpsError} openDnp={openDnp} />
+              ) : (
+                <Button onClick={() => setShowErrorDnps(true)}>
+                  Show packages still propagating
+                </Button>
+              )
+            ) : null}
+          </div>
         )
       ) : mainnetIsSyncing ? (
         <IsSyncing />

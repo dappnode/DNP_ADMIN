@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import Button from "components/Button";
 import { render, unmountComponentAtNode } from "react-dom";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 import { stringIncludes } from "utils/strings";
 import "./confirmDialog.css";
 
@@ -57,7 +57,7 @@ function Modal({
         {title && <h3 className="title">{title}</h3>}
         {text && (
           <div className="text">
-            {typeof text === "string" ? <ReactMarkdown source={text} /> : text}
+            {typeof text === "string" ? <RenderMarkdown source={text} /> : text}
           </div>
         )}
         {Array.isArray(list) && (
@@ -67,7 +67,7 @@ function Modal({
                 <strong>{item.title}</strong>
                 <div className="text">
                   {typeof item.body === "string" ? (
-                    <ReactMarkdown source={item.body} />
+                    <RenderMarkdown source={item.body} />
                   ) : (
                     item.body
                   )}

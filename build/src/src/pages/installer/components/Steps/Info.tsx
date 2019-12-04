@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 // This module
 import Dependencies from "../InstallCardComponents/Dependencies";
 // Utils
@@ -146,7 +146,9 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
             <div className="right-top">
               <div className="info">
                 <DnpNameVerified name={name} origin={origin} />
-                <div className="subtle-header">{shortAuthor(author)}</div>
+                <div className="subtle-header capitalize">
+                  {shortAuthor(author)}
+                </div>
                 <div className="right-bottom">
                   <OkBadge
                     loading={resolvingCompatibility}
@@ -186,7 +188,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
         {optionsArray.length > 0 && (
           <div>
             <div
-              className="subtle-header more-options"
+              className="subtle-header capitalize more-options"
               onClick={() => setShowOptions(x => !x)}
             >
               {showOptions ? <MdExpandLess /> : <MdExpandMore />}
@@ -239,7 +241,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
               {origin || ""}
             </div>
             <div className="subtle-header">CREATED BY</div>
-            <ReactMarkdown className="no-p-style" source={author} />
+            <RenderMarkdown source={author} />
           </div>
         </Columns>
       </Card>

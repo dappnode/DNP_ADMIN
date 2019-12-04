@@ -8,9 +8,15 @@ import From from "./From";
 function FileManager({ dnp }) {
   const id = dnp.name;
   return (
-    <Card>
-      <To id={id} />
-      <From id={id} />
+    <Card spacing divider className="file-manager">
+      <div>
+        <div className="subtle-header">Upload file to package</div>
+        <To id={id} />
+      </div>
+      <div>
+        <div className="subtle-header">Download file from package</div>
+        <From id={id} />
+      </div>
     </Card>
   );
 }

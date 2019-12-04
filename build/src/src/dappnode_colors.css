@@ -4,7 +4,7 @@
   --dappnode-darker-main-color: #218a82;
   --dappnode-shadow-main-color: #218a8280;
   --dappnode-light-main-color: #a0bdbb;
-  --dappnode-gray-main-color: #93a5a5;
+  --dappnode-gray-main-color: #748888;
   --dappnode-links-color: #0eaba0;
   --dappnode-links-darker-color: #058078;
   --dappnode-complimentary-color: #bc2f39;
@@ -18,7 +18,7 @@
   /* Shortcuts */
   --dappnode-color: var(--dappnode-strong-main-color);
   /* Text colors */
-  --light-text-color: #727577;
+  --light-text-color: #757575;
 }
 
 .color-danger {
@@ -71,7 +71,7 @@
 .btn-outline-dappnode:hover {
   color: var(--dappnode-white-color);
   background-color: var(--dappnode-darker-main-color);
-  border-color: var(--dappnode-darker-main-color);
+  border-color: var(--dappnode-darker-main-color) !important;
 }
 
 .btn-outline-dappnode:focus,

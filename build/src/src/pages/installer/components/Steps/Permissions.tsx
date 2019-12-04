@@ -1,5 +1,5 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 // Components
 import Card from "components/Card";
 import Button from "components/Button";
@@ -30,8 +30,8 @@ const Permissions: React.FunctionComponent<PermissionsProps> = ({
       {permissions.map(({ name, details }) => (
         <div key={name}>
           <strong>{name}</strong>
-          <div className="no-p-style" style={{ opacity: 0.6 }}>
-            <ReactMarkdown source={details} />
+          <div style={{ opacity: 0.6 }}>
+            <RenderMarkdown source={details} />
           </div>
         </div>
       ))}

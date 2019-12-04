@@ -1,22 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 import DataList from "./DataList";
-import { SoftCapitalized } from "./Soft";
 // Utils
 import newTabProps from "utils/newTabProps";
 import { MdHome, MdSettingsRemote, MdSettings, MdInfo } from "react-icons/md";
+import { PackageContainer } from "types";
 
-function Links({ dnp }) {
-  const { manifest = {} } = dnp;
+function Links({ dnp }: { dnp: PackageContainer }) {
   // In the manifest, homepage = {userui: "http://some.link"}
-  const linksObj = manifest.links || manifest.homepage || {};
+  const linksObj = dnp.manifest && dnp.manifest.links ? dnp.manifest.links : {};
   const links =
     typeof linksObj === "object"
       ? Object.entries(linksObj)
-          .map(([name, url]) => ({
-            name,
-            url
-          }))
+          .map(([name, url]) => ({ name, url }))
           // Place homepage first
           .sort(l1 => (l1.name === "homepage" ? -1 : 0))
       : typeof linksObj === "string"
@@ -41,25 +37,22 @@ function Links({ dnp }) {
                 <MdSettingsRemote />
               ) : null}
             </span>
-            {name}
+            <span>{name}</span>
           </a>
         ) : name === "api" || name === "endpoint" ? (
-          <span>
+          <span className="api-link-container">
             <a href={url} {...newTabProps}>
               <span className="links-icon">
                 <MdSettings />
               </span>
-              Api
+              <span>Api</span>
             </a>
-            <span className="api-link-box">{url}</span>
+            <div className="api-link-box">{url}</div>
           </span>
         ) : (
-          <span>
-            <SoftCapitalized>{name || "unnamed"}:</SoftCapitalized>{" "}
-            <a href={url} {...newTabProps}>
-              {url}
-            </a>
-          </span>
+          <a className="unknown-link-container" href={url} {...newTabProps}>
+            {name || url || "unnamed"}
+          </a>
         )
       )}
     />

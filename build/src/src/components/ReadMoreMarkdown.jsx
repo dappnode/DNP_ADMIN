@@ -1,11 +1,11 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 import ReadMore from "components/ReadMore";
 
 export default function ReadMoreMarkdown({ source }) {
   return (
     <ReadMore>
-      <ReactMarkdown className="no-p-style" source={source} />
+      <RenderMarkdown source={source} />
     </ReadMore>
   );
 }

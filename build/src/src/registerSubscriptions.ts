@@ -3,10 +3,11 @@ import { getValidator } from "./utils/schemaValidation";
 // Subscriptions
 import * as autoUpdateData from "./route-types/subscriptionAutoUpdateData";
 import * as chainData from "./route-types/subscriptionChainData";
-import * as progressLog from "./route-types/subscriptionProgressLog";
-import * as userActionLog from "./route-types/subscriptionUserActionLog";
 import * as packages from "./route-types/subscriptionPackages";
+import * as directory from "./route-types/subscriptionDirectory";
+import * as progressLog from "./route-types/subscriptionProgressLog";
 import * as pushNotification from "./route-types/subscriptionPushNotification";
+import * as userActionLog from "./route-types/subscriptionUserActionLog";
 
 /* eslint-disable-next-line @typescript-eslint/explicit-function-return-type */
 export function registerSubscriptions(
@@ -60,11 +61,12 @@ export function registerSubscriptions(
   return {
     autoUpdateData: wampBusFactory<autoUpdateData.ReturnData>(autoUpdateData),
     chainData: wampBusFactory<chainData.ReturnData>(chainData),
-    progressLog: wampBusFactory<progressLog.ReturnData>(progressLog),
-    userActionLog: wampBusFactory<userActionLog.ReturnData>(userActionLog),
+    directory: wampBusFactory<directory.ReturnData>(directory),
     packages: wampBusFactory<packages.ReturnData>(packages),
+    progressLog: wampBusFactory<progressLog.ReturnData>(progressLog),
     pushNotification: wampBusFactory<pushNotification.ReturnData>(
       pushNotification
-    )
+    ),
+    userActionLog: wampBusFactory<userActionLog.ReturnData>(userActionLog)
   };
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import DependencyList from "pages/installer/components/InstallCardComponents/DependencyList";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 // Actions
 import { updateCore } from "services/coreUpdate/actions";
 // Selectors
@@ -31,9 +31,7 @@ const SystemUpdateDetails = ({
 }) => {
   return (
     <Card className="system-update-grid" spacing>
-      {coreChangelog && (
-        <ReactMarkdown className="no-p-style" source={coreChangelog} />
-      )}
+      {coreChangelog && <RenderMarkdown source={coreChangelog} />}
 
       {coreUpdateAlerts.map(({ from, to, message }) => (
         <div
@@ -47,7 +45,7 @@ const SystemUpdateDetails = ({
               {from} <FaArrowRight style={{ fontSize: ".7rem" }} /> {to}
             </div>
           )}
-          <ReactMarkdown source={message} />
+          <RenderMarkdown source={message} />
         </div>
       ))}
 

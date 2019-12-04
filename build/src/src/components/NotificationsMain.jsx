@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { NavLink } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
+import RenderMarkdown from "components/RenderMarkdown";
 // Selectors
 import {
   getCoreUpdateAvailable,
@@ -35,7 +35,7 @@ function AlertDismissible({ body, linkText, linkPath }) {
       className="main-notification"
     >
       {/* <Alert.Heading>Oh snap! You got an error!</Alert.Heading> */}
-      <ReactMarkdown source={body} />
+      <RenderMarkdown source={body} />
       <NavLink to={linkPath}>
         <Button variant={"warning"}>{linkText}</Button>
       </NavLink>

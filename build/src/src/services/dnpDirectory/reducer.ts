@@ -1,3 +1,4 @@
+import { keyBy } from "lodash";
 import {
   DnpDirectoryState,
   AllReducerActions,
@@ -17,11 +18,23 @@ export default (
   action: AllReducerActions
 ): DnpDirectoryState => {
   switch (action.type) {
-    case SET_DNP_DIRECTORY:
+    // Updates can come when the directory is already loaded
+    // On a per DNP basis, discard updates of status "loading"
+    // If the current status is "ok"
+    case SET_DNP_DIRECTORY: {
+      const directoryByName = keyBy(state.directory, dnp => dnp.name);
       return {
         ...state,
-        directory: action.directory
+        directory: action.directory.map(dnp => {
+          const currentDnp = directoryByName[dnp.name];
+          return dnp.status === "loading" &&
+            currentDnp &&
+            currentDnp.status === "ok"
+            ? currentDnp
+            : dnp;
+        })
       };
+    }
 
     case UPDATE_DIRECTORY_STATUS:
       return {

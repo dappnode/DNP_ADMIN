@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import * as a from "../../../actions";
 // Components
 import Input from "components/Input";
-import { ButtonLight } from "components/Button";
+import Button from "components/Button";
 // Utils
 import fileToDataUri from "utils/fileToDataUri";
 import humanFileSize from "utils/humanFileSize";
@@ -45,9 +45,7 @@ function To({ id, copyFileTo }) {
 
   return (
     <div className="card-subgroup">
-      <div className="section-card-subtitle">Upload to DAppNode Package</div>
       {/* TO, choose source file */}
-
       <div className="input-group mb-3">
         <div className="custom-file">
           <input
@@ -73,7 +71,11 @@ function To({ id, copyFileTo }) {
         placeholder="Defaults to $WORKDIR/"
         value={toPath}
         onValueChange={setToPath}
-        append={<ButtonLight onClick={uploadFile}>Upload</ButtonLight>}
+        append={
+          <Button onClick={uploadFile} disabled={!file} variant="dappnode">
+            Upload
+          </Button>
+        }
       />
     </div>
   );

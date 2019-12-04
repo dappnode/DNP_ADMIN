@@ -123,75 +123,72 @@ function Backup({ dnp }) {
   if (!Array.isArray(backup)) return null;
 
   return (
-    <>
-      <SubTitle>Backup</SubTitle>
-      <Card className="backup">
-        {/* Get backup */}
-        <Columns>
-          <div>
-            <div className="subtle-header">DOWNLOAD BACKUP</div>
-            <p>
-              Download a backup of the critical files of this package in you
-              local machine.
-            </p>
-            {url ? (
-              <a href={url} {...newTabProps} className="no-a-style">
-                <Button variant="dappnode">Download backup</Button>
-                <div
-                  style={{
-                    opacity: 0.7,
-                    fontSize: "0.8rem",
-                    marginTop: "0.5rem"
-                  }}
-                >
-                  Allow browser pop-ups or click download
-                </div>
-              </a>
-            ) : (
-              <Button
-                onClick={prepareBackupForDownload}
-                disabled={isOnProgress}
-                variant="dappnode"
+    <Card className="backup">
+      {/* Get backup */}
+      <Columns>
+        <div>
+          <div className="subtle-header">DOWNLOAD BACKUP</div>
+          <p>
+            Download a backup of the critical files of this package in you local
+            machine.
+          </p>
+          {url ? (
+            <a href={url} {...newTabProps} className="no-a-style">
+              <Button variant="dappnode">Download backup</Button>
+              <div
+                style={{
+                  opacity: 0.7,
+                  fontSize: "0.8rem",
+                  marginTop: "0.5rem"
+                }}
               >
-                Backup now
-              </Button>
-            )}
-          </div>
-
-          {/* Restore backup */}
-          <div>
-            <div className="subtle-header">RESTORE BACKUP</div>
-            <p>
-              Restore an existing backup. Note that this action will overwrite
-              existing data.
-            </p>
-            <Button className="button-file-input" disabled={isOnProgress}>
-              <span>Restore</span>
-              <input
-                type="file"
-                id="backup_upload"
-                name="file"
-                accept=".tar, .xz, .tar.xz, .zip"
-                onChange={e => handleClickRestore(e.target.files[0])}
-                disabled={isOnProgress}
-              />
+                Allow browser pop-ups or click download
+              </div>
+            </a>
+          ) : (
+            <Button
+              onClick={prepareBackupForDownload}
+              disabled={isOnProgress}
+              variant="dappnode"
+            >
+              Backup now
             </Button>
-          </div>
-        </Columns>
+          )}
+        </div>
 
-        {isOnProgress && (
-          <div>
-            <ProgressBar
-              now={progress.percent || 100}
-              animated={true}
-              label={progress.label || ""}
+        {/* Restore backup */}
+        <div>
+          <div className="subtle-header">RESTORE BACKUP</div>
+          <p>
+            Restore an existing backup. Note that this action will overwrite
+            existing data.
+          </p>
+          <Button className="button-file-input" disabled={isOnProgress}>
+            <span>Restore</span>
+            <input
+              type="file"
+              id="backup_upload"
+              name="file"
+              accept=".tar, .xz, .tar.xz, .zip"
+              onChange={e => handleClickRestore(e.target.files[0])}
+              disabled={isOnProgress}
             />
-          </div>
-        )}
+          </Button>
+        </div>
+      </Columns>
 
-        {error && <div style={{ color: "red" }}>Error: {error}</div>}
-      </Card>
-    </>
+      {isOnProgress && (
+        <div>
+          <ProgressBar
+            now={progress.percent || 100}
+            animated={true}
+            label={progress.label || ""}
+          />
+        </div>
+      )}
+
+      {error && <div style={{ color: "red" }}>Error: {error}</div>}
+    </Card>
   );
 }
 

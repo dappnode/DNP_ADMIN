@@ -39,9 +39,9 @@ function TableInputs({ headers, content, numOfRows = 2, rowsTemplate }) {
       style={{ gridTemplateColumns: rowsTemplate || "1fr ".repeat(numOfRows) }}
     >
       {headers.map((header, i) => (
-        <h6 key={i} className="small-header">
+        <div key={i} className="subtle-header">
           {header}
-        </h6>
+        </div>
       ))}
       {content.map((row, i) =>
         row.map((col, j) =>
