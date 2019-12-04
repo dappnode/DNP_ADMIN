@@ -1,6 +1,7 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import "./renderMarkdown.scss";
+import { joinCssClass } from "utils/css";
 
 function ParagraphRenderer(props: any) {
   const { children } = props;
@@ -28,10 +29,16 @@ function LinkRenderer(props: any) {
   );
 }
 
-export default function RenderMarkdown({ source }: { source: string }) {
+export default function RenderMarkdown({
+  source,
+  spacing
+}: {
+  source: string;
+  spacing?: boolean;
+}) {
   return (
     <ReactMarkdown
-      className="markdown-render"
+      className={"markdown-render" + joinCssClass({ spacing })}
       source={source}
       renderers={{
         link: LinkRenderer,

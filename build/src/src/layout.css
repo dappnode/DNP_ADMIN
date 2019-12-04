@@ -51,6 +51,9 @@ body,
   height: 100vh;
   background-color: var(--color-background);
 }
+html {
+  background-color: var(--color-background);
+}
 
 /********
   SIDEBAR

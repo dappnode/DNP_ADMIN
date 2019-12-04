@@ -421,6 +421,12 @@ const bitcoinSetupSchema: SetupSchema = {
       title: "Custom volume data path",
       description:
         "If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive."
+    },
+    bitcoinName: {
+      type: "string",
+      title: "Bitcoin name",
+      description:
+        "Useless parameter to test performance"
     }
   }
 };
@@ -429,6 +435,16 @@ const bitcoinSetupTarget: SetupTarget = {
   bitcoinData: {
     type: "namedVolumePath",
     volumeName: "bitcoin_data"
+  },
+  bitcoinName: {
+    type: "environment",
+    name: "BITCOIN_NAME"
+  }
+};
+
+const bitcoinSetupUiJson: SetupUiJson = {
+  bitcoinData: {
+    "ui:widget": "selectMountpoint"
   }
 };
 
@@ -908,7 +924,8 @@ const dnpDirectoryState: DnpDirectoryState = {
       name: "fetch-loads.dnp.dappnode.eth",
       whitelisted: true,
       isFeatured: false,
-      message: "Loading manifest and more stuff really long text that goes on and on and more stuff 57%"
+      message:
+        "Loading manifest and more stuff really long text that goes on and on and more stuff 57%"
     },
     {
       status: "error",
@@ -1135,6 +1152,15 @@ const dnpRequestState: DnpRequestState = {
 
       settings: {
         [bitcoinMetadata.name]: bitcoinSetup
+      },
+      setupSchema: {
+        [bitcoinMetadata.name]: bitcoinSetupSchema
+      },
+      setupTarget: {
+        [bitcoinMetadata.name]: bitcoinSetupTarget
+      },
+      setupUiJson: {
+        [bitcoinMetadata.name]: bitcoinSetupUiJson
       },
 
       request: {

@@ -82,7 +82,6 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
       const errors = getUserSettingsDataErrors(newUserSettings);
       setDataErrors(errors);
       if (!errors.length) onSubmit(newUserSettings);
-      else console.log("data errors", errors);
     },
     [setDataErrors, onSubmit]
   );
@@ -90,7 +89,6 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   // Merge wizard data with the editor data. Give priority to the wizard data
   const onWizardSubmit = useCallback(
     formData => {
-      console.log("Submited wizard editor");
       const wizardSettings = formDataToUserSettings(formData, setupTarget);
       submit(deepmerge(editorData, wizardSettings));
     },
@@ -120,7 +118,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   }, [setupSchema]);
 
   return (
-    <Card spacing>
+    <Card spacing noscroll>
       {showAdvanced || !wizardAvailable ? (
         <OldEditor
           userSettings={editorData}

@@ -4,6 +4,7 @@ import Error from "components/generic/Error";
 import Form, { FormValidation, AjvError } from "react-jsonschema-form";
 import Button from "components/Button";
 import RenderMarkdown from "components/RenderMarkdown";
+import SelectMountpoint from "./SelectMountpoint";
 import "./formJsonSchema.scss";
 import { SetupUiJson, SetupSchemaAllDnpsFormated } from "types-own";
 
@@ -15,12 +16,17 @@ interface AjvErrorWithPath extends AjvError {
   schemaPath?: string; // "#/properties/vipnode.dnp.dappnode.eth/properties/payoutAddress/pattern"
 }
 
+const widgets = {
+  selectMountpoint: SelectMountpoint
+};
+
 // Memo this component to prevent expensive MarkDown parsing
 // on every single keystroke. After analyzing performance, this component
 // was responsible for 20-40% of the work
 const CustomDescriptionField: React.FunctionComponent<any> = ({
   description
-}) => useMemo(() => <RenderMarkdown source={description} />, [description]);
+}) =>
+  useMemo(() => <RenderMarkdown source={description} spacing />, [description]);
 
 interface FormJsonSchemaProps {
   schema: SetupSchemaAllDnpsFormated;
@@ -196,6 +202,7 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
         validate={validate}
         fields={fields}
         formData={internalFormData}
+        widgets={widgets}
       >
         <div className="bottom-buttons">
           <div>
