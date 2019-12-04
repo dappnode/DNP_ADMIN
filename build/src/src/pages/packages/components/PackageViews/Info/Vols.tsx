@@ -26,11 +26,12 @@ function Vols({ dnp }: { dnp: PackageContainer }) {
           name: name
             ? prettyVolumeName(name, dnp.name)
             : container || "Unknown",
-          size: size
-            ? prettyBytes(size)
-            : !name
-            ? "(bind) " + host || ""
-            : "..."
+          size:
+            typeof size === "number" && !isNaN(size)
+              ? prettyBytes(size)
+              : !name
+              ? "(bind) " + host || ""
+              : "..."
         }))
         .map(({ name, size }) => (
           <>
