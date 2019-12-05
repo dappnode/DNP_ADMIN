@@ -64,7 +64,7 @@ export interface RequestStatus {
 export type UserSettingTarget =
   | { type: "environment"; name: string }
   | { type: "portMapping"; containerPort: string }
-  | { type: "namedVolumePath"; volumeName: string }
+  | { type: "namedVolumeMountpoint"; volumeName: string }
   | { type: "fileUpload"; path: string };
 
 export interface SetupTarget {
@@ -88,13 +88,13 @@ export interface SetupUiJsonAllDnps {
 export interface UserSettings {
   environment?: { [envName: string]: string }; // Env value
   portMappings?: { [containerPortAndType: string]: string }; // Host port
-  namedVolumePaths?: { [volumeName: string]: string }; // Host absolute path
+  namedVolumeMountpoints?: { [volumeName: string]: string }; // Host absolute path to mountpoint
   fileUploads?: { [containerPath: string]: string }; // dataURL
 }
 // "bitcoin.dnp.dappnode.eth": {
 //   environment: { MODE: "VALUE_SET_BEFORE" }
 //   portMappings: { "8443": "8443"; "8443/udp": "8443" },
-//   namedVolumePaths: { data: "" }
+//   namedVolumeMountpoints: { data: "" }
 //   fileUploads: { "/usr/src/app/config.json": "data:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D" }
 // };
 export interface UserSettingsAllDnps {

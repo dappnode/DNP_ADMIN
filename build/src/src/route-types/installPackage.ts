@@ -42,7 +42,7 @@ export const requestDataSample: RequestData = {
     name: {
       environment: { ENV: "VALUE" },
       portMappings: { "8888/TCP": "" },
-      namedVolumePaths: { data: "/dev1" },
+      namedVolumeMountpoints: { data: "/dev1" },
       fileUploads: { "/file": "data:text/plain;base64,SGVs" }
     }
   },

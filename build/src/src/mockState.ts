@@ -139,7 +139,7 @@ const lightningNetworkSetupUiJson = {};
 
 const lightningNetworkSetup: UserSettings = {
   portMappings: { "9735": "9735" },
-  namedVolumePaths: { lndconfig_data: "" },
+  namedVolumeMountpoints: { lndconfig_data: "" },
   environment: {
     RTL_PASSWORD: "",
     RPCUSER: "dappnode",
@@ -310,7 +310,7 @@ const raidenSetupTarget: SetupTarget = {
 };
 
 const raidenSetup: UserSettings = {
-  namedVolumePaths: { data: "" },
+  namedVolumeMountpoints: { data: "" },
   environment: {
     RAIDEN_KEYSTORE_PASSWORD: "",
     RAIDEN_ADDRESS: "",
@@ -355,7 +355,7 @@ const raidenTestnetMetadata = {
 };
 
 const raidenTestnetSetup: UserSettings = {
-  namedVolumePaths: { data: "" },
+  namedVolumeMountpoints: { data: "" },
   environment: {
     RAIDEN_ADDRESS: "",
     RAIDEN_KEYSTORE_PASSWORD: "",
@@ -403,7 +403,7 @@ const bitcoinMetadata = {
 
 const bitcoinSetup: UserSettings = {
   portMappings: { "8333": "8333" },
-  namedVolumePaths: { bitcoin_data: "/dev1/custom-path-previously-set" },
+  namedVolumeMountpoints: { bitcoin_data: "/dev1/custom-path-previously-set" },
   environment: {
     BTC_RPCUSER: "dappnode",
     BTC_RPCPASSWORD: "dappnode",
@@ -433,7 +433,7 @@ const bitcoinSetupSchema: SetupSchema = {
 
 const bitcoinSetupTarget: SetupTarget = {
   bitcoinData: {
-    type: "namedVolumePath",
+    type: "namedVolumeMountpoint",
     volumeName: "bitcoin_data"
   },
   bitcoinName: {
@@ -550,7 +550,7 @@ const trustlinesSpecialPermissions: SpecialPermission[] = [
 const trustlinesSetup = {
   environment: { ROLE: "observer", ADDRESS: "", PASSWORD: "" },
   portMapping: { "30300": "", "30300/udp": "" },
-  namedVolumePath: { data: "", config: "" }
+  namedVolumeMountpoints: { data: "", config: "" }
 };
 
 const trustlinesSetupSchema: SetupSchema = {
