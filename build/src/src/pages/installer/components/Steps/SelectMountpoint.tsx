@@ -9,8 +9,7 @@ import "./selectMountpoint.scss";
 import { joinCssClass } from "utils/css";
 
 interface MountpointData {
-  isHost?: boolean;
-  mountpoint: string;
+  mountpoint: string; // mountpoint = "", means host (default)
   use: string;
   total: string;
   free: string;
@@ -18,19 +17,8 @@ interface MountpointData {
   model: string;
 }
 
-const defaultMountpoint: MountpointData = {
-  isHost: true,
-  mountpoint: "",
-  use: "",
-  total: "",
-  free: "",
-  vendor: "Host",
-  model: "(default)"
-};
-
 const replySample: MountpointData[] = [
   {
-    isHost: true,
     mountpoint: "",
     use: "87%",
     total: "",
@@ -71,19 +59,39 @@ async function fakeMountpointApi(): Promise<MountpointData[]> {
 
 function SelectMountpoint({
   value,
-  onChange
+  onChange,
+  options
 }: {
   value: string;
   onChange: (value: string) => void;
+  options?: {
+    alreadySet?: boolean;
+    isLegacy?: boolean;
+    prevPath?: string;
+  };
 }) {
   const [mountpoints, setMountpoints] = useState([] as MountpointData[]);
   const [loading, setLoading] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
+  const { alreadySet, isLegacy, prevPath } = options || {};
+  const selectedDev = mountpoints.find(
+    ({ mountpoint }) => mountpoint === value
+  );
+
+  // Automatically fetch mountpoints on component load
   useEffect(() => {
     fetchMountpoints();
   }, []);
 
+  // If the user has selected an invalid mountpoint and is not loading or already set,
+  // reset the value to the host (default) to prevent problems
+  useEffect(() => {
+    if (value && !selectedDev && !alreadySet && !loading) onChange("");
+  }, [value, selectedDev]);
+
   async function fetchMountpoints() {
+    if (isLegacy) return;
     try {
       setLoading(true);
       const res = await fakeMountpointApi();
@@ -95,68 +103,98 @@ function SelectMountpoint({
     }
   }
 
-  const mountpointsWithHost = mountpoints.find(({ mountpoint }) => !mountpoint)
-    ? [defaultMountpoint, ...mountpoints]
-    : mountpoints;
-  const selectedMountpoint =
-    mountpoints.find(({ mountpoint }) => mountpoint === value) ||
-    defaultMountpoint;
+  async function onSelectMountpoint(mountpoint: string) {
+    if (isLegacy || alreadySet) return;
+    onChange(mountpoint);
+  }
 
   return (
-    <div className="display-mountpoints">
-      <Dropdown drop="down" id="select-mountpoint">
-        <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic">
-          {selectedMountpoint ? (
-            <div className="info top">
-              <span className="vendor">{selectedMountpoint.vendor}</span>
-              <span className="total">{selectedMountpoint.total}</span>
-              <span className="model">{selectedMountpoint.model}</span>
-            </div>
-          ) : (
-            "Select drive"
-          )}
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-          {mountpoints.map(
-            ({ mountpoint, vendor, model, total, use, free, isHost }) => (
-              <Dropdown.Item
-                key={mountpoint}
-                onClick={() => onChange(mountpoint)}
-              >
-                <div className="info top">
-                  {isHost && (
-                    <span className="host">
-                      <MdHome />
-                    </span>
-                  )}
-                  <span className="vendor">{vendor}</span>
-                  <span className="total">{total}</span>
-                  <span className="model">{model}</span>
-                </div>
-                <div className="info bottom">
-                  <ProgressBar
-                    className="use"
-                    now={parseInt(use)}
-                    label={use}
-                  />
-                  <span className="free">{free}</span>
-                  <span className="mountpoint">{mountpoint}</span>
-                </div>
-              </Dropdown.Item>
-            )
-          )}
-        </Dropdown.Menu>
-      </Dropdown>
-
-      <Button
-        onClick={fetchMountpoints}
-        disabled={loading}
-        className={"refresh " + joinCssClass({ loading })}
+    <>
+      <div
+        className="display-mountpoints"
+        onClick={alreadySet && !showHelp ? () => setShowHelp(true) : undefined}
       >
-        <MdRefresh />
-        <span className="text">Refresh</span>
-      </Button>
-    </div>
+        <Dropdown drop="down" id="select-mountpoint">
+          <Dropdown.Toggle
+            variant="outline-secondary"
+            id="dropdown-basic"
+            disabled={alreadySet}
+          >
+            <div className="info top">
+              {isLegacy ? (
+                <>
+                  <span>{prevPath}</span>
+                  <small>(legacy)</small>
+                </>
+              ) : selectedDev ? (
+                <>
+                  {selectedDev.vendor && <span>{selectedDev.vendor}</span>}
+                  {selectedDev.total && <span>{selectedDev.total}</span>}
+                  {selectedDev.model && <small>{selectedDev.model}</small>}
+                </>
+              ) : alreadySet ? (
+                <>
+                  <span>{prevPath}</span>
+                  <small>(unknown device)</small>
+                </>
+              ) : loading ? (
+                <span>Loading...</span>
+              ) : (
+                <span>Select drive</span>
+              )}
+            </div>
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            {mountpoints.map(
+              ({ mountpoint, vendor, model, total, use, free }) => (
+                <Dropdown.Item
+                  key={mountpoint}
+                  onClick={() => onSelectMountpoint(mountpoint)}
+                >
+                  <div className="info top">
+                    {!mountpoint && (
+                      <span className="host">
+                        <MdHome />
+                      </span>
+                    )}
+                    <span>{vendor}</span>
+                    <span>{total}</span>
+                    <small>{model}</small>
+                  </div>
+                  <div className="info bottom">
+                    <ProgressBar
+                      className="use"
+                      now={parseInt(use)}
+                      label={use}
+                    />
+                    <span className="free">{free}</span>
+                    <span className="mountpoint">{mountpoint}</span>
+                  </div>
+                </Dropdown.Item>
+              )
+            )}
+          </Dropdown.Menu>
+        </Dropdown>
+
+        {!alreadySet && (
+          <Button
+            onClick={fetchMountpoints}
+            disabled={loading}
+            className={"refresh " + joinCssClass({ loading })}
+          >
+            <MdRefresh />
+            <span className="text">Refresh</span>
+          </Button>
+        )}
+      </div>
+
+      {showHelp && (
+        <p className="change-mountpoint-help">
+          Existing volumes can't be changed. To do so, unistall this package and
+          remove its data
+        </p>
+      )}
+    </>
   );
 }
 

@@ -13,15 +13,25 @@
         background-color: white;
         color: #4a5259;
       }
+
+      &:disabled {
+        border-color: #ced4da;
+        // When the button is disabled, the right refresh button isn't there
+        margin-right: 0;
+        &::after {
+          display: none; // Hide the dropdown arrow
+        }
+      }
     }
   }
 
   > .dropdown {
     flex: 1;
-    margin-right: 0.75rem;
+
     display: flex;
 
     .dropdown-toggle {
+      margin-right: 0.75rem;
       flex: 1;
       text-align: left;
       display: flex;
@@ -39,9 +49,16 @@
         margin-right: 0.5rem;
       }
       // Individual fields
+
+      small {
+        font-size: inherit;
+        font-weight: inherit;
+      }
+
       .mountpoint,
       .model,
-      .host {
+      .host,
+      small {
         opacity: 0.6;
       }
       .host {
@@ -106,4 +123,9 @@
       }
     }
   }
+}
+
+.change-mountpoint-help {
+  color: #4a5259;
+  margin-top: 0.25rem;
 }

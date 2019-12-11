@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { mapValues } from "lodash";
+import { mapValues, pickBy } from "lodash";
 // Components
 import Card from "components/Card";
 import Alert from "react-bootstrap/Alert";
@@ -117,11 +117,34 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
     };
   }, [setupSchema]);
 
+  const setupUiJsonFormated: SetupUiJsonAllDnps = useMemo(() => {
+    const _formData = userSettingsToFormData(userSettings, setupTarget);
+    return mapValues(setupUiJson, (setupUiJsonDnp, dnpName) => {
+      return deepmerge(
+        setupUiJsonDnp,
+        mapValues(setupTarget[dnpName] || {}, (setupTargetDnp, propName) => {
+          if (setupTargetDnp.type !== "namedVolumeMountpoint") return {};
+          const prevPath = (_formData[dnpName] || {})[propName] || "";
+          const isLegacy = prevPath.startsWith("legacy:");
+          return {
+            "ui:widget": "selectMountpoint",
+            "ui:options": {
+              alreadySet: Boolean(prevPath),
+              isLegacy,
+              prevPath: isLegacy ? prevPath.slice(7) : prevPath
+            }
+          };
+        })
+      );
+    });
+  }, [setupTarget, setupUiJson, userSettings]);
+
   return (
     <Card spacing noscroll>
       {showAdvanced || !wizardAvailable ? (
         <OldEditor
           userSettings={editorData}
+          initialUserSettings={userSettings}
           onCancel={goBack}
           onChange={setEditorData}
           onSubmit={onOldEditorSubmit}
@@ -131,7 +154,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
       ) : (
         <FormJsonSchema
           schema={setupSchemaFormated}
-          uiSchema={setupUiJson}
+          uiSchema={setupUiJsonFormated}
           formData={wizardData}
           // onChange={() => {}}
           onSubmit={onWizardSubmit}

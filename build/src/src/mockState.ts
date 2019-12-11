@@ -403,7 +403,11 @@ const bitcoinMetadata = {
 
 const bitcoinSetup: UserSettings = {
   portMappings: { "8333": "8333" },
-  namedVolumeMountpoints: { bitcoin_data: "/dev1/custom-path-previously-set" },
+  namedVolumeMountpoints: {
+    bitcoin_data: "",
+    bitcoin_data_old: "/dev0/data",
+    bitcoin_data_old_legacy: "legacy:/dev1/data"
+  },
   environment: {
     BTC_RPCUSER: "dappnode",
     BTC_RPCPASSWORD: "dappnode",
@@ -422,11 +426,22 @@ const bitcoinSetupSchema: SetupSchema = {
       description:
         "If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive."
     },
+    bitcoinDataOld: {
+      type: "string",
+      title: "Custom volume data old path",
+      description:
+        "Already set path to test that it's not editable. If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive."
+    },
+    bitcoinDataOldLegacy: {
+      type: "string",
+      title: "Custom volume data old legacy path",
+      description:
+        "Already set path to test that it's not editable, with legacy setting. If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive."
+    },
     bitcoinName: {
       type: "string",
       title: "Bitcoin name",
-      description:
-        "Useless parameter to test performance"
+      description: "Useless parameter to test performance"
     }
   }
 };
@@ -436,17 +451,21 @@ const bitcoinSetupTarget: SetupTarget = {
     type: "namedVolumeMountpoint",
     volumeName: "bitcoin_data"
   },
+  bitcoinDataOld: {
+    type: "namedVolumeMountpoint",
+    volumeName: "bitcoin_data_old"
+  },
+  bitcoinDataOldLegacy: {
+    type: "namedVolumeMountpoint",
+    volumeName: "bitcoin_data_old_legacy"
+  },
   bitcoinName: {
     type: "environment",
     name: "BITCOIN_NAME"
   }
 };
 
-const bitcoinSetupUiJson: SetupUiJson = {
-  bitcoinData: {
-    "ui:widget": "selectMountpoint"
-  }
-};
+const bitcoinSetupUiJson: SetupUiJson = {};
 
 /**
  * Ethchain

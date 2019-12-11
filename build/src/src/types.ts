@@ -278,9 +278,15 @@ export interface ManifestWithImage extends Manifest {
 export interface ComposeVolumes {
   // volumeName: "dncore_ethchaindnpdappnodeeth_data"
   [volumeName: string]: {
-    external?: {
-      name: string; // "dncore_ethchaindnpdappnodeeth_data"
-    };
+    // Allowed to user
+    external?: boolean | { name: string }; // name: "dncore_ethchaindnpdappnodeeth_data"
+    // NOT allowed to user, only used by DAppNode internally (if any)
+    name?: string; // Volumes can only be declared locally or be external
+    driver?: string; // Dangerous
+    driver_opts?:
+      | { type: "none"; device: string; o: "bind" }
+      | { [driverOptName: string]: string }; // driver_opts are passed down to whatever driver is being used, there's. No verification on docker's part nor detailed documentation
+    labels?: { [labelName: string]: string }; // User should not use this feature
   };
 }
 
