@@ -33,6 +33,7 @@ export const getIdentityAddress = createSelectorSubProp(
   getLocal,
   "identityAddress"
 );
+export const getMountpoints = createSelectorSubProp(getLocal, "mountpoints");
 
 // Sub-sub local properties
 export const getDappmanagerVersionData = createSelectorSubProp(

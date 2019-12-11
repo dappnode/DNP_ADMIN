@@ -1,8 +1,9 @@
 import { put, call, all } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import api from "API/rpcMethods";
+import apiOld from "API/rpcMethods";
+import * as apiNew from "API/calls";
 import * as a from "./actions";
-import * as t from "./actionTypes";
+import * as t from "./types";
 import checkIpfsConnection from "./diagnoseFunctions/checkIpfsNode";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 import { wrapErrorsAndLoading } from "services/loadingStatus/sagas";
@@ -11,6 +12,9 @@ import * as loadingIds from "services/loadingStatus/loadingIds";
 import { assertConnectionOpen } from "utils/redux";
 import { stringSplit, stringIncludes } from "utils/strings";
 import { wifiName } from "params";
+import { MountpointData } from "types";
+
+const api: any = apiOld;
 
 // Service > dappnodeStatus
 
@@ -165,6 +169,19 @@ const fetchIdentityAddress = wrapErrorsAndLoading(
 );
 
 /**
+ * Get DAppNode host mountpoints
+ * ONLY FETCH on request, NOT on connection open
+ */
+const fetchMountpointData = wrapErrorsAndLoading(
+  loadingIds.mountpoints,
+  function*() {
+    // If there are no settings the return will be null
+    const mountpoints: MountpointData[] = yield call(apiNew.mountpointsGet, {});
+    yield put(a.updateMountpoints(mountpoints));
+  }
+);
+
+/**
  * Aggregates all previous data fetches
  */
 function* fetchAllDappnodeStatus() {
@@ -200,5 +217,6 @@ export default rootWatcher([
   [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],
   [t.FETCH_IF_PASSWORD_IS_INSECURE, checkIfPasswordIsInsecure],
   [t.FETCH_IDENTITY_ADDRESS, fetchIdentityAddress],
+  [t.FETCH_MOUNTPOINTS, fetchMountpointData],
   [t.PING_DAPPNODE_DNPS, pingDappnodeDnps]
 ]);

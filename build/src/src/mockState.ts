@@ -848,7 +848,41 @@ const dappnodeStatusState = {
         }
       }
     ]
-  }
+  },
+  mountpoints: [
+    {
+      mountpoint: "",
+      use: "87%",
+      total: "",
+      free: "121G",
+      vendor: "Host",
+      model: "(default)"
+    },
+    {
+      mountpoint: "/data",
+      use: "68%",
+      total: "500G",
+      free: "141G",
+      vendor: "ATA",
+      model: "CT500MX500SSD4"
+    },
+    {
+      mountpoint: "/media/usb0",
+      use: "1%",
+      total: "1TB",
+      free: "6.2G",
+      vendor: "SanDisk",
+      model: "Ultra_USB_3.0"
+    },
+    {
+      mountpoint: "/media/usb1",
+      use: "100%",
+      total: "16GB",
+      free: "7.1G",
+      vendor: "SanDisk",
+      model: "Ultra_USB_3.0"
+    }
+  ]
 };
 
 const devicesState = [

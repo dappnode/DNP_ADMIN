@@ -1,66 +1,26 @@
 import React, { useState, useEffect } from "react";
-import Form from "react-bootstrap/Form";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "components/Button";
 import { MdHome, MdRefresh } from "react-icons/md";
 import "./selectMountpoint.scss";
 import { joinCssClass } from "utils/css";
-
-interface MountpointData {
-  mountpoint: string; // mountpoint = "", means host (default)
-  use: string;
-  total: string;
-  free: string;
-  vendor: string;
-  model: string;
-}
-
-const replySample: MountpointData[] = [
-  {
-    mountpoint: "",
-    use: "87%",
-    total: "",
-    free: "121G",
-    vendor: "Host",
-    model: "(default)"
-  },
-  {
-    mountpoint: "/data",
-    use: "68%",
-    total: "500G",
-    free: "141G",
-    vendor: "ATA",
-    model: "CT500MX500SSD4"
-  },
-  {
-    mountpoint: "/media/usb0",
-    use: "1%",
-    total: "1TB",
-    free: "6.2G",
-    vendor: "SanDisk",
-    model: "Ultra_USB_3.0"
-  },
-  {
-    mountpoint: "/media/usb1",
-    use: "100%",
-    total: "16GB",
-    free: "7.1G",
-    vendor: "SanDisk",
-    model: "Ultra_USB_3.0"
-  }
-];
-
-async function fakeMountpointApi(): Promise<MountpointData[]> {
-  await new Promise(r => setTimeout(r, 1000));
-  return replySample;
-}
+import { MountpointData } from "types";
+import { getIsLoadingStrict } from "services/loadingStatus/selectors";
+import { getMountpoints } from "services/dappnodeStatus/selectors";
+import { fetchMountpoints } from "services/dappnodeStatus/actions";
 
 function SelectMountpoint({
+  // React JSON form data props
   value,
   onChange,
-  options
+  options,
+  // Own DAppNode props from redux
+  mountpoints,
+  isLoading,
+  fetchMountpoints
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -69,39 +29,28 @@ function SelectMountpoint({
     isLegacy?: boolean;
     prevPath?: string;
   };
+  // Own DAppNode props from redux
+  mountpoints: MountpointData[] | null;
+  isLoading: boolean;
+  fetchMountpoints: () => {};
 }) {
-  const [mountpoints, setMountpoints] = useState([] as MountpointData[]);
-  const [loading, setLoading] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
 
   const { alreadySet, isLegacy, prevPath } = options || {};
-  const selectedDev = mountpoints.find(
+  const selectedDev = (mountpoints || []).find(
     ({ mountpoint }) => mountpoint === value
   );
 
   // Automatically fetch mountpoints on component load
   useEffect(() => {
-    fetchMountpoints();
-  }, []);
+    if (!mountpoints) fetchMountpoints();
+  }, [mountpoints, fetchMountpoints]);
 
   // If the user has selected an invalid mountpoint and is not loading or already set,
   // reset the value to the host (default) to prevent problems
   useEffect(() => {
-    if (value && !selectedDev && !alreadySet && !loading) onChange("");
-  }, [value, selectedDev]);
-
-  async function fetchMountpoints() {
-    if (isLegacy) return;
-    try {
-      setLoading(true);
-      const res = await fakeMountpointApi();
-      setMountpoints(res);
-    } catch (e) {
-      console.error(`Error on fetchMountpoints: ${e.stack}`);
-    } finally {
-      setLoading(false);
-    }
-  }
+    if (value && !selectedDev && !alreadySet && !isLoading) onChange("");
+  }, [value, selectedDev, alreadySet, isLoading, onChange]);
 
   async function onSelectMountpoint(mountpoint: string) {
     if (isLegacy || alreadySet) return;
@@ -137,7 +86,7 @@ function SelectMountpoint({
                   <span>{prevPath}</span>
                   <small>(unknown device)</small>
                 </>
-              ) : loading ? (
+              ) : isLoading ? (
                 <span>Loading...</span>
               ) : (
                 <span>Select drive</span>
@@ -145,7 +94,7 @@ function SelectMountpoint({
             </div>
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            {mountpoints.map(
+            {(mountpoints || []).map(
               ({ mountpoint, vendor, model, total, use, free }) => (
                 <Dropdown.Item
                   key={mountpoint}
@@ -157,9 +106,9 @@ function SelectMountpoint({
                         <MdHome />
                       </span>
                     )}
-                    <span>{vendor}</span>
-                    <span>{total}</span>
-                    <small>{model}</small>
+                    <span>{mountpoint ? vendor : "Host"}</span>
+                    {total && <span>{total}</span>}
+                    <small>{mountpoint ? model : "(default)"}</small>
                   </div>
                   <div className="info bottom">
                     <ProgressBar
@@ -179,8 +128,8 @@ function SelectMountpoint({
         {!alreadySet && (
           <Button
             onClick={fetchMountpoints}
-            disabled={loading}
-            className={"refresh " + joinCssClass({ loading })}
+            disabled={isLoading}
+            className={"refresh " + joinCssClass({ loading: isLoading })}
           >
             <MdRefresh />
             <span className="text">Refresh</span>
@@ -198,4 +147,17 @@ function SelectMountpoint({
   );
 }
 
-export default SelectMountpoint;
+const mapStateToProps = createStructuredSelector({
+  mountpoints: getMountpoints,
+  isLoading: getIsLoadingStrict.mountpoints
+});
+
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = {
+  fetchMountpoints
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SelectMountpoint);
