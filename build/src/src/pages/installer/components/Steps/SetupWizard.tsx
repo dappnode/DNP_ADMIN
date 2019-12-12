@@ -119,9 +119,9 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
 
   const setupUiJsonFormated: SetupUiJsonAllDnps = useMemo(() => {
     const _formData = userSettingsToFormData(userSettings, setupTarget);
-    return mapValues(setupUiJson, (setupUiJsonDnp, dnpName) => {
+    return mapValues(setupTarget, (_0, dnpName) => {
       return deepmerge(
-        setupUiJsonDnp,
+        setupUiJson[dnpName] || {},
         mapValues(setupTarget[dnpName] || {}, (setupTargetDnp, propName) => {
           if (setupTargetDnp.type !== "namedVolumeMountpoint") return {};
           const prevPath = (_formData[dnpName] || {})[propName] || "";
