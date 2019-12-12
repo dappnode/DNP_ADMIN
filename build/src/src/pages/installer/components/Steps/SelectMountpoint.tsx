@@ -57,6 +57,41 @@ function SelectMountpoint({
     onChange(mountpoint);
   }
 
+  function renderSummary({
+    mountpoint,
+    vendor,
+    total,
+    model
+  }: {
+    mountpoint: string;
+    vendor: string;
+    total: string;
+    model: string;
+  }) {
+    if (!mountpoint)
+      return (
+        <>
+          <span>Host</span>
+          {total && <span>{total}</span>}
+          <small>(default)</small>
+        </>
+      );
+    if (!vendor && !model)
+      return (
+        <>
+          <span>{mountpoint}</span>
+          {total && <span>{total}</span>}
+        </>
+      );
+    return (
+      <>
+        <span>{vendor || model}</span>
+        {total && <span>{total}</span>}
+        <small>{model}</small>
+      </>
+    );
+  }
+
   return (
     <>
       <div
@@ -76,11 +111,7 @@ function SelectMountpoint({
                   <small>(legacy)</small>
                 </>
               ) : selectedDev ? (
-                <>
-                  {selectedDev.vendor && <span>{selectedDev.vendor}</span>}
-                  {selectedDev.total && <span>{selectedDev.total}</span>}
-                  {selectedDev.model && <small>{selectedDev.model}</small>}
-                </>
+                renderSummary(selectedDev)
               ) : alreadySet ? (
                 <>
                   <span>{prevPath}</span>
@@ -106,9 +137,7 @@ function SelectMountpoint({
                         <MdHome />
                       </span>
                     )}
-                    <span>{mountpoint ? vendor : "Host"}</span>
-                    {total && <span>{total}</span>}
-                    <small>{mountpoint ? model : "(default)"}</small>
+                    {renderSummary({ mountpoint, vendor, model, total })}
                   </div>
                   <div className="info bottom">
                     <ProgressBar
