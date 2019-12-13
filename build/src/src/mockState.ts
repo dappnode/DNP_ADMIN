@@ -1008,7 +1008,7 @@ const dnpInstalledState: DnpInstalledState = {
     },
     {
       ...samplePackageContainer,
-      name: "lightning-network.dnp.dappnode.eth",
+      name: lightningNetworkMetadata.name,
       origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
       isDnp: true,
       version: "0.1.0",
@@ -1035,6 +1035,16 @@ const dnpInstalledState: DnpInstalledState = {
           owner: "ethchain.dnp.dappnode.eth",
           isOwner: false,
           size: 715847181273
+        },
+        {
+          host:
+            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_mountpoint/_data",
+          container: "/app/.ethchain_mountpoint",
+          name: "dncore_ethchaindnpdappnodeeth_mountpoint",
+          users: ["ethchain.dnp.dappnode.eth"],
+          owner: "ethchain.dnp.dappnode.eth",
+          isOwner: false,
+          size: 2
         }
       ],
       manifest: lightningNetworkMetadata,
@@ -1133,7 +1143,15 @@ Content in the first column | Content in the second column
       },
       manifest: ethchainMetadata
     }
-  ]
+  ],
+  dnpInstalledData: {
+    [lightningNetworkMetadata.name]: {
+      volumeSizes: {
+        dncore_ethchaindnpdappnodeeth_mountpoint: "1749123152"
+      }
+    }
+  },
+  dnpInstalledDataRequestStatus: {}
 };
 
 /**

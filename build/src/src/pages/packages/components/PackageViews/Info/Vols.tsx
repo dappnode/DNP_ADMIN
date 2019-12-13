@@ -5,7 +5,13 @@ import { Soft } from "./Soft";
 import { prettyVolumeName, prettyBytes } from "utils/format";
 import { PackageContainer } from "types";
 
-function Vols({ dnp }: { dnp: PackageContainer }) {
+function Vols({
+  dnp,
+  volumeSizes
+}: {
+  dnp: PackageContainer;
+  volumeSizes: { [volumeName: string]: string };
+}) {
   const { volumes = [] } = dnp;
   if (volumes && !Array.isArray(volumes)) {
     console.error("volumes must be an array ", volumes);
@@ -27,7 +33,9 @@ function Vols({ dnp }: { dnp: PackageContainer }) {
             ? prettyVolumeName(name, dnp.name)
             : container || "Unknown",
           size:
-            typeof size === "number" && !isNaN(size)
+            typeof volumeSizes[name || ""] === "string"
+              ? prettyBytes(parseInt(volumeSizes[name || ""]))
+              : typeof size === "number" && !isNaN(size)
               ? prettyBytes(size)
               : !name
               ? "(bind) " + host || ""

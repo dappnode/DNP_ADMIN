@@ -11,12 +11,18 @@ import Links from "./Links";
 import Vols from "./Vols";
 import StateBadge from "../StateBadge";
 import newTabProps from "utils/newTabProps";
-import { PackageContainer } from "types";
+import { PackageContainer, PackageDetailData } from "types";
 import "./info.scss";
 
 const ipfsGateway = "http://ipfs.dappnode:8080";
 
-function Info({ dnp }: { dnp: PackageContainer }) {
+function Info({
+  dnp,
+  dnpDetail
+}: {
+  dnp: PackageContainer;
+  dnpDetail?: PackageDetailData;
+}) {
   const [gettingStartedShowLocal, setGettingStartedIsShown] = useState(false);
   const [allowUndo, setAllowUndo] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -114,7 +120,7 @@ function Info({ dnp }: { dnp: PackageContainer }) {
         )}
 
         <div>
-          <Vols dnp={dnp} />
+          <Vols dnp={dnp} volumeSizes={(dnpDetail || {}).volumeSizes || {}} />
         </div>
 
         <div>

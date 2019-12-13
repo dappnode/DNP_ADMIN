@@ -4,6 +4,7 @@ import * as _fetchCoreUpdateData from "../route-types/fetchCoreUpdateData";
 import * as _fetchDirectory from "../route-types/fetchDirectory";
 import * as _fetchDnpRequest from "../route-types/fetchDnpRequest";
 import * as _installPackage from "../route-types/installPackage";
+import * as _packageDetailDataGet from "../route-types/packageDetailDataGet";
 import * as _mountpointsGet from "../route-types/mountpointsGet";
 import * as _listPackages from "../route-types/listPackages";
 import * as _packageGettingStartedToggle from "../route-types/packageGettingStartedToggle";
@@ -32,6 +33,11 @@ export const mountpointsGet = wrapRoute<
   _mountpointsGet.RequestData,
   _mountpointsGet.ReturnData
 >(_mountpointsGet);
+
+export const packageDetailDataGet = wrapRoute<
+  _packageDetailDataGet.RequestData,
+  _packageDetailDataGet.ReturnData
+>(_packageDetailDataGet);
 
 export const listPackages = wrapRoute<
   _listPackages.RequestData,
