@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as a from "../../../actions";
@@ -11,9 +11,13 @@ import humanFileSize from "utils/humanFileSize";
 
 const fileSizeWarning = 1e6;
 
-function To({ id, copyFileTo }) {
+function To({ id, copyFileTo, to }) {
   const [file, setFile] = useState(null);
   const [toPath, setToPath] = useState("");
+
+  useEffect(() => {
+    if (to) setToPath(to);
+  }, [to]);
 
   const { name, size } = file || {};
 
