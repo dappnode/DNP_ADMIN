@@ -4,9 +4,10 @@ import Error from "components/generic/Error";
 import Form, { FormValidation, AjvError } from "react-jsonschema-form";
 import Button from "components/Button";
 import RenderMarkdown from "components/RenderMarkdown";
-import SelectMountpoint from "./SelectMountpoint";
-import "./formJsonSchema.scss";
+import SelectMountpoint, { selectMountpointId } from "./SelectMountpoint";
+import NullField, { nullFieldId } from "./NullField";
 import { SetupUiJson, SetupSchemaAllDnpsFormated } from "types-own";
+import "./formJsonSchema.scss";
 
 interface PropWithErrorMessages extends SetupUiJson {
   errorMessages: { [errorName: string]: string };
@@ -17,7 +18,7 @@ interface AjvErrorWithPath extends AjvError {
 }
 
 const widgets = {
-  selectMountpoint: SelectMountpoint
+  [selectMountpointId]: SelectMountpoint
 };
 
 // Memo this component to prevent expensive MarkDown parsing
@@ -100,7 +101,8 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
     return <Error msg={`Wizard .properties must be an object`} />;
 
   const fields = {
-    DescriptionField: CustomDescriptionField
+    DescriptionField: CustomDescriptionField,
+    [nullFieldId]: NullField
   };
 
   const validationFunctions: ((

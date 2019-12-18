@@ -25,6 +25,7 @@ import { IsInstallingLogsState } from "services/isInstallingLogs/types";
 import { DnpInstalledState } from "services/dnpInstalled/types";
 import { SetupSchema, SetupUiJson } from "types-own";
 import { CoreUpdateState } from "services/coreUpdate/types";
+import { USER_SETTING_DISABLE_TAG } from "params";
 
 function getDescription(manifest: {
   shortDescription?: string;
@@ -281,6 +282,12 @@ If you do not have a keystore file, you can create a new wallet in My Ether Wall
       title: "Keystore",
       description: "Keystore with the account to be used in your Raiden node"
     },
+    keystoreSet: {
+      type: "string",
+      format: "data-url",
+      title: "Keystore already set",
+      description: "Should be hidden"
+    },
     keystorePassword: {
       type: "string",
       title: "Keystore password",
@@ -299,6 +306,10 @@ const raidenSetupTarget: SetupTarget = {
     type: "fileUpload",
     path: "/usr/src/app"
   },
+  keystoreSet: {
+    type: "fileUpload",
+    path: "/usr/src/app-set"
+  },
   keystorePassword: {
     type: "environment",
     name: "RAIDEN_KEYSTORE_PASSWORD"
@@ -315,6 +326,9 @@ const raidenSetup: UserSettings = {
     RAIDEN_KEYSTORE_PASSWORD: "",
     RAIDEN_ADDRESS: "",
     EXTRA_OPTS: "--disable-debug-logfile"
+  },
+  fileUploads: {
+    "/usr/src/app-set": USER_SETTING_DISABLE_TAG
   }
 };
 
@@ -401,7 +415,7 @@ const bitcoinMetadata = {
   license: "GPL-3.0"
 };
 
-const bitcoinSetup: UserSettings = {
+const bitcoinUserSettings: UserSettings = {
   portMappings: { "8333": "8333" },
   namedVolumeMountpoints: {
     bitcoin_data: "",
@@ -413,7 +427,8 @@ const bitcoinSetup: UserSettings = {
     BTC_RPCPASSWORD: "dappnode",
     BTC_TXINDEX: "1",
     BTC_PRUNE: "0"
-  }
+  },
+  allNamedVolumeMountpoint: USER_SETTING_DISABLE_TAG
 };
 
 const bitcoinSetupSchema: SetupSchema = {
@@ -438,6 +453,11 @@ const bitcoinSetupSchema: SetupSchema = {
       description:
         "Already set path to test that it's not editable, with legacy setting. If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive."
     },
+    bitcoinAllVolumes: {
+      type: "string",
+      title: "All volumes",
+      description: "This mountpoint selector should affect all named volumes"
+    },
     bitcoinName: {
       type: "string",
       title: "Bitcoin name",
@@ -458,6 +478,9 @@ const bitcoinSetupTarget: SetupTarget = {
   bitcoinDataOldLegacy: {
     type: "namedVolumeMountpoint",
     volumeName: "bitcoin_data_old_legacy"
+  },
+  bitcoinAllVolumes: {
+    type: "allNamedVolumesMountpoint"
   },
   bitcoinName: {
     type: "environment",
@@ -1176,7 +1199,7 @@ const dnpRequestState: DnpRequestState = {
 
       settings: {
         [lightningNetworkMetadata.name]: lightningNetworkSetup,
-        [bitcoinMetadata.name]: bitcoinSetup
+        [bitcoinMetadata.name]: bitcoinUserSettings
       },
       setupSchema: {
         [lightningNetworkMetadata.name]: lightningNetworkSetupSchema,
@@ -1222,7 +1245,7 @@ const dnpRequestState: DnpRequestState = {
       isInstalled: true,
 
       settings: {
-        [bitcoinMetadata.name]: bitcoinSetup
+        [bitcoinMetadata.name]: bitcoinUserSettings
       },
       setupSchema: {
         [bitcoinMetadata.name]: bitcoinSetupSchema

@@ -20,6 +20,9 @@ import {
 } from "pages/installer/parsers/formDataParser";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
 import deepmerge from "deepmerge";
+import { selectMountpointId } from "./SelectMountpoint";
+import { nullFieldId } from "./NullField";
+import { USER_SETTING_DISABLE_TAG } from "params";
 
 interface SetupWizardProps {
   setupSchema: SetupSchemaAllDnps;
@@ -123,17 +126,33 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
       return deepmerge(
         setupUiJson[dnpName] || {},
         mapValues(setupTarget[dnpName] || {}, (setupTargetDnp, propName) => {
-          if (setupTargetDnp.type !== "namedVolumeMountpoint") return {};
-          const prevPath = (_formData[dnpName] || {})[propName] || "";
-          const isLegacy = prevPath.startsWith("legacy:");
-          return {
-            "ui:widget": "selectMountpoint",
-            "ui:options": {
-              alreadySet: Boolean(prevPath),
-              isLegacy,
-              prevPath: isLegacy ? prevPath.slice(7) : prevPath
-            }
-          };
+          const propValue = (_formData[dnpName] || {})[propName] || "";
+          if (
+            propValue === USER_SETTING_DISABLE_TAG &&
+            (setupTargetDnp.type === "namedVolumeMountpoint" ||
+              setupTargetDnp.type === "allNamedVolumesMountpoint" ||
+              setupTargetDnp.type === "fileUpload")
+          ) {
+            return {
+              "ui:field": nullFieldId
+            };
+          }
+          if (
+            setupTargetDnp.type === "namedVolumeMountpoint" ||
+            setupTargetDnp.type === "allNamedVolumesMountpoint"
+          ) {
+            const isLegacy = propValue.startsWith("legacy:");
+            return {
+              "ui:widget": selectMountpointId,
+              "ui:options": {
+                alreadySet: Boolean(propValue),
+                isLegacy,
+                prevPath: isLegacy ? propValue.slice(7) : propValue
+              }
+            };
+          } else {
+            return {};
+          }
         })
       );
     });

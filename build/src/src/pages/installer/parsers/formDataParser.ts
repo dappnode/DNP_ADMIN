@@ -43,7 +43,7 @@ export function formDataToUserSettings(
               );
             break;
 
-          case "namedVolumeMountpoint":
+          case "namedVolumeMountpoint": {
             const mountpointHostPath = value;
             if (target.volumeName)
               userSettings.namedVolumeMountpoints = deepmerge(
@@ -51,6 +51,13 @@ export function formDataToUserSettings(
                 { [target.volumeName]: mountpointHostPath }
               );
             break;
+          }
+
+          case "allNamedVolumesMountpoint": {
+            const mountpointHostPath = value;
+            userSettings.allNamedVolumeMountpoint = mountpointHostPath;
+            break;
+          }
 
           case "fileUpload":
             const fileDataUrl = value;
@@ -86,6 +93,7 @@ export function userSettingsToFormData(
       environment = {},
       portMappings = {},
       namedVolumeMountpoints = {},
+      allNamedVolumeMountpoint = "",
       fileUploads = {}
     } = userSettings;
     const formDataDnp: { [propId: string]: string } = {};
@@ -105,11 +113,17 @@ export function userSettingsToFormData(
               formDataDnp[propId] = portMappings[containerPort];
             break;
 
-          case "namedVolumeMountpoint":
+          case "namedVolumeMountpoint": {
             const { volumeName } = target;
             if (volumeName && volumeName in namedVolumeMountpoints)
               formDataDnp[propId] = namedVolumeMountpoints[volumeName];
             break;
+          }
+
+          case "allNamedVolumesMountpoint": {
+            formDataDnp[propId] = allNamedVolumeMountpoint;
+            break;
+          }
 
           case "fileUpload":
             const { path } = target;

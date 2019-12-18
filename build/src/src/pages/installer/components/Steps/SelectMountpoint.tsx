@@ -12,6 +12,8 @@ import { getIsLoadingStrict } from "services/loadingStatus/selectors";
 import { getMountpoints } from "services/dappnodeStatus/selectors";
 import { fetchMountpoints } from "services/dappnodeStatus/actions";
 
+export const selectMountpointId = "selectMountpoint"
+
 function SelectMountpoint({
   // React JSON form data props
   value,
