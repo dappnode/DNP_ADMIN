@@ -87,7 +87,7 @@ const PackageInterface = ({
     {
       name: "File Manager",
       subPath: "file-manager",
-      render: () => <FileManager dnp={dnp} />,
+      render: ({ ...props }) => <FileManager {...props} dnp={dnp} />,
       available: true
     },
     // DnpSpecific is a variable dynamic per DNP component
