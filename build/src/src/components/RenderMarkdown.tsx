@@ -2,7 +2,7 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import "./renderMarkdown.scss";
 
-function renderParagraph(props: any) {
+function ParagraphRenderer(props: any) {
   const { children } = props;
 
   if (
@@ -20,13 +20,22 @@ function renderParagraph(props: any) {
   return <p>{children}</p>;
 }
 
+function LinkRenderer(props: any) {
+  return (
+    <a href={props.href} target="_blank" rel="noopener noreferrer">
+      {props.children}
+    </a>
+  );
+}
+
 export default function RenderMarkdown({ source }: { source: string }) {
   return (
     <ReactMarkdown
       className="markdown-render"
       source={source}
       renderers={{
-        paragraph: renderParagraph
+        link: LinkRenderer,
+        paragraph: ParagraphRenderer
       }}
     />
   );
