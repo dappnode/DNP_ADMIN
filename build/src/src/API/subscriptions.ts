@@ -11,17 +11,8 @@ import {
   updateIsInstallingLog
 } from "services/isInstallingLogs/actions";
 import { updateAutoUpdateData } from "services/dappnodeStatus/actions";
-import { DirectoryItem, PackageContainer } from "types";
-import { returnDataSchema as directorySchema } from "../route-types/fetchDirectory";
-import { returnDataSchema as dnpInstalledSchema } from "../route-types/listPackages";
-import { getValidator } from "utils/schemaValidation";
 import { setDnpInstalled } from "services/dnpInstalled/actions";
 import { setDnpDirectory } from "services/dnpDirectory/actions";
-
-const validateDirectory = getValidator<DirectoryItem[]>(directorySchema);
-const validateDnpInstalled = getValidator<PackageContainer[]>(
-  dnpInstalledSchema
-);
 
 export default function subscriptions(session: autobahn.Session) {
   const wampSubscriptions = registerSubscriptions(session, errorMessage => {

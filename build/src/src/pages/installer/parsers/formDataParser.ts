@@ -147,6 +147,7 @@ export function getUserSettingsDataErrors(
   for (const [dnpName, data] of Object.entries(dataAllDnps)) {
     if (data.namedVolumePaths) {
       for (const [volName, volPath] of Object.entries(data.namedVolumePaths)) {
+        /* eslint-disable-next-line no-useless-escape */
         if (volPath && !/^\/[^\/]+/.test(volPath))
           errors.push(
             `volume path for '${dnpName}' '${volName}' must be an absolute path`

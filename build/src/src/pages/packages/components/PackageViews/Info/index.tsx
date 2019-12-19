@@ -10,8 +10,11 @@ import { GoPin } from "react-icons/go";
 import Links from "./Links";
 import Vols from "./Vols";
 import StateBadge from "../StateBadge";
+import newTabProps from "utils/newTabProps";
 import { PackageContainer } from "types";
 import "./info.scss";
+
+const ipfsGateway = "http://ipfs.dappnode:8080";
 
 function Info({ dnp }: { dnp: PackageContainer }) {
   const [gettingStartedShowLocal, setGettingStartedIsShown] = useState(false);
@@ -91,7 +94,11 @@ function Info({ dnp }: { dnp: PackageContainer }) {
         <div className="version-info">
           <strong>Version: </strong>
           {version} {upstreamVersion && `(${upstreamVersion} upstream)`}{" "}
-          {origin ? <a className="origin">{origin}</a> : null}
+          {origin ? (
+            <a href={`${ipfsGateway}${origin}`} {...newTabProps}>
+              {origin}
+            </a>
+          ) : null}
         </div>
 
         {!gettingStartedShowLocal && (

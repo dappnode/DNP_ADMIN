@@ -4,7 +4,6 @@ import api from "API/rpcMethods";
 import { confirm } from "components/ConfirmDialog";
 // Components
 import Card from "components/Card";
-import SubTitle from "components/SubTitle";
 import Button from "components/Button";
 import Columns from "components/Columns";
 import ProgressBar from "react-bootstrap/ProgressBar";

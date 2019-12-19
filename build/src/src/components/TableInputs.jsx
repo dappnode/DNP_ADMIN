@@ -19,15 +19,18 @@ import "./tableInputs.scss";
 
 function TableInputs({ headers, content, numOfRows = 2, rowsTemplate }) {
   if (!Array.isArray(headers)) {
+    // eslint-disable-next-line no-console
     console.error("headers must be an array");
     return null;
   }
   if (!Array.isArray(content)) {
+    // eslint-disable-next-line no-console
     console.error("content must be an array");
     return null;
   }
   content.forEach(row => {
     if (!Array.isArray(row)) {
+      // eslint-disable-next-line no-console
       console.error("row must be an array");
       return null;
     }

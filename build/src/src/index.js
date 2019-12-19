@@ -38,7 +38,8 @@ if (process.env.REACT_APP_MOCK_DATA) {
     .then(({ mockState }) =>
       store.dispatch({ type: "DEV_ONLY_REPLACE_STATE", state: mockState })
     )
-    .catch(e => console.log(`Error loading mockContent: ${e.stack}`));
+    // eslint-disable-next-line no-console
+    .catch(e => console.error(`Error loading mockContent: ${e.stack}`));
 } else {
   api.start();
 }

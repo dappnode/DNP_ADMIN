@@ -84,7 +84,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
       if (!errors.length) onSubmit(newUserSettings);
       else console.log("data errors", errors);
     },
-    [setDataErrors]
+    [setDataErrors, onSubmit]
   );
 
   // Merge wizard data with the editor data. Give priority to the wizard data
@@ -118,8 +118,6 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
       }))
     };
   }, [setupSchema]);
-
-  console.log(editorData);
 
   return (
     <Card spacing>
