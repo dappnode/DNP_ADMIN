@@ -8,11 +8,17 @@ import { MdHome, MdRefresh } from "react-icons/md";
 import "./selectMountpoint.scss";
 import { joinCssClass } from "utils/css";
 import { MountpointData } from "types";
-import { getIsLoadingStrict } from "services/loadingStatus/selectors";
+import {
+  getIsLoadingStrict,
+  getLoadingError
+} from "services/loadingStatus/selectors";
 import { getMountpoints } from "services/dappnodeStatus/selectors";
 import { fetchMountpoints } from "services/dappnodeStatus/actions";
+import newTabProps from "utils/newTabProps";
 
-export const selectMountpointId = "selectMountpoint"
+export const selectMountpointId = "selectMountpoint";
+const troubleshootUrl =
+  "https://github.com/dappnode/DAppNode/wiki/Troubleshoot-mountpoints";
 
 function SelectMountpoint({
   // React JSON form data props
@@ -20,8 +26,9 @@ function SelectMountpoint({
   onChange,
   options,
   // Own DAppNode props from redux
-  mountpoints,
+  mountpoints: mountpointsApi,
   isLoading,
+  loadingError,
   fetchMountpoints
 }: {
   value: string;
@@ -34,19 +41,32 @@ function SelectMountpoint({
   // Own DAppNode props from redux
   mountpoints: MountpointData[] | null;
   isLoading: boolean;
+  loadingError?: string;
   fetchMountpoints: () => {};
 }) {
   const [showHelp, setShowHelp] = useState(false);
 
+  const mountpointsLoaded = Boolean(mountpointsApi);
+  const mountpoints: MountpointData[] = mountpointsApi || [
+    {
+      mountpoint: "",
+      vendor: "Host",
+      model: "(default)",
+      total: "",
+      use: "",
+      free: ""
+    }
+  ];
+
   const { alreadySet, isLegacy, prevPath } = options || {};
-  const selectedDev = (mountpoints || []).find(
+  const selectedDev = mountpoints.find(
     ({ mountpoint }) => mountpoint === value
   );
 
   // Automatically fetch mountpoints on component load
   useEffect(() => {
-    if (!mountpoints) fetchMountpoints();
-  }, [mountpoints, fetchMountpoints]);
+    if (!mountpointsLoaded) fetchMountpoints();
+  }, [mountpointsLoaded, fetchMountpoints]);
 
   // If the user has selected an invalid mountpoint and is not loading or already set,
   // reset the value to the host (default) to prevent problems
@@ -127,7 +147,7 @@ function SelectMountpoint({
             </div>
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            {(mountpoints || []).map(
+            {mountpoints.map(
               ({ mountpoint, vendor, model, total, use, free }) => (
                 <Dropdown.Item
                   key={mountpoint}
@@ -153,6 +173,18 @@ function SelectMountpoint({
                 </Dropdown.Item>
               )
             )}
+
+            {isLoading && !mountpointsLoaded && (
+              <Dropdown.Item>Loading...</Dropdown.Item>
+            )}
+
+            <Dropdown.Item
+              href={troubleshootUrl}
+              {...newTabProps}
+              className="troubleshoot"
+            >
+              Not seeing your drive? Click here
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
@@ -165,6 +197,12 @@ function SelectMountpoint({
             <MdRefresh />
             <span className="text">Refresh</span>
           </Button>
+        )}
+
+        {loadingError && (
+          <div className="loading-error">
+            Error detecting mountpoints: {loadingError}
+          </div>
         )}
       </div>
 
@@ -180,7 +218,8 @@ function SelectMountpoint({
 
 const mapStateToProps = createStructuredSelector({
   mountpoints: getMountpoints,
-  isLoading: getIsLoadingStrict.mountpoints
+  isLoading: getIsLoadingStrict.mountpoints,
+  loadingError: getLoadingError.mountpoints
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch

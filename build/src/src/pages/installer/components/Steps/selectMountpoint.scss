@@ -79,6 +79,9 @@
     }
 
     > .dropdown-menu {
+      margin-bottom: var(--default-spacing);
+      padding: 0;
+
       flex: 1;
 
       // Correct react-boostrap wrong css
@@ -122,6 +125,17 @@
         transform: rotate(360deg);
       }
     }
+  }
+
+  .troubleshoot {
+    font-size: 0.85rem;
+    opacity: 0.6;
+  }
+
+  .loading-error {
+    margin-top: 0.5rem;
+    color: var(--danger-color);
+    white-space: nowrap;
   }
 }
 

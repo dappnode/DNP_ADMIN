@@ -28,6 +28,11 @@
     border-top: var(--border-style);
   }
 
+  // Prevent text overflows, specially for mountpoint errors
+  .form-group.field-string {
+    overflow: hidden;
+  }
+
   // Hide DNP titles if there's only one DNP
   fieldset > .form-group:only-child > fieldset > legend {
     display: none;
