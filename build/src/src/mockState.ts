@@ -1169,8 +1169,13 @@ Content in the first column | Content in the second column
   ],
   dnpInstalledData: {
     [lightningNetworkMetadata.name]: {
-      volumeSizes: {
-        dncore_ethchaindnpdappnodeeth_mountpoint: "1749123152"
+      volumes: {
+        dncore_ethchaindnpdappnodeeth_mountpoint: {
+          size: "1749123152",
+          devicePath:
+            "/dev1/data/dappnode-volumes/bitcoin.dnp.dappnode.eth/data",
+          mountpoint: "/dev1/data"
+        }
       }
     }
   },

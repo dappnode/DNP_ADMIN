@@ -120,7 +120,7 @@ function Info({
         )}
 
         <div>
-          <Vols dnp={dnp} volumeSizes={(dnpDetail || {}).volumeSizes || {}} />
+          <Vols dnp={dnp} volumesDetail={(dnpDetail || {}).volumes || {}} />
         </div>
 
         <div>

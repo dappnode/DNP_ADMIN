@@ -7,10 +7,16 @@ import { PackageContainer } from "types";
 
 function Vols({
   dnp,
-  volumeSizes
+  volumesDetail
 }: {
   dnp: PackageContainer;
-  volumeSizes: { [volumeName: string]: string };
+  volumesDetail: {
+    [volumeName: string]: {
+      size: string; // "823203"
+      devicePath: string; // "/dev1/data/dappnode-volumes/bitcoin.dnp.dappnode.eth/data"
+      mountpoint?: string; // "/dev1/data"
+    };
+  };
 }) {
   const { volumes = [] } = dnp;
   if (volumes && !Array.isArray(volumes)) {
@@ -28,22 +34,27 @@ function Vols({
         // Display style:
         // - dncore_vpndnpdappnodeeth_data: 866B
         // - /etc/hostname: - (bind)
-        .map(({ name, container, size, host }) => ({
-          name: name
-            ? prettyVolumeName(name, dnp.name)
-            : container || "Unknown",
-          size:
-            typeof volumeSizes[name || ""] === "string"
-              ? prettyBytes(parseInt(volumeSizes[name || ""]))
+        .map(({ name, container, size, host }) => {
+          const volumeDetail = volumesDetail[name || ""];
+          const mountpointSize = volumeDetail ? volumeDetail.size : undefined;
+          const mountpoint = volumeDetail ? volumeDetail.mountpoint : undefined;
+          return {
+            name: name
+              ? prettyVolumeName(name, dnp.name)
+              : container || "Unknown",
+            size: mountpointSize
+              ? prettyBytes(parseInt(mountpointSize))
               : typeof size === "number" && !isNaN(size)
               ? prettyBytes(size)
               : !name
               ? "(bind) " + host || ""
-              : "..."
-        }))
-        .map(({ name, size }) => (
+              : "...",
+            extra: mountpoint ? `(in ${mountpoint})` : undefined
+          };
+        })
+        .map(({ name, size, extra }) => (
           <>
-            <Soft>{name}:</Soft> {size}
+            <Soft>{name}:</Soft> {size} {extra}
           </>
         ))}
     />

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import * as api from "API/calls";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import withTitle from "components/hoc/withTitle";
@@ -44,7 +43,7 @@ const PackageInterface = ({
 }) => {
   useEffect(() => {
     fetchDnpInstalledData({ id });
-  }, [(dnp || {}).name]);
+  }, [id, fetchDnpInstalledData]);
 
   if (!dnp) {
     if (loading) return <Loading msg="Loading your DAppNode Packages..." />;
