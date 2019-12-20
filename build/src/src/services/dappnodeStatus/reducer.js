@@ -1,4 +1,4 @@
-import * as t from "./actionTypes";
+import * as t from "./types";
 import merge from "deepmerge";
 import { arrayToObj } from "utils/objects";
 
@@ -14,7 +14,8 @@ const initialState = {
   wifiStatus: {},
   passwordIsInsecure: false,
   autoUpdateData: {},
-  identityAddress: null
+  identityAddress: null,
+  mountpoints: null
 };
 
 export default function(state = initialState, action) {
@@ -83,6 +84,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         identityAddress: action.identityAddress
+      };
+
+    case t.UPDATE_MOUNTPOINTS:
+      return {
+        ...state,
+        mountpoints: action.mountpoints
       };
 
     default:

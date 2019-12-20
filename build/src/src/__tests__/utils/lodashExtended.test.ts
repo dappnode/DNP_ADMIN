@@ -14,11 +14,11 @@ describe("lodashExtended", () => {
         }
       },
       [depName]: {
-        portMapping: {
+        portMappings: {
           "8080": "",
           "5555/udp": "5800"
         },
-        namedVolumePath: {
+        namedVolumeMountpoints: {
           bitcoin_data: ""
         },
         environment: {
@@ -29,16 +29,16 @@ describe("lodashExtended", () => {
 
     const additionalUserSettings: UserSettingsAllDnps = {
       [dnpName]: {
-        fileUpload: {
+        fileUploads: {
           "/usr/src/app/config.json":
             "data:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D"
         }
       },
       [depName]: {
-        portMapping: {
+        portMappings: {
           "5555/udp": ""
         },
-        namedVolumePath: {
+        namedVolumeMountpoints: {
           bitcoin_data: "/dev1/custom-path/"
         }
       }

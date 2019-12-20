@@ -1,5 +1,5 @@
 import React from "react";
-import { orderBy, isEmpty } from "lodash";
+import { orderBy, isEmpty, mapValues } from "lodash";
 // Components
 import TableInputs from "components/TableInputs";
 import { UserSettingsAllDnps } from "types";
@@ -8,14 +8,11 @@ import Button from "components/Button";
 import deepmerge from "deepmerge";
 import "./oldEditor.scss";
 
-interface StringValues {
-  [valueId: string]: string;
-}
-
 interface EditableTableProps {
   headers: string[];
   placeholder: string;
-  values?: StringValues;
+  values?: { [valueId: string]: string };
+  disabledValues?: { [valueId: string]: boolean };
   setValue: (valueId: string, value: string) => void;
 }
 
@@ -23,6 +20,7 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = ({
   headers,
   placeholder,
   values,
+  disabledValues,
   setValue
 }) => {
   if (!values || isEmpty(values)) return null;
@@ -38,7 +36,8 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = ({
         {
           placeholder,
           value,
-          onValueChange: (newValue: string) => setValue(id, newValue)
+          onValueChange: (newValue: string) => setValue(id, newValue),
+          disabled: (disabledValues || {})[id]
         }
       ])}
       rowsTemplate=""
@@ -48,6 +47,7 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = ({
 
 interface OldEditorProps {
   userSettings: UserSettingsAllDnps;
+  initialUserSettings: UserSettingsAllDnps;
   onSubmit: () => void;
   onChange: (newUserSettings: UserSettingsAllDnps) => void;
   onCancel: () => void;
@@ -57,6 +57,7 @@ interface OldEditorProps {
 
 const OldEditor: React.FunctionComponent<OldEditorProps> = ({
   userSettings,
+  initialUserSettings,
   onCancel,
   onSubmit,
   onChange,
@@ -78,10 +79,10 @@ const OldEditor: React.FunctionComponent<OldEditorProps> = ({
             headers={["Env name", "Env value"]}
             placeholder="enter value..."
             values={dnpSettings.environment}
-            setValue={(valueId, value) =>
+            setValue={(valueId, envValue) =>
               setSettingsMerge({
                 [dnpName]: {
-                  environment: { [valueId]: value }
+                  environment: { [valueId]: envValue }
                 }
               })
             }
@@ -90,22 +91,29 @@ const OldEditor: React.FunctionComponent<OldEditorProps> = ({
             headers={["Port - container", "Port - host"]}
             placeholder="Ephemeral port if unspecified"
             values={dnpSettings.portMappings}
-            setValue={(valueId, value) =>
+            setValue={(valueId, hostPort) =>
               setSettingsMerge({
                 [dnpName]: {
-                  portMappings: { [valueId]: value }
+                  portMappings: { [valueId]: hostPort }
                 }
               })
             }
           />
+          {/* Rules for volumes
+               - Can't be edited if they are already set 
+          */}
           <EditableTable
-            headers={["Volume name", "Custom path"]}
+            headers={["Volume name", "Custom mountpoint path"]}
             placeholder="default docker location if unspecified"
-            values={dnpSettings.namedVolumePaths}
-            setValue={(valueId, value) =>
+            values={dnpSettings.namedVolumeMountpoints}
+            disabledValues={mapValues(
+              (initialUserSettings[dnpName] || {}).namedVolumeMountpoints || {},
+              Boolean
+            )}
+            setValue={(valueId, mountpointHostPath) =>
               setSettingsMerge({
                 [dnpName]: {
-                  namedVolumePaths: { [valueId]: value }
+                  namedVolumeMountpoints: { [valueId]: mountpointHostPath }
                 }
               })
             }

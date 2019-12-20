@@ -1,4 +1,4 @@
-import * as actionTypes from "./actionTypes";
+import * as actionTypes from "./types";
 import * as actions from "./actions";
 import * as selectors from "./selectors";
 import reducer from "./reducer";

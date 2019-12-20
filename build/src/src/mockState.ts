@@ -25,6 +25,7 @@ import { IsInstallingLogsState } from "services/isInstallingLogs/types";
 import { DnpInstalledState } from "services/dnpInstalled/types";
 import { SetupSchema, SetupUiJson } from "types-own";
 import { CoreUpdateState } from "services/coreUpdate/types";
+import { USER_SETTING_DISABLE_TAG } from "params";
 
 function getDescription(manifest: {
   shortDescription?: string;
@@ -139,7 +140,7 @@ const lightningNetworkSetupUiJson = {};
 
 const lightningNetworkSetup: UserSettings = {
   portMappings: { "9735": "9735" },
-  namedVolumePaths: { lndconfig_data: "" },
+  namedVolumeMountpoints: { lndconfig_data: "" },
   environment: {
     RTL_PASSWORD: "",
     RPCUSER: "dappnode",
@@ -281,6 +282,12 @@ If you do not have a keystore file, you can create a new wallet in My Ether Wall
       title: "Keystore",
       description: "Keystore with the account to be used in your Raiden node"
     },
+    keystoreSet: {
+      type: "string",
+      format: "data-url",
+      title: "Keystore already set",
+      description: "Should be hidden"
+    },
     keystorePassword: {
       type: "string",
       title: "Keystore password",
@@ -299,6 +306,10 @@ const raidenSetupTarget: SetupTarget = {
     type: "fileUpload",
     path: "/usr/src/app"
   },
+  keystoreSet: {
+    type: "fileUpload",
+    path: "/usr/src/app-set"
+  },
   keystorePassword: {
     type: "environment",
     name: "RAIDEN_KEYSTORE_PASSWORD"
@@ -310,11 +321,14 @@ const raidenSetupTarget: SetupTarget = {
 };
 
 const raidenSetup: UserSettings = {
-  namedVolumePaths: { data: "" },
+  namedVolumeMountpoints: { data: "" },
   environment: {
     RAIDEN_KEYSTORE_PASSWORD: "",
     RAIDEN_ADDRESS: "",
     EXTRA_OPTS: "--disable-debug-logfile"
+  },
+  fileUploads: {
+    "/usr/src/app-set": USER_SETTING_DISABLE_TAG
   }
 };
 
@@ -355,7 +369,7 @@ const raidenTestnetMetadata = {
 };
 
 const raidenTestnetSetup: UserSettings = {
-  namedVolumePaths: { data: "" },
+  namedVolumeMountpoints: { data: "" },
   environment: {
     RAIDEN_ADDRESS: "",
     RAIDEN_KEYSTORE_PASSWORD: "",
@@ -401,15 +415,20 @@ const bitcoinMetadata = {
   license: "GPL-3.0"
 };
 
-const bitcoinSetup: UserSettings = {
+const bitcoinUserSettings: UserSettings = {
   portMappings: { "8333": "8333" },
-  namedVolumePaths: { bitcoin_data: "/dev1/custom-path-previously-set" },
+  namedVolumeMountpoints: {
+    bitcoin_data: "",
+    bitcoin_data_old: "/dev0/data",
+    bitcoin_data_old_legacy: "legacy:/dev1/data"
+  },
   environment: {
     BTC_RPCUSER: "dappnode",
     BTC_RPCPASSWORD: "dappnode",
     BTC_TXINDEX: "1",
     BTC_PRUNE: "0"
-  }
+  },
+  allNamedVolumeMountpoint: USER_SETTING_DISABLE_TAG
 };
 
 const bitcoinSetupSchema: SetupSchema = {
@@ -421,16 +440,55 @@ const bitcoinSetupSchema: SetupSchema = {
       title: "Custom volume data path",
       description:
         "If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive."
+    },
+    bitcoinDataOld: {
+      type: "string",
+      title: "Custom volume data old path",
+      description:
+        "Already set path to test that it's not editable. If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive."
+    },
+    bitcoinDataOldLegacy: {
+      type: "string",
+      title: "Custom volume data old legacy path",
+      description:
+        "Already set path to test that it's not editable, with legacy setting. If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive."
+    },
+    bitcoinAllVolumes: {
+      type: "string",
+      title: "All volumes",
+      description: "This mountpoint selector should affect all named volumes"
+    },
+    bitcoinName: {
+      type: "string",
+      title: "Bitcoin name",
+      description: "Useless parameter to test performance"
     }
   }
 };
 
 const bitcoinSetupTarget: SetupTarget = {
   bitcoinData: {
-    type: "namedVolumePath",
+    type: "namedVolumeMountpoint",
     volumeName: "bitcoin_data"
+  },
+  bitcoinDataOld: {
+    type: "namedVolumeMountpoint",
+    volumeName: "bitcoin_data_old"
+  },
+  bitcoinDataOldLegacy: {
+    type: "namedVolumeMountpoint",
+    volumeName: "bitcoin_data_old_legacy"
+  },
+  bitcoinAllVolumes: {
+    type: "allNamedVolumesMountpoint"
+  },
+  bitcoinName: {
+    type: "environment",
+    name: "BITCOIN_NAME"
   }
 };
+
+const bitcoinSetupUiJson: SetupUiJson = {};
 
 /**
  * Ethchain
@@ -534,7 +592,7 @@ const trustlinesSpecialPermissions: SpecialPermission[] = [
 const trustlinesSetup = {
   environment: { ROLE: "observer", ADDRESS: "", PASSWORD: "" },
   portMapping: { "30300": "", "30300/udp": "" },
-  namedVolumePath: { data: "", config: "" }
+  namedVolumeMountpoints: { data: "", config: "" }
 };
 
 const trustlinesSetupSchema: SetupSchema = {
@@ -813,7 +871,41 @@ const dappnodeStatusState = {
         }
       }
     ]
-  }
+  },
+  mountpoints: [
+    {
+      mountpoint: "",
+      use: "87%",
+      total: "",
+      free: "121G",
+      vendor: "Host",
+      model: "(default)"
+    },
+    {
+      mountpoint: "/data",
+      use: "68%",
+      total: "500G",
+      free: "141G",
+      vendor: "ATA",
+      model: "CT500MX500SSD4"
+    },
+    {
+      mountpoint: "/media/usb0",
+      use: "1%",
+      total: "1TB",
+      free: "6.2G",
+      vendor: "SanDisk",
+      model: "Ultra_USB_3.0"
+    },
+    {
+      mountpoint: "/media/usb1",
+      use: "100%",
+      total: "16GB",
+      free: "7.1G",
+      vendor: "SanDisk",
+      model: "Ultra_USB_3.0"
+    }
+  ]
 };
 
 const devicesState = [
@@ -908,7 +1000,8 @@ const dnpDirectoryState: DnpDirectoryState = {
       name: "fetch-loads.dnp.dappnode.eth",
       whitelisted: true,
       isFeatured: false,
-      message: "Loading manifest and more stuff really long text that goes on and on and more stuff 57%"
+      message:
+        "Loading manifest and more stuff really long text that goes on and on and more stuff 57%"
     },
     {
       status: "error",
@@ -938,7 +1031,7 @@ const dnpInstalledState: DnpInstalledState = {
     },
     {
       ...samplePackageContainer,
-      name: "lightning-network.dnp.dappnode.eth",
+      name: lightningNetworkMetadata.name,
       origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
       isDnp: true,
       version: "0.1.0",
@@ -965,6 +1058,16 @@ const dnpInstalledState: DnpInstalledState = {
           owner: "ethchain.dnp.dappnode.eth",
           isOwner: false,
           size: 715847181273
+        },
+        {
+          host:
+            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_mountpoint/_data",
+          container: "/app/.ethchain_mountpoint",
+          name: "dncore_ethchaindnpdappnodeeth_mountpoint",
+          users: ["ethchain.dnp.dappnode.eth"],
+          owner: "ethchain.dnp.dappnode.eth",
+          isOwner: false,
+          size: 2
         }
       ],
       manifest: lightningNetworkMetadata,
@@ -1063,7 +1166,20 @@ Content in the first column | Content in the second column
       },
       manifest: ethchainMetadata
     }
-  ]
+  ],
+  dnpInstalledData: {
+    [lightningNetworkMetadata.name]: {
+      volumes: {
+        dncore_ethchaindnpdappnodeeth_mountpoint: {
+          size: "1749123152",
+          devicePath:
+            "/dev1/data/dappnode-volumes/bitcoin.dnp.dappnode.eth/data",
+          mountpoint: "/dev1/data"
+        }
+      }
+    }
+  },
+  dnpInstalledDataRequestStatus: {}
 };
 
 /**
@@ -1088,7 +1204,7 @@ const dnpRequestState: DnpRequestState = {
 
       settings: {
         [lightningNetworkMetadata.name]: lightningNetworkSetup,
-        [bitcoinMetadata.name]: bitcoinSetup
+        [bitcoinMetadata.name]: bitcoinUserSettings
       },
       setupSchema: {
         [lightningNetworkMetadata.name]: lightningNetworkSetupSchema,
@@ -1134,7 +1250,16 @@ const dnpRequestState: DnpRequestState = {
       isInstalled: true,
 
       settings: {
-        [bitcoinMetadata.name]: bitcoinSetup
+        [bitcoinMetadata.name]: bitcoinUserSettings
+      },
+      setupSchema: {
+        [bitcoinMetadata.name]: bitcoinSetupSchema
+      },
+      setupTarget: {
+        [bitcoinMetadata.name]: bitcoinSetupTarget
+      },
+      setupUiJson: {
+        [bitcoinMetadata.name]: bitcoinSetupUiJson
       },
 
       request: {

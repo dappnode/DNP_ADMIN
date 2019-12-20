@@ -137,7 +137,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
 
   return (
     <>
-      <Card className="installer-header">
+      <Card className="installer-header" noscroll>
         <div className="details-header">
           <div className="left avatar">
             <img src={avatarUrl || defaultAvatar} alt="Avatar" />
