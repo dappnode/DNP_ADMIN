@@ -28,9 +28,9 @@
     border-top: var(--border-style);
   }
 
-  // Prevent text overflows, specially for mountpoint errors
+  // overflow MUST be visible for the mountpoint dropdown select to be visible
   .form-group.field-string {
-    overflow: hidden;
+    overflow: visible; // MUST be visible for the dropdowns to show
   }
 
   // Hide DNP titles if there's only one DNP

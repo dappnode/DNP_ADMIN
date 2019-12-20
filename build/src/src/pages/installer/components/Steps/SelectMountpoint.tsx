@@ -198,19 +198,19 @@ function SelectMountpoint({
             <span className="text">Refresh</span>
           </Button>
         )}
-
-        {loadingError && (
-          <div className="loading-error">
-            Error detecting mountpoints: {loadingError}
-          </div>
-        )}
       </div>
 
       {showHelp && (
-        <p className="change-mountpoint-help">
+        <div className="change-mountpoint-help">
           Existing volumes can't be changed. To do so, unistall this package and
           remove its data
-        </p>
+        </div>
+      )}
+
+      {loadingError && (
+        <div className="change-mountpoint-error">
+          Error detecting mountpoints: {loadingError}
+        </div>
       )}
     </>
   );

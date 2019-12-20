@@ -131,15 +131,14 @@
     font-size: 0.85rem;
     opacity: 0.6;
   }
+}
 
-  .loading-error {
-    margin-top: 0.5rem;
-    color: var(--danger-color);
-    white-space: nowrap;
-  }
+.change-mountpoint-error {
+  margin-top: 0.25rem;
+  color: var(--danger-color);
 }
 
 .change-mountpoint-help {
-  color: #4a5259;
   margin-top: 0.25rem;
+  color: #4a5259;
 }
