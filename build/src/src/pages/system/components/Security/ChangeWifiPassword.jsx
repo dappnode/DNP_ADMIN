@@ -12,7 +12,7 @@ import Switch from "components/Switch";
 import "./changeHostUserPassword.scss";
 import { wifiName } from "params";
 
-function ChangeWifiPassword({ passwordChange }) {
+function ChangeWifiPassword() {
   const [ssid, setSsid] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -24,7 +24,9 @@ function ChangeWifiPassword({ passwordChange }) {
   if (password && password.length < 8)
     errors.push("Password must be at least 8 characters long");
   if (password.includes("'"))
-    errors.push("Password MUST not include the quotes");
+    errors.push("Password must not include the quotes");
+  if (password.includes("$"))
+    errors.push("Password must not include the $ character");
   if (!/^([\x20-\x7F])*$/.test(password))
     errors.push("Password must include only simple ASCII characters");
 
@@ -41,7 +43,6 @@ function ChangeWifiPassword({ passwordChange }) {
         { id: wifiName, envs: {}, restart: true },
         { toastMessage: `Changing WIFI credentials...` }
       );
-    passwordChange(password);
   };
 
   return (
