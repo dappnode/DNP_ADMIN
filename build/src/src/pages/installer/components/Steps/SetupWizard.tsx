@@ -22,13 +22,14 @@ import { SetupWizardFormDataReturn } from "pages/installer/types";
 import deepmerge from "deepmerge";
 import { selectMountpointId } from "./SelectMountpoint";
 import { nullFieldId } from "./NullField";
-import { USER_SETTING_DISABLE_TAG } from "params";
+import { USER_SETTING_DISABLE_TAG, MOUNTPOINT_DEVICE_LEGACY_TAG } from "params";
 
 interface SetupWizardProps {
   setupSchema: SetupSchemaAllDnps;
   setupTarget: SetupTargetAllDnps;
   setupUiJson: SetupUiJsonAllDnps;
   userSettings: UserSettingsAllDnps;
+  prevUserSettings: UserSettingsAllDnps;
   wizardAvailable: boolean;
   onSubmit: (newUserSettings: UserSettingsAllDnps) => void;
   goBack: () => void;
@@ -39,6 +40,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   setupTarget,
   setupUiJson,
   userSettings,
+  prevUserSettings,
   wizardAvailable,
   onSubmit,
   goBack
@@ -120,8 +122,10 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
     };
   }, [setupSchema]);
 
+  // Must use prevUserSettings, since userSettings can change if the user
+  // navigates back and forward to the InstallDnpView component
   const setupUiJsonFormated: SetupUiJsonAllDnps = useMemo(() => {
-    const _formData = userSettingsToFormData(userSettings, setupTarget);
+    const _formData = userSettingsToFormData(prevUserSettings, setupTarget);
     return mapValues(setupTarget, (_0, dnpName) => {
       return deepmerge(
         setupUiJson[dnpName] || {},
@@ -141,7 +145,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
             setupTargetDnp.type === "namedVolumeMountpoint" ||
             setupTargetDnp.type === "allNamedVolumesMountpoint"
           ) {
-            const isLegacy = propValue.startsWith("legacy:");
+            const isLegacy = propValue.startsWith(MOUNTPOINT_DEVICE_LEGACY_TAG);
             return {
               "ui:widget": selectMountpointId,
               "ui:options": {
@@ -156,7 +160,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
         })
       );
     });
-  }, [setupTarget, setupUiJson, userSettings]);
+  }, [setupTarget, setupUiJson, prevUserSettings]);
 
   return (
     <Card spacing noscroll>

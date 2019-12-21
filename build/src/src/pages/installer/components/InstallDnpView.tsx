@@ -175,6 +175,7 @@ const InstallDnpView: React.FunctionComponent<
           setupTarget={setupTarget || {}}
           setupUiJson={setupUiJson || {}}
           userSettings={userSettings}
+          prevUserSettings={settings}
           wizardAvailable={wizardAvailable}
           onSubmit={(newUserSettings: UserSettingsAllDnps) => {
             console.log("Set new userSettings", newUserSettings);

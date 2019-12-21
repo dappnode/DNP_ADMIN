@@ -2,6 +2,10 @@ import { mapValues, isEmpty, omitBy } from "lodash";
 import deepmerge from "deepmerge";
 import { UserSettingsAllDnps, UserSettings, SetupTargetAllDnps } from "types";
 import { SetupWizardFormDataReturn } from "../types";
+import {
+  MOUNTPOINT_DEVICE_LEGACY_TAG,
+  USER_SETTING_DISABLE_TAG
+} from "../../../params";
 
 /**
  * Iterate the formData and find if there's a definition for that property
@@ -168,7 +172,14 @@ export function getUserSettingsDataErrors(
         data.namedVolumeMountpoints
       )) {
         /* eslint-disable-next-line no-useless-escape */
-        if (volPath && !/^\/[^\/]+/.test(volPath))
+        if (
+          volPath &&
+          !(
+            /^\/[^\/]+/.test(volPath) ||
+            volPath.startsWith(MOUNTPOINT_DEVICE_LEGACY_TAG) ||
+            volPath.startsWith(USER_SETTING_DISABLE_TAG)
+          )
+        )
           errors.push(
             `Mountpoint path for '${dnpName}' '${volName}' must be an absolute path`
           );
