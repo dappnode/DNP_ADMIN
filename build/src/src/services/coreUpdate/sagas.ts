@@ -90,7 +90,6 @@ export function* checkCoreUpdate() {
     const coreUpdateData: CoreUpdateData = yield call(api.fetchCoreUpdateData, {
       version: coreVersion
     });
-    console.log({ coreUpdateData });
     yield put(updateCoreUpdateData(coreUpdateData));
 
     yield put(updateIsLoaded(loadingId));

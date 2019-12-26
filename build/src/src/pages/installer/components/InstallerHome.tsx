@@ -58,7 +58,7 @@ const InstallerHome: React.FunctionComponent<
 
   useEffect(() => {
     fetchDnpDirectory();
-  }, []);
+  }, [fetchDnpDirectory]);
 
   // Limit the number of requests [TESTED]
   const fetchQueryThrottled = useMemo(

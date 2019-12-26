@@ -1,4 +1,4 @@
-import * as t from "./actionTypes";
+import * as t from "./types";
 
 // Service > dappnodeStatus
 
@@ -56,6 +56,11 @@ export const updateIdentityAddress = identityAddress => ({
   identityAddress
 });
 
+export const updateMountpoints = mountpoints => ({
+  type: t.UPDATE_MOUNTPOINTS,
+  mountpoints
+});
+
 // Fetch
 
 export const fetchAllDappnodeStatus = () => ({
@@ -80,4 +85,8 @@ export const fetchIfPasswordIsInsecure = () => ({
 
 export const fetchIdentityAddress = () => ({
   type: t.FETCH_IDENTITY_ADDRESS
+});
+
+export const fetchMountpoints = () => ({
+  type: t.FETCH_MOUNTPOINTS
 });

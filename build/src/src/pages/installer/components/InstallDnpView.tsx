@@ -175,6 +175,7 @@ const InstallDnpView: React.FunctionComponent<
           setupTarget={setupTarget || {}}
           setupUiJson={setupUiJson || {}}
           userSettings={userSettings}
+          prevUserSettings={settings}
           wizardAvailable={wizardAvailable}
           onSubmit={(newUserSettings: UserSettingsAllDnps) => {
             console.log("Set new userSettings", newUserSettings);
@@ -232,6 +233,7 @@ const InstallDnpView: React.FunctionComponent<
    */
   useEffect(() => {
     if (currentSubRoute) history.push(match.url);
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
 
   // Do this in a different way

@@ -1,5 +1,5 @@
 .markdown-render {
-  p:last-child {
+  &:not(.spacing) > p:last-child {
     margin-bottom: 0;
   }
   img {

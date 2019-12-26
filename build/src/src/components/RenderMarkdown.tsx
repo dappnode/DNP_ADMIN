@@ -1,8 +1,9 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import "./renderMarkdown.scss";
+import { joinCssClass } from "utils/css";
 
-function renderParagraph(props: any) {
+function ParagraphRenderer(props: any) {
   const { children } = props;
 
   if (
@@ -20,13 +21,28 @@ function renderParagraph(props: any) {
   return <p>{children}</p>;
 }
 
-export default function RenderMarkdown({ source }: { source: string }) {
+function LinkRenderer(props: any) {
+  return (
+    <a href={props.href} target="_blank" rel="noopener noreferrer">
+      {props.children}
+    </a>
+  );
+}
+
+export default function RenderMarkdown({
+  source,
+  spacing
+}: {
+  source: string;
+  spacing?: boolean;
+}) {
   return (
     <ReactMarkdown
-      className="markdown-render"
+      className={"markdown-render" + joinCssClass({ spacing })}
       source={source}
       renderers={{
-        paragraph: renderParagraph
+        link: LinkRenderer,
+        paragraph: ParagraphRenderer
       }}
     />
   );

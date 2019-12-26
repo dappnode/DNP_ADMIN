@@ -10,10 +10,19 @@ import { GoPin } from "react-icons/go";
 import Links from "./Links";
 import Vols from "./Vols";
 import StateBadge from "../StateBadge";
-import { PackageContainer } from "types";
+import newTabProps from "utils/newTabProps";
+import { PackageContainer, PackageDetailData } from "types";
 import "./info.scss";
 
-function Info({ dnp }: { dnp: PackageContainer }) {
+const ipfsGateway = "http://ipfs.dappnode:8080";
+
+function Info({
+  dnp,
+  dnpDetail
+}: {
+  dnp: PackageContainer;
+  dnpDetail?: PackageDetailData;
+}) {
   const [gettingStartedShowLocal, setGettingStartedIsShown] = useState(false);
   const [allowUndo, setAllowUndo] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -91,7 +100,11 @@ function Info({ dnp }: { dnp: PackageContainer }) {
         <div className="version-info">
           <strong>Version: </strong>
           {version} {upstreamVersion && `(${upstreamVersion} upstream)`}{" "}
-          {origin ? <a className="origin">{origin}</a> : null}
+          {origin ? (
+            <a href={`${ipfsGateway}${origin}`} {...newTabProps}>
+              {origin}
+            </a>
+          ) : null}
         </div>
 
         {!gettingStartedShowLocal && (
@@ -107,7 +120,7 @@ function Info({ dnp }: { dnp: PackageContainer }) {
         )}
 
         <div>
-          <Vols dnp={dnp} />
+          <Vols dnp={dnp} volumesDetail={(dnpDetail || {}).volumes || {}} />
         </div>
 
         <div>

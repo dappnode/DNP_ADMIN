@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import withTitle from "components/hoc/withTitle";
@@ -24,16 +24,27 @@ import Error from "components/generic/Error";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 // Selectors
-import { getDnpInstalledStatus } from "services/dnpInstalled/selectors";
+import {
+  getDnpInstalledStatus,
+  getDnpInstalledDataById
+} from "services/dnpInstalled/selectors";
+import { fetchDnpInstalledData } from "services/dnpInstalled/actions";
 
 const PackageInterface = ({
   dnp,
+  dnpDetail,
   id,
   moduleName,
   areThereDnps,
   requestStatus: { loading, error },
-  match
+  match,
+  // Actions
+  fetchDnpInstalledData
 }) => {
+  useEffect(() => {
+    fetchDnpInstalledData({ id });
+  }, [id, fetchDnpInstalledData]);
+
   if (!dnp) {
     if (loading) return <Loading msg="Loading your DAppNode Packages..." />;
     if (error)
@@ -51,7 +62,7 @@ const PackageInterface = ({
     {
       name: "Info",
       subPath: "info",
-      render: () => <Info dnp={dnp} />,
+      render: () => <Info dnp={dnp} dnpDetail={dnpDetail} />,
       available: true
     },
     {
@@ -87,7 +98,7 @@ const PackageInterface = ({
     {
       name: "File Manager",
       subPath: "file-manager",
-      render: () => <FileManager dnp={dnp} />,
+      render: ({ ...props }) => <FileManager {...props} dnp={dnp} />,
       available: true
     },
     // DnpSpecific is a variable dynamic per DNP component
@@ -147,6 +158,10 @@ PackageInterface.propTypes = {
 
 // Container
 
+function getIdFromMatch(match) {
+  return decodeURIComponent(((match || {}).params || {}).id || "");
+}
+
 const mapStateToProps = createStructuredSelector({
   dnp: s.getDnp,
   // id and moduleName are parsed from the url at the selector (with the router state)
@@ -156,10 +171,14 @@ const mapStateToProps = createStructuredSelector({
   requestStatus: getDnpInstalledStatus,
   // For the withTitle HOC
   subtitle: (state, ownProps) =>
-    shortNameCapitalized(s.getUrlId(state, ownProps))
+    shortNameCapitalized(getIdFromMatch(ownProps.match)),
+  dnpDetail: (state, ownProps) =>
+    getDnpInstalledDataById(state, getIdFromMatch(ownProps.match))
 });
 
-const mapDispatchToProps = null;
+const mapDispatchToProps = {
+  fetchDnpInstalledData
+};
 
 export default compose(
   withRouter,

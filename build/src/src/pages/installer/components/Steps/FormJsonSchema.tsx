@@ -4,8 +4,10 @@ import Error from "components/generic/Error";
 import Form, { FormValidation, AjvError } from "react-jsonschema-form";
 import Button from "components/Button";
 import RenderMarkdown from "components/RenderMarkdown";
-import "./formJsonSchema.scss";
+import SelectMountpoint, { selectMountpointId } from "./SelectMountpoint";
+import NullField, { nullFieldId } from "./NullField";
 import { SetupUiJson, SetupSchemaAllDnpsFormated } from "types-own";
+import "./formJsonSchema.scss";
 
 interface PropWithErrorMessages extends SetupUiJson {
   errorMessages: { [errorName: string]: string };
@@ -15,12 +17,17 @@ interface AjvErrorWithPath extends AjvError {
   schemaPath?: string; // "#/properties/vipnode.dnp.dappnode.eth/properties/payoutAddress/pattern"
 }
 
+const widgets = {
+  [selectMountpointId]: SelectMountpoint
+};
+
 // Memo this component to prevent expensive MarkDown parsing
 // on every single keystroke. After analyzing performance, this component
 // was responsible for 20-40% of the work
 const CustomDescriptionField: React.FunctionComponent<any> = ({
   description
-}) => useMemo(() => <RenderMarkdown source={description} />, [description]);
+}) =>
+  useMemo(() => <RenderMarkdown source={description} spacing />, [description]);
 
 interface FormJsonSchemaProps {
   schema: SetupSchemaAllDnpsFormated;
@@ -94,7 +101,8 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
     return <Error msg={`Wizard .properties must be an object`} />;
 
   const fields = {
-    DescriptionField: CustomDescriptionField
+    DescriptionField: CustomDescriptionField,
+    [nullFieldId]: NullField
   };
 
   const validationFunctions: ((
@@ -196,6 +204,7 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
         validate={validate}
         fields={fields}
         formData={internalFormData}
+        widgets={widgets}
       >
         <div className="bottom-buttons">
           <div>

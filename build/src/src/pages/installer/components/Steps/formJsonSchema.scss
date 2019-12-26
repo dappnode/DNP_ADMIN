@@ -28,6 +28,11 @@
     border-top: var(--border-style);
   }
 
+  // overflow MUST be visible for the mountpoint dropdown select to be visible
+  .form-group.field-string {
+    overflow: visible; // MUST be visible for the dropdowns to show
+  }
+
   // Hide DNP titles if there's only one DNP
   fieldset > .form-group:only-child > fieldset > legend {
     display: none;

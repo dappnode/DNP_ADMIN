@@ -2,6 +2,10 @@ import { mapValues, isEmpty, omitBy } from "lodash";
 import deepmerge from "deepmerge";
 import { UserSettingsAllDnps, UserSettings, SetupTargetAllDnps } from "types";
 import { SetupWizardFormDataReturn } from "../types";
+import {
+  MOUNTPOINT_DEVICE_LEGACY_TAG,
+  USER_SETTING_DISABLE_TAG
+} from "../../../params";
 
 /**
  * Iterate the formData and find if there's a definition for that property
@@ -26,34 +30,45 @@ export function formDataToUserSettings(
       if (target && target.type)
         switch (target.type) {
           case "environment":
+            const envValue = value;
             if (target.name)
               userSettings.environment = deepmerge(
                 userSettings.environment || {},
-                { [target.name]: value }
+                { [target.name]: envValue }
               );
             break;
 
           case "portMapping":
+            const hostPort = value;
             if (target.containerPort)
               userSettings.portMappings = deepmerge(
                 userSettings.portMappings || {},
-                { [target.containerPort]: value }
+                { [target.containerPort]: hostPort }
               );
             break;
 
-          case "namedVolumePath":
+          case "namedVolumeMountpoint": {
+            const mountpointHostPath = value;
             if (target.volumeName)
-              userSettings.namedVolumePaths = deepmerge(
-                userSettings.namedVolumePaths || {},
-                { [target.volumeName]: value }
+              userSettings.namedVolumeMountpoints = deepmerge(
+                userSettings.namedVolumeMountpoints || {},
+                { [target.volumeName]: mountpointHostPath }
               );
             break;
+          }
+
+          case "allNamedVolumesMountpoint": {
+            const mountpointHostPath = value;
+            userSettings.allNamedVolumeMountpoint = mountpointHostPath;
+            break;
+          }
 
           case "fileUpload":
+            const fileDataUrl = value;
             if (target.path)
               userSettings.fileUploads = deepmerge(
                 userSettings.fileUploads || {},
-                { [target.path]: value }
+                { [target.path]: fileDataUrl }
               );
             break;
         }
@@ -81,7 +96,8 @@ export function userSettingsToFormData(
     const {
       environment = {},
       portMappings = {},
-      namedVolumePaths = {},
+      namedVolumeMountpoints = {},
+      allNamedVolumeMountpoint = "",
       fileUploads = {}
     } = userSettings;
     const formDataDnp: { [propId: string]: string } = {};
@@ -101,11 +117,17 @@ export function userSettingsToFormData(
               formDataDnp[propId] = portMappings[containerPort];
             break;
 
-          case "namedVolumePath":
+          case "namedVolumeMountpoint": {
             const { volumeName } = target;
-            if (volumeName && volumeName in namedVolumePaths)
-              formDataDnp[propId] = namedVolumePaths[volumeName];
+            if (volumeName && volumeName in namedVolumeMountpoints)
+              formDataDnp[propId] = namedVolumeMountpoints[volumeName];
             break;
+          }
+
+          case "allNamedVolumesMountpoint": {
+            formDataDnp[propId] = allNamedVolumeMountpoint;
+            break;
+          }
 
           case "fileUpload":
             const { path } = target;
@@ -138,18 +160,28 @@ export function cleanInitialFormData(
 
 /**
  * Enforces rules on user settings:
- * - namedVolumePaths: must be absolute paths. Renaming for a different named volume is not allowed
+ * - namedVolumeMountpoints: must be absolute paths. Renaming for a different named volume is not allowed
  */
 export function getUserSettingsDataErrors(
   dataAllDnps: UserSettingsAllDnps
 ): string[] {
   const errors: string[] = [];
   for (const [dnpName, data] of Object.entries(dataAllDnps)) {
-    if (data.namedVolumePaths) {
-      for (const [volName, volPath] of Object.entries(data.namedVolumePaths)) {
-        if (volPath && !/^\/[^\/]+/.test(volPath))
+    if (data.namedVolumeMountpoints) {
+      for (const [volName, volPath] of Object.entries(
+        data.namedVolumeMountpoints
+      )) {
+        /* eslint-disable-next-line no-useless-escape */
+        if (
+          volPath &&
+          !(
+            /^\/[^\/]+/.test(volPath) ||
+            volPath.startsWith(MOUNTPOINT_DEVICE_LEGACY_TAG) ||
+            volPath.startsWith(USER_SETTING_DISABLE_TAG)
+          )
+        )
           errors.push(
-            `volume path for '${dnpName}' '${volName}' must be an absolute path`
+            `Mountpoint path for '${dnpName}' '${volName}' must be an absolute path`
           );
       }
     }

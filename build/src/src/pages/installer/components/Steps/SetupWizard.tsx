@@ -20,12 +20,16 @@ import {
 } from "pages/installer/parsers/formDataParser";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
 import deepmerge from "deepmerge";
+import { selectMountpointId } from "./SelectMountpoint";
+import { nullFieldId } from "./NullField";
+import { USER_SETTING_DISABLE_TAG, MOUNTPOINT_DEVICE_LEGACY_TAG } from "params";
 
 interface SetupWizardProps {
   setupSchema: SetupSchemaAllDnps;
   setupTarget: SetupTargetAllDnps;
   setupUiJson: SetupUiJsonAllDnps;
   userSettings: UserSettingsAllDnps;
+  prevUserSettings: UserSettingsAllDnps;
   wizardAvailable: boolean;
   onSubmit: (newUserSettings: UserSettingsAllDnps) => void;
   goBack: () => void;
@@ -36,6 +40,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
   setupTarget,
   setupUiJson,
   userSettings,
+  prevUserSettings,
   wizardAvailable,
   onSubmit,
   goBack
@@ -82,15 +87,13 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
       const errors = getUserSettingsDataErrors(newUserSettings);
       setDataErrors(errors);
       if (!errors.length) onSubmit(newUserSettings);
-      else console.log("data errors", errors);
     },
-    [setDataErrors]
+    [setDataErrors, onSubmit]
   );
 
   // Merge wizard data with the editor data. Give priority to the wizard data
   const onWizardSubmit = useCallback(
     formData => {
-      console.log("Submited wizard editor");
       const wizardSettings = formDataToUserSettings(formData, setupTarget);
       submit(deepmerge(editorData, wizardSettings));
     },
@@ -119,13 +122,52 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
     };
   }, [setupSchema]);
 
-  console.log(editorData);
+  // Must use prevUserSettings, since userSettings can change if the user
+  // navigates back and forward to the InstallDnpView component
+  const setupUiJsonFormated: SetupUiJsonAllDnps = useMemo(() => {
+    const _formData = userSettingsToFormData(prevUserSettings, setupTarget);
+    return mapValues(setupTarget, (_0, dnpName) => {
+      return deepmerge(
+        setupUiJson[dnpName] || {},
+        mapValues(setupTarget[dnpName] || {}, (setupTargetDnp, propName) => {
+          const propValue = (_formData[dnpName] || {})[propName] || "";
+          if (
+            propValue === USER_SETTING_DISABLE_TAG &&
+            (setupTargetDnp.type === "namedVolumeMountpoint" ||
+              setupTargetDnp.type === "allNamedVolumesMountpoint" ||
+              setupTargetDnp.type === "fileUpload")
+          ) {
+            return {
+              "ui:field": nullFieldId
+            };
+          }
+          if (
+            setupTargetDnp.type === "namedVolumeMountpoint" ||
+            setupTargetDnp.type === "allNamedVolumesMountpoint"
+          ) {
+            const isLegacy = propValue.startsWith(MOUNTPOINT_DEVICE_LEGACY_TAG);
+            return {
+              "ui:widget": selectMountpointId,
+              "ui:options": {
+                alreadySet: Boolean(propValue),
+                isLegacy,
+                prevPath: isLegacy ? propValue.slice(7) : propValue
+              }
+            };
+          } else {
+            return {};
+          }
+        })
+      );
+    });
+  }, [setupTarget, setupUiJson, prevUserSettings]);
 
   return (
-    <Card spacing>
+    <Card spacing noscroll>
       {showAdvanced || !wizardAvailable ? (
         <OldEditor
           userSettings={editorData}
+          initialUserSettings={userSettings}
           onCancel={goBack}
           onChange={setEditorData}
           onSubmit={onOldEditorSubmit}
@@ -135,7 +177,7 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
       ) : (
         <FormJsonSchema
           schema={setupSchemaFormated}
-          uiSchema={setupUiJson}
+          uiSchema={setupUiJsonFormated}
           formData={wizardData}
           // onChange={() => {}}
           onSubmit={onWizardSubmit}

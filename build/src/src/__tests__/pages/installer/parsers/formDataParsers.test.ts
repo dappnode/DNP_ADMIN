@@ -63,7 +63,7 @@ describe("formDataToUserSettings", () => {
         containerPort: "5555/udp"
       },
       dataVolume: {
-        type: "namedVolumePath",
+        type: "namedVolumeMountpoint",
         volumeName: "bitcoin_data"
       },
       txIndex: {
@@ -88,7 +88,7 @@ describe("formDataToUserSettings", () => {
         "8080": "",
         "5555/udp": "5800"
       },
-      namedVolumePaths: {
+      namedVolumeMountpoints: {
         bitcoin_data: ""
       },
       environment: {
@@ -193,15 +193,15 @@ describe("cleanInitialFormData", () => {
 });
 
 describe("getUserSettingsDataErrors", () => {
-  describe("namedVolumePaths", () => {
+  describe("namedVolumeMountpoints", () => {
     const dnpName = "bitcoin.dnp.dappnode.eth";
     const volName = "data";
     const getUserSettings = (newPath: string): UserSettingsAllDnps => ({
       [dnpName]: {
-        namedVolumePaths: { [volName]: newPath }
+        namedVolumeMountpoints: { [volName]: newPath }
       }
     });
-    const errorMessage = `volume path for '${dnpName}' '${volName}' must be an absolute path`;
+    const errorMessage = `Mountpoint path for '${dnpName}' '${volName}' must be an absolute path`;
 
     it("Should accept a new bind path", () => {
       const newUserSettings = getUserSettings("/dev1/custom");

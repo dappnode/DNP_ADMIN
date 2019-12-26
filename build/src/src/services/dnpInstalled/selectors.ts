@@ -10,7 +10,7 @@ import {
 } from "params";
 import { createSelector } from "reselect";
 import { DnpInstalledState } from "./types";
-import { PackageContainer } from "types";
+import { PackageContainer, PackageDetailData } from "types";
 
 // Service > dnpInstalled
 
@@ -20,6 +20,9 @@ export const getDnpInstalled = (state: any): PackageContainer[] =>
   getLocal(state).dnpInstalled;
 export const getDnpInstalledStatus = (state: any) =>
   getLocal(state).requestStatus;
+export const getDnpInstalledData = (
+  state: any
+): { [dnpName: string]: PackageDetailData } => getLocal(state).dnpInstalledData;
 
 /**
  * Check if the wifi DNP has the same credentials as the default ones
@@ -131,3 +134,8 @@ export const getDependantsOfId = (state: any, id: string) =>
   getDnpInstalled(state)
     .filter(dnp => dnp.dependencies && dnp.dependencies[id])
     .map(dnp => dnp.name);
+
+export const getDnpInstalledDataById = (
+  state: any,
+  id: string
+): PackageDetailData | undefined => getDnpInstalledData(state)[id];
