@@ -12,7 +12,7 @@ function Vols({
   dnp: PackageContainer;
   volumesDetail: {
     [volumeName: string]: {
-      size: string; // "823203"
+      size?: string; // "823203"
       devicePath: string; // "/dev1/data/dappnode-volumes/bitcoin.dnp.dappnode.eth/data"
       mountpoint?: string; // "/dev1/data"
     };

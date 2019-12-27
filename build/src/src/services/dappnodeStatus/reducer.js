@@ -15,7 +15,8 @@ const initialState = {
   passwordIsInsecure: false,
   autoUpdateData: {},
   identityAddress: null,
-  mountpoints: null
+  mountpoints: null,
+  volumes: []
 };
 
 export default function(state = initialState, action) {
@@ -90,6 +91,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         mountpoints: action.mountpoints
+      };
+
+    case t.UPDATE_VOLUMES:
+      return {
+        ...state,
+        volumes: action.volumes
       };
 
     default:

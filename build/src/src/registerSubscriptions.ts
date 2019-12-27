@@ -8,6 +8,7 @@ import * as directory from "./route-types/subscriptionDirectory";
 import * as progressLog from "./route-types/subscriptionProgressLog";
 import * as pushNotification from "./route-types/subscriptionPushNotification";
 import * as userActionLog from "./route-types/subscriptionUserActionLog";
+import * as volumes from "./route-types/subscriptionVolumes";
 
 /* eslint-disable-next-line @typescript-eslint/explicit-function-return-type */
 export function registerSubscriptions(
@@ -67,6 +68,7 @@ export function registerSubscriptions(
     pushNotification: wampBusFactory<pushNotification.ReturnData>(
       pushNotification
     ),
-    userActionLog: wampBusFactory<userActionLog.ReturnData>(userActionLog)
+    userActionLog: wampBusFactory<userActionLog.ReturnData>(userActionLog),
+    volumes: wampBusFactory<volumes.ReturnData>(volumes)
   };
 }

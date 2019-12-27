@@ -246,7 +246,7 @@ export interface PackageDetailData {
   volumes: {
     // volumeName = bitcoin_data
     [volumeName: string]: {
-      size: string; // "823203"
+      size?: string; // "823203"
       devicePath: string; // "/dev1/data/dappnode-volumes/bitcoin.dnp.dappnode.eth/data"
       mountpoint?: string; // "/dev1/data"
     };
@@ -669,6 +669,17 @@ export interface MountpointData {
   free: string; // "141G"
   vendor: string; // "ATA", "SanDisk"
   model: string; // "CT500MX500SSD4", "Ultra_USB_3.0"
+}
+
+export interface VolumeData {
+  name: string; // "gethdnpdappnodeeth_data", Actual name to call delete on
+  shortName?: string; // "data",
+  owner?: string; // gethdnpdappnodeeth
+  createdAt: number; // 1569346006000,
+  mountpoint: string; // ""
+  size?: number; // 161254123,
+  refCount: number; // 2
+  isDangling: boolean; // if no container is using it
 }
 
 /**

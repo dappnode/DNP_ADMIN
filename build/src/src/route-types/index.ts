@@ -6,6 +6,9 @@ import * as listPackages from "./listPackages";
 import * as mountpointsGet from "./mountpointsGet";
 import * as packageDetailDataGet from "./packageDetailDataGet";
 import * as packageGettingStartedToggle from "./packageGettingStartedToggle";
+import * as passwordChange from "./passwordChange";
+import * as volumeRemove from "./volumeRemove";
+import * as volumesGet from "./volumesGet";
 
 export {
   fetchCoreUpdateData,
@@ -15,5 +18,8 @@ export {
   listPackages,
   mountpointsGet,
   packageDetailDataGet,
-  packageGettingStartedToggle
+  packageGettingStartedToggle,
+  passwordChange,
+  volumeRemove,
+  volumesGet
 };

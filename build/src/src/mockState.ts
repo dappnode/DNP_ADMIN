@@ -905,6 +905,38 @@ const dappnodeStatusState = {
       vendor: "SanDisk",
       model: "Ultra_USB_3.0"
     }
+  ],
+  volumes: [
+    {
+      name: "gethdnpdappnodeeth_data",
+      shortName: "data",
+      owner: "gethdnpdappnodeeth",
+      createdAt: 1569346006000,
+      mountpoint: "",
+      size: 161254123,
+      refCount: 0,
+      isDangling: true
+    },
+    {
+      name: "lightning-networkpublicdappnodeeth_data",
+      shortName: "data",
+      owner: "lightning-networkpublicdappnodeeth",
+      createdAt: 1569146006000,
+      mountpoint: "",
+      size: 54161254123,
+      refCount: 2,
+      isDangling: false
+    },
+    {
+      name: "dncore_ethchaindnpdappnodeeth_geth",
+      shortName: "geth",
+      owner: "ethchaindnpdappnodeeth",
+      createdAt: 1569046006000,
+      mountpoint: "",
+      size: 215847181273,
+      refCount: 1,
+      isDangling: false
+    }
   ]
 };
 

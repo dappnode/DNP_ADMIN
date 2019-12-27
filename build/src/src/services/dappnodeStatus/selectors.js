@@ -34,6 +34,7 @@ export const getIdentityAddress = createSelectorSubProp(
   "identityAddress"
 );
 export const getMountpoints = createSelectorSubProp(getLocal, "mountpoints");
+export const getVolumes = createSelectorSubProp(getLocal, "volumes");
 
 // Sub-sub local properties
 export const getDappmanagerVersionData = createSelectorSubProp(

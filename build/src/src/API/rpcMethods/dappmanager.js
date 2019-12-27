@@ -368,16 +368,6 @@ export default {
   notificationsTest: {},
 
   /**
-   * Changes the user `dappnode`'s password in the host machine
-   * Only allows it if the current password has the salt `insecur3`
-   *
-   * @param {string} newPassword super-secure-password
-   */
-  passwordChange: {
-    mandatoryKwargs: ["newPassword"]
-  },
-
-  /**
    * Checks if the user `dappnode`'s password in the host machine
    * is NOT the insecure default set at installation time.
    * It does so by checking if the current salt is `insecur3`
