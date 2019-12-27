@@ -43,6 +43,7 @@ export default async function executePublishTx(
         contentURI // bytes _contentURI
       )
       .send({ from: userAddress, gas: 300000, value: 0 });
+    /* eslint-disable-next-line no-console */
     console.log("got txHash", txHash);
   }
   // If repo does not exist, create a new repo and push version
@@ -70,6 +71,7 @@ export default async function executePublishTx(
         contentURI // bytes _contentURI
       )
       .send({ from: userAddress, gas: 1100000, value: 0 });
+    /* eslint-disable-next-line no-console */
     console.log("got txHash", txHash);
   }
 }
