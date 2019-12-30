@@ -1,7 +1,5 @@
 # Test specs
 
-from https://www.youtube.com/watch?v=r5lhmEoaWBM
-
 Mandatory to test:
 
 - Reducers
@@ -96,3 +94,9 @@ The new way to test containers is through selectors
 ## Business logic
 
 Only function or code outside of the regular react-redux structure
+
+---
+
+## References
+
+[Unit Testing in React + Redux applications](https://www.youtube.com/watch?v=r5lhmEoaWBM)
