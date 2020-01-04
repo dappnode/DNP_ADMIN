@@ -922,8 +922,17 @@ const dappnodeStatusState = {
       shortName: "data",
       owner: "lightning-networkpublicdappnodeeth",
       createdAt: 1569146006000,
-      mountpoint: "",
-      size: 54161254123,
+      mountpoint: "/media/usb0",
+      size: 0,
+      fileSystem:  {
+        mountpoint: "/media/usb0",
+        use: "89%",
+        used: 198642520,
+        total: 235782040,
+        free: 25092776,
+        vendor: "SanDisk",
+        model: "Ultra_USB_3.0"
+      },
       refCount: 2,
       isDangling: false
     },

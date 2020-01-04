@@ -117,6 +117,6 @@ export function prettyVolumeNameFromParts({
  * @return {string} "32GB"
  */
 export function prettyBytes(bytes: number) {
-  if (typeof bytes === "number") return prettyBytesLib(bytes);
+  if (typeof bytes === "number") return prettyBytesLib(bytes || 0);
   else return bytes;
 }

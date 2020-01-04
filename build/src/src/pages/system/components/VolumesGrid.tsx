@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import Card from "components/Card";
-import { MdDelete } from "react-icons/md";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+import Badge from "react-bootstrap/Badge";
+import { MdExpandMore, MdExpandLess, MdDelete } from "react-icons/md";
+import { MountpointDataView } from "pages/installer/components/Steps/SelectMountpoint";
 import { prettyBytes, prettyVolumeNameFromParts } from "utils/format";
 import { parseStaticDate } from "utils/dates";
-import Badge from "react-bootstrap/Badge";
-import { MdExpandMore, MdExpandLess } from "react-icons/md";
+import { joinCssClass } from "utils/css";
 import { VolumeData } from "types";
 import "./volumes.scss";
-import { joinCssClass } from "utils/css";
 
 const shortLength = 3;
 const minSize = 10 * 1024 * 1024;
@@ -21,10 +23,11 @@ export default function VolumesGrid({
 }) {
   const [showAll, setShowAll] = useState(false);
 
+  const getSize = (v: VolumeData) => v.size || (v.fileSystem || {}).used || 0;
   const volumesFiltered = volumes
-    .sort((v1, v2) => (v2.size || 0) - (v1.size || 0))
+    .sort((v1, v2) => getSize(v2) - getSize(v1))
     .sort(v1 => (v1.isDangling ? -1 : 1))
-    .filter(v => showAll || (v.size || 0) > minSize)
+    .filter(v => showAll || getSize(v) > minSize)
     .slice(0, showAll ? volumes.length : shortLength);
 
   // Optimize the view hidding features when no element is using them
@@ -49,7 +52,7 @@ export default function VolumesGrid({
           shortName,
           owner,
           size,
-          mountpoint,
+          fileSystem,
           createdAt,
           isDangling
         }) => (
@@ -64,10 +67,31 @@ export default function VolumesGrid({
                 </Badge>
               )}
             </div>
-            <div className="size">{prettyBytes(size || 0)}</div>
-            {showMountpoint && (
-              <div className="mountpoint">{mountpoint || "Host"}</div>
-            )}
+            <div className="size">
+              {!size && fileSystem ? (
+                <OverlayTrigger
+                  placement="right"
+                  overlay={(props: any) => (
+                    <Tooltip {...props}>
+                      Can't get the exact volume size, use the mountpoint total
+                      size as an approximate upper reference
+                    </Tooltip>
+                  )}
+                >
+                  <span className="opacity-soft">N/A</span>
+                </OverlayTrigger>
+              ) : (
+                prettyBytes(size || 0)
+              )}
+            </div>
+            {showMountpoint &&
+              (fileSystem ? (
+                <MountpointDataView
+                  fileSystem={fileSystem}
+                ></MountpointDataView>
+              ) : (
+                "Docker volume"
+              ))}
             <div className="created-at">{parseStaticDate(createdAt, true)}</div>
             {showRemove && (
               <MdDelete
