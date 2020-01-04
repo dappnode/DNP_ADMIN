@@ -42,10 +42,15 @@
     opacity: 0.6;
   }
   .name {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(2rem, max-content) minmax(0.5rem, max-content);
     align-items: center;
     > *:not(:last-child) {
       margin-right: 0.5rem;
+    }
+    .text {
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 

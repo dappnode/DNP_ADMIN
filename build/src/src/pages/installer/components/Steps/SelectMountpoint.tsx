@@ -32,7 +32,7 @@ function renderMountpointDataSummary({
   total: number;
   model: string;
 }) {
-  const totalView = total && <span>{prettyBytes(total)}</span>;
+  const totalView = Boolean(total) && <span>{prettyBytes(total)}</span>;
   if (!mountpoint)
     return (
       <>
@@ -63,10 +63,12 @@ export function MountpointDataView({
   fileSystem: MountpointData;
 }) {
   const { mountpoint, vendor, model, total, use, free } = fileSystem;
+  const isHost = !mountpoint;
+  const showFree = Boolean(free) || mountpoint;
   return (
     <div className="mountpoint-view">
       <div className="info top">
-        {!mountpoint && (
+        {isHost && (
           <span className="host">
             <MdHome />
           </span>
@@ -75,7 +77,7 @@ export function MountpointDataView({
       </div>
       <div className="info bottom">
         <ProgressBar className="use" now={parseInt(use)} label={use} />
-        <span className="free">{prettyBytes(free)}</span>
+        {showFree && <span className="free">{prettyBytes(free)}</span>}
         <span className="mountpoint">{mountpoint}</span>
       </div>
     </div>

@@ -924,7 +924,7 @@ const dappnodeStatusState = {
       createdAt: 1569146006000,
       mountpoint: "/media/usb0",
       size: 0,
-      fileSystem:  {
+      fileSystem: {
         mountpoint: "/media/usb0",
         use: "89%",
         used: 198642520,
@@ -945,6 +945,16 @@ const dappnodeStatusState = {
       size: 215847181273,
       refCount: 1,
       isDangling: false
+    },
+    {
+      name: "d19f0771fe2e5b813cf0d138a77eddc33ae3fd6afc1cc6daf0fba42ed73e36ae",
+      shortName: "",
+      owner: "",
+      createdAt: 1569306006000,
+      mountpoint: "",
+      size: 24,
+      refCount: 0,
+      isDangling: true
     }
   ]
 };

@@ -26,7 +26,7 @@ export default function VolumesGrid({
   const getSize = (v: VolumeData) => v.size || (v.fileSystem || {}).used || 0;
   const volumesFiltered = volumes
     .sort((v1, v2) => getSize(v2) - getSize(v1))
-    .sort(v1 => (v1.isDangling ? -1 : 1))
+    .sort((v1, v2) => (v1.isDangling && !v2.isDangling ? -1 : 1))
     .filter(v => showAll || getSize(v) > minSize)
     .slice(0, showAll ? volumes.length : shortLength);
 
@@ -58,7 +58,7 @@ export default function VolumesGrid({
         }) => (
           <React.Fragment key={name}>
             <div className="name">
-              <span>
+              <span className="text">
                 {prettyVolumeNameFromParts({ name, shortName, owner })}
               </span>
               {isDangling && (
