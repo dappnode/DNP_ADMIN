@@ -38,10 +38,12 @@ function Vols({
           const volumeDetail = volumesDetail[name || ""];
           const mountpointSize = volumeDetail ? volumeDetail.size : undefined;
           const mountpoint = volumeDetail ? volumeDetail.mountpoint : undefined;
+          const prettyVol = prettyVolumeName(name || "", dnp.name);
+          const prettyVolString = [prettyVol.owner, prettyVol.name]
+            .filter(s => s)
+            .join(" - ");
           return {
-            name: name
-              ? prettyVolumeName(name, dnp.name)
-              : container || "Unknown",
+            name: name ? prettyVolString : container || "Unknown",
             size: mountpointSize
               ? prettyBytes(parseInt(mountpointSize))
               : typeof size === "number" && !isNaN(size)

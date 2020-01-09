@@ -104,7 +104,8 @@
   width: 100%;
 
   .info {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(min-content, max-content));
     align-items: center;
     & > *:not(:last-child) {
       margin-right: 0.5rem;
@@ -129,9 +130,6 @@
     }
     .host {
       font-size: 1.25rem;
-    }
-    .use {
-      width: 40px;
     }
     .free {
       min-width: 40px;

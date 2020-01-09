@@ -1,37 +1,53 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { NavLink } from "react-router-dom";
 import Card from "components/Card";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import Badge from "react-bootstrap/Badge";
 import { MdExpandMore, MdExpandLess, MdDelete } from "react-icons/md";
 import { MountpointDataView } from "pages/installer/components/Steps/SelectMountpoint";
-import { prettyBytes, prettyVolumeNameFromParts } from "utils/format";
+import { rootPath as packagesRootPath } from "pages/packages/data";
+import {
+  getPrettyVolumeName,
+  getPrettyVolumeOwner,
+  prettyBytes
+} from "utils/format";
 import { parseStaticDate } from "utils/dates";
 import { joinCssClass } from "utils/css";
 import { VolumeData } from "types";
+// Selectors
+import { getVolumes } from "services/dappnodeStatus/selectors";
+// Actions
+import { volumeRemove, packageVolumeRemove } from "../actions";
+
 import "./volumes.scss";
 
 const shortLength = 3;
 const minSize = 10 * 1024 * 1024;
 
-export default function VolumesGrid({
+function VolumesGrid({
   volumes,
+  // Actions
+  packageVolumeRemove,
   volumeRemove
 }: {
   volumes: VolumeData[];
   volumeRemove: (name: string) => void;
+  packageVolumeRemove: (dnpName: string, volName: string) => void;
 }) {
   const [showAll, setShowAll] = useState(false);
 
   const getSize = (v: VolumeData) => v.size || (v.fileSystem || {}).used || 0;
   const volumesFiltered = volumes
     .sort((v1, v2) => getSize(v2) - getSize(v1))
-    .sort((v1, v2) => (v1.isDangling && !v2.isDangling ? -1 : 1))
+    .sort((v1, v2) => (v1.isOrphan && !v2.isOrphan ? -1 : 1))
     .filter(v => showAll || getSize(v) > minSize)
     .slice(0, showAll ? volumes.length : shortLength);
 
   // Optimize the view hidding features when no element is using them
-  const showRemove = showAll || volumesFiltered.some(v => v.isDangling);
+  const showRemove = showAll || volumesFiltered.some(v => v.isOrphan);
   const showMountpoint = showAll || volumesFiltered.some(v => v.mountpoint);
 
   return (
@@ -46,22 +62,44 @@ export default function VolumesGrid({
       <header className="center">Created at</header>
       {showRemove && <header>Remove</header>}
 
-      {volumesFiltered.map(
-        ({
+      {volumesFiltered.map(volData => {
+        const {
           name,
-          shortName,
           owner,
           size,
           fileSystem,
           createdAt,
-          isDangling
-        }) => (
+          isOrphan
+        } = volData;
+        const ownerPretty = getPrettyVolumeOwner(volData);
+        const namePretty = getPrettyVolumeName(volData);
+        const onDelete = isOrphan
+          ? () => volumeRemove(name)
+          : owner
+          ? () => packageVolumeRemove(owner, name)
+          : () => {};
+        const isDeletable = Boolean(isOrphan || owner)
+
+        return (
           <React.Fragment key={name}>
             <div className="name">
               <span className="text">
-                {prettyVolumeNameFromParts({ name, shortName, owner })}
+                {owner ? (
+                  <NavLink
+                    className="owner"
+                    to={`${packagesRootPath}/${owner}`}
+                  >
+                    {ownerPretty}
+                  </NavLink>
+                ) : ownerPretty ? (
+                  <span className="owner">{ownerPretty}</span>
+                ) : null}
+
+                {ownerPretty && <span className="separator">-</span>}
+
+                <span className="volName">{namePretty}</span>
               </span>
-              {isDangling && (
+              {isOrphan && (
                 <Badge pill variant="danger">
                   Orphan
                 </Badge>
@@ -95,14 +133,14 @@ export default function VolumesGrid({
             <div className="created-at">{parseStaticDate(createdAt, true)}</div>
             {showRemove && (
               <MdDelete
-                className={isDangling ? "" : "disabled"}
-                onClick={() => (isDangling ? volumeRemove(name) : null)}
+                className={isDeletable ? "" : "disabled"}
+                onClick={onDelete}
               />
             )}
             <hr />
           </React.Fragment>
-        )
-      )}
+        );
+      })}
       <div className="subtle-header" onClick={() => setShowAll(x => !x)}>
         {showAll ? <MdExpandLess /> : <MdExpandMore />}
         <span>Show {showAll ? "less" : "all"}</span>
@@ -110,3 +148,18 @@ export default function VolumesGrid({
     </Card>
   );
 }
+
+const mapStateToProps = createStructuredSelector({
+  volumes: getVolumes
+});
+
+// Uses bindActionCreators to wrap action creators with dispatch
+const mapDispatchToProps = {
+  packageVolumeRemove,
+  volumeRemove
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(VolumesGrid);

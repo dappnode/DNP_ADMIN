@@ -1,6 +1,7 @@
 import { capitalize, stringEndsWith } from "utils/strings";
 import { stringSplit } from "./strings";
 import prettyBytesLib from "pretty-bytes";
+import { VolumeData } from "types";
 
 export function shortName(ens: string) {
   if (!ens || typeof ens !== "string") return ens;
@@ -51,64 +52,80 @@ export function isDnpVerified(name: string) {
   return stringEndsWith(name, "dnp.dappnode.eth");
 }
 
+const dnpString = "dnpdappnodeeth_";
+const publicString = "publicdappnodeeth_";
+const coreString = "dncore_";
+
 /**
  * Formats nicely a docker volume name
  *
  * @param {string} volName "dncore_ethchaindnpdappnodeeth_data"
  * @param {string} dnpName "vipnode.dnp.dappnode.eth"
+ * @return res = { name: "Data", "owner": "Vipnode" }
  */
-export function prettyVolumeName(volName: string, dnpName = "") {
-  if (!volName) return volName;
-  if (!dnpName) return prettyVolumeNameNoDnpName(volName);
+export function prettyVolumeName(
+  volName: string,
+  dnpName = ""
+): { name: string; owner?: string } {
+  if (!volName) return { name: volName };
+  if (!dnpName) {
+    volName = volName.replace(/^dncore_/, "");
 
-  const coreDnpString = "dnpdappnodeeth_";
-  const coreString = "dncore_";
+    for (const separator of [dnpString, publicString, "_"]) {
+      if (volName.includes(separator)) {
+        let [dnpName, prettyVolName] = volName.split(separator);
+        if (dnpName === prettyVolName) prettyVolName = "data";
+        return { name: capitalize(prettyVolName), owner: capitalize(dnpName) };
+      }
+    }
+
+    return { name: volName };
+  }
+
   // "nginx-proxy.dnp.dappnode.eth" => "nginxproxydnpdappnodeeth"
   const dnpNameOnVolume = dnpName.replace(/[^0-9a-z]/gi, "");
   if (volName.includes(dnpNameOnVolume)) {
     const prettyVolName = volName.split(`${dnpNameOnVolume}_`)[1];
-    return capitalize(prettyVolName);
-  } else if (volName.includes(coreDnpString) && volName.includes(coreString)) {
-    const [leadingString, prettyVolName] = volName.split(coreDnpString);
+    return { name: capitalize(prettyVolName) };
+  } else if (volName.includes(dnpString) && volName.includes(coreString)) {
+    const [leadingString, prettyVolName] = volName.split(dnpString);
     const volOwner = leadingString.split(coreString)[1];
-    return [volOwner, prettyVolName].map(capitalize).join(" - ");
-  } else return volName;
-}
-
-function prettyVolumeNameNoDnpName(volName: string) {
-  if (!volName) return volName;
-  volName = volName.replace(/^dncore_/, "");
-
-  const dnpString = "dnpdappnodeeth_";
-  const publicString = "publicdappnodeeth_";
-  const elseString = "_";
-
-  for (const separator of [dnpString, publicString, elseString]) {
-    if (volName.includes(separator)) {
-      let [dnpName, prettyVolName] = volName.split(separator);
-      if (dnpName === prettyVolName) prettyVolName = "data";
-      return [dnpName, prettyVolName].map(capitalize).join(" - ");
-    }
+    return { name: capitalize(prettyVolName), owner: capitalize(volOwner) };
+  } else {
+    return { name: volName };
   }
-
-  return volName;
 }
 
-export function prettyVolumeNameFromParts({
-  name,
-  shortName,
-  owner
-}: {
-  name: string;
-  shortName?: string;
-  owner?: string;
-}): string {
-  if (!shortName || !owner) return prettyVolumeName(name, "");
+/**
+ * Tries to make a docker volume owner string prettier
+ * @param ownerDisplay "nginxproxydnpdappnodeeth"
+ * @return "Nginxproxy"
+ */
+export function prettyVolumeOwnerDisplay(ownerDisplay: string): string {
+  return shortNameCapitalized(
+    ownerDisplay.replace(/dnpdappnodeeth|publicdappnodeeth/, "")
+  );
+}
 
-  // Clean owner
-  return [owner.replace(/dnpdappnodeeth|publicdappnodeeth/, ""), shortName]
-    .map(shortNameCapitalized)
-    .join(" - ");
+/**
+ * Helper for VolumesGrid to get a pretty volume name from its volumeData
+ * @return "Data", "Identity data"
+ */
+export function getPrettyVolumeName(volData: VolumeData): string {
+  if (volData.nameDisplay) return capitalize(volData.nameDisplay);
+  return prettyVolumeName(volData.name, volData.owner).name;
+}
+
+/**
+ * Helper for VolumesGrid to get a pretty volume owner from its volumeData
+ * @return "Geth"
+ */
+export function getPrettyVolumeOwner(volData: VolumeData): string | undefined {
+  return volData.owner
+    ? shortNameCapitalized(volData.owner)
+    : prettyVolumeName(volData.name).owner ||
+        prettyVolumeOwnerDisplay(volData.ownerDisplay || "") ||
+        undefined;
 }
 
 /**

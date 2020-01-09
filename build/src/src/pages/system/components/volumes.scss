@@ -48,9 +48,25 @@
     > *:not(:last-child) {
       margin-right: 0.5rem;
     }
-    .text {
+    .text,
+    .name,
+    .owner {
       white-space: nowrap;
       overflow: hidden;
+    }
+    .text {
+      display: flex;
+      > *:not(:last-child) {
+        margin-right: 0.5rem;
+      }
+    }
+    a.owner {
+      color: inherit;
+      transition: color 0.2s ease;
+      &:hover {
+        color: var(--dappnode-color);
+        text-decoration: none;
+      }
     }
   }
 

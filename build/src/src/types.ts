@@ -674,17 +674,16 @@ export interface MountpointData {
 
 export interface VolumeData {
   name: string; // "gethdnpdappnodeeth_data", Actual name to call delete on
-  shortName?: string; // "data",
-  owner?: string; // gethdnpdappnodeeth
+  owner?: string; // "geth.dnp.dappnode.eth", Actual name of the owner
+  nameDisplay?: string; // "data", Guessed short name for display
+  ownerDisplay?: string; // "gethdnpdappnodeeth", Guessed owner name for display
   createdAt: number; // 1569346006000,
   mountpoint: string; // "",
-  size?: number; // 161254123,
   fileSystem?: MountpointData;
-  refCount: number; // 2
-  isDangling: boolean; // if no container is using it
+  size?: number; // 161254123,
+  refCount?: number; // 2
+  isOrphan: boolean; // if no container is using it
 }
-
-
 
 /**
  * RPC methods

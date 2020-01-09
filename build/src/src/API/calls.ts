@@ -12,5 +12,6 @@ export const packageGettingStartedToggle = wrapRoute(
   routes.packageGettingStartedToggle
 );
 export const passwordChange = wrapRoute(routes.passwordChange);
+export const restartPackageVolumes = wrapRoute(routes.restartPackageVolumes);
 export const volumeRemove = wrapRoute(routes.volumeRemove);
 export const volumesGet = wrapRoute(routes.volumesGet);

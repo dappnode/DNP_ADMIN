@@ -909,18 +909,20 @@ const dappnodeStatusState = {
   volumes: [
     {
       name: "gethdnpdappnodeeth_data",
-      shortName: "data",
-      owner: "gethdnpdappnodeeth",
+      owner: undefined,
+      nameDisplay: "data",
+      ownerDisplay: "gethdnpdappnodeeth",
       createdAt: 1569346006000,
       mountpoint: "",
       size: 161254123,
       refCount: 0,
-      isDangling: true
+      isOrphan: true
     },
     {
       name: "lightning-networkpublicdappnodeeth_data",
-      shortName: "data",
-      owner: "lightning-networkpublicdappnodeeth",
+      owner: "lightning-network.public.dappnode.eth",
+      nameDisplay: "data",
+      ownerDisplay: "lightning-networkpublicdappnodeeth",
       createdAt: 1569146006000,
       mountpoint: "/media/usb0",
       size: 0,
@@ -934,27 +936,29 @@ const dappnodeStatusState = {
         model: "Ultra_USB_3.0"
       },
       refCount: 2,
-      isDangling: false
+      isOrphan: false
     },
     {
       name: "dncore_ethchaindnpdappnodeeth_geth",
-      shortName: "geth",
-      owner: "ethchaindnpdappnodeeth",
+      owner: "ethchain.dnp.dappnode.eth",
+      nameDisplay: "geth",
+      ownerDisplay: "ethchaindnpdappnodeeth",
       createdAt: 1569046006000,
       mountpoint: "",
       size: 215847181273,
       refCount: 1,
-      isDangling: false
+      isOrphan: false
     },
     {
       name: "d19f0771fe2e5b813cf0d138a77eddc33ae3fd6afc1cc6daf0fba42ed73e36ae",
-      shortName: "",
-      owner: "",
+      owner: undefined,
+      nameDisplay: "",
+      ownerDisplay: "",
       createdAt: 1569306006000,
       mountpoint: "",
       size: 24,
       refCount: 0,
-      isDangling: true
+      isOrphan: true
     }
   ]
 };

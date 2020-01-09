@@ -3,8 +3,14 @@ import { confirm } from "components/ConfirmDialog";
 import * as api from "API/calls";
 import { ThunkAction } from "redux-thunk";
 import { AnyAction } from "redux";
+import { shortNameCapitalized, prettyVolumeName } from "utils/format";
 // External actions
 import { fetchIfPasswordIsInsecure } from "services/dappnodeStatus/actions";
+// Selectors
+import {
+  getDnpInstalledById,
+  getDependantsOfId
+} from "services/dnpInstalled/selectors";
 
 // pages > system
 
@@ -50,4 +56,53 @@ export const volumeRemove = (
   );
 
   await api.volumeRemove({ name }, { toastMessage: `Removing volume...` });
+};
+
+export const packageVolumeRemove = (
+  dnpName: string,
+  volName: string
+): ThunkAction<void, {}, null, AnyAction> => async (dispatch, getState) => {
+  // Make sure there are no colliding volumes with this DNP
+  const dnp = getDnpInstalledById(getState(), dnpName);
+  const prettyDnpName = shortNameCapitalized(dnpName);
+  const prettyVolName = prettyVolumeName(volName, dnpName).name;
+  const prettyVolRef = `${prettyDnpName} ${prettyVolName} volume`;
+
+  const warningsList: { title: string; body: string }[] = [];
+  /**
+   * If there are volumes which this DNP is the owner and some other
+   * DNPs are users, they will be removed by the DAPPMANAGER.
+   * Alert the user about this fact
+   */
+  if (dnp) {
+    const vol = dnp.volumes.find(vol => vol.name === volName);
+    if (vol && vol.users) {
+      const externalUsers = vol.users.filter(d => d !== dnpName);
+      if (externalUsers.length > 0) {
+        warningsList.push({
+          title: "Warning! DAppNode Packages to be removed",
+          body: `Some other DAppNode Packages will be reseted in order to remove ${prettyVolRef}. \n\n ${externalUsers
+            .map(name => `- ${name}`)
+            .join("\n")}`
+        });
+      }
+    }
+  }
+
+  // If there are NOT conflicting volumes,
+  // Display a dialog to confirm volumes reset
+  await new Promise(resolve =>
+    confirm({
+      title: `Removing ${prettyVolRef}`,
+      text: `Are you sure you want to permanently remove this volume? This action cannot be undone. If this DAppNode Package is a blockchain node, it will lose all the chain data and start syncing from scratch.`,
+      list: warningsList.length ? warningsList : null,
+      label: "Remove",
+      onClick: resolve
+    })
+  );
+
+  await api.restartPackageVolumes(
+    { id: dnpName, volumeId: volName },
+    { toastMessage: `Removing ${prettyVolRef}...` }
+  );
 };
