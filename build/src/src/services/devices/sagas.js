@@ -1,8 +1,7 @@
-import { put, call, select, delay } from "redux-saga/effects";
+import { put, call } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import api from "API/rpcMethods";
 import * as a from "./actions";
-import * as s from "./selectors";
 import * as t from "./actionTypes";
 import { loadingId } from "./data";
 import {
@@ -21,9 +20,6 @@ export function* fetchDevices() {
     yield put(updateIsLoaded(loadingId));
   } catch (e) {
     console.error(`Error on fetchDevices: ${e.stack}`);
-    // Retry fetch after some time if the devices are not loaded already
-    yield call(delay, 10000);
-    if (!(yield select(s.areThereDevices))) yield put(a.fetchDevices());
   }
 }
 
