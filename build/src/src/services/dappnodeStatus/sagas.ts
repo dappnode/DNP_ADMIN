@@ -12,7 +12,7 @@ import * as loadingIds from "services/loadingStatus/loadingIds";
 import { assertConnectionOpen } from "utils/redux";
 import { stringSplit, stringIncludes } from "utils/strings";
 import { wifiName } from "params";
-import { MountpointData } from "types";
+import { MountpointData, VolumeData } from "types";
 
 const api: any = apiOld;
 
@@ -182,6 +182,15 @@ const fetchMountpointData = wrapErrorsAndLoading(
 );
 
 /**
+ * Get DAppNode docker volumes
+ */
+const fetchVolumes = wrapErrorsAndLoading(loadingIds.volumes, function*() {
+  // If there are no settings the return will be null
+  const volumes: VolumeData[] = yield call(apiNew.volumesGet, {});
+  yield put(a.updateVolumes(volumes));
+});
+
+/**
  * Aggregates all previous data fetches
  */
 function* fetchAllDappnodeStatus() {
@@ -196,7 +205,8 @@ function* fetchAllDappnodeStatus() {
       call(checkWifiStatus),
       call(checkIfPasswordIsInsecure),
       call(fetchAutoUpdateData),
-      call(fetchIdentityAddress)
+      call(fetchIdentityAddress),
+      call(fetchVolumes)
     ]);
   } catch (e) {
     console.error(`Error on fetchAllDappnodeStatus: ${e.stack}`);

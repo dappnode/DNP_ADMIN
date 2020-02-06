@@ -1,17 +1,19 @@
 import React, { useEffect } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { fetchDappnodeStats } from "services/dappnodeStatus/actions";
 // Selectors
-import { getDappnodeVolumes } from "services/dnpInstalled/selectors";
-import { getChainData } from "services/chainData/selectors";
-import { getDappnodeStats } from "services/dappnodeStatus/selectors";
+import {
+  getDappnodeStats,
+  getVolumes
+} from "services/dappnodeStatus/selectors";
 // Own module
+import { volumeRemove } from "../actions";
+import VolumesGrid from "./VolumesGrid";
 import StatsCard from "pages/dashboard/components/StatsCard";
-import VolumeCard from "pages/dashboard/components/VolumeCard";
 // Components
 import SubTitle from "components/SubTitle";
+import { VolumeData } from "types";
 
 /**
  * @param {array} chainData = [{
@@ -25,17 +27,18 @@ import SubTitle from "components/SubTitle";
  *   disk: 86%,
  *   memory: 56%
  * }
- * @param {array} dappnodeVolumes = [{
- *   name: "Ethchain size",
- *   size: "53.45 GB"
- * }, ... ]
  */
 
 function Dashboard({
-  chainData,
   dappnodeStats,
-  dappnodeVolumes,
-  fetchDappnodeStats
+  volumes,
+  fetchDappnodeStats,
+  volumeRemove
+}: {
+  dappnodeStats: { [key: string]: string };
+  volumes: VolumeData[];
+  fetchDappnodeStats: () => void;
+  volumeRemove: (name: string) => void;
 }) {
   useEffect(() => {
     const interval = setInterval(fetchDappnodeStats, 5 * 1000);
@@ -54,30 +57,20 @@ function Dashboard({
       </div>
 
       <SubTitle>Volumes</SubTitle>
-      <div className="dashboard-cards">
-        {dappnodeVolumes.map(vol => (
-          <VolumeCard key={vol.name} {...vol} />
-        ))}
-      </div>
+      <VolumesGrid {...{ volumes, volumeRemove }} />
     </>
   );
 }
 
-Dashboard.propTypes = {
-  chainData: PropTypes.array.isRequired,
-  dappnodeStats: PropTypes.object.isRequired,
-  dappnodeVolumes: PropTypes.array.isRequired
-};
-
 const mapStateToProps = createStructuredSelector({
-  chainData: getChainData,
   dappnodeStats: getDappnodeStats,
-  dappnodeVolumes: getDappnodeVolumes
+  volumes: getVolumes
 });
 
 // Uses bindActionCreators to wrap action creators with dispatch
 const mapDispatchToProps = {
-  fetchDappnodeStats
+  fetchDappnodeStats,
+  volumeRemove
 };
 
 export default connect(

@@ -1,8 +1,9 @@
 /**
- * @param {string|number} 1563728142
+ * @param {string|number} rawDate 1563728142
+ * @param {boolean} [hideTime]
  * @returns {string} Today, 15 min ago
  */
-export function parseStaticDate(rawDate) {
+export function parseStaticDate(rawDate, hideTime = false) {
   if (!rawDate) return null;
 
   let date = new Date(rawDate);
@@ -14,7 +15,15 @@ export function parseStaticDate(rawDate) {
     }
     return "Today, " + date.toLocaleTimeString();
   }
-  return date.toLocaleString();
+  // Show as: "Nov 19, 2019, 14:50"
+  return date.toLocaleString([], {
+    hour12: false,
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: hideTime ? undefined : "2-digit",
+    minute: hideTime ? undefined : "2-digit"
+  });
 }
 
 /**
@@ -32,7 +41,8 @@ function sameDay(d1, d2) {
 }
 
 /**
- * @param {string|number} 1563728142
+ * @param {string|number} rawDatePrev 1563728142
+ * @param {string|number} [rawDateNext] 1563728142
  * @returns {string} Today, 15 min ago
  */
 export function parseDiffDates(rawDatePrev, rawDateNext) {

@@ -19,6 +19,8 @@
   --dappnode-color: var(--dappnode-strong-main-color);
   /* Text colors */
   --light-text-color: #757575;
+  /* Opacity shades */
+  --opacity-soft: 0.6;
 }
 
 .color-danger {
@@ -97,6 +99,11 @@
 .btn-outline-dappnode:not(:disabled):not(.disabled).active:focus,
 .show > .btn-outline-dappnode.dropdown-toggle:focus {
   box-shadow: 0 0 0 0.2rem var(--dappnode-shadow-main-color);
+}
+
+/* Opacity shades */
+.opacity-soft {
+  opacity: var(--opacity-soft);
 }
 
 /* Pill variation - only shape */

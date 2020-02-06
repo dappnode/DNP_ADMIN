@@ -42,42 +42,6 @@
       text-overflow: ellipsis;
     }
 
-    .info {
-      display: flex;
-      align-items: center;
-      & > *:not(:last-child) {
-        margin-right: 0.5rem;
-      }
-      // Individual fields
-
-      small {
-        font-size: inherit;
-        font-weight: inherit;
-      }
-
-      .mountpoint,
-      .model,
-      .host,
-      small {
-        opacity: 0.6;
-      }
-      .host {
-        font-size: 1.25rem;
-      }
-      .use {
-        width: 40px;
-      }
-      .free {
-        min-width: 40px;
-      }
-      .progress {
-        .progress-bar {
-          background-color: #9de2dd;
-          color: black;
-        }
-      }
-    }
-
     > .dropdown-menu {
       margin-bottom: var(--default-spacing);
       padding: 0;
@@ -130,6 +94,52 @@
   .troubleshoot {
     font-size: 0.85rem;
     opacity: 0.6;
+  }
+}
+
+.mountpoint-view {
+  // On small screens, display a centered a cropped end
+  // #### NOTE: Must de-activate "overflow: hidden" for overlays
+  overflow: hidden;
+  width: 100%;
+
+  .info {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(min-content, max-content));
+    align-items: center;
+    & > *:not(:last-child) {
+      margin-right: 0.5rem;
+    }
+
+    span {
+      white-space: nowrap;
+    }
+
+    // Individual fields
+
+    small {
+      font-size: inherit;
+      font-weight: inherit;
+    }
+
+    .mountpoint,
+    .model,
+    .host,
+    small {
+      opacity: 0.6;
+    }
+    .host {
+      font-size: 1.25rem;
+    }
+    .free {
+      min-width: 40px;
+    }
+    .progress {
+      .progress-bar {
+        background-color: #9de2dd;
+        color: black;
+      }
+    }
   }
 }
 

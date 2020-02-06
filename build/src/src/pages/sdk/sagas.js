@@ -20,6 +20,7 @@ import { assertConnectionOpen } from "utils/redux";
 function* connectMetamask() {
   try {
     yield put(a.updateGenericError(null));
+    /* eslint-disable-next-line no-console */
     console.log("Connecting to metamask...");
     const web3 = yield call(connectToMetamask);
     const networkId = yield call(web3.eth.net.getId);

@@ -23,6 +23,8 @@ export function wrapRoute<T, R>({
   route: string;
   requestDataSchema?: object;
   returnDataSchema?: object;
+  requestDataSample?: T;
+  returnDataSample?: R;
 }) {
   const validateRequest = requestDataSchema
     ? ajv.compile(requestDataSchema)
