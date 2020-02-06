@@ -7,6 +7,6 @@
   "plugins": ["redux-saga"],
   "rules": {
     "redux-saga/no-unhandled-errors": "warn",
-    "no-console": "warn"
+    "no-console": ["warn", { "allow": ["warn", "error"] }]
   }
 }

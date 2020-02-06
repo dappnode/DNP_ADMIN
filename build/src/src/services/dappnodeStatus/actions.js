@@ -61,6 +61,11 @@ export const updateMountpoints = mountpoints => ({
   mountpoints
 });
 
+export const updateVolumes = volumes => ({
+  type: t.UPDATE_VOLUMES,
+  volumes
+});
+
 // Fetch
 
 export const fetchAllDappnodeStatus = () => ({

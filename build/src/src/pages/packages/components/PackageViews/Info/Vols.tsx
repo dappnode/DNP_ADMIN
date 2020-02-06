@@ -12,7 +12,7 @@ function Vols({
   dnp: PackageContainer;
   volumesDetail: {
     [volumeName: string]: {
-      size: string; // "823203"
+      size?: string; // "823203"
       devicePath: string; // "/dev1/data/dappnode-volumes/bitcoin.dnp.dappnode.eth/data"
       mountpoint?: string; // "/dev1/data"
     };
@@ -38,10 +38,12 @@ function Vols({
           const volumeDetail = volumesDetail[name || ""];
           const mountpointSize = volumeDetail ? volumeDetail.size : undefined;
           const mountpoint = volumeDetail ? volumeDetail.mountpoint : undefined;
+          const prettyVol = prettyVolumeName(name || "", dnp.name);
+          const prettyVolString = [prettyVol.owner, prettyVol.name]
+            .filter(s => s)
+            .join(" - ");
           return {
-            name: name
-              ? prettyVolumeName(name, dnp.name)
-              : container || "Unknown",
+            name: name ? prettyVolString : container || "Unknown",
             size: mountpointSize
               ? prettyBytes(parseInt(mountpointSize))
               : typeof size === "number" && !isNaN(size)

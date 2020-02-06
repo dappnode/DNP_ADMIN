@@ -4,6 +4,7 @@ import { createStructuredSelector } from "reselect";
 import Dropdown from "react-bootstrap/Dropdown";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "components/Button";
+import { prettyBytes } from "utils/format";
 import { MdHome, MdRefresh } from "react-icons/md";
 import "./selectMountpoint.scss";
 import { joinCssClass } from "utils/css";
@@ -19,6 +20,69 @@ import newTabProps from "utils/newTabProps";
 export const selectMountpointId = "selectMountpoint";
 const troubleshootUrl =
   "https://github.com/dappnode/DAppNode/wiki/Troubleshoot-mountpoints";
+
+function renderMountpointDataSummary({
+  mountpoint,
+  vendor,
+  total,
+  model
+}: {
+  mountpoint: string;
+  vendor: string;
+  total: number;
+  model: string;
+}) {
+  const totalView = Boolean(total) && <span>{prettyBytes(total)}</span>;
+  if (!mountpoint)
+    return (
+      <>
+        <span>Host</span>
+        {totalView}
+        <small>(default)</small>
+      </>
+    );
+  if (!vendor && !model)
+    return (
+      <>
+        <span>{mountpoint}</span>
+        {totalView}
+      </>
+    );
+  return (
+    <>
+      <span>{vendor || model}</span>
+      {totalView}
+      <small>{model}</small>
+    </>
+  );
+}
+
+export function MountpointDataView({
+  fileSystem
+}: {
+  fileSystem: MountpointData;
+}) {
+  const { mountpoint, vendor, model, total, use, free } = fileSystem;
+  const isHost = !mountpoint;
+  const showFree = Boolean(free) || mountpoint;
+  return (
+    <div className="mountpoint-view">
+      <div className="info top">
+        {isHost && (
+          <span className="host">
+            <MdHome />
+          </span>
+        )}
+        {renderMountpointDataSummary({ mountpoint, vendor, model, total })}
+      </div>
+      <div className="info bottom">
+        <ProgressBar className="use" now={parseInt(use)} label={use} />
+        {showFree && <span className="free">{prettyBytes(free)}</span>}
+        <span className="mountpoint">{mountpoint}</span>
+      </div>
+    </div>
+  );
+}
 
 function SelectMountpoint({
   // React JSON form data props
@@ -52,14 +116,15 @@ function SelectMountpoint({
       mountpoint: "",
       vendor: "Host",
       model: "(default)",
-      total: "",
       use: "",
-      free: ""
+      used: 0,
+      total: 0,
+      free: 0
     }
   ];
 
   const { alreadySet, isLegacy, prevPath } = options || {};
-  const selectedDev = mountpoints.find(
+  const selectedMountpoint = mountpoints.find(
     ({ mountpoint }) => mountpoint === value
   );
 
@@ -71,47 +136,12 @@ function SelectMountpoint({
   // If the user has selected an invalid mountpoint and is not loading or already set,
   // reset the value to the host (default) to prevent problems
   useEffect(() => {
-    if (value && !selectedDev && !alreadySet && !isLoading) onChange("");
-  }, [value, selectedDev, alreadySet, isLoading, onChange]);
+    if (value && !selectedMountpoint && !alreadySet && !isLoading) onChange("");
+  }, [value, selectedMountpoint, alreadySet, isLoading, onChange]);
 
   async function onSelectMountpoint(mountpoint: string) {
     if (isLegacy || alreadySet) return;
     onChange(mountpoint);
-  }
-
-  function renderSummary({
-    mountpoint,
-    vendor,
-    total,
-    model
-  }: {
-    mountpoint: string;
-    vendor: string;
-    total: string;
-    model: string;
-  }) {
-    if (!mountpoint)
-      return (
-        <>
-          <span>Host</span>
-          {total && <span>{total}</span>}
-          <small>(default)</small>
-        </>
-      );
-    if (!vendor && !model)
-      return (
-        <>
-          <span>{mountpoint}</span>
-          {total && <span>{total}</span>}
-        </>
-      );
-    return (
-      <>
-        <span>{vendor || model}</span>
-        {total && <span>{total}</span>}
-        <small>{model}</small>
-      </>
-    );
   }
 
   return (
@@ -125,6 +155,7 @@ function SelectMountpoint({
             variant="outline-secondary"
             id="dropdown-basic"
             disabled={alreadySet}
+            className="mountpoint-view"
           >
             <div className="info top">
               {isLegacy ? (
@@ -132,8 +163,8 @@ function SelectMountpoint({
                   <span>{prevPath}</span>
                   <small>(legacy)</small>
                 </>
-              ) : selectedDev ? (
-                renderSummary(selectedDev)
+              ) : selectedMountpoint ? (
+                renderMountpointDataSummary(selectedMountpoint)
               ) : alreadySet ? (
                 <>
                   <span>{prevPath}</span>
@@ -147,32 +178,14 @@ function SelectMountpoint({
             </div>
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            {mountpoints.map(
-              ({ mountpoint, vendor, model, total, use, free }) => (
-                <Dropdown.Item
-                  key={mountpoint}
-                  onClick={() => onSelectMountpoint(mountpoint)}
-                >
-                  <div className="info top">
-                    {!mountpoint && (
-                      <span className="host">
-                        <MdHome />
-                      </span>
-                    )}
-                    {renderSummary({ mountpoint, vendor, model, total })}
-                  </div>
-                  <div className="info bottom">
-                    <ProgressBar
-                      className="use"
-                      now={parseInt(use)}
-                      label={use}
-                    />
-                    <span className="free">{free}</span>
-                    <span className="mountpoint">{mountpoint}</span>
-                  </div>
-                </Dropdown.Item>
-              )
-            )}
+            {mountpoints.map(fileSystem => (
+              <Dropdown.Item
+                key={fileSystem.mountpoint}
+                onClick={() => onSelectMountpoint(fileSystem.mountpoint)}
+              >
+                <MountpointDataView fileSystem={fileSystem} />
+              </Dropdown.Item>
+            ))}
 
             {isLoading && !mountpointsLoaded && (
               <Dropdown.Item>Loading...</Dropdown.Item>

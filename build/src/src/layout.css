@@ -51,7 +51,8 @@ body,
   height: 100vh;
   background-color: var(--color-background);
 }
-html {
+html,
+body {
   background-color: var(--color-background);
 }
 

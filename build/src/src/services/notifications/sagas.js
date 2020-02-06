@@ -21,7 +21,8 @@ function* fetchNotifications() {
     const notifications = yield call(api.notificationsGet);
     yield put(updateIsLoaded(loadingId));
 
-    // #### Log for debuging purposes. Do it before the put in case the validators fail
+    // #### Log for debuging purposes. Do it before `put()` in case the validators fail
+    /* eslint-disable-next-line no-console */
     console.log("Initial notifications", notifications);
 
     /**

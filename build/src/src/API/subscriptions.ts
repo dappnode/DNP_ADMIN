@@ -10,7 +10,10 @@ import {
   clearIsInstallingLog,
   updateIsInstallingLog
 } from "services/isInstallingLogs/actions";
-import { updateAutoUpdateData } from "services/dappnodeStatus/actions";
+import {
+  updateAutoUpdateData,
+  updateVolumes
+} from "services/dappnodeStatus/actions";
 import { setDnpInstalled } from "services/dnpInstalled/actions";
 import { setDnpDirectory } from "services/dnpDirectory/actions";
 
@@ -70,6 +73,10 @@ export default function subscriptions(session: autobahn.Session) {
 
   wampSubscriptions.userActionLog.on(userActionLog => {
     store.dispatch(pushUserActionLog(userActionLog));
+  });
+
+  wampSubscriptions.volumes.on(volumes => {
+    store.dispatch(updateVolumes(volumes));
   });
 
   /**

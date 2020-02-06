@@ -158,6 +158,9 @@ export function cleanInitialFormData(
   return isEmpty(_obj) ? undefined : _obj;
 }
 
+/* eslint-disable-next-line no-useless-escape */
+const isAbsolute = (path: string) => /^\/[^\/]+/.test(path);
+
 /**
  * Enforces rules on user settings:
  * - namedVolumeMountpoints: must be absolute paths. Renaming for a different named volume is not allowed
@@ -171,11 +174,10 @@ export function getUserSettingsDataErrors(
       for (const [volName, volPath] of Object.entries(
         data.namedVolumeMountpoints
       )) {
-        /* eslint-disable-next-line no-useless-escape */
         if (
           volPath &&
           !(
-            /^\/[^\/]+/.test(volPath) ||
+            isAbsolute(volPath) ||
             volPath.startsWith(MOUNTPOINT_DEVICE_LEGACY_TAG) ||
             volPath.startsWith(USER_SETTING_DISABLE_TAG)
           )

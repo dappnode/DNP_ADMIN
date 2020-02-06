@@ -905,6 +905,61 @@ const dappnodeStatusState = {
       vendor: "SanDisk",
       model: "Ultra_USB_3.0"
     }
+  ],
+  volumes: [
+    {
+      name: "gethdnpdappnodeeth_data",
+      owner: undefined,
+      nameDisplay: "data",
+      ownerDisplay: "gethdnpdappnodeeth",
+      createdAt: 1569346006000,
+      mountpoint: "",
+      size: 161254123,
+      refCount: 0,
+      isOrphan: true
+    },
+    {
+      name: "lightning-networkpublicdappnodeeth_data",
+      owner: "lightning-network.public.dappnode.eth",
+      nameDisplay: "data",
+      ownerDisplay: "lightning-networkpublicdappnodeeth",
+      createdAt: 1569146006000,
+      mountpoint: "/media/usb0",
+      size: 0,
+      fileSystem: {
+        mountpoint: "/media/usb0",
+        use: "89%",
+        used: 198642520,
+        total: 235782040,
+        free: 25092776,
+        vendor: "SanDisk",
+        model: "Ultra_USB_3.0"
+      },
+      refCount: 2,
+      isOrphan: false
+    },
+    {
+      name: "dncore_ethchaindnpdappnodeeth_geth",
+      owner: "ethchain.dnp.dappnode.eth",
+      nameDisplay: "geth",
+      ownerDisplay: "ethchaindnpdappnodeeth",
+      createdAt: 1569046006000,
+      mountpoint: "",
+      size: 215847181273,
+      refCount: 1,
+      isOrphan: false
+    },
+    {
+      name: "d19f0771fe2e5b813cf0d138a77eddc33ae3fd6afc1cc6daf0fba42ed73e36ae",
+      owner: undefined,
+      nameDisplay: "",
+      ownerDisplay: "",
+      createdAt: 1569306006000,
+      mountpoint: "",
+      size: 24,
+      refCount: 0,
+      isOrphan: true
+    }
   ]
 };
 

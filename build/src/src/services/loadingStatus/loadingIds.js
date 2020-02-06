@@ -9,6 +9,7 @@ export const passwordIsInsecure = "passwordIsInsecure";
 export const autoUpdateData = "autoUpdateData";
 export const identity = "identity";
 export const mountpoints = "mountpoints";
+export const volumes = "volumes";
 // Service > dnpDirectory
 export const dnpDirectory = "dnpDirectory";
 // Service > dnpInstalled
