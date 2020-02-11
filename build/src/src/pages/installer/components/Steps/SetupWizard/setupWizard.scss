@@ -18,6 +18,9 @@
     margin-bottom: var(--default-spacing);
     border-bottom: var(--border-style);
   }
+  .table-xn:not(:last-child) {
+    margin-bottom: var(--default-spacing);
+  }
 
   .field {
     .title {

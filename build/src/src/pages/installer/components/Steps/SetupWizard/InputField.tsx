@@ -24,7 +24,14 @@ export default function InputField({
             onValueChange={onValueChange}
           />
         );
-      else return <Input value={value} onValueChange={onValueChange} />;
+      else
+        return (
+          <Input
+            value={value}
+            onValueChange={onValueChange}
+            type={field.secret ? "password" : "text"}
+          />
+        );
 
     case "portMapping":
       return <Input value={value} onValueChange={onValueChange} />;

@@ -17,98 +17,77 @@ import Button from "components/Button";
 import InputField from "./InputField";
 import { parseSetupWizardErrors } from "pages/installer/parsers/formDataErrors";
 import "./setupWizard.scss";
+import { SetupWizardFormDataReturn } from "pages/installer/types";
 
-interface SetupWizardProps {
-  setupWizard: SetupWizardAllDnps;
-  userSettings: UserSettingsAllDnps;
-  prevUserSettings: UserSettingsAllDnps;
-  wizardAvailable: boolean;
-  onSubmit: (newUserSettings: UserSettingsAllDnps) => void;
-  goBack: () => void;
-}
-
-interface NewEditorProps {
-  userSettings: UserSettingsAllDnps;
-  setupWizard: SetupWizardAllDnps;
-  onChange: (newUserSettings: UserSettingsAllDnps) => void;
-}
-
-const NewEditor: React.FunctionComponent<NewEditorProps> = ({
-  userSettings,
+function NewEditor({
   setupWizard,
-  onChange
-}) => {
-  const setupTarget = setupWizardToSetupTarget(setupWizard);
-  const formData = userSettingsToFormData(userSettings, setupTarget);
-
-  const setupWizardOnlyActive = filterByActiveSetupWizardFields(
-    setupWizard,
-    formData
-  );
-
-  const dataErrors = parseSetupWizardErrors(setupWizardOnlyActive, formData);
-
-  function setSetting(dnpName: string, id: string, newValue: string) {
-    const newFormData = { [dnpName]: { [id]: newValue } };
-    onChange(formDataToUserSettings(newFormData, setupTarget));
-  }
-
+  formData,
+  onNewFormData
+}: {
+  setupWizard: SetupWizardAllDnps;
+  formData: SetupWizardFormDataReturn;
+  onNewFormData: (newFormData: SetupWizardFormDataReturn) => void;
+}) {
   return (
     <>
       <div className="dnps-section">
-        {Object.entries(setupWizardOnlyActive).map(([dnpName, fields]) => (
+        {Object.entries(setupWizard).map(([dnpName, fields]) => (
           <div className="dnp-section" key={dnpName}>
             <div className="dnp-name">{shortNameCapitalized(dnpName)}</div>
-            {fields.map(field => {
-              const value =
-                (formData[dnpName] ? formData[dnpName][field.id] : "") || "";
-              return (
-                <div key={field.id} className="field">
-                  <div className="title">{field.title}</div>
-                  <div className="description">{field.description}</div>
-                  <InputField
-                    field={field}
-                    value={value}
-                    onValueChange={newValue =>
-                      setSetting(dnpName, field.id, newValue)
-                    }
-                  />
-                </div>
-              );
-            })}
+            {fields.map(field => (
+              <div key={field.id} className="field">
+                <div className="title">{field.title}</div>
+                <div className="description">{field.description}</div>
+                <InputField
+                  field={field}
+                  value={
+                    (formData[dnpName] ? formData[dnpName][field.id] : "") || ""
+                  }
+                  onValueChange={newValue =>
+                    onNewFormData({ [dnpName]: { [field.id]: newValue } })
+                  }
+                />
+              </div>
+            ))}
           </div>
         ))}
       </div>
-
-      {dataErrors.length > 0 && (
-        <Alert variant="danger">
-          {dataErrors.map(({ dnpName, id, title, type, message }) => {
-            const errorId = dnpName + id + type;
-            return (
-              <div key={errorId}>
-                {shortNameCapitalized(dnpName)} - {title} - {message}
-              </div>
-            );
-          })}
-        </Alert>
-      )}
     </>
   );
-};
+}
 
-const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
+function SetupWizard({
   setupWizard,
   userSettings: initialUserSettings,
   wizardAvailable,
   onSubmit,
   goBack
-}) => {
+}: {
+  setupWizard: SetupWizardAllDnps;
+  userSettings: UserSettingsAllDnps;
+  wizardAvailable: boolean;
+  onSubmit: (newUserSettings: UserSettingsAllDnps) => void;
+  goBack: () => void;
+}) {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [userSettings, setUserSettings] = useState(initialUserSettings);
 
   useEffect(() => {
     setUserSettings(initialUserSettings);
   }, [initialUserSettings]);
+
+  // New editor data
+  const setupTarget = setupWizardToSetupTarget(setupWizard);
+  const formData = userSettingsToFormData(userSettings, setupTarget);
+  const setupWizardOnlyActive = filterByActiveSetupWizardFields(
+    setupWizard,
+    formData
+  );
+  const dataErrors = parseSetupWizardErrors(setupWizardOnlyActive, formData);
+  const visibleDataErrors = dataErrors.filter(
+    error => submitting || error.type !== "empty"
+  );
 
   /**
    * Merge instead of setting a new value to:
@@ -119,13 +98,27 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
    * @param newUserSettings Will be partial newUserSettings
    */
   function onNewUserSettings(newUserSettings: UserSettingsAllDnps) {
+    setSubmitting(false);
     setUserSettings(prevUserSettings =>
       deepmerge(prevUserSettings, newUserSettings)
     );
   }
 
+  /**
+   * Convert the Editor's formData object to a userSettings given a setupTarget
+   */
+  function onNewFormData(newFormData: SetupWizardFormDataReturn) {
+    const newUserSettings = formDataToUserSettings(newFormData, setupTarget);
+    onNewUserSettings(newUserSettings);
+  }
+
+  /**
+   * On submit show the "empty" type errors if any by switching to `submitting` mode
+   * Otherwise, submit the current userSettings
+   */
   function handleSubmit() {
-    onSubmit(userSettings);
+    if (dataErrors.length) setSubmitting(true);
+    else onSubmit(userSettings);
   }
 
   return (
@@ -134,10 +127,20 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
         <OldEditor userSettings={userSettings} onChange={onNewUserSettings} />
       ) : (
         <NewEditor
-          userSettings={userSettings}
-          onChange={onNewUserSettings}
-          setupWizard={setupWizard}
+          formData={formData}
+          setupWizard={setupWizardOnlyActive}
+          onNewFormData={onNewFormData}
         />
+      )}
+
+      {visibleDataErrors.length > 0 && (
+        <Alert variant="danger">
+          {visibleDataErrors.map(({ dnpName, id, title, type, message }) => (
+            <div key={dnpName + id + type}>
+              {shortNameCapitalized(dnpName)} - {title} - {message}
+            </div>
+          ))}
+        </Alert>
       )}
 
       <div className="bottom-buttons">
@@ -153,6 +156,6 @@ const SetupWizard: React.FunctionComponent<SetupWizardProps> = ({
       </div>
     </Card>
   );
-};
+}
 
 export default SetupWizard;

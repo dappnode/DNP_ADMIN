@@ -86,6 +86,31 @@ const lightningNetworkMetadata = {
   }
 };
 
+const lightningNetworkSetupWizard: SetupWizardField[] = [
+  {
+    id: "rtlPassword",
+    title: "RTL password",
+    description: "Password to protect RTL",
+    pattern: "^.{8,}$",
+    patternErrorMessage: "Must be at least 8 characters long",
+    secret: true,
+    target: {
+      type: "environment",
+      name: "RTL_PASSWORD"
+    }
+  },
+  {
+    id: "network",
+    title: "Network",
+    description: "Choose which network to connect to",
+    enum: ["mainnet", "testnet"],
+    target: {
+      type: "environment",
+      name: "NETWORK"
+    }
+  }
+];
+
 const lightningNetworkSetupSchema: SetupSchema = {
   description: "This setup wizard will help you start",
   type: "object",
@@ -134,6 +159,52 @@ const lightningNetworkSetup: UserSettings = {
     EXT_IP: ""
   }
 };
+
+const lightningNetworkUserSettingsInstalled: UserSettings = {
+  portMappings: { "9735": "9735" },
+  namedVolumeMountpoints: { lndconfig_data: "/usr/media_0" },
+  environment: {
+    ...lightningNetworkSetup.environment,
+    RTL_PASSWORD: "new-secret-password"
+  }
+};
+
+const lightningNetworkGettingStarted = `
+**Accessing the ADMIN UI**\n\nOnce the node is synced, you can access your LN node [admin UI here](https://lightning-network.dappnode)\n\n**How to download macaroons**\n\nUsually Lightning Network applications require files called *macaroons* for authorizations to perform operations on the LND node. There are many types depending on the level of access.\nTo download the admin macaroon, you should go to the Admin panel of DAppnode: \nPackages -> My packages -> Lightning-Network -> File manager\nThen input in the 'Download from DNP' field:\n\`\`\`\n/config/data/chain/bitcoin/mainnet/admin.macaroon\n\`\`\`\n\n**How to use Joule extension with DAppNode**\n\nJoule is an extension available for many browsers which lets you use your node to make payments, invoices, open channels and more. Check the website: https://lightningjoule.com/\n* To run Joule, first you need to download these macaroons in a safe folder, as described above:\n\`\`\`\n/config/data/chain/bitcoin/mainnet/admin.macaroon\n/config/data/chain/bitcoin/mainnet/readonly.macaroon\n\`\`\`\n* When asked on the type of node, select Remote and then enter the following url: \n   https://lightning-network.dappnode:8080\n   * You will need to accept the SSL certificate in the next step\n* Upload the macaroons, choose a password to encrypt the data, and you're ready to go!\n* **Enjoy!** But be aware both LND and RTL are beta software .Only use funds you can afford to lose.  Don't be completely #Reckless ;) \n\n <img src="https://i.imgur.com/66P7Aei.png" width="500px" height="100%"> \n\n ![](https://i.imgur.com/66P7Aei.png) \n\n\n ![](https://i.ibb.co/cvw9f9K/download.png)
+
+
+**Blockquotes**
+
+As Kanye West said:
+
+> We're living the future so
+> the present is our past.      
+
+
+**Syntax highlighting**
+
+\`\`\`js
+function fancyAlert(arg) {
+  if(arg) {
+    $.facebox({div:'#foo'})
+  }
+}
+\`\`\`
+
+
+**Task Lists**
+- [x]  this is a complete item
+- [ ]  this is an incomplete item
+
+
+**Tables**
+
+First Header | Second Header
+------------ | -------------
+Content from cell 1 | Content from cell 2
+Content in the first column | Content in the second column
+
+        `;
 
 /**
  * Vipnode
@@ -441,6 +512,56 @@ const bitcoinUserSettings: UserSettings = {
   },
   allNamedVolumeMountpoint: USER_SETTING_DISABLE_TAG
 };
+
+const bitcoinSetupWizard: SetupWizardField[] = [
+  {
+    id: "bitcoinData",
+    title: "Custom volume data path",
+    description:
+      "If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive.",
+    target: {
+      type: "namedVolumeMountpoint",
+      volumeName: "bitcoin_data"
+    }
+  },
+  {
+    id: "bitcoinDataOld",
+    title: "Custom volume data old path",
+    description:
+      "Already set path to test that it's not editable. If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive.",
+    target: {
+      type: "namedVolumeMountpoint",
+      volumeName: "bitcoin_data_old"
+    }
+  },
+  {
+    id: "bitcoinDataOldLegacy",
+    title: "Custom volume data old legacy path",
+    description:
+      "Already set path to test that it's not editable, with legacy setting. If you want to store the Bitcoin blockchain is a separate drive, enter the absolute path of the location of an external drive.",
+    target: {
+      type: "namedVolumeMountpoint",
+      volumeName: "bitcoin_data_old_legacy"
+    }
+  },
+  {
+    id: "bitcoinAllVolumes",
+    title: "All volumes",
+    description: "This mountpoint selector should affect all named volumes",
+    target: {
+      type: "allNamedVolumesMountpoint"
+    }
+  },
+  {
+    id: "bitcoinName",
+    title: "Bitcoin name",
+    description: "Useless parameter to test performance",
+    target: {
+      type: "environment",
+      name: "BITCOIN_NAME"
+    }
+  }
+];
 
 const bitcoinSetupSchema: SetupSchema = {
   description: `Bitcoin setup https://docs.bitcoin.io`,
@@ -762,6 +883,10 @@ export const dnpRequest = {
       settings: {
         [lightningNetworkMetadata.name]: lightningNetworkSetup,
         [bitcoinMetadata.name]: bitcoinUserSettings
+      },
+      setupWizard: {
+        [lightningNetworkMetadata.name]: lightningNetworkSetupWizard,
+        [bitcoinMetadata.name]: bitcoinSetupWizard
       },
       setupSchema: {
         [lightningNetworkMetadata.name]: lightningNetworkSetupSchema,

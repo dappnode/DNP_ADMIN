@@ -4,7 +4,6 @@ import { orderBy, isEmpty } from "lodash";
 import TableInputs from "components/TableInputs";
 import { UserSettingsAllDnps } from "types";
 import { shortNameCapitalized } from "utils/format";
-import "./oldEditor.scss";
 
 interface EditableTableProps {
   headers: string[];

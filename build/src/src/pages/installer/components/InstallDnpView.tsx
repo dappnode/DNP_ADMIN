@@ -175,7 +175,6 @@ const InstallDnpView: React.FunctionComponent<
         <SetupWizard
           setupWizard={setupWizard || {}}
           userSettings={userSettings}
-          prevUserSettings={settings}
           wizardAvailable={wizardAvailable}
           onSubmit={(newUserSettings: UserSettingsAllDnps) => {
             console.log("Set new userSettings", newUserSettings);
