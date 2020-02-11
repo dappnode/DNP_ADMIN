@@ -16,9 +16,9 @@ interface InputProps {
 const Input: React.FunctionComponent<
   InputProps & React.HTMLAttributes<HTMLInputElement>
 > = ({
-  onEnterPress,
-  onValueChange,
   value,
+  onValueChange,
+  onEnterPress,
   lock,
   isInvalid,
   prepend,

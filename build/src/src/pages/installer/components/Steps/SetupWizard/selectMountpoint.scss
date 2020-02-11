@@ -2,7 +2,6 @@
   display: grid;
   grid-template-columns: minmax(10px, auto) min-content;
   align-items: stretch;
-  margin-top: var(--default-spacing);
 
   > .dropdown,
   .show.dropdown {

@@ -167,7 +167,9 @@ export default function SelectMountpoint({
             {mountpoints.map(fileSystem => (
               <Dropdown.Item
                 key={fileSystem.mountpoint}
-                onClick={() => onSelectMountpoint(fileSystem.mountpoint)}
+                onClick={() => {
+                  onSelectMountpoint(fileSystem.mountpoint);
+                }}
               >
                 <MountpointDataView fileSystem={fileSystem} />
               </Dropdown.Item>

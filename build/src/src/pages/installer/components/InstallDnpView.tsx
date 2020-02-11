@@ -14,7 +14,7 @@ import { shortNameCapitalized, isDnpVerified } from "utils/format";
 import { ProgressLogsView } from "./InstallCardComponents/ProgressLogsView";
 // Components
 import Info from "./Steps/Info";
-import SetupWizard from "./Steps/SetupWizard";
+import SetupWizard from "./Steps/SetupWizard/SetupWizard";
 import Permissions from "./Steps/Permissions";
 import Disclaimer from "./Steps/Disclaimer";
 import HorizontalStepper from "./HorizontalStepper";
@@ -58,10 +58,10 @@ const InstallDnpView: React.FunctionComponent<
 
   const { name, reqVersion, settings, metadata } = dnp;
   const type = metadata.type;
-  const { setupSchema, setupTarget, setupUiJson } = dnp;
+  const { setupWizard } = dnp;
   const permissions = dnp.specialPermissions;
   const requiresCoreUpdate = dnp.request.compatible.requiresCoreUpdate;
-  const wizardAvailable = !!setupSchema && !isDeepEmpty(setupSchema);
+  const wizardAvailable = !!setupWizard && !isDeepEmpty(setupWizard);
   const oldEditorAvailable = Boolean(userSettings);
 
   useEffect(() => {
@@ -173,9 +173,7 @@ const InstallDnpView: React.FunctionComponent<
       subPath: setupSubPath,
       render: () => (
         <SetupWizard
-          setupSchema={setupSchema || {}}
-          setupTarget={setupTarget || {}}
-          setupUiJson={setupUiJson || {}}
+          setupWizard={setupWizard || {}}
           userSettings={userSettings}
           prevUserSettings={settings}
           wizardAvailable={wizardAvailable}
