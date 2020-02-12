@@ -18,8 +18,8 @@ const ajv = new Ajv({ allErrors: true });
 export function setupWizardToSetupTarget(
   setupWizard: SetupWizardAllDnps
 ): SetupTargetAllDnps {
-  return mapValues(setupWizard, fields =>
-    fields.reduce((targets, field) => {
+  return mapValues(setupWizard, setupWizardDnp =>
+    setupWizardDnp.fields.reduce((targets, field) => {
       return { ...targets, [field.id]: field.target };
     }, {})
   );
@@ -169,8 +169,8 @@ export function filterByActiveSetupWizardFields(
   setupWizard: SetupWizardAllDnps,
   formData: SetupWizardFormDataReturn
 ): SetupWizardAllDnps {
-  return mapValues(setupWizard, (fields, dnpName) =>
-    fields.filter(field => {
+  return mapValues(setupWizard, (setupWizardDnp, dnpName) => ({
+    fields: setupWizardDnp.fields.filter(field => {
       if (field.if) {
         try {
           return ajv.validate(field.if, formData[dnpName]);
@@ -182,5 +182,5 @@ export function filterByActiveSetupWizardFields(
         return true;
       }
     })
-  );
+  }));
 }

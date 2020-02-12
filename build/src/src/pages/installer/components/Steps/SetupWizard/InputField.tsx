@@ -14,47 +14,42 @@ export default function InputField({
   value: string;
   onValueChange: (newValue: string) => void;
 }) {
-  switch (field.target.type) {
-    case "environment":
-      if (field.enum)
-        return (
-          <InputFieldSelect
-            value={value}
-            options={field.enum}
-            onValueChange={onValueChange}
-          />
-        );
-      else
-        return (
-          <Input
-            value={value}
-            onValueChange={onValueChange}
-            type={field.secret ? "password" : "text"}
-          />
-        );
-
-    case "portMapping":
-      return <Input value={value} onValueChange={onValueChange} />;
-
-    case "fileUpload":
+  if (
+    !field.target ||
+    field.target.type === "environment" ||
+    field.target.type === "portMapping"
+  ) {
+    if (field.enum)
       return (
-        <InputFieldFile
-          accept={""}
+        <InputFieldSelect
           value={value}
+          options={field.enum}
           onValueChange={onValueChange}
         />
       );
-
-    case "namedVolumeMountpoint":
-    case "allNamedVolumesMountpoint":
+    else
       return (
-        <SelectMountpoint
+        <Input
           value={value}
           onValueChange={onValueChange}
-        ></SelectMountpoint>
+          type={field.secret ? "password" : "text"}
+        />
       );
-
-    default:
-      return <div>Unknown target type</div>;
+  } else if (field.target.type === "fileUpload") {
+    return (
+      <InputFieldFile accept={""} value={value} onValueChange={onValueChange} />
+    );
+  } else if (
+    field.target.type === "namedVolumeMountpoint" ||
+    field.target.type === "allNamedVolumesMountpoint"
+  ) {
+    return (
+      <SelectMountpoint
+        value={value}
+        onValueChange={onValueChange}
+      ></SelectMountpoint>
+    );
+  } else {
+    return <div>Unknown target type</div>;
   }
 }

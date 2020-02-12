@@ -80,7 +80,7 @@ export const PackageInterface: React.FC<
     {
       name: "Config",
       subPath: "config",
-      render: () => <Config dnp={dnp} />,
+      render: () => <Config dnp={dnp} dnpDetail={dnpDetail} />,
       available: Object.keys(dnp.envs || {}).length
     },
     {

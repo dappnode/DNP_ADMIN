@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { mapValues, memoize } from "lodash";
+import React, { useState, useEffect } from "react";
 import deepmerge from "deepmerge";
 // Components
 import Card from "components/Card";
@@ -31,10 +30,10 @@ function NewEditor({
   return (
     <>
       <div className="dnps-section">
-        {Object.entries(setupWizard).map(([dnpName, fields]) => (
+        {Object.entries(setupWizard).map(([dnpName, setupWizardDnp]) => (
           <div className="dnp-section" key={dnpName}>
             <div className="dnp-name">{shortNameCapitalized(dnpName)}</div>
-            {fields.map(field => (
+            {setupWizardDnp.fields.map(field => (
               <div key={field.id} className="field">
                 <div className="title">{field.title}</div>
                 <div className="description">{field.description}</div>

@@ -1,34 +1,29 @@
 import React from "react";
 import { connect } from "react-redux";
 import * as action from "../../actions";
-import { pick } from "lodash";
 // Components
 import SetupWizard from "pages/installer/components/Steps/SetupWizard/SetupWizard";
 // Utils
-import { PackageContainer } from "types";
+import { PackageContainer, PackageDetailData } from "types";
 
 function Config({
   dnp,
+  dnpDetail,
   updateEnvs
 }: {
-  dnp: PackageContainer;
+  dnp?: PackageContainer;
+  dnpDetail?: PackageDetailData;
   updateEnvs: () => {};
 }) {
+  const name = dnp ? dnp.name : "dnp";
+  const setupWizardDnp = (dnpDetail || {}).setupWizard;
+  const userSettingsDnp = (dnpDetail || {}).userSettings;
+  const setupWizard = setupWizardDnp ? { [name]: setupWizardDnp } : {};
+  const userSettings = userSettingsDnp ? { [name]: userSettingsDnp } : {};
   return (
     <SetupWizard
-      setupWizard={{
-        [dnp.name]: (dnp.setupWizard || []).filter(
-          field =>
-            field.target.type === "environment" ||
-            field.target.type === "portMapping"
-        )
-      }}
-      userSettings={{
-        [dnp.name]: pick(dnp.userSettings || {}, [
-          "environment",
-          "portMappings"
-        ])
-      }}
+      setupWizard={setupWizard}
+      userSettings={userSettings}
       wizardAvailable={true}
       onSubmit={() => {}}
       goBack={() => {}}

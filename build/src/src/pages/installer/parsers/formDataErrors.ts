@@ -57,8 +57,8 @@ export function parseSetupWizardErrors(
   formData: SetupWizardFormDataReturn
 ): SetupWizardError[] {
   const dataErrors: SetupWizardError[] = [];
-  for (const [dnpName, fields] of Object.entries(setupWizard)) {
-    for (const field of fields) {
+  for (const [dnpName, setupWizardDnp] of Object.entries(setupWizard)) {
+    for (const field of setupWizardDnp.fields) {
       const value =
         (formData[dnpName] ? formData[dnpName][field.id] : "") || "";
       const addError = (type: SetupWizardErrorType, message: string) =>
