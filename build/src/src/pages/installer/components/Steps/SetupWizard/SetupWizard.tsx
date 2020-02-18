@@ -10,22 +10,27 @@ import {
   formDataToUserSettings,
   userSettingsToFormData,
   setupWizardToSetupTarget,
-  filterByActiveSetupWizardFields
+  filterActiveSetupWizard
 } from "pages/installer/parsers/formDataParser";
 import RenderMarkdown from "components/RenderMarkdown";
 import Button from "components/Button";
 import InputField from "./InputField";
-import { parseSetupWizardErrors } from "pages/installer/parsers/formDataErrors";
+import {
+  parseSetupWizardErrors,
+  SetupWizardError
+} from "pages/installer/parsers/formDataErrors";
 import "./setupWizard.scss";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
 
 function NewEditor({
   setupWizard,
   formData,
+  errors,
   onNewFormData
 }: {
   setupWizard: SetupWizardAllDnps;
   formData: SetupWizardFormDataReturn;
+  errors: SetupWizardError[];
   onNewFormData: (newFormData: SetupWizardFormDataReturn) => void;
 }) {
   return (
@@ -34,23 +39,32 @@ function NewEditor({
         {Object.entries(setupWizard).map(([dnpName, setupWizardDnp]) => (
           <div className="dnp-section" key={dnpName}>
             <div className="dnp-name">{shortNameCapitalized(dnpName)}</div>
-            {setupWizardDnp.fields.map(field => (
-              <div key={field.id} className="field">
-                <div className="title">{field.title}</div>
-                <div className="description">
-                  <RenderMarkdown source={field.description} />
+            {setupWizardDnp.fields.map(field => {
+              const { id } = field;
+              const ownErrors = errors.filter(
+                error => error.dnpName === dnpName && error.id === id
+              );
+              return (
+                <div key={id} className="field">
+                  <div className="title">{field.title}</div>
+                  <div className="description">
+                    <RenderMarkdown source={field.description} />
+                  </div>
+                  <InputField
+                    field={field}
+                    value={(formData[dnpName] || {})[id] || ""}
+                    onValueChange={newValue =>
+                      onNewFormData({ [dnpName]: { [id]: newValue } })
+                    }
+                  />
+                  {ownErrors.map(error => (
+                    <div key={error.type} className="error">
+                      {error.message}
+                    </div>
+                  ))}
                 </div>
-                <InputField
-                  field={field}
-                  value={
-                    (formData[dnpName] ? formData[dnpName][field.id] : "") || ""
-                  }
-                  onValueChange={newValue =>
-                    onNewFormData({ [dnpName]: { [field.id]: newValue } })
-                  }
-                />
-              </div>
-            ))}
+              );
+            })}
           </div>
         ))}
       </div>
@@ -82,11 +96,8 @@ function SetupWizard({
   // New editor data
   const setupTarget = setupWizardToSetupTarget(setupWizard);
   const formData = userSettingsToFormData(userSettings, setupTarget);
-  const setupWizardOnlyActive = filterByActiveSetupWizardFields(
-    setupWizard,
-    formData
-  );
-  const dataErrors = parseSetupWizardErrors(setupWizardOnlyActive, formData);
+  const setupWizardActive = filterActiveSetupWizard(setupWizard, formData);
+  const dataErrors = parseSetupWizardErrors(setupWizardActive, formData);
   const visibleDataErrors = dataErrors.filter(
     error => submitting || error.type !== "empty"
   );
@@ -130,7 +141,8 @@ function SetupWizard({
       ) : (
         <NewEditor
           formData={formData}
-          setupWizard={setupWizardOnlyActive}
+          errors={visibleDataErrors}
+          setupWizard={setupWizardActive}
           onNewFormData={onNewFormData}
         />
       )}

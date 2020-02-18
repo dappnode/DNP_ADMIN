@@ -6,7 +6,7 @@ import {
 } from "../../../params";
 
 type SetupWizardErrorType = "empty" | "pattern" | "enum";
-interface SetupWizardError {
+export interface SetupWizardError {
   dnpName: string;
   id: string;
   title: string;

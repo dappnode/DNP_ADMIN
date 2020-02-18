@@ -89,25 +89,26 @@ const lightningNetworkSetupWizard: SetupWizard = {
   fields: [
     {
       id: "rtlPassword",
+      target: {
+        type: "environment",
+        name: "RTL_PASSWORD"
+      },
       title: "RTL password",
       description: "Password to protect RTL",
       pattern: "^.{8,}$",
       patternErrorMessage: "Must be at least 8 characters long",
       secret: true,
-      target: {
-        type: "environment",
-        name: "RTL_PASSWORD"
-      }
+      required: true
     },
     {
       id: "network",
-      title: "Network",
-      description: "Choose which network to connect to",
-      enum: ["mainnet", "testnet"],
       target: {
         type: "environment",
         name: "NETWORK"
-      }
+      },
+      title: "Network",
+      description: "Choose which network to connect to",
+      enum: ["mainnet", "testnet"]
     }
   ]
 };

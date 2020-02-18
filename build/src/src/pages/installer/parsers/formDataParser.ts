@@ -165,7 +165,7 @@ export function userSettingsToFormData(
  * @param formData
  * @param setupWizard
  */
-export function filterByActiveSetupWizardFields(
+export function filterActiveSetupWizard(
   setupWizard: SetupWizardAllDnps,
   formData: SetupWizardFormDataReturn
 ): SetupWizardAllDnps {
