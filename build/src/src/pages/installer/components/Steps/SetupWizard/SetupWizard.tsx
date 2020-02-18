@@ -10,7 +10,8 @@ import {
   formDataToUserSettings,
   userSettingsToFormData,
   setupWizardToSetupTarget,
-  filterActiveSetupWizard
+  filterActiveSetupWizard,
+  isSetupWizardEmpty
 } from "pages/installer/parsers/formDataParser";
 import RenderMarkdown from "components/RenderMarkdown";
 import Button from "components/Button";
@@ -75,23 +76,29 @@ function NewEditor({
 function SetupWizard({
   setupWizard,
   userSettings: initialUserSettings,
-  wizardAvailable,
   onSubmit,
-  goBack
+  goBack,
+  submitTag
 }: {
   setupWizard: SetupWizardAllDnps;
   userSettings: UserSettingsAllDnps;
-  wizardAvailable: boolean;
   onSubmit: (newUserSettings: UserSettingsAllDnps) => void;
-  goBack: () => void;
+  goBack?: () => void;
+  submitTag?: string;
 }) {
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const isWizardEmpty = isSetupWizardEmpty(setupWizard);
+  const [showAdvanced, setShowAdvanced] = useState(isWizardEmpty);
   const [submitting, setSubmitting] = useState(false);
   const [userSettings, setUserSettings] = useState(initialUserSettings);
 
   useEffect(() => {
     setUserSettings(initialUserSettings);
   }, [initialUserSettings]);
+
+  // Automatically show advanced if wizard is empty
+  useEffect(() => {
+    setShowAdvanced(isWizardEmpty);
+  }, [isWizardEmpty]);
 
   // New editor data
   const setupTarget = setupWizardToSetupTarget(setupWizard);
@@ -136,7 +143,7 @@ function SetupWizard({
 
   return (
     <Card spacing noscroll className="setup-wizard">
-      {showAdvanced || !wizardAvailable ? (
+      {showAdvanced ? (
         <OldEditor userSettings={userSettings} onChange={onNewUserSettings} />
       ) : (
         <NewEditor
@@ -159,14 +166,20 @@ function SetupWizard({
 
       <div className="bottom-buttons">
         <div>
-          <Button onClick={goBack}>Cancel</Button>
+          {goBack && <Button onClick={goBack}>Cancel</Button>}
           <Button onClick={handleSubmit} variant="dappnode">
-            Submit
+            {submitTag || "Submit"}
           </Button>
         </div>
-        <div className="subtle-header" onClick={() => setShowAdvanced(x => !x)}>
-          {showAdvanced ? "Hide" : "Show"} advanced editor
-        </div>
+        {/* Only allow to toggle between editors if the setup wizard is available */}
+        {!isWizardEmpty && (
+          <div
+            className="subtle-header"
+            onClick={() => setShowAdvanced(x => !x)}
+          >
+            {showAdvanced ? "Hide" : "Show"} advanced editor
+          </div>
+        )}
       </div>
     </Card>
   );

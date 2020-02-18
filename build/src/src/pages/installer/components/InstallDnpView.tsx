@@ -23,7 +23,11 @@ import StatusIcon from "components/StatusIcon";
 // External
 import { rootPath as packagesRootPath } from "pages/packages/data";
 import { RequestedDnp, UserSettingsAllDnps, ProgressLogs } from "types";
+<<<<<<< v0.2.20
 import { withToast } from "components/toast/Toast";
+=======
+import { isSetupWizardEmpty } from "../parsers/formDataParser";
+>>>>>>> Complete package / config view with setup wizard
 
 const BYPASS_CORE_RESTRICTION = "BYPASS_CORE_RESTRICTION";
 const SHOW_ADVANCED_EDITOR = "SHOW_ADVANCED_EDITOR";
@@ -56,12 +60,11 @@ const InstallDnpView: React.FunctionComponent<
   const [showSuccess, setShowSuccess] = useState(false);
   const [isInstalling, setIsInstalling] = useState(false);
 
-  const { name, reqVersion, settings, metadata } = dnp;
-  const type = metadata.type;
-  const { setupWizard } = dnp;
+  const { name, reqVersion, settings, metadata, setupWizard } = dnp;
+  const isCore = metadata.type === "dncore";
   const permissions = dnp.specialPermissions;
   const requiresCoreUpdate = dnp.request.compatible.requiresCoreUpdate;
-  const wizardAvailable = !!setupWizard && !isDeepEmpty(setupWizard);
+  const isWizardEmpty = isSetupWizardEmpty(setupWizard);
   const oldEditorAvailable = Boolean(userSettings);
 
   useEffect(() => {
@@ -144,12 +147,12 @@ const InstallDnpView: React.FunctionComponent<
     {
       name: "Show advanced editor",
       id: SHOW_ADVANCED_EDITOR,
-      available: !wizardAvailable && oldEditorAvailable
+      available: isWizardEmpty && oldEditorAvailable
     },
     {
       name: "Bypass core restriction",
       id: BYPASS_CORE_RESTRICTION,
-      available: dnp.origin && type === "dncore"
+      available: dnp.origin && isCore
     }
   ]
     .filter(option => option.available)
@@ -175,7 +178,6 @@ const InstallDnpView: React.FunctionComponent<
         <SetupWizard
           setupWizard={setupWizard || {}}
           userSettings={userSettings}
-          wizardAvailable={wizardAvailable}
           onSubmit={(newUserSettings: UserSettingsAllDnps) => {
             console.log("Set new userSettings", newUserSettings);
             setUserSettings(newUserSettings);
@@ -184,7 +186,7 @@ const InstallDnpView: React.FunctionComponent<
           goBack={goBack}
         />
       ),
-      available: wizardAvailable || options[SHOW_ADVANCED_EDITOR]
+      available: !isWizardEmpty || options[SHOW_ADVANCED_EDITOR]
     },
     {
       name: "Permissions",

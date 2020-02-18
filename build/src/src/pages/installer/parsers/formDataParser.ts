@@ -1,4 +1,4 @@
-import { mapValues } from "lodash";
+import { mapValues, isEmpty } from "lodash";
 import deepmerge from "deepmerge";
 import Ajv from "ajv";
 import {
@@ -209,4 +209,18 @@ function correctJsonSchema(schemaOrProperties: any): SetupSchema {
       required: Object.keys(properties)
     };
   }
+}
+
+/**
+ * Check if the entire setupWizard is empty or has 0 fields
+ * @param setupWizard
+ */
+export function isSetupWizardEmpty(setupWizard?: SetupWizardAllDnps): boolean {
+  return (
+    !setupWizard ||
+    isEmpty(setupWizard) ||
+    Object.values(setupWizard).every(
+      setupWizardDnp => isEmpty(setupWizardDnp) || !setupWizardDnp.fields.length
+    )
+  );
 }
