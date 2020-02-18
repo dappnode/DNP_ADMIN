@@ -216,7 +216,7 @@ const vipnodeSetupWizard: SetupWizard = {
     {
       id: "nodeType",
       title: "Node type",
-      description: "What's the type of your node",
+      description: "What's the type of your node, **bold** \n\n - 1 \n - 2",
       required: true,
       enum: ["client", "host"],
       target: {

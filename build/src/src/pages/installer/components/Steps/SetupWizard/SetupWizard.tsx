@@ -12,6 +12,7 @@ import {
   setupWizardToSetupTarget,
   filterByActiveSetupWizardFields
 } from "pages/installer/parsers/formDataParser";
+import RenderMarkdown from "components/RenderMarkdown";
 import Button from "components/Button";
 import InputField from "./InputField";
 import { parseSetupWizardErrors } from "pages/installer/parsers/formDataErrors";
@@ -36,7 +37,9 @@ function NewEditor({
             {setupWizardDnp.fields.map(field => (
               <div key={field.id} className="field">
                 <div className="title">{field.title}</div>
-                <div className="description">{field.description}</div>
+                <div className="description">
+                  <RenderMarkdown source={field.description} />
+                </div>
                 <InputField
                   field={field}
                   value={
