@@ -8,6 +8,7 @@ import {
   SetupWizardAllDnps
 } from "types";
 import { SetupWizardFormDataReturn } from "../types";
+import { SetupSchema } from "types-own";
 
 const ajv = new Ajv({ allErrors: true });
 
@@ -170,10 +171,11 @@ export function filterActiveSetupWizard(
   formData: SetupWizardFormDataReturn
 ): SetupWizardAllDnps {
   return mapValues(setupWizard, (setupWizardDnp, dnpName) => ({
+    ...setupWizardDnp,
     fields: setupWizardDnp.fields.filter(field => {
       if (field.if) {
         try {
-          return ajv.validate(field.if, formData[dnpName]);
+          return ajv.validate(correctJsonSchema(field.if), formData[dnpName]);
         } catch (e) {
           console.log(`Validation error ${dnpName} ${field.id}`, e);
           return false;
@@ -183,4 +185,28 @@ export function filterActiveSetupWizard(
       }
     })
   }));
+}
+
+/**
+ * Utility to enforce a correct JSON schema syntax
+ * Maybe the user has not used a proper JSON schema.
+ * field.if MUST be = { type: "object", properties: {...} }
+ * If it doesn't follow this structure, it will be forced
+ * @param schemaOrProperties
+ */
+function correctJsonSchema(schemaOrProperties: any): SetupSchema {
+  if (typeof schemaOrProperties.properties === "object") {
+    const schema = schemaOrProperties;
+    return {
+      type: "object",
+      ...schema
+    };
+  } else {
+    const properties = schemaOrProperties;
+    return {
+      type: "object",
+      properties,
+      required: Object.keys(properties)
+    };
+  }
 }
