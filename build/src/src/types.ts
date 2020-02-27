@@ -92,6 +92,7 @@ export interface UserSettings {
   namedVolumeMountpoints?: { [volumeName: string]: string }; // Host absolute path to mountpoint
   allNamedVolumeMountpoint?: string; // mountpoint
   fileUploads?: { [containerPath: string]: string }; // dataURL
+  domainAlias?: string[]; // ["fullnode", "my-custom-name"]
 }
 // "bitcoin.dnp.dappnode.eth": {
 //   environment: { MODE: "VALUE_SET_BEFORE" }
@@ -233,6 +234,7 @@ export interface PackageContainer {
   avatarUrl: string;
   origin?: string;
   chain?: string;
+  domainAlias?: string[];
   // ### TODO: Move to a different type "InstalledDnpDetail"
   gettingStarted?: string;
   gettingStartedShow?: boolean;
@@ -684,6 +686,25 @@ export interface VolumeData {
   refCount?: number; // 2
   isOrphan: boolean; // if no container is using it
 }
+
+/**
+ * Eth provider / client types
+ * Manage the Ethereum multi-client setup
+ */
+export type EthClientTarget =
+  | "remote"
+  | "geth-light"
+  | "geth-fast"
+  | "geth-full"
+  | "parity";
+export type EthClientStatus =
+  | "selected"
+  | "installing"
+  | "installed"
+  | "syncing"
+  | "active"
+  | "error-installing"
+  | "error-syncing";
 
 /**
  * RPC methods
