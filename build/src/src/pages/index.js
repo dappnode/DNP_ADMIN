@@ -6,6 +6,7 @@ import packages from "./packages";
 import sdk from "./sdk";
 import support from "./support";
 import system from "./system";
+import welcome from "./welcome";
 
 export default {
   dashboard,
@@ -15,5 +16,6 @@ export default {
   packages,
   sdk,
   support,
-  system
+  system,
+  welcome
 };

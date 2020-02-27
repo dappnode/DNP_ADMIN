@@ -7,9 +7,11 @@ interface InputProps {
   onValueChange: (value: string) => void;
   value: string;
   lock?: boolean;
+  isInvalid?: boolean;
   prepend?: string | React.ReactElement;
   append?: string | React.ReactElement;
   className?: string;
+  type?: string;
 }
 
 const Input: React.FunctionComponent<
@@ -19,9 +21,11 @@ const Input: React.FunctionComponent<
   onValueChange,
   value,
   lock,
+  isInvalid,
   prepend,
   append,
   className,
+  type,
   ...props
 }) => {
   /**
@@ -29,8 +33,8 @@ const Input: React.FunctionComponent<
    */
   const input = (
     <input
-      type="text"
-      className={`form-control ${className}`}
+      type={type || "text"}
+      className={`form-control ${className} ${isInvalid ? "is-invalid" : ""}`}
       onChange={e => onValueChange(e.target.value)}
       onKeyPress={onEnterKey(onEnterPress)}
       value={value}

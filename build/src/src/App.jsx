@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 // Components
@@ -16,6 +16,7 @@ import pages from "./pages";
 // Redux
 import { getConnectionStatus } from "services/connectionStatus/selectors";
 import { ToastContainer } from "react-toastify";
+import Welcome from "pages/welcome/components/Welcome";
 
 if (typeof pages !== "object") throw Error("pages must be an object");
 
@@ -31,27 +32,34 @@ class App extends React.Component {
     if (isOpen) {
       return (
         <div className="body">
-          {/* SideNav expands on big screens, while content-wrapper moves left */}
-          <SideBar />
-          <TopBar />
-          <div id="main">
-            <ErrorBoundary>
-              <NotificationsMain />
-            </ErrorBoundary>
+          <Switch>
+            {/* Routes that require a full-screen */}
+            <Route path="/welcome" component={Welcome} />
 
-            {Object.values(pages).map(({ RootComponent, rootPath }) => (
-              <Route
-                key={rootPath}
-                path={rootPath}
-                exact={rootPath === "/"}
-                render={props => (
-                  <ErrorBoundary>
-                    <RootComponent {...props} />
-                  </ErrorBoundary>
-                )}
-              />
-            ))}
-          </div>
+            <Route path="*">
+              {/* SideNav expands on big screens, while content-wrapper moves left */}
+              <SideBar />
+              <TopBar />
+              <div id="main">
+                <ErrorBoundary>
+                  <NotificationsMain />
+                </ErrorBoundary>
+
+                {Object.values(pages).map(({ RootComponent, rootPath }) => (
+                  <Route
+                    key={rootPath}
+                    path={rootPath}
+                    exact={rootPath === "/"}
+                    render={props => (
+                      <ErrorBoundary>
+                        <RootComponent {...props} />
+                      </ErrorBoundary>
+                    )}
+                  />
+                ))}
+              </div>
+            </Route>
+          </Switch>
 
           {/* Place here non-page components */}
           <ToastContainer />
