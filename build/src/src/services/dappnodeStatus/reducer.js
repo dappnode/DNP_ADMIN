@@ -9,12 +9,10 @@ const initialState = {
   stats: {},
   diagnose: {},
   pingReturns: {},
-  versionData: {},
   ipfsConnectionStatus: {},
   wifiStatus: {},
   passwordIsInsecure: false,
   autoUpdateData: {},
-  identityAddress: null,
   mountpoints: null,
   volumes: []
 };
@@ -48,15 +46,6 @@ export default function(state = initialState, action) {
         }
       };
 
-    case t.UPDATE_VERSION_DATA:
-      return {
-        ...state,
-        versionData: {
-          ...state.versionData,
-          [action.dnp]: action.versionData
-        }
-      };
-
     case t.UPDATE_IPFS_CONNECTION_STATUS:
       return {
         ...state,
@@ -79,12 +68,6 @@ export default function(state = initialState, action) {
       return {
         ...state,
         autoUpdateData: action.autoUpdateData
-      };
-
-    case t.UPDATE_IDENTITY_ADDRESS:
-      return {
-        ...state,
-        identityAddress: action.identityAddress
       };
 
     case t.UPDATE_MOUNTPOINTS:

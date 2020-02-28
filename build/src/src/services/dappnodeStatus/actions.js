@@ -4,9 +4,9 @@ import * as t from "./types";
 
 // Update
 
-export const updateDappnodeParams = params => ({
-  type: t.UPDATE_DAPPNODE_PARAMS,
-  params
+export const setSystemInfo = systemInfo => ({
+  type: t.SET_SYSTEM_INFO,
+  systemInfo
 });
 
 export const updateDappnodeStats = stats => ({
@@ -23,12 +23,6 @@ export const updatePingReturn = (dnp, pingReturn) => ({
   type: t.UPDATE_PING_RETURN,
   dnp,
   pingReturn
-});
-
-export const updateVersionData = (dnp, versionData) => ({
-  type: t.UPDATE_VERSION_DATA,
-  dnp,
-  versionData
 });
 
 export const updateIpfsConnectionStatus = ipfsConnectionStatus => ({
@@ -86,10 +80,6 @@ export const fetchDappnodeDiagnose = () => ({
 
 export const fetchIfPasswordIsInsecure = () => ({
   type: t.FETCH_IF_PASSWORD_IS_INSECURE
-});
-
-export const fetchIdentityAddress = () => ({
-  type: t.FETCH_IDENTITY_ADDRESS
 });
 
 export const fetchMountpoints = () => ({

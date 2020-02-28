@@ -84,21 +84,6 @@ const pingDappnodeDnps = wrapErrorsAndLoading(
   }
 );
 
-const getDnpsVersionData = wrapErrorsAndLoading(
-  loadingIds.versionData,
-  function*() {
-    yield call(assertConnectionOpen);
-    for (const dnp of ["dappmanager", "vpn"]) {
-      try {
-        const versionData = yield call(api[dnp].getVersionData);
-        yield put(a.updateVersionData(dnp, versionData));
-      } catch (e) {
-        console.error(`Error on getDnpsVersionData/${dnp}: ${e.stack}`);
-      }
-    }
-  }
-);
-
 /**
  * Calls checkIpfsConnection: Attempts to cat a common IPFS hash
  * - If the cat succeeds, returns { resolves: true }
@@ -157,18 +142,6 @@ const fetchAutoUpdateData = wrapErrorsAndLoading(
 );
 
 /**
- * Get DAppNode identity (eth address):
- */
-const fetchIdentityAddress = wrapErrorsAndLoading(
-  loadingIds.identity,
-  function*() {
-    // If there are no settings the return will be null
-    const identityAddress = yield call(api.seedPhraseGetPublicKey);
-    yield put(a.updateIdentityAddress(identityAddress) || {});
-  }
-);
-
-/**
  * Get DAppNode host mountpoints
  * ONLY FETCH on request, NOT on connection open
  */
@@ -200,12 +173,10 @@ function* fetchAllDappnodeStatus() {
       call(fetchDappnodeStats),
       call(fetchDappnodeDiagnose),
       call(pingDappnodeDnps),
-      call(getDnpsVersionData),
       call(checkIpfsConnectionStatus),
       call(checkWifiStatus),
       call(checkIfPasswordIsInsecure),
       call(fetchAutoUpdateData),
-      call(fetchIdentityAddress),
       call(fetchVolumes)
     ]);
   } catch (e) {
@@ -226,7 +197,6 @@ export default rootWatcher([
   [t.FETCH_DAPPNODE_STATS, fetchDappnodeStats],
   [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],
   [t.FETCH_IF_PASSWORD_IS_INSECURE, checkIfPasswordIsInsecure],
-  [t.FETCH_IDENTITY_ADDRESS, fetchIdentityAddress],
   [t.FETCH_MOUNTPOINTS, fetchMountpointData],
   [t.PING_DAPPNODE_DNPS, pingDappnodeDnps]
 ]);
