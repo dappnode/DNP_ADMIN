@@ -26,6 +26,7 @@ import { DnpInstalledState } from "services/dnpInstalled/types";
 import { SetupSchema, SetupUiJson } from "types-own";
 import { CoreUpdateState } from "services/coreUpdate/types";
 import { USER_SETTING_DISABLE_TAG } from "params";
+import { DappnodeStatusState } from "services/dappnodeStatus/types";
 
 function getDescription(manifest: {
   shortDescription?: string;
@@ -798,10 +799,39 @@ const coreUpdateState: CoreUpdateState = {
   updatingCore: true
 };
 
-const dappnodeStatusState = {
-  params: {},
-  stats: {},
-  diagnose: {},
+const dappnodeStatusState: DappnodeStatusState = {
+  systemInfo: {
+    versionData: {
+      branch: "test",
+      commit: "a5a5a5a5",
+      version: "0.2.0"
+    },
+    ip: "85.84.83.82",
+    name: "My-DAppNode",
+    staticIp: "", // "85.84.83.82",
+    domain: "1234acbd.dyndns.io",
+    upnpAvailable: true,
+    noNatLoopback: false,
+    alertToOpenPorts: false,
+    internalIp: "192.168.0.1",
+    dappmanagerNaclPublicKey: "cYo1NA7/+PQ22PeqrRNGhs1B84SY/fuomNtURj5SUmQ=",
+    identityAddress: "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B",
+    ethClientTarget: "geth-fast",
+    ethClientStatus: "installing",
+    ethClientStatusError: "Error fetching manifest from ...",
+    ethProvider: "http://lightnode.dappnode:8545"
+  },
+  stats: {
+    cpu: "34%",
+    disk: "96%",
+    memory: "45%"
+  },
+  vpnVersionData: {
+    branch: "test",
+    commit: "a5a5a5a5",
+    version: "0.2.0"
+  },
+  diagnose: [],
   pingReturns: {},
   ipfsConnectionStatus: {},
   wifiStatus: { running: true },
@@ -876,32 +906,36 @@ const dappnodeStatusState = {
     {
       mountpoint: "",
       use: "87%",
-      total: "",
-      free: "121G",
+      used: 43e9,
+      total: 0,
+      free: 121e9,
       vendor: "Host",
       model: "(default)"
     },
     {
       mountpoint: "/data",
       use: "68%",
-      total: "500G",
-      free: "141G",
+      used: 380e9,
+      total: 500e9,
+      free: 141e9,
       vendor: "ATA",
       model: "CT500MX500SSD4"
     },
     {
       mountpoint: "/media/usb0",
       use: "1%",
-      total: "1TB",
-      free: "6.2G",
+      used: 992e9,
+      total: 1000e9,
+      free: 6.2e9,
       vendor: "SanDisk",
       model: "Ultra_USB_3.0"
     },
     {
       mountpoint: "/media/usb1",
       use: "100%",
-      total: "16GB",
-      free: "7.1G",
+      used: 4e9,
+      total: 16e9,
+      free: 7.1e9,
       vendor: "SanDisk",
       model: "Ultra_USB_3.0"
     }

@@ -1,3 +1,5 @@
+import { ThunkAction } from "redux-thunk";
+import { AnyAction } from "redux";
 import * as t from "./types";
 import {
   SystemInfo,
@@ -6,10 +8,55 @@ import {
   AutoUpdateDataView,
   MountpointData,
   VolumeData,
-  PackageVersionData
+  PackageVersionData,
+  EthClientTarget
 } from "types";
+import * as api from "API/calls";
+import { confirm } from "components/ConfirmDialog";
+import { getEthClientTarget } from "./selectors";
 
 // Service > dappnodeStatus
+
+// Redux-thunk
+
+export const changeEthClientTarget = (
+  nextTarget: EthClientTarget
+): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+  const prevTarget = getEthClientTarget(getState());
+
+  // Make sure the target has changed or the call will error
+  if (nextTarget === prevTarget) return;
+
+  // If the previous target is package, ask the user if deleteVolumes
+  const deleteVolumes =
+    prevTarget !== "remote"
+      ? await new Promise((resolve: (_deleteVolumes: boolean) => void) =>
+          confirm({
+            title: `Remove ${prevTarget} volumes?`,
+            text: `Do you want to keep or remove the volumes of your current Ethereum client? This action cannot be undone.`,
+            buttons: [
+              {
+                label: "Keep",
+                variant: "dappnode",
+                onClick: () => resolve(false)
+              },
+              {
+                label: "Remove",
+                variant: "danger",
+                onClick: () => resolve(true)
+              }
+            ]
+          })
+        )
+      : false;
+
+  await api
+    .ethClientTargetSet(
+      { target: nextTarget, deleteVolumes },
+      { toastMessage: "Changing Eth client..." }
+    )
+    .catch(console.error);
+};
 
 // Update
 

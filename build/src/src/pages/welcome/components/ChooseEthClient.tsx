@@ -1,31 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createStructuredSelector } from "reselect";
+import { connect } from "react-redux";
 import Button from "components/Button";
 import circuitBoardSvg from "illustrations/circuit_board-slim.svg";
-import { EthMultiClients, EthClientData } from "components/EthMultiClient";
-import { EthClientTarget } from "types";
-
-const clients: EthClientData[] = [
-  {
-    target: "remote",
-    title: "Remote",
-    description: "Connect to public RPC mantained by DAppNode"
-  },
-  {
-    target: "geth-light",
-    title: "Light client",
-    description:
-      "Lightweight node for smaller devices or enhanced decentralization"
-  },
-  {
-    target: "geth-full",
-    title: "Full node",
-    description: "Run your own node and allow apps to connect to it",
-    options: [
-      { name: "Geth", target: "geth-full" },
-      { name: "Parity", target: "parity" }
-    ]
-  }
-];
+import { EthMultiClients } from "components/EthMultiClient";
+import { EthClientTarget, EthClientStatus } from "types";
+import {
+  getEthClientTarget,
+  getEthClientStatus
+} from "services/dappnodeStatus/selectors";
+import { changeEthClientTarget } from "services/dappnodeStatus/actions";
 
 /**
  * View to chose or change the Eth multi-client
@@ -35,14 +19,30 @@ const clients: EthClientData[] = [
  * - Full node
  * There may be multiple available light-clients and fullnodes
  */
-export default function ChoseEthClient({
+function ChooseEthClient({
   onNext,
-  onBack
+  onBack,
+  // Redux
+  ethClientTarget,
+  ethClientStatus,
+  changeEthClientTarget
 }: {
   onBack?: () => void;
   onNext?: () => void;
+  ethClientTarget?: EthClientTarget;
+  ethClientStatus?: EthClientStatus;
+  changeEthClientTarget: (target: EthClientTarget) => void;
 }) {
-  const [target, setTarget] = useState("remote" as EthClientTarget);
+  const [target, setTarget] = useState("" as EthClientTarget);
+
+  useEffect(() => {
+    if (ethClientTarget) setTarget(ethClientTarget);
+  }, [ethClientTarget]);
+
+  async function changeClient() {
+    changeEthClientTarget(target);
+    if (onNext) onNext();
+  }
 
   return (
     <>
@@ -55,13 +55,14 @@ export default function ChoseEthClient({
         <div className="description">
           This client will be used to fetch package data
         </div>
+        {ethClientTarget && ethClientStatus && (
+          <div className="description">
+            Current client: {ethClientTarget} ({ethClientStatus})
+          </div>
+        )}
       </div>
 
-      <EthMultiClients
-        clients={clients}
-        target={target}
-        onTargetChange={setTarget}
-      />
+      <EthMultiClients target={target} onTargetChange={setTarget} />
 
       <div className="bottom-buttons">
         {onBack && (
@@ -70,7 +71,7 @@ export default function ChoseEthClient({
           </Button>
         )}
         {onNext && (
-          <Button onClick={onNext} variant="dappnode">
+          <Button onClick={changeClient} variant="dappnode">
             Next
           </Button>
         )}
@@ -78,3 +79,17 @@ export default function ChoseEthClient({
     </>
   );
 }
+
+const mapStateToProps = createStructuredSelector({
+  ethClientTarget: getEthClientTarget,
+  ethClientStatus: getEthClientStatus
+});
+
+const mapDispatchToProps = {
+  changeEthClientTarget
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ChooseEthClient);

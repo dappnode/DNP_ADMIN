@@ -1,5 +1,6 @@
 import * as autoUpdateDataGet from "./autoUpdateDataGet";
 import * as diagnose from "./diagnose";
+import * as ethClientTargetSet from "./ethClientTargetSet";
 import * as fetchCoreUpdateData from "./fetchCoreUpdateData";
 import * as fetchDirectory from "./fetchDirectory";
 import * as fetchDnpRequest from "./fetchDnpRequest";
@@ -19,6 +20,7 @@ import * as volumesGet from "./volumesGet";
 export {
   autoUpdateDataGet,
   diagnose,
+  ethClientTargetSet,
   fetchCoreUpdateData,
   fetchDirectory,
   fetchDnpRequest,

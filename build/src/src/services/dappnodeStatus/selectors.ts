@@ -32,6 +32,21 @@ export const getVpnVersionData = (state: any) => getLocal(state).vpnVersionData;
 export const getDappmanagerPing = (state: any) => getPing(state).dappmanager;
 export const getVpnPing = (state: any) => getPing(state).vpn;
 
+export const getEthClientTarget = (state: any) =>
+  (getSystemInfo(state) || {}).ethClientTarget;
+export const getEthClientStatus = (state: any) =>
+  (getSystemInfo(state) || {}).ethClientStatus;
+
+// export const getEthClientData = (state: any) => {
+//   const systemInfo = getSystemInfo(state);
+//   return {
+//     ethClientTarget,
+//     ethClientStatus,
+//     ethClientStatusError,
+//     ethProvider
+//   };
+// };
+
 /**
  * Returns the DAppNode "network" identity to be shown in the TopBar
  * @returns {object} params = {

@@ -1,48 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createStructuredSelector } from "reselect";
+import { connect } from "react-redux";
 import Card from "components/Card";
 import Button from "components/Button";
-import { EthMultiClients, EthClientData } from "components/EthMultiClient";
-import { EthClientTarget } from "types";
+import { EthMultiClients } from "components/EthMultiClient";
+import { EthClientTarget, EthClientStatus } from "types";
+import {
+  getEthClientTarget,
+  getEthClientStatus
+} from "services/dappnodeStatus/selectors";
+import { changeEthClientTarget } from "services/dappnodeStatus/actions";
 
-const clients: EthClientData[] = [
-  {
-    target: "remote",
-    title: "Remote",
-    description: "Connect to public RPC mantained by DAppNode"
-  },
-  {
-    target: "geth-light",
-    title: "Light client",
-    description:
-      "Lightweight node for smaller devices or enhanced decentralization"
-  },
-  {
-    target: "geth-full",
-    title: "Full node",
-    description: "Run your own node and allow apps to connect to it",
-    options: [
-      { name: "Geth", target: "geth-full" },
-      { name: "Parity", target: "parity" }
-    ]
+function ChooseEthClient({
+  // Redux
+  ethClientTarget,
+  ethClientStatus,
+  changeEthClientTarget
+}: {
+  ethClientTarget?: EthClientTarget;
+  ethClientStatus?: EthClientStatus;
+  changeEthClientTarget: (target: EthClientTarget) => void;
+}) {
+  const [target, setTarget] = useState("" as EthClientTarget);
+
+  useEffect(() => {
+    if (ethClientTarget) setTarget(ethClientTarget);
+  }, [ethClientTarget]);
+
+  function changeClient() {
+    changeEthClientTarget(target);
   }
-];
-
-export default function ChooseEthClient() {
-  const [target, setTarget] = useState("remote" as EthClientTarget);
 
   return (
     <Card className="dappnode-identity">
-      <p>Choose the client from which the DAppNode should fetch package data</p>
+      <div>
+        Choose the client from which the DAppNode should fetch package data
+      </div>
+      <div className="description">
+        Current client: {ethClientTarget} ({ethClientStatus})
+      </div>
 
-      <EthMultiClients
-        clients={clients}
-        target={target}
-        onTargetChange={setTarget}
-      />
+      <EthMultiClients target={target} onTargetChange={setTarget} />
 
       <div style={{ textAlign: "end" }}>
-        <Button variant="dappnode">Submit</Button>
+        <Button
+          variant="dappnode"
+          onClick={changeClient}
+          disabled={ethClientTarget === target}
+        >
+          Change
+        </Button>
       </div>
     </Card>
   );
 }
+
+const mapStateToProps = createStructuredSelector({
+  ethClientTarget: getEthClientTarget,
+  ethClientStatus: getEthClientStatus
+});
+
+const mapDispatchToProps = {
+  changeEthClientTarget
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ChooseEthClient);
