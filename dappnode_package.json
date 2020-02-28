@@ -2,22 +2,7 @@
   "name": "admin.dnp.dappnode.eth",
   "version": "0.2.15",
   "description": "Dappnode package responsible for providing the administrative user interface",
-  "avatar": "/ipfs/QmNrZu2rq6AwgDjHjFjEc3d7ZMiLTw4RDpMhRFQDEwtZcb",
   "type": "dncore",
-  "image": {
-    "path": "",
-    "hash": "",
-    "size": "",
-    "volumes": [
-      "vpndnpdappnodeeth_shared:/usr/www/openvpn/cred"
-    ],
-    "ports": [
-      "8090:8090"
-    ],
-    "restart": "always",
-    "subnet": "172.33.0.0/16",
-    "ipv4_address": "172.33.1.9"
-  },
   "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
   "contributors": [
     "DAppLion <dapplion@giveth.io> (https://github.com/dapplion)",
