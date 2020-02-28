@@ -1,8 +1,38 @@
+import {
+  SystemInfo,
+  HostStats,
+  Diagnose,
+  MountpointData,
+  VolumeData,
+  AutoUpdateDataView,
+  PackageVersionData
+} from "types";
+
 // Service > dappnodeStatus
+
+export interface DappnodeStatusState {
+  systemInfo: SystemInfo | null;
+  stats: HostStats;
+  diagnose: Diagnose;
+  vpnVersionData: PackageVersionData;
+  pingReturns: {
+    [dnpName: string]: boolean;
+  };
+  ipfsConnectionStatus: {
+    resolves?: boolean;
+    error?: string;
+  };
+  wifiStatus: { running?: boolean };
+  passwordIsInsecure: boolean;
+  autoUpdateData: AutoUpdateDataView | null;
+  mountpoints: MountpointData[];
+  volumes: VolumeData[];
+}
 
 // Update: triggers a reducer
 export const UPDATE_DAPPNODE_PARAMS = "UPDATE_DAPPNODE_PARAMS";
 export const UPDATE_DAPPNODE_STATS = "UPDATE_DAPPNODE_STATS";
+export const UPDATE_VPN_VERSION_DATA = "UPDATE_VPN_VERSION_DATA";
 export const UPDATE_DAPPNODE_DIAGNOSE = "UPDATE_DAPPNODE_DIAGNOSE";
 export const UPDATE_PING_RETURN = "UPDATE_PING_RETURN";
 export const UPDATE_IPFS_CONNECTION_STATUS = "UPDATE_IPFS_CONNECTION_STATUS";
@@ -12,6 +42,7 @@ export const UPDATE_AUTO_UPDATE_DATA = "UPDATE_AUTO_UPDATE_DATA";
 export const UPDATE_IDENTITY_ADDRESS = "UPDATE_IDENTITY_ADDRESS";
 export const UPDATE_MOUNTPOINTS = "UPDATE_MOUNTPOINTS";
 export const UPDATE_VOLUMES = "UPDATE_VOLUMES";
+export const SET_SYSTEM_INFO = "SET_SYSTEM_INFO";
 // Fetch: triggers a saga
 export const FETCH_ALL_DAPPNODE_STATUS = "FETCH_ALL_DAPPNODE_STATUS";
 export const FETCH_DAPPNODE_PARAMS = "FETCH_DAPPNODE_PARAMS";

@@ -13,7 +13,7 @@ import VolumesGrid from "./VolumesGrid";
 import StatsCard from "pages/dashboard/components/StatsCard";
 // Components
 import SubTitle from "components/SubTitle";
-import { VolumeData } from "types";
+import { VolumeData, HostStats } from "types";
 
 /**
  * @param {array} chainData = [{
@@ -35,7 +35,7 @@ function Dashboard({
   fetchDappnodeStats,
   volumeRemove
 }: {
-  dappnodeStats: { [key: string]: string };
+  dappnodeStats: HostStats;
   volumes: VolumeData[];
   fetchDappnodeStats: () => void;
   volumeRemove: (name: string) => void;

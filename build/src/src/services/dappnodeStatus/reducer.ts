@@ -1,35 +1,43 @@
 import * as t from "./types";
+import { DappnodeStatusState } from "./types";
 import merge from "deepmerge";
 import { arrayToObj } from "utils/objects";
 
 // Service > dappnodeStatus
 
-const initialState = {
-  params: {},
+const initialState: DappnodeStatusState = {
+  systemInfo: null,
   stats: {},
-  diagnose: {},
+  diagnose: [],
+  vpnVersionData: {},
   pingReturns: {},
   ipfsConnectionStatus: {},
   wifiStatus: {},
   passwordIsInsecure: false,
-  autoUpdateData: {},
-  mountpoints: null,
+  autoUpdateData: null,
+  mountpoints: [],
   volumes: []
 };
 
-export default function(state = initialState, action) {
+export default function(state = initialState, action: any) {
   switch (action.type) {
-    case t.UPDATE_DAPPNODE_PARAMS:
-      // Replaces all params on each update
+    case t.SET_SYSTEM_INFO:
       return {
         ...state,
-        params: action.params
+        systemInfo: action.systemInfo
       };
 
     case t.UPDATE_DAPPNODE_STATS:
-      return merge(state, {
+      return {
+        ...state,
         stats: action.stats
-      });
+      };
+
+    case t.UPDATE_VPN_VERSION_DATA:
+      return {
+        ...state,
+        stats: action.vpnVersionData
+      };
 
     case t.UPDATE_DAPPNODE_DIAGNOSE:
       return merge(state, {
