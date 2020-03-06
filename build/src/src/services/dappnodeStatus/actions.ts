@@ -14,6 +14,7 @@ import {
 import * as api from "API/calls";
 import { confirm } from "components/ConfirmDialog";
 import { getEthClientTarget } from "./selectors";
+import { getEthClientPrettyName } from "components/EthMultiClient";
 
 // Service > dappnodeStatus
 
@@ -29,10 +30,10 @@ export const changeEthClientTarget = (
 
   // If the previous target is package, ask the user if deleteVolumes
   const deleteVolumes =
-    prevTarget !== "remote"
+    prevTarget && prevTarget !== "remote"
       ? await new Promise((resolve: (_deleteVolumes: boolean) => void) =>
           confirm({
-            title: `Remove ${prevTarget} volumes?`,
+            title: `Remove ${getEthClientPrettyName(prevTarget)} volumes?`,
             text: `Do you want to keep or remove the volumes of your current Ethereum client? This action cannot be undone.`,
             buttons: [
               {

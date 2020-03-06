@@ -5,33 +5,44 @@ import { joinCssClass } from "utils/css";
 import Select from "components/Select";
 import { EthClientTarget } from "types";
 
+export function getEthClientPrettyName(target: EthClientTarget) {
+  switch (target) {
+    case "remote":
+      return "Remote";
+    case "geth-light":
+      return "Geth light client";
+    case "geth":
+      return "Geth";
+    case "parity":
+      return "Parity";
+    default:
+      return target;
+  }
+}
+
 const clients: EthClientData[] = [
   {
     title: "Remote",
     description: "Connect to public RPC mantained by DAppNode",
-    options: [{ name: "Remove", target: "remote" }]
+    options: ["remote"]
   },
   {
     title: "Light client",
     description:
       "Lightweight node for smaller devices or enhanced decentralization",
-    options: [{ name: "Geth light client", target: "geth-light" }]
+    options: ["geth-light"]
   },
   {
     title: "Full node",
     description: "Run your own node and allow apps to connect to it",
-    options: [
-      { name: "Geth", target: "geth-fast" },
-      { name: "Geth full", target: "geth-full" },
-      { name: "Parity", target: "parity" }
-    ]
+    options: ["geth", "parity"]
   }
 ];
 
 export interface EthClientData {
   title: string;
   description: string;
-  options: { name: string; target: EthClientTarget }[];
+  options: EthClientTarget[];
 }
 
 interface OptionsMap {
@@ -42,12 +53,10 @@ interface OptionsMap {
  * Utility to pretty names to the actual target of that option
  * @param options
  */
-function getOptionsMap(
-  options?: { name: string; target: EthClientTarget }[]
-): OptionsMap {
+function getOptionsMap(options?: EthClientTarget[]): OptionsMap {
   return options
-    ? options.reduce((optMap: { [name: string]: EthClientTarget }, opt) => {
-        optMap[opt.name] = opt.target;
+    ? options.reduce((optMap: { [name: string]: EthClientTarget }, target) => {
+        optMap[getEthClientPrettyName(target)] = target;
         return optMap;
       }, {})
     : {};
@@ -65,7 +74,7 @@ export function EthMultiClients({
   target: selectedTarget,
   onTargetChange
 }: {
-  target: string;
+  target: EthClientTarget;
   onTargetChange: (newTarget: EthClientTarget) => void;
 }) {
   return (
@@ -73,8 +82,8 @@ export function EthMultiClients({
       {clients
         .filter(({ options }) => options.length > 0)
         .map(({ title, description, options }) => {
-          const defaultTarget = options[0].target;
-          const selected = options.some(opt => opt.target === selectedTarget);
+          const defaultTarget = options[0];
+          const selected = options.includes(selectedTarget);
           const optionMap = getOptionsMap(options);
           return (
             <Card
@@ -90,7 +99,7 @@ export function EthMultiClients({
               <div className="description">{description}</div>
               {selected && options.length > 1 && (
                 <Select
-                  options={options.map(opt => opt.name)}
+                  options={options.map(getEthClientPrettyName)}
                   onValueChange={(newOpt: string) => {
                     onTargetChange(optionMap[newOpt]);
                   }}

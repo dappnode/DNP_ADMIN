@@ -235,6 +235,7 @@ export interface PackageContainer {
   origin?: string;
   chain?: string;
   domainAlias?: string[];
+  canBeFullnode?: boolean;
   // ### TODO: Move to a different type "InstalledDnpDetail"
   gettingStarted?: string;
   gettingStartedShow?: boolean;
@@ -691,12 +692,13 @@ export interface VolumeData {
  * Eth provider / client types
  * Manage the Ethereum multi-client setup
  */
-export type EthClientTarget =
-  | "remote"
-  | "geth-light"
-  | "geth-fast"
-  | "geth-full"
-  | "parity";
+export type EthClientTarget = "remote" | "geth-light" | "geth" | "parity";
+export const ethClientTargets: EthClientTarget[] = [
+  "remote",
+  "geth-light",
+  "geth",
+  "parity"
+];
 export type EthClientStatus =
   | "selected"
   | "installing"
@@ -731,6 +733,8 @@ export interface SystemInfo {
   ethClientStatus: EthClientStatus;
   ethClientStatusError?: string;
   ethProvider: string;
+  // Domain maps
+  fullnodeDomainTarget: string;
 }
 
 /**

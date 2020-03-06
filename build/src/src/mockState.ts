@@ -816,10 +816,11 @@ const dappnodeStatusState: DappnodeStatusState = {
     internalIp: "192.168.0.1",
     dappmanagerNaclPublicKey: "cYo1NA7/+PQ22PeqrRNGhs1B84SY/fuomNtURj5SUmQ=",
     identityAddress: "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B",
-    ethClientTarget: "geth-fast",
+    ethClientTarget: "geth-light",
     ethClientStatus: "installing",
     ethClientStatusError: "Error fetching manifest from ...",
-    ethProvider: "http://lightnode.dappnode:8545"
+    ethProvider: "http://geth.dappnode:8545",
+    fullnodeDomainTarget: "geth.dnp.dappnode.eth"
   },
   stats: {
     cpu: "34%",
@@ -1254,6 +1255,51 @@ Content in the first column | Content in the second column
         DEFAULT_CLIENT: "GETH"
       },
       manifest: ethchainMetadata
+    },
+    {
+      ...samplePackageContainer,
+      name: "parity.dnp.dappnode.eth",
+      isCore: false,
+      version: "0.2.6",
+      state: "running",
+      ports: [
+        {
+          host: 30303,
+          container: 30303,
+          protocol: "TCP"
+        },
+        {
+          host: 30303,
+          container: 30303,
+          protocol: "UDP"
+        }
+      ],
+      volumes: [
+        {
+          host: "/var/lib/docker/volumes/paritydnpdappnodeeth_data/_data",
+          container: "/app/.parity",
+          name: "paritydnpdappnodeeth_data",
+          users: ["parity.dnp.dappnode.eth"],
+          owner: "parity.dnp.dappnode.eth",
+          isOwner: true,
+          size: 71570000000
+        },
+        {
+          host: "/var/lib/docker/volumes/paritydnpdappnodeeth_geth/_data",
+          container: "/root/.ethereum/",
+          name: "paritydnpdappnodeeth_geth",
+          users: ["parity.dnp.dappnode.eth"],
+          owner: "parity.dnp.dappnode.eth",
+          isOwner: true,
+          size: 94620000000
+        }
+      ],
+      envs: {},
+      avatarUrl: "https://pbs.twimg.com/media/DOnE7skW4AQ-FBd.png",
+      canBeFullnode: true,
+      manifest: {
+        ...ethchainMetadata
+      }
     }
   ],
   dnpInstalledData: {
