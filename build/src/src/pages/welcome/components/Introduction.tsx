@@ -15,9 +15,9 @@ const current = 2;
 
 interface WelcomeProps {}
 
-const Welcome: React.FunctionComponent<WelcomeProps & RouteComponentProps> = ({
-  match
-}) => {
+const Introduction: React.FunctionComponent<
+  WelcomeProps & RouteComponentProps
+> = ({ match }) => {
   const dotsState: boolean[] = [];
   for (let i = 0; i < steps; i++) {
     dotsState.push(i === current);
@@ -84,4 +84,4 @@ const Welcome: React.FunctionComponent<WelcomeProps & RouteComponentProps> = ({
   );
 };
 
-export default Welcome;
+export default Introduction;

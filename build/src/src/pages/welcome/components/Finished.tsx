@@ -2,13 +2,14 @@ import React from "react";
 import circuitBoardSvg from "illustrations/circuit_board-slim.svg";
 import Button from "components/Button";
 import "./welcomeHome.scss";
+import BottomButtons from "./BottomButtons";
 
 export default function Finished({
-  onNext,
-  onBack
+  onBack,
+  onNext
 }: {
   onBack: () => void;
-  onNext: () => void;
+  onNext?: () => void;
 }) {
   return (
     <>
@@ -29,16 +30,7 @@ export default function Finished({
         Finish
       </Button>
 
-      <div className="bottom-buttons">
-        <Button onClick={onBack} variant="outline-secondary">
-          Back
-        </Button>
-        {onNext && (
-          <Button onClick={onNext} variant="dappnode">
-            Next
-          </Button>
-        )}
-      </div>
+      <BottomButtons onBack={onBack} onNext={onNext} />
     </>
   );
 }

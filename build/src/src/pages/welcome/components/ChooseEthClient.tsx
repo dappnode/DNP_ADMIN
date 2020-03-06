@@ -10,6 +10,7 @@ import {
   getEthClientStatus
 } from "services/dappnodeStatus/selectors";
 import { changeEthClientTarget } from "services/dappnodeStatus/actions";
+import BottomButtons from "./BottomButtons";
 
 /**
  * View to chose or change the Eth multi-client
@@ -20,8 +21,8 @@ import { changeEthClientTarget } from "services/dappnodeStatus/actions";
  * There may be multiple available light-clients and fullnodes
  */
 function ChooseEthClient({
-  onNext,
   onBack,
+  onNext,
   // Redux
   ethClientTarget,
   ethClientStatus,
@@ -64,18 +65,7 @@ function ChooseEthClient({
 
       <EthMultiClients target={target} onTargetChange={setTarget} />
 
-      <div className="bottom-buttons">
-        {onBack && (
-          <Button onClick={onBack} variant="outline-secondary">
-            Back
-          </Button>
-        )}
-        {onNext && (
-          <Button onClick={changeClient} variant="dappnode">
-            Next
-          </Button>
-        )}
-      </div>
+      <BottomButtons onBack={onBack} onNext={changeClient} />
     </>
   );
 }

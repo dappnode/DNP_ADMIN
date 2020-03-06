@@ -1,18 +1,15 @@
 import React from "react";
 import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
-import newTabProps from "utils/newTabProps";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-// styles
-import "./welcome.scss";
-import { joinCssClass } from "utils/css";
 import ChooseEthClient from "./ChooseEthClient";
 import WelcomeHome from "./WelcomeHome";
 import ChangeHostPassword from "./ChangeHostPassword";
 import Finished from "./Finished";
+import Introduction from "./Introduction";
+// styles
+import "./welcome.scss";
 
-const steps = 4;
-const current = 2;
 const subPathHome = "home";
+const subPathIntroduction = "introduction";
 const subPathChooseClient = "choose-client";
 const subPathChangeHostPassword = "change-host-password";
 const subPathFinished = "finished";
@@ -29,19 +26,10 @@ const Welcome: React.FunctionComponent<WelcomeProps & RouteComponentProps> = ({
   history,
   location
 }) => {
-  const dotsState: boolean[] = [];
-  for (let i = 0; i < steps; i++) {
-    dotsState.push(i === current);
-  }
-
-  function pushTo(subPath: string) {
-    history.push(`${match.url}/${subPath}`);
-  }
-
   const routes: { subPath: string; render: any }[] = [
     {
       subPath: subPathHome,
-      render: () => <WelcomeHome onBack={goBack} onNext={goNext} />
+      render: () => <WelcomeHome onNext={goNext} />
     },
     {
       subPath: subPathChooseClient,
@@ -53,7 +41,7 @@ const Welcome: React.FunctionComponent<WelcomeProps & RouteComponentProps> = ({
     },
     {
       subPath: subPathFinished,
-      render: () => <Finished onBack={goBack} onNext={goNext} />
+      render: () => <Finished onBack={goBack} />
     }
   ];
 

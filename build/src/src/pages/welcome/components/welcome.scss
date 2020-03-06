@@ -37,12 +37,17 @@
   }
 
   .bottom-buttons {
-    display: flex;
-    justify-content: space-between;
     // When there's only one button, align right
     > *:only-child {
       margin-left: auto;
     }
+    .next {
+      float: right;
+    }
+    .back {
+      float: left;
+    }
+
     // In very small screens, make sure the buttons don't clip to the bottom
     margin-bottom: 2rem;
   }

@@ -6,6 +6,7 @@ import Button from "components/Button";
 import Switch from "components/Switch";
 import circuitBoardSvg from "illustrations/circuit_board-slim.svg";
 import { ErrorFeedback } from "components/PasswordForm";
+import BottomButtons from "./BottomButtons";
 
 /**
  * View to chose or change the Eth multi-client
@@ -16,8 +17,8 @@ import { ErrorFeedback } from "components/PasswordForm";
  * There may be multiple available light-clients and fullnodes
  */
 export default function ChangeHostPassword({
-  onNext,
-  onBack
+  onBack,
+  onNext
 }: {
   onBack?: () => void;
   onNext: () => void;
@@ -106,22 +107,12 @@ export default function ChangeHostPassword({
         </div>
       </div>
 
-      <div className="bottom-buttons">
-        {onBack && (
-          <Button onClick={onBack} variant="outline-secondary">
-            Back
-          </Button>
-        )}
-        {invalid ? (
-          <Button onClick={onNext} variant="outline-secondary">
-            Skip
-          </Button>
-        ) : (
-          <Button onClick={update} variant="dappnode">
-            Next
-          </Button>
-        )}
-      </div>
+      <BottomButtons
+        onBack={onBack}
+        onNext={invalid ? onNext : update}
+        nextTag={invalid ? "Skip" : undefined}
+        nextVariant={invalid ? "outline-secondary" : undefined}
+      />
     </>
   );
 }
