@@ -25,7 +25,15 @@ import Button from "components/Button";
 // Style
 import "./notificationsMain.scss";
 
-function AlertDismissible({ body, linkText, linkPath }) {
+function AlertDismissible({
+  body,
+  linkText,
+  linkPath
+}: {
+  body: string;
+  linkText: string;
+  linkPath: string;
+}) {
   const [show, setShow] = useState(true);
   return show ? (
     <Alert
@@ -54,6 +62,14 @@ const NotificationsView = ({
   areWifiCredentialsDefault,
   isWifiRunning,
   passwordIsInsecure
+}: {
+  coreUpdateAvailable?: boolean;
+  updatingCore?: boolean;
+  isCoreUpdateTypePatch?: boolean;
+  isCoreAutoUpdateActive?: boolean;
+  areWifiCredentialsDefault?: boolean;
+  isWifiRunning?: boolean;
+  passwordIsInsecure?: boolean;
 }) => {
   const notifications = [
     /**
