@@ -1,6 +1,7 @@
 import { mountPoint, autoUpdateIds } from "./data";
 import { createSelector } from "reselect";
 import { DappnodeStatusState } from "./types";
+import { getDnpInstalled } from "services/dnpInstalled/selectors";
 
 // Service > dappnodeStatus
 
@@ -86,3 +87,49 @@ export const getIsCoreAutoUpdateActive = createSelector(
       {}
     ).enabled
 );
+
+/**
+ * There are a few edge cases which the user must be warned about
+ * but since they depend on a `docker ps` its best to compute the warning
+ * in the UI dynamically than in the DAPPMANAGER statically. Otherwise
+ * the user will not see feedback that the warning is resolved.
+ *
+ * 1. if (!dnp) && status !== "installed", "selected", "error-installing"
+ *    NOT-OK Client should be installed
+ *    Something or someone removed the client, re-install?
+ *  > Show an error or something in the UI as
+ *    "Alert!" you target is OFF, go to remote or install it again
+ *
+ * 2. if (!dnp.running)
+ *    Package can be stopped because the user stopped it or
+ *    because the DAppNode is too full and auto-stop kicked in
+ *  > Show an error or something in the UI as
+ *    "Alert!" you target is OFF, go to remote or install it again
+ *
+ */
+export const getEthMultiClientWarning = (
+  state: any
+): "not-installed" | "not-running" | undefined => {
+  const status = getEthClientStatus(state);
+  const target = getEthClientTarget(state);
+  if (!target || target === "remote") return;
+
+  const dnps = getDnpInstalled(state);
+  if (!dnps || dnps.length === 0) return;
+
+  // ### Todo: Decouple target => dnpName logic here
+  const dnpName =
+    target === "parity" ? "parity.dnp.dappnode.eth" : "geth.dnp.dappnode.eth";
+  const dnp = dnps.find(dnp => dnp.name === dnpName);
+
+  if (
+    !dnp &&
+    (status === "installed" ||
+      status === "syncing" ||
+      status === "active" ||
+      status === "error-syncing")
+  )
+    return "not-installed";
+
+  if (dnp && !dnp.running) return "not-running";
+};

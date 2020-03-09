@@ -817,7 +817,7 @@ const dappnodeStatusState: DappnodeStatusState = {
     dappmanagerNaclPublicKey: "cYo1NA7/+PQ22PeqrRNGhs1B84SY/fuomNtURj5SUmQ=",
     identityAddress: "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B",
     ethClientTarget: "geth-light",
-    ethClientStatus: "installing",
+    ethClientStatus: "installed",
     ethClientStatusError: "Error fetching manifest from ...",
     ethProvider: "http://geth.dappnode:8545",
     fullnodeDomainTarget: "geth.dnp.dappnode.eth"
