@@ -21,8 +21,5 @@ export const areThereDevices = createSelector(
   devices => Boolean(devices.length)
 );
 
-export const getDeviceById = createSelector(
-  getDevices,
-  (_, id) => id,
-  (devices, id) => devices.find(d => d.id === id) || {}
-);
+export const getDeviceById = (state, id) =>
+  getDevices(state).find(d => d.id === id) || {};

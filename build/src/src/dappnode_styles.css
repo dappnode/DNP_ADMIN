@@ -111,9 +111,15 @@ p.no-p-style:last-child {
 /* react-bootstrap's ProgressBar */
 .progress-bar {
   background-color: var(--dappnode-color);
-  /* When the bar goes from full "starting" to downloading,
-     it moves too slow an looks wierd */
+}
+/* When the bar goes from full "starting" to downloading,
+   it moves too slow an looks wierd */
+.progress:not(.animate).progress-bar {
   transition: none !important;
+}
+.progress.animate,
+.progress.animate.progress-bar {
+  transition: 0.6s ease;
 }
 .progress {
   height: 1.1rem;

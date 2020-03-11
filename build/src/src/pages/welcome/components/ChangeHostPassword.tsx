@@ -4,7 +4,6 @@ import * as api from "API/calls";
 import Input from "components/Input";
 import Button from "components/Button";
 import Switch from "components/Switch";
-import circuitBoardSvg from "illustrations/circuit_board-slim.svg";
 import { ErrorFeedback } from "components/PasswordForm";
 import BottomButtons from "./BottomButtons";
 
@@ -58,20 +57,14 @@ export default function ChangeHostPassword({
 
   return (
     <>
-      <div className="illustration">
-        <img src={circuitBoardSvg} />
-      </div>
-
       <div className="header">
         <div className="title">Change host user password</div>
         <div className="description">
-          Please change the host user password. The current password is the
-          factory insecure default. Changing it to a strong password will
-          protect your DAppNode from external attackers.
+          You will need this password to access your machine manually.
         </div>
       </div>
 
-      <div className="change-password-form">
+      <div className="change-password-form" style={{ marginTop: "2rem" }}>
         <div>
           <Input
             type={showPassword ? "text" : "password"}

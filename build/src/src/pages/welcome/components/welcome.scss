@@ -1,9 +1,6 @@
 .welcome {
-  display: grid;
-  grid-template-rows:
-    minmax(min-content, max-content) minmax(min-content, max-content)
-    1fr auto;
-  grid-gap: 2rem;
+  display: flex;
+  flex-direction: column;
 
   // align-items: center;
   min-height: 100vh;
@@ -11,7 +8,8 @@
   // Spacing
   max-width: 70rem;
   margin: auto;
-  padding: calc(3 * var(--default-spacing)) calc(2 * var(--default-spacing));
+  padding: calc(4 * var(--default-spacing)) calc(3 * var(--default-spacing))
+    calc(2 * var(--default-spacing));
 
   .illustration {
     display: flex;
@@ -27,20 +25,24 @@
     text-align: center;
     .title {
       font-weight: bold;
-      font-size: 1.5rem;
+      font-size: 2rem;
       transition: color 0.15s;
     }
     .description {
-      font-size: 0.9rem;
+      font-size: 1rem;
       color: var(--light-text-color);
+      max-width: 30rem;
+      margin: 0 auto;
     }
   }
 
+  // Pushes the bottom buttons to the bottom without breaking their float
+  // Todo: Find a cleaner way to achieve the same result
+  .bottom-buttons-spacer {
+    flex: auto;
+  }
+
   .bottom-buttons {
-    // When there's only one button, align right
-    > *:only-child {
-      margin-left: auto;
-    }
     .next {
       float: right;
     }

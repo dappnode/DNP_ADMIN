@@ -17,17 +17,20 @@ export default function BottomButtons({
   nextVariant?: string;
 }) {
   return (
-    <div className="bottom-buttons">
-      {onBack && (
-        <Button onClick={onBack} variant={backVariant} className="back">
-          {backTag}
-        </Button>
-      )}
-      {onNext && (
-        <Button onClick={onNext} variant={nextVariant} className="next">
-          {nextTag}
-        </Button>
-      )}
-    </div>
+    <>
+      <div className="bottom-buttons-spacer" />
+      <div className="bottom-buttons">
+        {onBack && (
+          <Button onClick={onBack} variant={backVariant} className="back">
+            {backTag}
+          </Button>
+        )}
+        {onNext && (
+          <Button onClick={onNext} variant={nextVariant} className="next">
+            {nextTag}
+          </Button>
+        )}
+      </div>
+    </>
   );
 }

@@ -12,8 +12,9 @@ import {
 } from "services/dappnodeStatus/selectors";
 import { changeEthClientTarget } from "services/dappnodeStatus/actions";
 import Alert from "react-bootstrap/Alert";
+import SubTitle from "components/SubTitle";
 
-function ChooseEthClient({
+function Repository({
   // Redux
   ethClientTarget,
   ethClientStatus,
@@ -36,38 +37,43 @@ function ChooseEthClient({
   }
 
   return (
-    <Card className="dappnode-identity">
-      <div>
-        Choose the client from which the DAppNode should fetch package data
-      </div>
-      <div className="description">
-        Current client: {ethClientTarget} ({ethClientStatus})
-      </div>
+    <>
+      <SubTitle>Source</SubTitle>
+      <Card className="dappnode-identity">
+        <div>
+          DAppNode fetches its packages and core components in a decentralized
+          way through a smart contract in the Ethereum Network. Provide a source
+          to connect to it.
+        </div>
+        <div className="description">
+          Current client: {ethClientTarget} ({ethClientStatus})
+        </div>
 
-      {ethMultiClientWarning === "not-installed" ? (
-        <Alert variant="warning">
-          Selected client is not installed. Please, re-install the client or
-          select remote
-        </Alert>
-      ) : ethMultiClientWarning === "not-running" ? (
-        <Alert variant="warning">
-          Selected client is not running. Please, restart the client or select
-          remote
-        </Alert>
-      ) : null}
+        {ethMultiClientWarning === "not-installed" ? (
+          <Alert variant="warning">
+            Selected client is not installed. Please, re-install the client or
+            select remote
+          </Alert>
+        ) : ethMultiClientWarning === "not-running" ? (
+          <Alert variant="warning">
+            Selected client is not running. Please, restart the client or select
+            remote
+          </Alert>
+        ) : null}
 
-      <EthMultiClients target={target} onTargetChange={setTarget} />
+        <EthMultiClients target={target} onTargetChange={setTarget} />
 
-      <div style={{ textAlign: "end" }}>
-        <Button
-          variant="dappnode"
-          onClick={changeClient}
-          disabled={ethClientTarget === target}
-        >
-          Change
-        </Button>
-      </div>
-    </Card>
+        <div style={{ textAlign: "end" }}>
+          <Button
+            variant="dappnode"
+            onClick={changeClient}
+            disabled={ethClientTarget === target}
+          >
+            Change
+          </Button>
+        </div>
+      </Card>
+    </>
   );
 }
 
@@ -84,4 +90,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ChooseEthClient);
+)(Repository);
