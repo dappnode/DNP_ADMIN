@@ -13,8 +13,8 @@ export function getEthClientPrettyName(target: EthClientTarget) {
       return "Geth light client";
     case "geth":
       return "Geth";
-    case "parity":
-      return "Parity";
+    case "open-ethereum":
+      return "OpenEthereum";
     default:
       return target;
   }
@@ -35,7 +35,7 @@ const clients: EthClientData[] = [
   {
     title: "Full node",
     description: "Run your own node and allow apps to connect to it",
-    options: ["geth", "parity"]
+    options: ["geth", "open-ethereum"]
   }
 ];
 
