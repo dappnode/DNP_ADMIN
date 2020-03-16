@@ -86,7 +86,6 @@ interface VolumeStats {
 
 /**
  * Returns the volume sizes of the `ethchain` and `ipfs` DNPs
- * - ethchain.dnp.dappnode.eth > dncore_ethchaindnpdappnodeeth_data
  * - ipfs.dnp.dappnode.eth > dncore_ipfsdnpdappnodeeth_data
  */
 export const getDappnodeVolumes = (state: any): VolumeStats[] => {

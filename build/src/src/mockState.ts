@@ -495,46 +495,18 @@ const bitcoinSetupUiJson: SetupUiJson = {};
  * Ethchain
  */
 
-const ethchainMetadata = {
-  name: "ethchain.dnp.dappnode.eth",
-  version: "0.2.6",
-  description:
-    "Dappnode package responsible for providing the Ethereum blockchain, based on Parity v2.5.8-stable",
-  avatar: "/ipfs/QmNdWMzgapc49kpofYFE9M63Snc2dKJ8YQmEmdRU8wPMEg",
-  type: "dncore",
-  chain: "ethereum",
-  upstreamVersion: "v2.5.8-stable",
-  author:
-    "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
-  contributors: [
-    "Eduardo Antuña <eduadiez@gmail.com> (https://github.com/eduadiez)"
-  ],
-  keywords: ["DAppNodeCore", "Parity", "Mainnet", "Ethereum"],
+const openEthereumManifest = {
+  name: "openethereum.dnp.dappnode.eth",
+  version: "0.1.0",
+  description: "openethereum.dnp.dappnode.eth description",
+  type: "service",
+  author: "edu",
+  categories: ["Developer tools"],
   links: {
-    endpoint: "http://my.ethchain.dnp.dappnode.eth:8545",
-    homepage: "https://github.com/dappnode/DNP_ETHCHAIN#readme"
+    homepage: "https://your-project-homepage-or-docs.io"
   },
-  repository: {
-    type: "git",
-    url: "https://github.com/dappnode/DNP_ETHCHAIN"
-  },
-  bugs: {
-    url: "https://github.com/dappnode/DNP_ETHCHAIN/issues"
-  },
-  license: "GPL-3.0"
+  license: "GLP-3.0"
 };
-
-// const ethchainSetup = {
-//   volumes: [
-//     "ethchaindnpdappnodeeth_data:/root/.local/share/io.parity.ethereum/",
-//     "ethchaindnpdappnodeeth_geth:/root/.ethereum/"
-//   ],
-//   ports: ["30303:30303", "30303:30303/udp", "30304:30304/udp"],
-//   environment: ["EXTRA_OPTS_PARITY=", "EXTRA_OPTS_GETH=", "DEFAULT_CLIENT="],
-//   restart: "always",
-//   subnet: "172.33.0.0/16",
-//   ipv4_address: "172.33.1.6"
-// };
 
 /**
  * Trustlines metadata
@@ -975,17 +947,6 @@ const dappnodeStatusState: DappnodeStatusState = {
       isOrphan: false
     },
     {
-      name: "dncore_ethchaindnpdappnodeeth_geth",
-      owner: "ethchain.dnp.dappnode.eth",
-      nameDisplay: "geth",
-      ownerDisplay: "ethchaindnpdappnodeeth",
-      createdAt: 1569046006000,
-      mountpoint: "",
-      size: 215847181273,
-      refCount: 1,
-      isOrphan: false
-    },
-    {
       name: "d19f0771fe2e5b813cf0d138a77eddc33ae3fd6afc1cc6daf0fba42ed73e36ae",
       owner: undefined,
       nameDisplay: "",
@@ -1139,28 +1100,7 @@ const dnpInstalledState: DnpInstalledState = {
           protocol: "UDP"
         }
       ],
-      volumes: [
-        {
-          host:
-            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
-          container: "/app/.ethchain",
-          name: "dncore_ethchaindnpdappnodeeth_data",
-          users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
-          owner: "ethchain.dnp.dappnode.eth",
-          isOwner: false,
-          size: 715847181273
-        },
-        {
-          host:
-            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_mountpoint/_data",
-          container: "/app/.ethchain_mountpoint",
-          name: "dncore_ethchaindnpdappnodeeth_mountpoint",
-          users: ["ethchain.dnp.dappnode.eth"],
-          owner: "ethchain.dnp.dappnode.eth",
-          isOwner: false,
-          size: 2
-        }
-      ],
+      volumes: [],
       manifest: lightningNetworkMetadata,
       envs: {
         ENV_NAME: "ENV_VALUE"
@@ -1214,52 +1154,7 @@ Content in the first column | Content in the second column
     },
     {
       ...samplePackageContainer,
-      name: "ethchain.dnp.dappnode.eth",
-      isCore: true,
-      version: "0.2.6",
-      state: "running",
-      ports: [
-        {
-          host: 30303,
-          container: 30303,
-          protocol: "TCP"
-        },
-        {
-          host: 30303,
-          container: 30303,
-          protocol: "UDP"
-        }
-      ],
-      volumes: [
-        {
-          host:
-            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_data/_data",
-          container: "/app/.ethchain",
-          name: "dncore_ethchaindnpdappnodeeth_data",
-          users: ["vipnode.dnp.dappnode.eth", "ethchain.dnp.dappnode.eth"],
-          owner: "ethchain.dnp.dappnode.eth",
-          isOwner: true,
-          size: 71570000000
-        },
-        {
-          host:
-            "/var/lib/docker/volumes/dncore_ethchaindnpdappnodeeth_geth/_data",
-          container: "/root/.ethereum/",
-          name: "dncore_ethchaindnpdappnodeeth_geth",
-          users: ["ethchain.dnp.dappnode.eth"],
-          owner: "ethchain.dnp.dappnode.eth",
-          isOwner: true,
-          size: 94620000000
-        }
-      ],
-      envs: {
-        DEFAULT_CLIENT: "GETH"
-      },
-      manifest: ethchainMetadata
-    },
-    {
-      ...samplePackageContainer,
-      name: "parity.dnp.dappnode.eth",
+      name: "open-ethereum.dnp.dappnode.eth",
       isCore: false,
       version: "0.2.6",
       state: "running",
@@ -1298,9 +1193,7 @@ Content in the first column | Content in the second column
       envs: {},
       avatarUrl: "https://pbs.twimg.com/media/DOnE7skW4AQ-FBd.png",
       canBeFullnode: true,
-      manifest: {
-        ...ethchainMetadata
-      }
+      manifest: openEthereumManifest
     }
   ],
   dnpInstalledData: {
