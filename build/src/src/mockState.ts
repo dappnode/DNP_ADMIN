@@ -820,7 +820,8 @@ const dappnodeStatusState: DappnodeStatusState = {
     ethClientStatus: "installed",
     ethClientStatusError: "Error fetching manifest from ...",
     ethProvider: "http://geth.dappnode:8545",
-    fullnodeDomainTarget: "geth.dnp.dappnode.eth"
+    fullnodeDomainTarget: "geth.dnp.dappnode.eth",
+    showWelcome: true
   },
   stats: {
     cpu: "34%",

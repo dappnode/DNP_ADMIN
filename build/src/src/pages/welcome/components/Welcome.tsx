@@ -1,5 +1,6 @@
 import React from "react";
 import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
+import * as api from "API/calls";
 import Repository from "./Repository";
 import WelcomeHome from "./WelcomeHome";
 import ChangeHostPassword from "./ChangeHostPassword";
@@ -55,6 +56,12 @@ const Welcome: React.FunctionComponent<WelcomeProps & RouteComponentProps> = ({
   function goNext() {
     const nextIndex = currentIndex + 1;
     if (nextIndex > routes.length - 1) {
+      // Has finished the welcome flow, flag it
+      api
+        .uiWelcomeDone({ isDone: true })
+        .then(() => console.log("Success on uiWelcomeDone"))
+        .catch((e: Error) => console.error("Error on uiWelcomeDone", e));
+
       // Prevent re-renders and pushing the same route
       if (location.pathname !== match.url) history.push(match.url);
     } else {

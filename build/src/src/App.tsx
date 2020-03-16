@@ -1,5 +1,5 @@
-import React from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 // Components
@@ -16,14 +16,14 @@ import pages, { defaultPage } from "./pages";
 // Redux
 import { getConnectionStatus } from "services/connectionStatus/selectors";
 import { ToastContainer } from "react-toastify";
-import Welcome from "pages/welcome/components/Welcome";
-
-if (typeof pages !== "object") throw Error("pages must be an object");
+import { getShowWelcome } from "services/dappnodeStatus/selectors";
 
 function App({
-  connectionStatus
+  connectionStatus,
+  showWelcome
 }: {
   connectionStatus?: { isOpen: boolean; isNotAdmin: boolean; error: string };
+  showWelcome?: boolean;
 }) {
   // App is the parent container of any other component.
   // If this re-renders, the whole app will. So DON'T RERENDER APP!
@@ -31,13 +31,21 @@ function App({
   // Even make the non-admin a route and fore a redirect
 
   const { isOpen, isNotAdmin, error } = connectionStatus || {};
+  const history = useHistory();
+
+  useEffect(() => {
+    if (showWelcome) history.push(pages.welcome.rootPath);
+  }, [showWelcome]);
 
   if (isOpen) {
     return (
       <div className="body">
         <Switch>
           {/* Routes that require a full-screen */}
-          <Route path="/welcome" component={Welcome} />
+          <Route
+            path={pages.welcome.rootPath}
+            component={pages.welcome.RootComponent}
+          />
 
           <Route path="*">
             {/* SideNav expands on big screens, while content-wrapper moves left */}
@@ -85,7 +93,8 @@ function App({
 }
 
 const mapStateToProps = createStructuredSelector({
-  connectionStatus: getConnectionStatus
+  connectionStatus: getConnectionStatus,
+  showWelcome: getShowWelcome
 });
 
 export default connect(mapStateToProps)(App);

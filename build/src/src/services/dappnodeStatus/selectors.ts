@@ -37,6 +37,8 @@ export const getEthClientTarget = (state: any) =>
   (getSystemInfo(state) || {}).ethClientTarget;
 export const getEthClientStatus = (state: any) =>
   (getSystemInfo(state) || {}).ethClientStatus;
+export const getShowWelcome = (state: any) =>
+  (getSystemInfo(state) || {}).showWelcome;
 
 // export const getEthClientData = (state: any) => {
 //   const systemInfo = getSystemInfo(state);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as api from "API/calls";
 // Components
 import Input from "components/Input";

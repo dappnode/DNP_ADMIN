@@ -19,5 +19,6 @@ export const passwordChange = wrapRoute(routes.passwordChange);
 export const passwordIsSecure = wrapRoute(routes.passwordIsSecure);
 export const restartPackageVolumes = wrapRoute(routes.restartPackageVolumes);
 export const systemInfoGet = wrapRoute(routes.systemInfoGet);
+export const uiWelcomeDone = wrapRoute(routes.uiWelcomeDone);
 export const volumeRemove = wrapRoute(routes.volumeRemove);
 export const volumesGet = wrapRoute(routes.volumesGet);
