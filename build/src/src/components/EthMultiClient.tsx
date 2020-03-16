@@ -4,6 +4,8 @@ import "./ethMultiClient.scss";
 import { joinCssClass } from "utils/css";
 import Select from "components/Select";
 import { EthClientTarget } from "types";
+import { AiFillSafetyCertificate, AiFillClockCircle } from "react-icons/ai";
+import { FaDatabase } from "react-icons/fa";
 
 export function getEthClientPrettyName(target: EthClientTarget) {
   switch (target) {
@@ -23,19 +25,36 @@ export function getEthClientPrettyName(target: EthClientTarget) {
 const clients: EthClientData[] = [
   {
     title: "Remote",
-    description: "Connect to public RPC mantained by DAppNode",
-    options: ["remote"]
+    description: "Public node API mantained by DAppNode",
+    options: ["remote"],
+    stats: {
+      syncTime: "Instant",
+      requirements: "No requirements",
+      trust: "Centralized trust"
+    },
+    highlight: "syncTime"
   },
   {
     title: "Light client",
-    description:
-      "Lightweight node for smaller devices or enhanced decentralization",
-    options: ["geth-light"]
+    description: "Lightweight client for low-resource devices",
+    options: ["geth-light"],
+    stats: {
+      syncTime: "Fast sync",
+      requirements: "Light requirements",
+      trust: "Semi-decentralized"
+    },
+    highlight: "requirements"
   },
   {
     title: "Full node",
-    description: "Run your own node and allow apps to connect to it",
-    options: ["geth", "open-ethereum"]
+    description: "Your own Ethereum node w/out 3rd parties",
+    options: ["geth", "open-ethereum"],
+    stats: {
+      syncTime: "Slow sync",
+      requirements: "High requirements",
+      trust: "Fully decentralized"
+    },
+    highlight: "trust"
   }
 ];
 
@@ -43,6 +62,13 @@ export interface EthClientData {
   title: string;
   description: string;
   options: EthClientTarget[];
+  stats: EthClientDataStats;
+  highlight: keyof EthClientDataStats;
+}
+interface EthClientDataStats {
+  syncTime: string;
+  requirements: string;
+  trust: string;
 }
 
 interface OptionsMap {
@@ -72,19 +98,23 @@ function getOptionsMap(options?: EthClientTarget[]): OptionsMap {
  */
 export function EthMultiClients({
   target: selectedTarget,
-  onTargetChange
+  onTargetChange,
+  showStats
 }: {
   target: EthClientTarget;
   onTargetChange: (newTarget: EthClientTarget) => void;
+  showStats?: boolean;
 }) {
   return (
     <div className="eth-multi-clients">
       {clients
         .filter(({ options }) => options.length > 0)
-        .map(({ title, description, options }) => {
+        .map(({ title, description, options, stats, highlight }) => {
           const defaultTarget = options[0];
           const selected = options.includes(selectedTarget);
           const optionMap = getOptionsMap(options);
+          const getSvgClass = (_highlight: keyof EthClientDataStats) =>
+            joinCssClass({ active: highlight === _highlight });
           return (
             <Card
               key={defaultTarget}
@@ -97,6 +127,19 @@ export function EthMultiClients({
             >
               <div className="title">{title}</div>
               <div className="description">{description}</div>
+
+              {showStats && <hr></hr>}
+              {showStats && (
+                <div className="eth-multi-client-stats">
+                  <AiFillClockCircle className={getSvgClass("syncTime")} />
+                  <FaDatabase className={getSvgClass("requirements")} />
+                  <AiFillSafetyCertificate className={getSvgClass("trust")} />
+                  <div className="tag">{stats.syncTime}</div>
+                  <div className="tag">{stats.requirements}</div>
+                  <div className="tag">{stats.trust}</div>
+                </div>
+              )}
+
               {selected && options.length > 1 && (
                 <Select
                   options={options.map(getEthClientPrettyName)}

@@ -1,6 +1,6 @@
 .eth-multi-clients {
   display: grid;
-  grid-gap: calc(2 * var(--default-spacing));
+  grid-gap: var(--default-spacing);
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
 
   // So it does not strech
@@ -49,4 +49,30 @@
   }
   transition: color 0.15s, background-color 0.15s, border-color 0.15s,
     box-shadow 0.15s;
+}
+
+.eth-multi-client-stats {
+  color: var(--light-text-color);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 0.1rem 0.2rem;
+
+  // Icons with status color
+  svg {
+    margin: auto;
+    font-size: 1.2rem;
+    opacity: 0.8;
+    color: #b0b0b0;
+    &.active {
+      color: var(--success-color);
+    }
+  }
+
+  // Text with tag
+  div {
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
-import ChooseEthClient from "./ChooseEthClient";
+import Repository from "./Repository";
 import WelcomeHome from "./WelcomeHome";
 import ChangeHostPassword from "./ChangeHostPassword";
 import Finished from "./Finished";
@@ -10,7 +10,7 @@ import "./welcome.scss";
 
 const subPathHome = "home";
 const subPathIntroduction = "introduction";
-const subPathChooseClient = "choose-client";
+const subPathRepository = "repository";
 const subPathChangeHostPassword = "change-host-password";
 const subPathFinished = "finished";
 
@@ -32,8 +32,8 @@ const Welcome: React.FunctionComponent<WelcomeProps & RouteComponentProps> = ({
       render: () => <WelcomeHome onNext={goNext} />
     },
     {
-      subPath: subPathChooseClient,
-      render: () => <ChooseEthClient onBack={goBack} onNext={goNext} />
+      subPath: subPathRepository,
+      render: () => <Repository onBack={goBack} onNext={goNext} />
     },
     {
       subPath: subPathChangeHostPassword,

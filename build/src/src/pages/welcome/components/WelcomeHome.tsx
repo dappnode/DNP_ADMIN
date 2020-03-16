@@ -1,5 +1,4 @@
 import React from "react";
-import circuitBoardSvg from "illustrations/circuit_board-slim.svg";
 import Button from "components/Button";
 import "./welcomeHome.scss";
 import BottomButtons from "./BottomButtons";
@@ -13,10 +12,6 @@ export default function WelcomeHome({
 }) {
   return (
     <>
-      <div className="illustration">
-        <img src={circuitBoardSvg} />
-      </div>
-
       <div className="header">
         <div className="title">Configure your DAppNode</div>
         <div className="description">

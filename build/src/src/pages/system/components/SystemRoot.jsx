@@ -4,7 +4,7 @@ import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 // Components
 import StaticIp from "./StaticIp";
 import AutoUpdates from "./AutoUpdates";
-import ChooseEthClient from "./ChooseEthClient";
+import Repository from "./Repository";
 import Security from "./Security";
 import PowerManagment from "./PowerManagment";
 import SystemUpdate from "./SystemUpdate";
@@ -42,9 +42,9 @@ function SystemRoot({ match }) {
       component: AutoUpdates
     },
     {
-      name: "Eth client",
-      subPath: "eth-client",
-      component: ChooseEthClient
+      name: "Repository",
+      subPath: "repository",
+      component: Repository
     },
     {
       name: "Static IP",

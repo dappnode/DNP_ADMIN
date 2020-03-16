@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import Button from "components/Button";
-import circuitBoardSvg from "illustrations/circuit_board-slim.svg";
 import { EthMultiClients } from "components/EthMultiClient";
 import { EthClientTarget, EthClientStatus } from "types";
 import {
@@ -20,7 +18,7 @@ import BottomButtons from "./BottomButtons";
  * - Full node
  * There may be multiple available light-clients and fullnodes
  */
-function ChooseEthClient({
+function Repository({
   onBack,
   onNext,
   // Redux
@@ -47,23 +45,17 @@ function ChooseEthClient({
 
   return (
     <>
-      <div className="illustration">
-        <img src={circuitBoardSvg} />
-      </div>
-
       <div className="header">
-        <div className="title">Choose Ethereum client</div>
+        <div className="title">Repository Source</div>
         <div className="description">
-          This client will be used to fetch package data
+          DAppNode uses smart contracts to access a decentralized respository of
+          DApps
+          <br />
+          Choose to connect to a remote network or use your own local node
         </div>
-        {ethClientTarget && ethClientStatus && (
-          <div className="description">
-            Current client: {ethClientTarget} ({ethClientStatus})
-          </div>
-        )}
       </div>
 
-      <EthMultiClients target={target} onTargetChange={setTarget} />
+      <EthMultiClients target={target} onTargetChange={setTarget} showStats />
 
       <BottomButtons onBack={onBack} onNext={changeClient} />
     </>
@@ -82,4 +74,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ChooseEthClient);
+)(Repository);

@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as api from "API/calls";
 // Components
 import Input from "components/Input";
-import Button from "components/Button";
 import Switch from "components/Switch";
-import circuitBoardSvg from "illustrations/circuit_board-slim.svg";
 import { ErrorFeedback } from "components/PasswordForm";
 import BottomButtons from "./BottomButtons";
 
@@ -58,10 +56,6 @@ export default function ChangeHostPassword({
 
   return (
     <>
-      <div className="illustration">
-        <img src={circuitBoardSvg} />
-      </div>
-
       <div className="header">
         <div className="title">Change host user password</div>
         <div className="description">

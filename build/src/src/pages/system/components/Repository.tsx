@@ -3,7 +3,10 @@ import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import Card from "components/Card";
 import Button from "components/Button";
-import { EthMultiClients } from "components/EthMultiClient";
+import {
+  EthMultiClients,
+  getEthClientPrettyName
+} from "components/EthMultiClient";
 import { EthClientTarget, EthClientStatus } from "types";
 import {
   getEthClientTarget,
@@ -13,7 +16,7 @@ import {
 import { changeEthClientTarget } from "services/dappnodeStatus/actions";
 import Alert from "react-bootstrap/Alert";
 
-function ChooseEthClient({
+function Repository({
   // Redux
   ethClientTarget,
   ethClientStatus,
@@ -38,23 +41,28 @@ function ChooseEthClient({
   return (
     <Card className="dappnode-identity">
       <div>
-        Choose the client from which the DAppNode should fetch package data
+        DAppNode uses smart contracts to access a decentralized respository of
+        DApps. Choose to connect to a remote network or use your own local node
       </div>
-      <div className="description">
-        Current client: {ethClientTarget} ({ethClientStatus})
-      </div>
+      {ethClientTarget && ethClientTarget !== "remote" && (
+        <div className="description">
+          Client status: <strong>{ethClientStatus}</strong> (
+          {getEthClientPrettyName(ethClientTarget)})
+        </div>
+      )}
 
-      {ethMultiClientWarning === "not-installed" ? (
+      {ethMultiClientWarning === "not-installed" && (
         <Alert variant="warning">
           Selected client is not installed. Please, re-install the client or
           select remote
         </Alert>
-      ) : ethMultiClientWarning === "not-running" ? (
+      )}
+      {ethMultiClientWarning === "not-running" && (
         <Alert variant="warning">
           Selected client is not running. Please, restart the client or select
           remote
         </Alert>
-      ) : null}
+      )}
 
       <EthMultiClients target={target} onTargetChange={setTarget} />
 
@@ -84,4 +92,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ChooseEthClient);
+)(Repository);
