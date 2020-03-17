@@ -16,6 +16,7 @@ import "./dashboard.css";
 // Components
 import SubTitle from "components/SubTitle";
 import Title from "components/Title";
+import { ChainData, HostStats } from "types";
 
 /**
  * @param {array} chainData = [{
@@ -40,6 +41,12 @@ function Dashboard({
   dappnodeStats,
   dappnodeVolumes,
   fetchDappnodeStats
+}: {
+  chainData: ChainData[];
+  dappnodeStats: HostStats;
+  dappnodeVolumes: { name: string; size: number }[];
+  // Action
+  fetchDappnodeStats: () => void;
 }) {
   useEffect(() => {
     const interval = setInterval(fetchDappnodeStats, 5 * 1000);

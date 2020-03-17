@@ -1,6 +1,6 @@
-import * as actionTypes from "./actionTypes";
 import * as actions from "./actions";
 import * as selectors from "./selectors";
+import * as types from "./types";
 import reducer from "./reducer";
 import saga from "./sagas";
 import { mountPoint } from "./data";
@@ -16,9 +16,9 @@ import { mountPoint } from "./data";
 
 export default {
   mountPoint,
-  actionTypes,
   actions,
   selectors,
   reducer,
-  saga
+  saga,
+  types
 };

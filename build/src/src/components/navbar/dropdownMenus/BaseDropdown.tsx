@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import PropTypes from "prop-types";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import { stringIncludes } from "utils/strings";
+import RenderMarkdown from "components/RenderMarkdown";
 import "./dropdown.css";
 
 // Utilities
 
-const ProgressBarWrapper = ({ progress }) => {
+const ProgressBarWrapper = ({ progress }: { progress: number }) => {
   const progressPercent = Math.floor(100 * progress);
   return (
     <ProgressBar
@@ -17,20 +16,41 @@ const ProgressBarWrapper = ({ progress }) => {
   );
 };
 
-function parseMessagesType(messages) {
-  let globalType = "light"; // Light is a white circle
-  const messageTypes = messages
-    .filter(message => !message.viewed)
-    .map(message => message.type || "");
-  if (stringIncludes(messageTypes, "danger")) globalType = "danger";
-  else if (stringIncludes(messageTypes, "warning")) globalType = "warning";
-  else if (stringIncludes(messageTypes, "success")) globalType = "success";
-  return globalType;
+function parseMessagesType(messages: BaseDropdownMessage[]) {
+  const notViewedTypes: { [type: string]: boolean } = {};
+  for (const message of messages)
+    if (!message.viewed) notViewedTypes[message.type] = true;
+
+  for (const type of ["danger", "warning", "success"])
+    if (notViewedTypes[type]) return type;
+  return "light";
 }
 
-function areMessagesUnread(messages) {
-  const unreadMessages = messages.filter(message => message && !message.viewed);
-  return Boolean(unreadMessages.length);
+function areMessagesUnread(messages: BaseDropdownMessage[]) {
+  return messages.some(message => message && !message.viewed);
+}
+
+type MessageType = "danger" | "warning" | "success";
+
+interface BaseDropdownMessage {
+  type: MessageType;
+  title: string;
+  body: string;
+  isMarkdown?: boolean;
+  progress?: number;
+  showProgress?: boolean;
+  viewed?: boolean;
+}
+
+interface BaseDropdownProps {
+  name: string;
+  messages: BaseDropdownMessage[];
+  className?: string;
+  placeholder?: string;
+  Icon: any;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  offset?: number;
+  moreVisible?: boolean;
 }
 
 function BaseDropdown({
@@ -41,11 +61,11 @@ function BaseDropdown({
   className,
   placeholder,
   moreVisible
-}) {
+}: BaseDropdownProps) {
   const [collapsed, setCollapsed] = useState(true);
-  const dropdownEl = useRef(null);
+  const dropdownEl = useRef<HTMLDivElement>(null);
 
-  function onToggle(e) {
+  function onToggle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     setCollapsed(!collapsed);
     if (typeof onClick === "function") onClick(e);
   }
@@ -59,12 +79,21 @@ function BaseDropdown({
      * the general dropdown div, not in the dropdown menu.
      */
     if (collapsed) return; // Prevent unnecessary listeners
-    function handleMouseUp(e) {
+    function handleMouseUp(e: MouseEvent) {
       document.removeEventListener("mouseup", handleMouseUp);
-      if (!dropdownEl.current.contains(e.target)) setCollapsed(true);
+      if (
+        dropdownEl.current &&
+        e.target &&
+        !dropdownEl.current.contains(e.target as Node)
+      )
+        setCollapsed(true);
     }
-    function handleMouseDown(e) {
-      if (!dropdownEl.current.contains(e.target))
+    function handleMouseDown(e: MouseEvent) {
+      if (
+        dropdownEl.current &&
+        e.target &&
+        !dropdownEl.current.contains(e.target as Node)
+      )
         document.addEventListener("mouseup", handleMouseUp);
     }
     document.addEventListener("mousedown", handleMouseDown);
@@ -104,13 +133,27 @@ function BaseDropdown({
         by placing them as right as possible */}
       <div className={`menu ${collapsed ? "" : "show"}`}>
         <div className="header">{name}</div>
-        {messages.map(({ type, title, body, progress, showProgress }, i) => (
-          <div key={i}>
-            {title ? <div className={`title text-${type}`}>{title}</div> : null}
-            {body ? <div className="text">{body}</div> : null}
-            {showProgress ? <ProgressBarWrapper progress={progress} /> : null}
-          </div>
-        ))}
+        {messages.map(
+          ({ type, title, body, isMarkdown, progress, showProgress }, i) => (
+            <div key={i}>
+              {title && <div className={`title text-${type}`}>{title}</div>}
+
+              {body && (
+                <div className="text">
+                  {isMarkdown ? (
+                    <RenderMarkdown source={body} noMargin />
+                  ) : (
+                    body
+                  )}
+                </div>
+              )}
+
+              {showProgress && typeof progress === "number" && (
+                <ProgressBarWrapper progress={progress} />
+              )}
+            </div>
+          )
+        )}
         {!messages.length && placeholder && (
           <div className="placeholder">{placeholder}</div>
         )}
@@ -118,14 +161,5 @@ function BaseDropdown({
     </div>
   );
 }
-
-BaseDropdown.propTypes = {
-  name: PropTypes.string.isRequired,
-  messages: PropTypes.array.isRequired,
-  Icon: PropTypes.func.isRequired,
-  onClick: PropTypes.func,
-  offset: PropTypes.string,
-  moreVisible: PropTypes.bool
-};
 
 export default BaseDropdown;

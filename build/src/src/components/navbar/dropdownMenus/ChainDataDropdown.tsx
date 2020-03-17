@@ -1,13 +1,13 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
 import { getChainData } from "services/chainData/selectors";
 // Icons
 import { FiBox } from "react-icons/fi";
+import { ChainData } from "types";
 
-const ChainData = ({ chainData }) => {
+function ChainDataDropdown({ chainData }: { chainData: ChainData[] }) {
   if (!Array.isArray(chainData)) {
     console.error("chainData must be an array");
     return null;
@@ -17,24 +17,21 @@ const ChainData = ({ chainData }) => {
     <BaseDropdown
       name="Chain status"
       messages={chainData.map(
-        ({ name, message, error, syncing, progress } = {}) => ({
+        ({ name, message, error, syncing, progress }) => ({
           title: name,
           body: message,
+          isMarkdown: true,
           type: error ? "danger" : syncing ? "warning" : "success",
           progress: progress,
           showProgress: syncing
         })
       )}
       Icon={() => <FiBox size={"1.4em"} />}
-      className={"chainstatus"}
+      className="chainstatus"
       placeholder="Mainnet chain state is not available, click the report icon"
     />
   );
-};
-
-ChainData.propTypes = {
-  chainData: PropTypes.array.isRequired
-};
+}
 
 const mapStateToProps = createStructuredSelector({
   chainData: getChainData
@@ -43,4 +40,4 @@ const mapStateToProps = createStructuredSelector({
 export default connect(
   mapStateToProps,
   null
-)(ChainData);
+)(ChainDataDropdown);

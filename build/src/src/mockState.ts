@@ -27,6 +27,7 @@ import { SetupSchema, SetupUiJson } from "types-own";
 import { CoreUpdateState } from "services/coreUpdate/types";
 import { USER_SETTING_DISABLE_TAG } from "params";
 import { DappnodeStatusState } from "services/dappnodeStatus/types";
+import { ChainDataState } from "services/chainData/types";
 
 function getDescription(manifest: {
   shortDescription?: string;
@@ -793,7 +794,7 @@ const dappnodeStatusState: DappnodeStatusState = {
     ethClientStatusError: "Error fetching manifest from ...",
     ethProvider: "http://geth.dappnode:8545",
     fullnodeDomainTarget: "geth.dnp.dappnode.eth",
-    showWelcome: true
+    showWelcome: false
   },
   stats: {
     cpu: "34%",
@@ -1106,7 +1107,39 @@ const dnpInstalledState: DnpInstalledState = {
         ENV_NAME: "ENV_VALUE"
       },
       gettingStarted: `
-**Accessing the ADMIN UI**\n\nOnce the node is synced, you can access your LN node [admin UI here](https://lightning-network.dappnode)\n\n**How to download macaroons**\n\nUsually Lightning Network applications require files called *macaroons* for authorizations to perform operations on the LND node. There are many types depending on the level of access.\nTo download the admin macaroon, you should go to the Admin panel of DAppnode: \nPackages -> My packages -> Lightning-Network -> File manager\nThen input in the 'Download from DNP' field:\n\`\`\`\n/config/data/chain/bitcoin/mainnet/admin.macaroon\n\`\`\`\n\n**How to use Joule extension with DAppNode**\n\nJoule is an extension available for many browsers which lets you use your node to make payments, invoices, open channels and more. Check the website: https://lightningjoule.com/\n* To run Joule, first you need to download these macaroons in a safe folder, as described above:\n\`\`\`\n/config/data/chain/bitcoin/mainnet/admin.macaroon\n/config/data/chain/bitcoin/mainnet/readonly.macaroon\n\`\`\`\n* When asked on the type of node, select Remote and then enter the following url: \n   https://lightning-network.dappnode:8080\n   * You will need to accept the SSL certificate in the next step\n* Upload the macaroons, choose a password to encrypt the data, and you're ready to go!\n* **Enjoy!** But be aware both LND and RTL are beta software .Only use funds you can afford to lose.  Don't be completely #Reckless ;) \n\n <img src="https://i.imgur.com/66P7Aei.png" width="500px" height="100%"> \n\n ![](https://i.imgur.com/66P7Aei.png) \n\n\n ![](https://i.ibb.co/cvw9f9K/download.png)
+**Accessing the ADMIN UI**
+
+Once the node is synced, you can access your LN node [admin UI here](https://lightning-network.dappnode)
+
+**How to download macaroons**
+
+Usually Lightning Network applications require files called *macaroons* for authorizations to perform operations on the LND node. There are many types depending on the level of access.
+To download the admin macaroon, you should go to the Admin panel of DAppnode: 
+Packages -> My packages -> Lightning-Network -> File manager\nThen input in the 'Download from DNP' field:
+\`\`\`
+/config/data/chain/bitcoin/mainnet/admin.macaroon
+\`\`\`
+
+**How to use Joule extension with DAppNode**
+
+Joule is an extension available for many browsers which lets you use your node to make payments, invoices, open channels and more. Check the website: https://lightningjoule.com/
+* To run Joule, first you need to download these macaroons in a safe folder, as described above:
+\`\`\`
+/config/data/chain/bitcoin/mainnet/admin.macaroon
+/config/data/chain/bitcoin/mainnet/readonly.macaroon
+\`\`\`
+* When asked on the type of node, select Remote and then enter the following url: 
+   https://lightning-network.dappnode:8080
+   * You will need to accept the SSL certificate in the next step
+* Upload the macaroons, choose a password to encrypt the data, and you're ready to go!
+* **Enjoy!** But be aware both LND and RTL are beta software .Only use funds you can afford to lose.  Don't be completely #Reckless ;) 
+
+<img src="https://i.imgur.com/66P7Aei.png" width="500px" height="100%"> 
+
+ ![](https://i.imgur.com/66P7Aei.png) 
+ 
+ 
+ ![](https://i.ibb.co/cvw9f9K/download.png)
 
 
 **Blockquotes**
@@ -1519,9 +1552,40 @@ const userActionLogsState = [
   }
 ];
 
+const chainDataState: ChainDataState = [
+  {
+    name: "Ethereum",
+    syncing: true,
+    error: false,
+    message: "Blocks synced: 543000 / 654000",
+    progress: 0.83027522935
+  },
+  {
+    name: "Geth with states (table)",
+    syncing: true,
+    error: false,
+    message: `
+  |  |
+------------ | -------------
+Blocks synced: | 543000 / 654000
+States pulled: | 25314123 / 154762142 
+[What does this mean?](geth.io)`
+  },
+  {
+    name: "Geth with states (line-break)",
+    syncing: true,
+    error: false,
+    message: [
+      "Blocks synced: 543000 / 654000",
+      "States pulled: 25314123 / 154762142",
+      "[What does this mean?](geth.io)"
+    ].join("\n\n")
+  }
+];
+
 export const mockState = {
   /* chainData */
-  [chainDataMountPoint]: [],
+  [chainDataMountPoint]: chainDataState,
 
   /* connectionStatus */
   [connectionStatusMountPoint]: {

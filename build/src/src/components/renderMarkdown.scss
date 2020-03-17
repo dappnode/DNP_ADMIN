@@ -5,4 +5,9 @@
   img {
     max-width: 100%;
   }
+
+  // Supress p margin
+  &.noMargin p {
+    margin-bottom: 0;
+  }
 }

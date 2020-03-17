@@ -31,14 +31,16 @@ function LinkRenderer(props: any) {
 
 export default function RenderMarkdown({
   source,
-  spacing
+  spacing,
+  noMargin
 }: {
   source: string;
   spacing?: boolean;
+  noMargin?: boolean;
 }) {
   return (
     <ReactMarkdown
-      className={"markdown-render" + joinCssClass({ spacing })}
+      className={`markdown-render ${joinCssClass({ spacing, noMargin })}`}
       source={source}
       renderers={{
         link: LinkRenderer,

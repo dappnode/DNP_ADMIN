@@ -1,7 +1,11 @@
 import { stringIncludes } from "utils/strings";
-import { cleanObj } from "utils/objects";
+import { ChainData } from "types";
 
-export default function parseChainDataMessages(chain) {
+/**
+ * Rewords expected chain syncing errors
+ * @param chain
+ */
+export default function parseChainDataMessages(chain: ChainData): ChainData {
   let { name, message, syncing } = chain;
   // Rename chain name
   if (stringIncludes(name, "ethchain")) {
@@ -18,5 +22,10 @@ export default function parseChainDataMessages(chain) {
     message = `Syncing...`;
     syncing = true;
   }
-  return cleanObj({ ...chain, name, message, syncing });
+  return {
+    ...chain,
+    name,
+    message,
+    syncing
+  };
 }
