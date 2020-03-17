@@ -13,7 +13,7 @@ import {
   getEthClientStatus,
   getEthMultiClientWarning
 } from "services/dappnodeStatus/selectors";
-import { changeEthClientTarget } from "services/dappnodeStatus/actions";
+import { changeEthClientTarget } from "pages/system/actions";
 import Alert from "react-bootstrap/Alert";
 
 function Repository({

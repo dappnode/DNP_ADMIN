@@ -3,12 +3,9 @@ import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { EthMultiClients } from "components/EthMultiClient";
 import { EthClientTarget, EthClientStatus } from "types";
-import {
-  getEthClientTarget,
-  getEthClientStatus
-} from "services/dappnodeStatus/selectors";
-import { changeEthClientTarget } from "services/dappnodeStatus/actions";
+import { getEthClientTarget } from "services/dappnodeStatus/selectors";
 import BottomButtons from "./BottomButtons";
+import * as api from "API/calls";
 
 /**
  * View to chose or change the Eth multi-client
@@ -22,15 +19,11 @@ function Repository({
   onBack,
   onNext,
   // Redux
-  ethClientTarget,
-  ethClientStatus,
-  changeEthClientTarget
+  ethClientTarget
 }: {
   onBack?: () => void;
   onNext?: () => void;
   ethClientTarget?: EthClientTarget;
-  ethClientStatus?: EthClientStatus;
-  changeEthClientTarget: (target: EthClientTarget) => void;
 }) {
   const [target, setTarget] = useState("" as EthClientTarget);
 
@@ -39,7 +32,10 @@ function Repository({
   }, [ethClientTarget]);
 
   async function changeClient() {
-    changeEthClientTarget(target);
+    if (target)
+      api.ethClientTargetSet({ target }).catch(e => {
+        console.error(`Error on ethClientTargetSet: ${e.stack}`);
+      });
     if (onNext) onNext();
   }
 
@@ -63,13 +59,10 @@ function Repository({
 }
 
 const mapStateToProps = createStructuredSelector({
-  ethClientTarget: getEthClientTarget,
-  ethClientStatus: getEthClientStatus
+  ethClientTarget: getEthClientTarget
 });
 
-const mapDispatchToProps = {
-  changeEthClientTarget
-};
+const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,

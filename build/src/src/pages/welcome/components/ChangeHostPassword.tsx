@@ -48,7 +48,7 @@ export default function ChangeHostPassword({
     // Change password in the background and don't stop for errors
     // The user can change the password latter again if it failed
     try {
-      await api.passwordChange({ newPassword: input }).catch(e => {});
+      await api.passwordChange({ newPassword: input });
     } catch (e) {
       console.error(`Error changing host password in welcome flow`, e);
     }

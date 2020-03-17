@@ -18,33 +18,18 @@ export default function Finished({
     <>
       <div className="header">
         <div className="title">All set!</div>
-        <div className="description">Ready to use your DAppNode</div>
-
-        <p className="description">
-          Visit the user guide to get an overview of how you can do with your
-          DAppNode. Also, if you have just finished the installation, please let
-          us know how it went; your feedback helps us to improve.
-        </p>
-
-        <p className="lead">
-          <a
-            className="btn btn-dappnode"
-            href={userGuideUrl}
-            role="button"
-            {...newTabProps}
-          >
-            Read user guide
+        <div className="description">
+          Visit the{" "}
+          <a href={userGuideUrl} {...newTabProps}>
+            user guide
+          </a>{" "}
+          to know what you can do with your DAppNode. <br />
+          If you want,{" "}
+          <a href={surveyUrl} {...newTabProps}>
+            leave your feeback{" "}
           </a>
-
-          <a
-            className="btn btn-outline-dappnode"
-            href={surveyUrl}
-            role="button"
-            {...newTabProps}
-          >
-            Give feedback
-          </a>
-        </p>
+          on how the installation went.
+        </div>
       </div>
 
       <Button
@@ -55,7 +40,7 @@ export default function Finished({
         Finish
       </Button>
 
-      <BottomButtons onBack={onBack} onNext={onNext} />
+      <BottomButtons onBack={onBack} />
     </>
   );
 }

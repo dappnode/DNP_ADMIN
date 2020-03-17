@@ -42,7 +42,7 @@ const Welcome: React.FunctionComponent<WelcomeProps & RouteComponentProps> = ({
     },
     {
       subPath: subPathFinished,
-      render: () => <Finished onBack={goBack} />
+      render: () => <Finished onBack={goBack} onNext={goNext} />
     }
   ];
 
@@ -63,7 +63,8 @@ const Welcome: React.FunctionComponent<WelcomeProps & RouteComponentProps> = ({
         .catch((e: Error) => console.error("Error on uiWelcomeDone", e));
 
       // Prevent re-renders and pushing the same route
-      if (location.pathname !== match.url) history.push(match.url);
+      const finalRoute = "/";
+      if (location.pathname !== finalRoute) history.push(finalRoute);
     } else {
       const nextStep = routes[nextIndex];
       if (nextStep) history.push(`${match.url}/${nextStep.subPath}`);
