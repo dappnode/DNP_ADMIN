@@ -121,8 +121,8 @@ export const getEthMultiClientWarning = (
 
   // ### Todo: Decouple target => dnpName logic here
   const dnpName =
-    target === "open-ethereum"
-      ? "open-ethereum.dnp.dappnode.eth"
+    target === "openethereum"
+      ? "openethereum.dnp.dappnode.eth"
       : "geth.dnp.dappnode.eth";
   const dnp = dnps.find(dnp => dnp.name === dnpName);
 

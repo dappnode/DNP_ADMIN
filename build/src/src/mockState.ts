@@ -1187,7 +1187,7 @@ Content in the first column | Content in the second column
     },
     {
       ...samplePackageContainer,
-      name: "open-ethereum.dnp.dappnode.eth",
+      name: "openethereum.dnp.dappnode.eth",
       isCore: false,
       version: "0.2.6",
       state: "running",

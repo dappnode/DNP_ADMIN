@@ -15,7 +15,7 @@ export function getEthClientPrettyName(target: EthClientTarget) {
       return "Geth light client";
     case "geth":
       return "Geth";
-    case "open-ethereum":
+    case "openethereum":
       return "OpenEthereum";
     default:
       return target;
@@ -48,7 +48,7 @@ const clients: EthClientData[] = [
   {
     title: "Full node",
     description: "Your own Ethereum node w/out 3rd parties",
-    options: ["geth", "open-ethereum"],
+    options: ["geth", "openethereum"],
     stats: {
       syncTime: "Slow sync",
       requirements: "High requirements",
