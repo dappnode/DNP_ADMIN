@@ -5,7 +5,9 @@ import Card from "components/Card";
 import Button from "components/Button";
 import {
   EthMultiClients,
-  getEthClientPrettyName
+  getEthClientPrettyName,
+  EthMultiClientFallback,
+  EthMultiClientsAndFallback
 } from "components/EthMultiClient";
 import { EthClientTarget, EthClientStatus } from "types";
 import {
@@ -25,17 +27,21 @@ function Repository({
 }: {
   ethClientTarget?: EthClientTarget;
   ethClientStatus?: EthClientStatus;
-  changeEthClientTarget: (target: EthClientTarget) => void;
+  changeEthClientTarget: (kwargs: {
+    target: EthClientTarget;
+    fallbackOn: boolean;
+  }) => void;
   ethMultiClientWarning?: "not-installed" | "not-running";
 }) {
   const [target, setTarget] = useState("" as EthClientTarget);
+  const [fallbackOn, setFallbackOn] = useState(false);
 
   useEffect(() => {
     if (ethClientTarget) setTarget(ethClientTarget);
   }, [ethClientTarget]);
 
   function changeClient() {
-    changeEthClientTarget(target);
+    changeEthClientTarget({ target, fallbackOn });
   }
 
   return (
@@ -64,7 +70,12 @@ function Repository({
         </Alert>
       )}
 
-      <EthMultiClients target={target} onTargetChange={setTarget} />
+      <EthMultiClientsAndFallback
+        target={target}
+        onTargetChange={setTarget}
+        fallbackOn={fallbackOn}
+        onFallbackOnChange={setFallbackOn}
+      />
 
       <div style={{ textAlign: "end" }}>
         <Button

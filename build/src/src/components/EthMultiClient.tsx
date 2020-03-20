@@ -6,6 +6,7 @@ import Select from "components/Select";
 import { EthClientTarget } from "types";
 import { AiFillSafetyCertificate, AiFillClockCircle } from "react-icons/ai";
 import { FaDatabase } from "react-icons/fa";
+import Switch from "./Switch";
 
 export function getEthClientPrettyName(target: EthClientTarget) {
   switch (target) {
@@ -151,6 +152,70 @@ export function EthMultiClients({
             </Card>
           );
         })}
+    </div>
+  );
+}
+
+/**
+ * View and toggle using the fallback when using a non-remote eth multi client
+ * This component should be used with EthMultiClients
+ */
+export function EthMultiClientFallback({
+  target,
+  fallbackOn,
+  onFallbackOnChange
+}: {
+  target: EthClientTarget;
+  fallbackOn: boolean;
+  onFallbackOnChange: (newFallbackOn: boolean) => void;
+}) {
+  // Do not render for remote
+  if (target === "remote") return null;
+
+  return (
+    <Switch
+      className="eth-multi-clients-fallback"
+      checked={fallbackOn}
+      onToggle={onFallbackOnChange}
+      label="Use remote during syncing or errors"
+      id="eth-multi-clients-fallback-switch"
+    />
+  );
+}
+
+/**
+ * View to chose or change the Eth multi-client, plus choose to use a fallback
+ * There are three main options:
+ * - Remote
+ * - Light client
+ * - Full node
+ * There may be multiple available light-clients and fullnodes
+ */
+export function EthMultiClientsAndFallback({
+  target,
+  onTargetChange,
+  showStats,
+  fallbackOn,
+  onFallbackOnChange
+}: {
+  target: EthClientTarget;
+  onTargetChange: (newTarget: EthClientTarget) => void;
+  showStats?: boolean;
+  fallbackOn: boolean;
+  onFallbackOnChange: (newFallbackOn: boolean) => void;
+}) {
+  return (
+    <div className="eth-multi-clients-and-fallback">
+      <EthMultiClients
+        target={target}
+        onTargetChange={onTargetChange}
+        showStats={showStats}
+      />
+      <EthMultiClientFallback
+        target={target}
+        fallbackOn={fallbackOn}
+        onFallbackOnChange={onFallbackOnChange}
+      />
     </div>
   );
 }

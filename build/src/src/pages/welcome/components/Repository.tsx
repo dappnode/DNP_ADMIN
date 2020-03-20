@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import { EthMultiClients } from "components/EthMultiClient";
-import { EthClientTarget, EthClientStatus } from "types";
+import { EthMultiClientsAndFallback } from "components/EthMultiClient";
+import { EthClientTarget } from "types";
 import { getEthClientTarget } from "services/dappnodeStatus/selectors";
 import BottomButtons from "./BottomButtons";
 import * as api from "API/calls";
@@ -26,6 +26,8 @@ function Repository({
   ethClientTarget?: EthClientTarget;
 }) {
   const [target, setTarget] = useState("" as EthClientTarget);
+  // Use fallback by default
+  const [fallbackOn, setFallbackOn] = useState(true);
 
   useEffect(() => {
     if (ethClientTarget) setTarget(ethClientTarget);
@@ -33,7 +35,7 @@ function Repository({
 
   async function changeClient() {
     if (target)
-      api.ethClientTargetSet({ target }).catch(e => {
+      api.ethClientTargetSet({ target, fallbackOn }).catch(e => {
         console.error(`Error on ethClientTargetSet: ${e.stack}`);
       });
     if (onNext) onNext();
@@ -51,7 +53,13 @@ function Repository({
         </div>
       </div>
 
-      <EthMultiClients target={target} onTargetChange={setTarget} showStats />
+      <EthMultiClientsAndFallback
+        target={target}
+        onTargetChange={setTarget}
+        showStats
+        fallbackOn={fallbackOn}
+        onFallbackOnChange={setFallbackOn}
+      />
 
       <BottomButtons onBack={onBack} onNext={changeClient} />
     </>

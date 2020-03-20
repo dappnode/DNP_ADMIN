@@ -8,6 +8,7 @@ export const route = "ethClientTargetSet.dappmanager.dnp.dappnode.eth";
 
 export interface RequestData {
   target: EthClientTarget;
+  fallbackOn: boolean;
   deleteVolumes?: boolean;
 }
 
@@ -18,6 +19,7 @@ export const requestDataSchema = {
   required: ["target"],
   properties: {
     target: { type: "string" },
+    fallbackOn: { type: "boolean" },
     deleteVolumes: { type: "boolean" }
   }
 };
@@ -26,5 +28,6 @@ export const requestDataSchema = {
 
 export const requestDataSample: RequestData = {
   target: "geth-light",
+  fallbackOn: true,
   deleteVolumes: true
 };

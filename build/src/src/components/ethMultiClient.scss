@@ -1,3 +1,8 @@
+:root {
+  --eth-multi-client-description-font-size: 0.9rem;
+  --eth-multi-client-description-color: var(--light-text-color);
+}
+
 .eth-multi-clients {
   display: grid;
   grid-gap: var(--default-spacing);
@@ -20,8 +25,8 @@
     transition: color 0.15s;
   }
   .description {
-    font-size: 0.9rem;
-    color: var(--light-text-color);
+    font-size: var(--eth-multi-client-description-font-size);
+    color: var(--eth-multi-client-description-color);
   }
 
   > *:not(:last-child) {
@@ -74,5 +79,19 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+.eth-multi-clients-fallback {
+  label {
+    // opacity: 0.6;
+    font-size: var(--eth-multi-client-description-font-size);
+    color: var(--eth-multi-client-description-color);
+  }
+}
+
+.eth-multi-clients-and-fallback {
+  > *:not(:last-child) {
+    margin-bottom: var(--default-spacing);
   }
 }
