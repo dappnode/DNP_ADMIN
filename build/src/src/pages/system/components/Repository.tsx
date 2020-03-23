@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
+import * as api from "API/calls";
 import Card from "components/Card";
 import Button from "components/Button";
 import {
-  EthMultiClients,
   getEthClientPrettyName,
-  EthMultiClientFallback,
   EthMultiClientsAndFallback
 } from "components/EthMultiClient";
 import { EthClientTarget, EthClientStatus } from "types";
 import {
   getEthClientTarget,
   getEthClientStatus,
+  getEthClientFallbackOn,
   getEthMultiClientWarning
 } from "services/dappnodeStatus/selectors";
 import { changeEthClientTarget } from "pages/system/actions";
@@ -22,15 +22,14 @@ function Repository({
   // Redux
   ethClientTarget,
   ethClientStatus,
+  ethClientFallbackOn,
   changeEthClientTarget,
   ethMultiClientWarning
 }: {
   ethClientTarget?: EthClientTarget;
   ethClientStatus?: EthClientStatus;
-  changeEthClientTarget: (kwargs: {
-    target: EthClientTarget;
-    fallbackOn: boolean;
-  }) => void;
+  ethClientFallbackOn?: boolean;
+  changeEthClientTarget: (newTarget: EthClientTarget) => void;
   ethMultiClientWarning?: "not-installed" | "not-running";
 }) {
   const [target, setTarget] = useState("" as EthClientTarget);
@@ -40,8 +39,23 @@ function Repository({
     if (ethClientTarget) setTarget(ethClientTarget);
   }, [ethClientTarget]);
 
+  useEffect(() => {
+    if (typeof ethClientFallbackOn === "boolean")
+      setFallbackOn(ethClientFallbackOn);
+  }, [ethClientFallbackOn]);
+
   function changeClient() {
-    changeEthClientTarget({ target, fallbackOn });
+    changeEthClientTarget(target);
+  }
+
+  function changeFallback(newFallbackOn: boolean) {
+    setFallbackOn(newFallbackOn);
+    api
+      .ethClientFallbackSet(
+        { fallbackOn: newFallbackOn },
+        { toastOnError: true }
+      )
+      .catch(e => console.log("Error on ethClientFallbackSet", e));
   }
 
   return (
@@ -74,7 +88,7 @@ function Repository({
         target={target}
         onTargetChange={setTarget}
         fallbackOn={fallbackOn}
-        onFallbackOnChange={setFallbackOn}
+        onFallbackOnChange={changeFallback}
       />
 
       <div style={{ textAlign: "end" }}>
@@ -93,6 +107,7 @@ function Repository({
 const mapStateToProps = createStructuredSelector({
   ethClientTarget: getEthClientTarget,
   ethClientStatus: getEthClientStatus,
+  ethClientFallbackOn: getEthClientFallbackOn,
   ethMultiClientWarning: getEthMultiClientWarning
 });
 

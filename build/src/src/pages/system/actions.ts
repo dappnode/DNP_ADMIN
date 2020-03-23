@@ -21,13 +21,9 @@ export const setStaticIp = (staticIp: string) => ({
 
 // Redux Thunk actions
 
-export const changeEthClientTarget = ({
-  target: nextTarget,
-  fallbackOn
-}: {
-  target: EthClientTarget;
-  fallbackOn: boolean;
-}): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+export const changeEthClientTarget = (
+  nextTarget: EthClientTarget
+): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
   const prevTarget = getEthClientTarget(getState());
 
   // Make sure the target has changed or the call will error
@@ -58,7 +54,7 @@ export const changeEthClientTarget = ({
 
   await api
     .ethClientTargetSet(
-      { target: nextTarget, fallbackOn, deleteVolumes },
+      { target: nextTarget, deleteVolumes },
       { toastMessage: "Changing Eth client..." }
     )
     .catch(console.error);

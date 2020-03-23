@@ -34,10 +34,17 @@ function Repository({
   }, [ethClientTarget]);
 
   async function changeClient() {
-    if (target)
-      api.ethClientTargetSet({ target, fallbackOn }).catch(e => {
+    if (target) {
+      api.ethClientTargetSet({ target }).catch(e => {
         console.error(`Error on ethClientTargetSet: ${e.stack}`);
       });
+      // Only set the fallback if the user is setting a target
+      // Otherwise, the fallback could be activated without the user wanting to
+      if (fallbackOn)
+        api.ethClientFallbackSet({ fallbackOn }).catch(e => {
+          console.error(`Error on ethClientFallbackSet: ${e.stack}`);
+        });
+    }
     if (onNext) onNext();
   }
 

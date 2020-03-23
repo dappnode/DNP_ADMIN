@@ -3,6 +3,7 @@ import * as routes from "../route-types";
 
 export const autoUpdateDataGet = wrapRoute(routes.autoUpdateDataGet);
 export const diagnose = wrapRoute(routes.diagnose);
+export const ethClientFallbackSet = wrapRoute(routes.ethClientFallbackSet);
 export const ethClientTargetSet = wrapRoute(routes.ethClientTargetSet);
 export const fetchCoreUpdateData = wrapRoute(routes.fetchCoreUpdateData);
 export const fetchDirectory = wrapRoute(routes.fetchDirectory);
