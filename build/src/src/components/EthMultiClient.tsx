@@ -7,6 +7,7 @@ import { EthClientTarget, EthClientFallback } from "types";
 import { AiFillSafetyCertificate, AiFillClockCircle } from "react-icons/ai";
 import { FaDatabase } from "react-icons/fa";
 import Switch from "./Switch";
+import Alert from "react-bootstrap/Alert";
 
 const fallbackToBoolean = (fallback: EthClientFallback): boolean =>
   fallback === "on" ? true : fallback === "off" ? false : false;
@@ -216,11 +217,19 @@ export function EthMultiClientsAndFallback({
         onTargetChange={onTargetChange}
         showStats={showStats}
       />
+
       <EthMultiClientFallback
         target={target}
         fallback={fallback}
         onFallbackChange={onFallbackChange}
       />
+
+      {target !== "remote" && fallback === "off" && (
+        <Alert variant="warning">
+          This node will need some time to sync and versions in the repository
+          may not be up to date until then
+        </Alert>
+      )}
     </div>
   );
 }

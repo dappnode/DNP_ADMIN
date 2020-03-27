@@ -94,4 +94,9 @@
   > *:not(:last-child) {
     margin-bottom: var(--default-spacing);
   }
+
+  > .alert {
+    margin-top: var(--default-spacing);
+    margin-bottom: 0;
+  }
 }
