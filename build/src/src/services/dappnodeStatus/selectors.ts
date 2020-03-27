@@ -36,10 +36,10 @@ export const getEthClientTarget = (state: any) =>
   (getSystemInfo(state) || {}).ethClientTarget;
 export const getEthClientStatus = (state: any) =>
   (getSystemInfo(state) || {}).ethClientStatus;
-export const getEthClientFallbackOn = (state: any) =>
-  (getSystemInfo(state) || {}).ethClientFallbackOn;
-export const getShowWelcome = (state: any) =>
-  (getSystemInfo(state) || {}).showWelcome;
+export const getEthClientFallback = (state: any) =>
+  (getSystemInfo(state) || {}).ethClientFallback;
+export const getUiWelcomeStatus = (state: any) =>
+  (getSystemInfo(state) || {}).uiWelcomeStatus;
 
 /**
  * Returns the DAppNode "network" identity to be shown in the TopBar

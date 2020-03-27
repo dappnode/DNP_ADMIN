@@ -792,10 +792,10 @@ const dappnodeStatusState: DappnodeStatusState = {
     ethClientTarget: "geth-light",
     ethClientStatus: "installed",
     ethClientStatusError: "Error fetching manifest from ...",
-    ethClientFallbackOn: true,
+    ethClientFallback: "on",
     ethProvider: "http://geth.dappnode:8545",
     fullnodeDomainTarget: "geth.dnp.dappnode.eth",
-    showWelcome: false
+    uiWelcomeStatus: "pending"
   },
   stats: {
     cpu: "34%",

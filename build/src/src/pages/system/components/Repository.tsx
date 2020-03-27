@@ -8,11 +8,11 @@ import {
   getEthClientPrettyName,
   EthMultiClientsAndFallback
 } from "components/EthMultiClient";
-import { EthClientTarget, EthClientStatus } from "types";
+import { EthClientTarget, EthClientStatus, EthClientFallback } from "types";
 import {
   getEthClientTarget,
   getEthClientStatus,
-  getEthClientFallbackOn,
+  getEthClientFallback,
   getEthMultiClientWarning
 } from "services/dappnodeStatus/selectors";
 import { changeEthClientTarget } from "pages/system/actions";
@@ -22,39 +22,35 @@ function Repository({
   // Redux
   ethClientTarget,
   ethClientStatus,
-  ethClientFallbackOn,
+  ethClientFallback,
   changeEthClientTarget,
   ethMultiClientWarning
 }: {
   ethClientTarget?: EthClientTarget;
   ethClientStatus?: EthClientStatus;
-  ethClientFallbackOn?: boolean;
+  ethClientFallback?: EthClientFallback;
   changeEthClientTarget: (newTarget: EthClientTarget) => void;
   ethMultiClientWarning?: "not-installed" | "not-running";
 }) {
-  const [target, setTarget] = useState("" as EthClientTarget);
-  const [fallbackOn, setFallbackOn] = useState(false);
+  const [target, setTarget] = useState<EthClientTarget>("" as EthClientTarget);
+  const [fallback, setFallback] = useState<EthClientFallback>("on");
 
   useEffect(() => {
     if (ethClientTarget) setTarget(ethClientTarget);
   }, [ethClientTarget]);
 
   useEffect(() => {
-    if (typeof ethClientFallbackOn === "boolean")
-      setFallbackOn(ethClientFallbackOn);
-  }, [ethClientFallbackOn]);
+    if (typeof ethClientFallback === "boolean") setFallback(ethClientFallback);
+  }, [ethClientFallback]);
 
   function changeClient() {
     changeEthClientTarget(target);
   }
 
-  function changeFallback(newFallbackOn: boolean) {
-    setFallbackOn(newFallbackOn);
+  function changeFallback(newFallback: EthClientFallback) {
+    setFallback(newFallback);
     api
-      .ethClientFallbackSet(
-        { fallbackOn: newFallbackOn },
-        { toastOnError: true }
-      )
+      .ethClientFallbackSet({ fallback: newFallback }, { toastOnError: true })
       .catch(e => console.log("Error on ethClientFallbackSet", e));
   }
 
@@ -87,8 +83,8 @@ function Repository({
       <EthMultiClientsAndFallback
         target={target}
         onTargetChange={setTarget}
-        fallbackOn={fallbackOn}
-        onFallbackOnChange={changeFallback}
+        fallback={fallback}
+        onFallbackChange={changeFallback}
       />
 
       <div style={{ textAlign: "end" }}>
@@ -107,7 +103,7 @@ function Repository({
 const mapStateToProps = createStructuredSelector({
   ethClientTarget: getEthClientTarget,
   ethClientStatus: getEthClientStatus,
-  ethClientFallbackOn: getEthClientFallbackOn,
+  ethClientFallback: getEthClientFallback,
   ethMultiClientWarning: getEthMultiClientWarning
 });
 

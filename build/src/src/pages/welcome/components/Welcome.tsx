@@ -58,9 +58,9 @@ const Welcome: React.FunctionComponent<WelcomeProps & RouteComponentProps> = ({
     if (nextIndex > routes.length - 1) {
       // Has finished the welcome flow, flag it
       api
-        .uiWelcomeDone({ isDone: true })
-        .then(() => console.log("Success on uiWelcomeDone"))
-        .catch((e: Error) => console.error("Error on uiWelcomeDone", e));
+        .uiWelcomeStatusSet({ uiWelcomeStatus: "done" })
+        .then(() => console.log("Success on uiWelcomeStatusSet"))
+        .catch((e: Error) => console.error("Error on uiWelcomeStatusSet", e));
 
       // Prevent re-renders and pushing the same route
       const finalRoute = "/";

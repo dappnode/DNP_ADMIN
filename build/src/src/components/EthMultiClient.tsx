@@ -3,10 +3,15 @@ import Card from "components/Card";
 import "./ethMultiClient.scss";
 import { joinCssClass } from "utils/css";
 import Select from "components/Select";
-import { EthClientTarget } from "types";
+import { EthClientTarget, EthClientFallback } from "types";
 import { AiFillSafetyCertificate, AiFillClockCircle } from "react-icons/ai";
 import { FaDatabase } from "react-icons/fa";
 import Switch from "./Switch";
+
+const fallbackToBoolean = (fallback: EthClientFallback): boolean =>
+  fallback === "on" ? true : fallback === "off" ? false : false;
+const booleanToFallback = (bool: boolean): EthClientFallback =>
+  bool ? "on" : "off";
 
 export function getEthClientPrettyName(target: EthClientTarget) {
   switch (target) {
@@ -162,12 +167,12 @@ export function EthMultiClients({
  */
 export function EthMultiClientFallback({
   target,
-  fallbackOn,
-  onFallbackOnChange
+  fallback,
+  onFallbackChange
 }: {
   target: EthClientTarget;
-  fallbackOn: boolean;
-  onFallbackOnChange: (newFallbackOn: boolean) => void;
+  fallback: EthClientFallback;
+  onFallbackChange: (newFallback: EthClientFallback) => void;
 }) {
   // Do not render for remote
   if (target === "remote") return null;
@@ -175,8 +180,8 @@ export function EthMultiClientFallback({
   return (
     <Switch
       className="eth-multi-clients-fallback"
-      checked={fallbackOn}
-      onToggle={onFallbackOnChange}
+      checked={fallbackToBoolean(fallback)}
+      onToggle={bool => onFallbackChange(booleanToFallback(bool))}
       label="Use remote during syncing or errors"
       id="eth-multi-clients-fallback-switch"
     />
@@ -195,14 +200,14 @@ export function EthMultiClientsAndFallback({
   target,
   onTargetChange,
   showStats,
-  fallbackOn,
-  onFallbackOnChange
+  fallback,
+  onFallbackChange
 }: {
   target: EthClientTarget;
   onTargetChange: (newTarget: EthClientTarget) => void;
   showStats?: boolean;
-  fallbackOn: boolean;
-  onFallbackOnChange: (newFallbackOn: boolean) => void;
+  fallback: EthClientFallback;
+  onFallbackChange: (newFallback: EthClientFallback) => void;
 }) {
   return (
     <div className="eth-multi-clients-and-fallback">
@@ -213,8 +218,8 @@ export function EthMultiClientsAndFallback({
       />
       <EthMultiClientFallback
         target={target}
-        fallbackOn={fallbackOn}
-        onFallbackOnChange={onFallbackOnChange}
+        fallback={fallback}
+        onFallbackChange={onFallbackChange}
       />
     </div>
   );

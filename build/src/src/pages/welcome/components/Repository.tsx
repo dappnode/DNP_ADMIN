@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { EthMultiClientsAndFallback } from "components/EthMultiClient";
-import { EthClientTarget } from "types";
+import { EthClientTarget, EthClientFallback } from "types";
 import { getEthClientTarget } from "services/dappnodeStatus/selectors";
 import BottomButtons from "./BottomButtons";
 import * as api from "API/calls";
@@ -27,7 +27,7 @@ function Repository({
 }) {
   const [target, setTarget] = useState("" as EthClientTarget);
   // Use fallback by default
-  const [fallbackOn, setFallbackOn] = useState(true);
+  const [fallback, setFallback] = useState<EthClientFallback>("on");
 
   useEffect(() => {
     if (ethClientTarget) setTarget(ethClientTarget);
@@ -40,8 +40,8 @@ function Repository({
       });
       // Only set the fallback if the user is setting a target
       // Otherwise, the fallback could be activated without the user wanting to
-      if (fallbackOn)
-        api.ethClientFallbackSet({ fallbackOn }).catch(e => {
+      if (fallback === "on")
+        api.ethClientFallbackSet({ fallback }).catch(e => {
           console.error(`Error on ethClientFallbackSet: ${e.stack}`);
         });
     }
@@ -64,8 +64,8 @@ function Repository({
         target={target}
         onTargetChange={setTarget}
         showStats
-        fallbackOn={fallbackOn}
-        onFallbackOnChange={setFallbackOn}
+        fallback={fallback}
+        onFallbackChange={setFallback}
       />
 
       <BottomButtons onBack={onBack} onNext={changeClient} />

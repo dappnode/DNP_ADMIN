@@ -676,7 +676,7 @@ export interface MountpointData {
 }
 
 export interface VolumeData {
-  name: string; // "gethdnpdappnodeeth_data", Actual name to call delete on
+  name: string; // "gethdnpdappnodeeth_geth", Actual name to call delete on
   owner?: string; // "geth.dnp.dappnode.eth", Actual name of the owner
   nameDisplay?: string; // "data", Guessed short name for display
   ownerDisplay?: string; // "gethdnpdappnodeeth", Guessed owner name for display
@@ -709,6 +709,16 @@ export type EthClientStatus =
   | "error-syncing";
 
 /**
+ * If the DAPPMANAGER should use a eth remote node in cases of error syncing
+ */
+export type EthClientFallback = "on" | "off";
+
+/**
+ * UI Welcome flow status. Persists the info of which page the UI should show
+ */
+export type UiWelcomeStatus = "pending" | "doing" | "done";
+
+/**
  * Aggregated DAppNode system info
  */
 export interface SystemInfo {
@@ -732,12 +742,12 @@ export interface SystemInfo {
   ethClientTarget: EthClientTarget;
   ethClientStatus: EthClientStatus;
   ethClientStatusError?: string;
+  ethClientFallback: EthClientFallback;
   ethProvider: string;
-  ethClientFallbackOn: boolean;
   // Domain maps
   fullnodeDomainTarget: string;
   // UI stats
-  showWelcome: boolean;
+  uiWelcomeStatus: UiWelcomeStatus;
 }
 
 /**

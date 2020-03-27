@@ -16,14 +16,15 @@ import pages, { defaultPage } from "./pages";
 // Redux
 import { getConnectionStatus } from "services/connectionStatus/selectors";
 import { ToastContainer } from "react-toastify";
-import { getShowWelcome } from "services/dappnodeStatus/selectors";
+import { getUiWelcomeStatus } from "services/dappnodeStatus/selectors";
+import { UiWelcomeStatus } from "types";
 
 function App({
   connectionStatus,
-  showWelcome
+  uiWelcomeStatus
 }: {
   connectionStatus?: { isOpen: boolean; isNotAdmin: boolean; error: string };
-  showWelcome?: boolean;
+  uiWelcomeStatus?: UiWelcomeStatus;
 }) {
   // App is the parent container of any other component.
   // If this re-renders, the whole app will. So DON'T RERENDER APP!
@@ -34,8 +35,8 @@ function App({
   const history = useHistory();
 
   useEffect(() => {
-    if (showWelcome) history.push(pages.welcome.rootPath);
-  }, [showWelcome]);
+    if (uiWelcomeStatus === "pending") history.push(pages.welcome.rootPath);
+  }, [uiWelcomeStatus]);
 
   if (isOpen) {
     return (
@@ -94,7 +95,7 @@ function App({
 
 const mapStateToProps = createStructuredSelector({
   connectionStatus: getConnectionStatus,
-  showWelcome: getShowWelcome
+  uiWelcomeStatus: getUiWelcomeStatus
 });
 
 export default connect(mapStateToProps)(App);
