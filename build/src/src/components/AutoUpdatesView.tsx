@@ -1,32 +1,38 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { createStructuredSelector, createSelector } from "reselect";
+import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
-import api from "API/rpcMethods";
+import * as api from "API/calls";
 // Components
-import Card from "components/Card";
 import Switch from "components/Switch";
-import Alert from "react-bootstrap/Alert";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 import { parseStaticDate, parseDiffDates } from "utils/dates";
 // External
 import { getAutoUpdateData } from "services/dappnodeStatus/selectors";
 import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
-import { getMainnet } from "services/chainData/selectors";
-import { getIsMainnetDnpNotRunning } from "services/dnpInstalled/selectors";
 import { coreName } from "services/coreUpdate/data";
 import { autoUpdateIds } from "services/dappnodeStatus/data";
 import { rootPath as installerRootPath } from "pages/installer";
 import { rootPath as systemRootPath, updatePath } from "pages/system/data";
 // Styles
 import "./autoUpdates.scss";
+import { AutoUpdateDataView, ProgressLogsByDnp } from "types";
 
 const { MY_PACKAGES, SYSTEM_PACKAGES } = autoUpdateIds;
+const getIsSinglePackage = (id: string) =>
+  id !== MY_PACKAGES && id !== SYSTEM_PACKAGES;
 
-function AutoUpdates({ autoUpdateData, progressLogsByDnp, mainnetBadStatus }) {
-  const { dnpsToShow = [] } = autoUpdateData;
+function AutoUpdatesView({
+  autoUpdateData,
+  progressLogsByDnp,
+  onlySummary
+}: {
+  autoUpdateData?: AutoUpdateDataView;
+  progressLogsByDnp?: ProgressLogsByDnp;
+  onlySummary?: boolean;
+}) {
+  const { dnpsToShow = [] } = autoUpdateData || {};
 
   // Force a re-render every 15 seconds for the timeFrom to show up correctly
   const [, setClock] = useState(0);
@@ -37,41 +43,36 @@ function AutoUpdates({ autoUpdateData, progressLogsByDnp, mainnetBadStatus }) {
     };
   }, []);
 
-  function setUpdateSettings(id, enabled) {
-    api.autoUpdateSettingsEdit(
-      { id, enabled },
-      {
-        toastMessage: `${
-          enabled ? "Enabling" : "Disabling"
-        } auto updates for ${shortNameCapitalized(id)}...`
-      }
-    );
+  function setUpdateSettings(id: string, enabled: boolean): void {
+    api
+      .autoUpdateSettingsEdit(
+        { id, enabled },
+        {
+          toastMessage: onlySummary
+            ? undefined
+            : `${
+                enabled ? "Enabling" : "Disabling"
+              } auto updates for ${shortNameCapitalized(id)}...`
+        }
+      )
+      .catch(e => console.error(`Error on autoUpdateSettingsEdit: ${e.stack}`));
   }
 
   return (
-    <Card>
-      <div className="auto-updates-explanation">
-        Enable auto-updates for DAppNode to stay automatically up to date to the
-        latest versions. <strong>Note</strong> that for major breaking updates,
-        the interaction of an admin will always be required.
-      </div>
+    <div className="list-grid auto-updates">
+      {/* Table header */}
+      <span className="stateBadge" />
+      <span className="name" />
+      <span className="last-update header">
+        {onlySummary ? "" : "Last auto-update"}
+      </span>
+      <span className="header">Enabled</span>
 
-      {mainnetBadStatus && (
-        <Alert variant="warning">
-          {mainnetBadStatus}. Note that auto-updates will not work meanwhile.
-        </Alert>
-      )}
-
-      <div className="list-grid auto-updates">
-        {/* Table header */}
-        <span className="stateBadge" />
-        <span className="name" />
-        <span className="last-update header">Last auto-update</span>
-        <span className="header">Enabled</span>
-
-        <hr />
-        {/* Items of the table */}
-        {dnpsToShow.map(({ id, displayName, enabled, feedback }) => (
+      <hr />
+      {/* Items of the table */}
+      {dnpsToShow
+        .filter(dnp => !onlySummary || !getIsSinglePackage(dnp.id))
+        .map(({ id, displayName, enabled, feedback }) => (
           <AutoUpdateItem
             key={id}
             {...{
@@ -79,16 +80,19 @@ function AutoUpdates({ autoUpdateData, progressLogsByDnp, mainnetBadStatus }) {
               displayName,
               enabled,
               feedback,
-              isInstalling:
-                progressLogsByDnp[id === SYSTEM_PACKAGES ? coreName : id],
-              isSinglePackage: id !== MY_PACKAGES && id !== SYSTEM_PACKAGES,
+              isInstalling: Boolean(
+                (progressLogsByDnp || {})[
+                  id === SYSTEM_PACKAGES ? coreName : id
+                ]
+              ),
+              isSinglePackage: getIsSinglePackage(id),
+              onlySummary,
               // Actions
               setUpdateSettings
             }}
           />
         ))}
-      </div>
-    </Card>
+    </div>
   );
 }
 
@@ -99,8 +103,18 @@ function AutoUpdateItem({
   feedback,
   isInstalling,
   isSinglePackage,
+  onlySummary,
   // Actions
   setUpdateSettings
+}: {
+  id: string;
+  displayName: string;
+  enabled: boolean;
+  feedback: any;
+  isInstalling: boolean;
+  isSinglePackage: boolean;
+  onlySummary?: boolean;
+  setUpdateSettings: (id: string, enable: boolean) => void;
 }) {
   const [collapsed, setCollapsed] = useState(true);
 
@@ -128,7 +142,7 @@ function AutoUpdateItem({
     ? parseStaticDate(updated)
     : "-";
 
-  const showUpdateLink = isInstalling || inQueue || scheduled;
+  const showUpdateLink = (isInstalling || inQueue || scheduled) && !onlySummary;
 
   return (
     <React.Fragment key={id}>
@@ -147,7 +161,7 @@ function AutoUpdateItem({
       </span>
 
       <span className="last-update">
-        {showUpdateLink ? (
+        {showUpdateLink && dnpInstallPath ? (
           <NavLink className="name" to={dnpInstallPath}>
             {feedbackText}
           </NavLink>
@@ -164,6 +178,7 @@ function AutoUpdateItem({
       <Switch
         checked={enabled ? true : false}
         onToggle={() => setUpdateSettings(id, !Boolean(enabled))}
+        label=""
       />
 
       {!collapsed && <div className="extra-info">{errorMessage}</div>}
@@ -173,27 +188,11 @@ function AutoUpdateItem({
   );
 }
 
-AutoUpdates.propTypes = {
-  autoUpdateData: PropTypes.object.isRequired,
-  progressLogsByDnp: PropTypes.object.isRequired
-};
-
 // Container
 
 const mapStateToProps = createStructuredSelector({
   autoUpdateData: getAutoUpdateData,
-  progressLogsByDnp: getProgressLogsByDnp,
-  mainnetBadStatus: createSelector(
-    getMainnet,
-    getIsMainnetDnpNotRunning,
-    (mainnet, isMainnetDnpNotRunning) => {
-      if (isMainnetDnpNotRunning) return "Mainnet is not running";
-      if (!mainnet) return "Mainnet not found";
-      if (mainnet.syncing) return "Mainnet is syncing";
-      if (mainnet.error) return "Mainnet error";
-      return null;
-    }
-  )
+  progressLogsByDnp: getProgressLogsByDnp
 });
 
 const mapDispatchToProps = null;
@@ -201,4 +200,4 @@ const mapDispatchToProps = null;
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AutoUpdates);
+)(AutoUpdatesView);

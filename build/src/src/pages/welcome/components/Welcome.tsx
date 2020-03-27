@@ -1,17 +1,19 @@
 import React from "react";
 import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
 import * as api from "API/calls";
-import Repository from "./Repository";
+import Introduction from "./Introduction";
 import WelcomeHome from "./WelcomeHome";
+import Repository from "./Repository";
+import AutoUpdates from "./AutoUpdates";
 import ChangeHostPassword from "./ChangeHostPassword";
 import Finished from "./Finished";
-import Introduction from "./Introduction";
 // styles
 import "./welcome.scss";
 
 const subPathHome = "home";
 const subPathIntroduction = "introduction";
 const subPathRepository = "repository";
+const subPathAutoUpdates = "auto-updates";
 const subPathChangeHostPassword = "change-host-password";
 const subPathFinished = "finished";
 
@@ -35,6 +37,10 @@ const Welcome: React.FunctionComponent<WelcomeProps & RouteComponentProps> = ({
     {
       subPath: subPathRepository,
       render: () => <Repository onBack={goBack} onNext={goNext} />
+    },
+    {
+      subPath: subPathAutoUpdates,
+      render: () => <AutoUpdates onBack={goBack} onNext={goNext} />
     },
     {
       subPath: subPathChangeHostPassword,

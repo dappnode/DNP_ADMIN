@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { fetchDappnodeStats } from "services/dappnodeStatus/actions";
+import { NavLink } from "react-router-dom";
+import { rootPath as welcomeRootPath } from "pages/welcome/data";
 // Selectors
 import { getDappnodeVolumes } from "services/dnpInstalled/selectors";
 import { getChainData } from "services/chainData/selectors";
@@ -79,6 +81,10 @@ function Dashboard({
           <VolumeCard key={vol.name} {...vol} />
         ))}
       </div>
+
+      <NavLink className="help-text-relaunch" to={welcomeRootPath}>
+        Relaunch onboarding
+      </NavLink>
     </>
   );
 }

@@ -1,3 +1,11 @@
+.help-text-relaunch {
+  color: var(--light-text-color);
+  transition: 0.15s ease;
+}
+.help-text-relaunch:hover {
+  color: var(--dappnode-color);
+}
+
 .dashboard-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));

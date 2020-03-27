@@ -795,7 +795,7 @@ const dappnodeStatusState: DappnodeStatusState = {
     ethClientFallback: "on",
     ethProvider: "http://geth.dappnode:8545",
     fullnodeDomainTarget: "geth.dnp.dappnode.eth",
-    uiWelcomeStatus: "pending"
+    uiWelcomeStatus: "done"
   },
   stats: {
     cpu: "34%",

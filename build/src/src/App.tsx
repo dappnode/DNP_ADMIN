@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { Switch, Route, Redirect, useHistory } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  Redirect,
+  useHistory,
+  useLocation
+} from "react-router-dom";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 // Components
@@ -33,9 +39,16 @@ function App({
 
   const { isOpen, isNotAdmin, error } = connectionStatus || {};
   const history = useHistory();
+  const location = useLocation();
+  console.log({ location });
 
   useEffect(() => {
-    if (uiWelcomeStatus === "pending") history.push(pages.welcome.rootPath);
+    if (
+      uiWelcomeStatus === "pending" &&
+      // Prevent re-directing to home on reload, preserve path
+      !location.pathname.includes(pages.welcome.rootPath)
+    )
+      history.push(pages.welcome.rootPath);
   }, [uiWelcomeStatus]);
 
   if (isOpen) {
