@@ -38,8 +38,10 @@ export const getEthClientStatus = (state: any) =>
   (getSystemInfo(state) || {}).ethClientStatus;
 export const getEthClientFallback = (state: any) =>
   (getSystemInfo(state) || {}).ethClientFallback;
-export const getUiWelcomeStatus = (state: any) =>
-  (getSystemInfo(state) || {}).uiWelcomeStatus;
+export const getIsFirstTimeRunning = (state: any) =>
+  (getSystemInfo(state) || {}).isFirstTimeRunning;
+export const getNewFeatureIds = (state: any) =>
+  (getSystemInfo(state) || {}).newFeatureIds;
 
 /**
  * Returns the DAppNode "network" identity to be shown in the TopBar

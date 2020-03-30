@@ -1,30 +1,31 @@
 import React, { useState, useEffect } from "react";
+import { createStructuredSelector } from "reselect";
+import { connect } from "react-redux";
+import {
+  getIsFirstTimeRunning,
+  getNewFeatureIds
+} from "services/dappnodeStatus/selectors";
 import * as api from "API/calls";
-import WelcomeHome from "./WelcomeHome";
-import Repository from "./Repository";
-import AutoUpdates from "./AutoUpdates";
-import ChangeHostPassword from "./ChangeHostPassword";
+// Components
+import WelcomeModalContainer from "./WelcomeModalContainer";
+import HelloFirstTime from "./HelloFirstTime";
+import HelloOnUpdate from "./HelloOnUpdate";
 import Finished from "./Finished";
+import Repository from "./features/Repository";
+import AutoUpdates from "./features/AutoUpdates";
+import ChangeHostPassword from "./features/ChangeHostPassword";
+// Utils
+import { isEqual } from "lodash";
+import { UiNewFeatureId } from "types";
 // styles
 import "./welcome.scss";
-import { joinCssClass } from "utils/css";
-
-// Matches the value in welcome.scss
-const transitionMs = 300;
-
-type RouteId = "repository" | "auto-updates" | "change-host-password";
 
 /**
- * This internal Welcome status allows to freeze routeIds
- * routeIds must be frozen during a welcome wizard flow so the user
+ * This internal Welcome status allows to freeze featureIds
+ * featureIds must be frozen during a welcome wizard flow so the user
  * can go back and next without the views changing or disapearing
  */
 type Status = "active" | "finished";
-
-/**
- * Track the internal status of the opacity of the welcome container
- */
-type FadeStatus = "null" | "opacity-0" | "opacity-1";
 
 interface RouteProps {
   onBack: () => void;
@@ -36,7 +37,7 @@ interface RouteProps {
  * RouteIds will be returned by the DAPPMANAGER is a correct order
  */
 function getRouteIdComponent(
-  routeId: RouteId
+  routeId: UiNewFeatureId
 ): React.FunctionComponent<RouteProps> | undefined {
   switch (routeId) {
     case "auto-updates":
@@ -55,46 +56,59 @@ function getRouteIdComponent(
 /**
  * Handles routing and each subroute should have "Next" & "Back"
  */
-export function Welcome() {
+function Welcome({
+  featureIds,
+  isFirstTimeRunning
+}: {
+  featureIds?: UiNewFeatureId[];
+  isFirstTimeRunning?: boolean;
+}) {
   const [routeN, setRouteN] = useState(0);
   const [status, setStatus] = useState<Status>("finished");
-  // routeIds must be frozen during a welcome wizard flow so the user
-  // can go back and next without the views changing or disapearing
-  const [routeIds, setRouteIds] = useState<RouteId[]>([]);
-  const [externalRouteIds, setExternalRouteIds] = useState<RouteId[]>([
-    "repository",
-    "change-host-password"
-  ]);
+  // featureIds must be frozen during a welcome wizard flow
+  // so the user can go back and next without the views changing
+  const [intFeatureIds, setIntFeatureIds] = useState<UiNewFeatureId[]>([]);
 
+  // Do in two steps to avoid adding routes that don't have a view implemented
   const routes: {
-    id: RouteId;
+    featureId: UiNewFeatureId;
     render: React.FunctionComponent<RouteProps>;
   }[] = [];
-  // Do in two steps to avoid adding routes that don't have a view implemented
-  for (const routeId of routeIds) {
-    const render = getRouteIdComponent(routeId);
-    if (render) routes.push({ id: routeId, render });
+  for (const featureId of intFeatureIds) {
+    const render = getRouteIdComponent(featureId);
+    if (render) routes.push({ featureId, render });
   }
 
+  // Append first and last view to make the UX less abrupt
   const routesWithHomeFinish = [
-    { id: "", render: (props: RouteProps) => <WelcomeHome {...props} /> },
+    isFirstTimeRunning
+      ? { render: (props: RouteProps) => <HelloFirstTime {...props} /> }
+      : { render: (props: RouteProps) => <HelloOnUpdate {...props} /> },
     ...routes,
-    { id: "", render: (props: RouteProps) => <Finished {...props} /> }
+    { render: (props: RouteProps) => <Finished {...props} /> }
   ];
 
+  // Only modify internal routes when the user is not completing the flow
+  // When modifying internal routes, reset route counter and status
+  // Make sure the routes have actually changed before restarting the flow
   useEffect(() => {
-    if (externalRouteIds.length > 0 && status !== "active") {
+    if (
+      featureIds &&
+      featureIds.length > 0 &&
+      status !== "active" &&
+      !isEqual(intFeatureIds, featureIds)
+    ) {
       setStatus("active");
       setRouteN(0);
-      setRouteIds(externalRouteIds);
+      setIntFeatureIds(featureIds);
     }
-  }, [externalRouteIds, status]);
+  }, [featureIds, status]);
 
   function onBack() {
     setRouteN(n => (n <= 1 ? 0 : n - 1));
   }
 
-  function onNext(id: string) {
+  function onNext(id: UiNewFeatureId | false) {
     if (routeN === routesWithHomeFinish.length - 1) {
       // When clicking next on the last view, mark as finished
       setStatus("finished");
@@ -103,53 +117,31 @@ export function Welcome() {
       setRouteN(n => n + 1);
     }
 
-    // ##### Simulate API call marking a view as done
-    setExternalRouteIds(ids => ids.filter(routeId => routeId !== id));
+    // Persist in the DAPPMANAGER that this new feature has been seen by the user
+    if (id)
+      api.uiNewFeatureStatusSet({ featureId: id, status: "seen" }).catch(e => {
+        console.error(`Error on uiNewFeatureStatusSet(${featureId}, seen)`, e);
+      });
   }
+
+  const currentRoute = routesWithHomeFinish[routeN];
+  const featureId = "featureId" in currentRoute && currentRoute.featureId;
 
   return (
     <WelcomeModalContainer show={routes.length > 0 && status === "active"}>
-      {routesWithHomeFinish[routeN] &&
-        typeof routesWithHomeFinish[routeN].render === "function" &&
-        routesWithHomeFinish[routeN].render({
-          onBack,
-          onNext: () => onNext(routesWithHomeFinish[routeN].id)
-        })}
+      {currentRoute &&
+        typeof currentRoute.render === "function" &&
+        currentRoute.render({ onBack, onNext: () => onNext(featureId) })}
     </WelcomeModalContainer>
   );
 }
 
-/**
- * Welcome modal overlay container
- * Does a simple fade in/out animation. This component can appear abruptly
- * so the animation is important to soften it's flashy behaviour
- */
-export const WelcomeModalContainer: React.FunctionComponent<{
-  show: boolean;
-}> = ({ show, children }) => {
-  const [status, setStatus] = useState<FadeStatus>("null");
+const mapStateToProps = createStructuredSelector({
+  isFirstTimeRunning: getIsFirstTimeRunning,
+  featureIds: getNewFeatureIds
+});
 
-  useEffect(() => {
-    let timeout: number;
-    if (show) {
-      if (status === "null") setStatus("opacity-0");
-      if (status === "opacity-0")
-        timeout = setTimeout(() => setStatus("opacity-1"), transitionMs / 2);
-    } else {
-      if (status === "opacity-1") setStatus("opacity-0");
-      if (status === "opacity-0")
-        timeout = setTimeout(() => setStatus("null"), transitionMs);
-    }
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [show, status]);
-
-  if (!children || status === "null") return null;
-  return (
-    <div className={joinCssClass("welcome-container", status)}>
-      <div className="welcome">{children}</div>
-    </div>
-  );
-};
+export default connect(
+  mapStateToProps,
+  null
+)(Welcome);

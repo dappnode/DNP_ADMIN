@@ -16,7 +16,7 @@ import pages, { defaultPage } from "./pages";
 // Redux
 import { getConnectionStatus } from "services/connectionStatus/selectors";
 import { ToastContainer } from "react-toastify";
-import { Welcome } from "components/welcome/Welcome";
+import Welcome from "components/welcome/Welcome";
 
 function App({
   connectionStatus

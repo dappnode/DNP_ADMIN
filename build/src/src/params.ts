@@ -21,3 +21,6 @@ export const USER_SETTING_DISABLE_TAG = "disable:";
 
 // WEB3
 export const fullnodeHttpJsonRpc = "http://fullnode.dappnode:8545";
+
+// URLs / Links
+export const surveyUrl = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";

@@ -4,7 +4,7 @@ import * as api from "API/calls";
 import Input from "components/Input";
 import Switch from "components/Switch";
 import { ErrorFeedback } from "components/PasswordForm";
-import BottomButtons from "./BottomButtons";
+import BottomButtons from "../BottomButtons";
 
 /**
  * View to chose or change the Eth multi-client

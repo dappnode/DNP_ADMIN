@@ -2,7 +2,7 @@ import React from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { getEthClientTarget } from "services/dappnodeStatus/selectors";
-import BottomButtons from "./BottomButtons";
+import BottomButtons from "../BottomButtons";
 import Card from "components/Card";
 import AutoUpdatesView from "components/AutoUpdatesView";
 

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { EthMultiClientsAndFallback } from "components/EthMultiClient";
 import { EthClientTarget, EthClientFallback } from "types";
 import { getEthClientTarget } from "services/dappnodeStatus/selectors";
-import BottomButtons from "./BottomButtons";
+import BottomButtons from "../BottomButtons";
 import * as api from "API/calls";
 
 /**

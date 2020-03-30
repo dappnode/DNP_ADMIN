@@ -714,11 +714,6 @@ export type EthClientStatus =
 export type EthClientFallback = "on" | "off";
 
 /**
- * UI Welcome flow status. Persists the info of which page the UI should show
- */
-export type UiWelcomeStatus = "pending" | "doing" | "done";
-
-/**
  * Aggregated DAppNode system info
  */
 export interface SystemInfo {
@@ -747,7 +742,8 @@ export interface SystemInfo {
   // Domain maps
   fullnodeDomainTarget: string;
   // UI stats
-  uiWelcomeStatus: UiWelcomeStatus;
+  newFeatureIds: UiNewFeatureId[];
+  isFirstTimeRunning: boolean;
 }
 
 /**
@@ -794,6 +790,20 @@ export type RpcHandlerReturnWithResult<R> = Promise<
   RpcHandlerReturnWithResultInterface<R>
 >;
 export type RpcHandlerReturnGeneric = Promise<RpcHandlerReturnGenericInterface>;
+
+/**
+ * Welcome wizard / setup flow
+ * Available routes / views in the UI
+ */
+export type UiNewFeatureId =
+  | "repository"
+  | "auto-updates"
+  | "change-host-password";
+
+/**
+ * UI Welcome flow status. Persists the info of which page the UI should show
+ */
+export type UiNewFeatureStatus = "pending" | "seen" | "set" | "skipped";
 
 /**
  * HTTP Response

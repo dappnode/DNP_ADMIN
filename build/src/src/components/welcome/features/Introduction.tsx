@@ -1,11 +1,9 @@
 import React from "react";
 import { Switch, Route, NavLink, RouteComponentProps } from "react-router-dom";
-import newTabProps from "utils/newTabProps";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 // Items
 import { sidenavItems } from "components/navbar/navbarItems";
 // styles
-import "./welcome.scss";
 import { joinCssClass } from "utils/css";
 
 if (!Array.isArray(sidenavItems)) throw Error("sidenavItems must be an array");

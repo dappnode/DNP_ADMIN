@@ -1,8 +1,7 @@
 import React from "react";
 import Button from "components/Button";
-import "./welcomeHome.scss";
 
-export default function WelcomeHome({
+export default function HelloFirstTime({
   onNext
 }: {
   onBack?: () => void;
@@ -13,12 +12,18 @@ export default function WelcomeHome({
       <div className="header">
         <div className="title">Configure your DAppNode</div>
         <div className="description">
-          Welcome! You will configure your DAppNode
+          Welcome! Let's setup your DAppNode and get started
+          {/* <br />
+          If you want,{" "}
+          <a href={surveyUrl} {...newTabProps}>
+            leave your feeback{" "}
+          </a>
+          on how the installation went. */}
         </div>
       </div>
 
       <Button
-        className="welcome-home-start"
+        className="big-centered-button"
         onClick={onNext}
         variant="dappnode"
       >
