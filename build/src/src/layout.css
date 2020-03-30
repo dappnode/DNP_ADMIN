@@ -17,6 +17,7 @@
 :root {
   /* Toastify toasts have z-index: 9999 */
   --z-index-confirm-dialog: 5000;
+  --z-index-welcome-dialog: 4000;
   --z-index-sidebar: 2000;
   --z-index-topbar: 1000;
 }
@@ -48,7 +49,8 @@ body,
   and only the main content area is scrollable 
 */
 .body {
-  height: 100vh;
+  /* ### Todo: Substract the topbar height to prevent showing scrollbar when not necessary */
+  /* min-height: calc(100vh - var(--topbar-height)); */
   background-color: var(--color-background);
 }
 html,

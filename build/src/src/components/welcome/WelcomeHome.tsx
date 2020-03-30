@@ -1,10 +1,8 @@
 import React from "react";
 import Button from "components/Button";
 import "./welcomeHome.scss";
-import BottomButtons from "./BottomButtons";
 
 export default function WelcomeHome({
-  onBack,
   onNext
 }: {
   onBack?: () => void;
@@ -26,8 +24,6 @@ export default function WelcomeHome({
       >
         Start
       </Button>
-
-      <BottomButtons onBack={onBack} onNext={onNext} />
     </>
   );
 }

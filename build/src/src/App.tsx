@@ -1,11 +1,5 @@
-import React, { useEffect } from "react";
-import {
-  Switch,
-  Route,
-  Redirect,
-  useHistory,
-  useLocation
-} from "react-router-dom";
+import React from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 // Components
@@ -22,15 +16,12 @@ import pages, { defaultPage } from "./pages";
 // Redux
 import { getConnectionStatus } from "services/connectionStatus/selectors";
 import { ToastContainer } from "react-toastify";
-import { getUiWelcomeStatus } from "services/dappnodeStatus/selectors";
-import { UiWelcomeStatus } from "types";
+import { Welcome } from "components/welcome/Welcome";
 
 function App({
-  connectionStatus,
-  uiWelcomeStatus
+  connectionStatus
 }: {
   connectionStatus?: { isOpen: boolean; isNotAdmin: boolean; error: string };
-  uiWelcomeStatus?: UiWelcomeStatus;
 }) {
   // App is the parent container of any other component.
   // If this re-renders, the whole app will. So DON'T RERENDER APP!
@@ -38,61 +29,40 @@ function App({
   // Even make the non-admin a route and fore a redirect
 
   const { isOpen, isNotAdmin, error } = connectionStatus || {};
-  const history = useHistory();
-  const location = useLocation();
-  console.log({ location });
-
-  useEffect(() => {
-    if (
-      uiWelcomeStatus === "pending" &&
-      // Prevent re-directing to home on reload, preserve path
-      !location.pathname.includes(pages.welcome.rootPath)
-    )
-      history.push(pages.welcome.rootPath);
-  }, [uiWelcomeStatus]);
 
   if (isOpen) {
     return (
       <div className="body">
-        <Switch>
-          {/* Routes that require a full-screen */}
-          <Route
-            path={pages.welcome.rootPath}
-            component={pages.welcome.RootComponent}
-          />
+        {/* SideNav expands on big screens, while content-wrapper moves left */}
+        <SideBar />
+        <TopBar />
+        <div id="main">
+          <ErrorBoundary>
+            <NotificationsMain />
+          </ErrorBoundary>
 
-          <Route path="*">
-            {/* SideNav expands on big screens, while content-wrapper moves left */}
-            <SideBar />
-            <TopBar />
-            <div id="main">
-              <ErrorBoundary>
-                <NotificationsMain />
-              </ErrorBoundary>
-
-              <Switch>
-                {Object.values(pages).map(({ RootComponent, rootPath }) => (
-                  <Route
-                    key={rootPath}
-                    path={rootPath}
-                    exact={rootPath === "/"}
-                    render={props => (
-                      <ErrorBoundary>
-                        <RootComponent {...props} />
-                      </ErrorBoundary>
-                    )}
-                  />
-                ))}
-                {/* 404 routes redirect to dashboard or default page */}
-                <Route path="*">
-                  <Redirect to={defaultPage.rootPath} />
-                </Route>
-              </Switch>
-            </div>
-          </Route>
-        </Switch>
+          <Switch>
+            {Object.values(pages).map(({ RootComponent, rootPath }) => (
+              <Route
+                key={rootPath}
+                path={rootPath}
+                exact={rootPath === "/"}
+                render={props => (
+                  <ErrorBoundary>
+                    <RootComponent {...props} />
+                  </ErrorBoundary>
+                )}
+              />
+            ))}
+            {/* 404 routes redirect to dashboard or default page */}
+            <Route path="*">
+              <Redirect to={defaultPage.rootPath} />
+            </Route>
+          </Switch>
+        </div>
 
         {/* Place here non-page components */}
+        <Welcome />
         <ToastContainer />
         <ScrollToTop />
       </div>
@@ -107,8 +77,7 @@ function App({
 }
 
 const mapStateToProps = createStructuredSelector({
-  connectionStatus: getConnectionStatus,
-  uiWelcomeStatus: getUiWelcomeStatus
+  connectionStatus: getConnectionStatus
 });
 
 export default connect(mapStateToProps)(App);

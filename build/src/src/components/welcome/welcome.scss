@@ -1,4 +1,43 @@
+.welcome-container {
+  // Fade in animation
+  opacity: 0;
+  transition: opacity ease 0.3s;
+  &.opacity-1 {
+    opacity: 1;
+  }
+
+  // Full screen overlay
+  z-index: var(--z-index-welcome-dialog);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  -ms-align-items: center;
+  align-items: center;
+}
+
 .welcome {
+  padding: var(--default-spacing);
+  padding-bottom: 0;
+  border-radius: 0.5rem;
+  border: var(--border-style);
+  background: #fefefe;
+  box-shadow: 0 20px 75px rgba(0, 0, 0, 0.13);
+  color: #666;
+
+  /* Sizing */
+  overflow-y: auto;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 71rem;
+  margin: auto;
+  max-height: 100vh; // So it's scrollable in small views
+
   display: grid;
   grid-template-rows:
     minmax(min-content, max-content)
@@ -7,12 +46,7 @@
   grid-gap: 2rem;
 
   // align-items: center;
-  min-height: 100vh;
-
-  // Spacing
-  max-width: 71rem;
-  margin: auto;
-  padding: calc(3 * var(--default-spacing)) calc(2 * var(--default-spacing));
+  // min-height: 100vh;
 
   .header {
     text-align: center;
@@ -42,7 +76,7 @@
     }
 
     // In very small screens, make sure the buttons don't clip to the bottom
-    margin-bottom: 2rem;
+    margin-bottom: var(--default-spacing);
   }
 
   > *:not(:last-child) {
