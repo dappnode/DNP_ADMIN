@@ -26,13 +26,13 @@ function Repository({
   changeEthClientTarget,
   ethMultiClientWarning
 }: {
-  ethClientTarget?: EthClientTarget;
+  ethClientTarget?: EthClientTarget | null;
   ethClientStatus?: EthClientStatus;
   ethClientFallback?: EthClientFallback;
   changeEthClientTarget: (newTarget: EthClientTarget) => void;
   ethMultiClientWarning?: "not-installed" | "not-running";
 }) {
-  const [target, setTarget] = useState<EthClientTarget>("" as EthClientTarget);
+  const [target, setTarget] = useState<EthClientTarget | null>(null);
   const [fallback, setFallback] = useState<EthClientFallback>("on");
 
   useEffect(() => {
@@ -44,7 +44,7 @@ function Repository({
   }, [ethClientFallback]);
 
   function changeClient() {
-    changeEthClientTarget(target);
+    if (target) changeEthClientTarget(target);
   }
 
   function changeFallback(newFallback: EthClientFallback) {
@@ -91,7 +91,7 @@ function Repository({
         <Button
           variant="dappnode"
           onClick={changeClient}
-          disabled={ethClientTarget === target}
+          disabled={!target || ethClientTarget === target}
         >
           Change
         </Button>

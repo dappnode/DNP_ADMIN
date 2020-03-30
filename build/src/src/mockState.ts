@@ -796,7 +796,7 @@ const dappnodeStatusState: DappnodeStatusState = {
     ethProvider: "http://geth.dappnode:8545",
     fullnodeDomainTarget: "geth.dnp.dappnode.eth",
     isFirstTimeRunning: true,
-    newFeatureIds: ["auto-updates"]
+    newFeatureIds: ["repository-fallback"]
   },
   stats: {
     cpu: "34%",

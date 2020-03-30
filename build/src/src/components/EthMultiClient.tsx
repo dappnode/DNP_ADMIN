@@ -9,9 +9,9 @@ import { FaDatabase } from "react-icons/fa";
 import Switch from "./Switch";
 import Alert from "react-bootstrap/Alert";
 
-const fallbackToBoolean = (fallback: EthClientFallback): boolean =>
+export const fallbackToBoolean = (fallback: EthClientFallback): boolean =>
   fallback === "on" ? true : fallback === "off" ? false : false;
-const booleanToFallback = (bool: boolean): EthClientFallback =>
+export const booleanToFallback = (bool: boolean): EthClientFallback =>
   bool ? "on" : "off";
 
 export function getEthClientPrettyName(target: EthClientTarget) {
@@ -108,7 +108,7 @@ export function EthMultiClients({
   onTargetChange,
   showStats
 }: {
-  target: EthClientTarget;
+  target: EthClientTarget | null;
   onTargetChange: (newTarget: EthClientTarget) => void;
   showStats?: boolean;
 }) {
@@ -118,7 +118,7 @@ export function EthMultiClients({
         .filter(({ options }) => options.length > 0)
         .map(({ title, description, options, stats, highlight }) => {
           const defaultTarget = options[0];
-          const selected = options.includes(selectedTarget);
+          const selected = selectedTarget && options.includes(selectedTarget);
           const optionMap = getOptionsMap(options);
           const getSvgClass = (_highlight: keyof EthClientDataStats) =>
             joinCssClass({ active: highlight === _highlight });
@@ -171,12 +171,12 @@ export function EthMultiClientFallback({
   fallback,
   onFallbackChange
 }: {
-  target: EthClientTarget;
+  target: EthClientTarget | null;
   fallback: EthClientFallback;
   onFallbackChange: (newFallback: EthClientFallback) => void;
 }) {
   // Do not render for remote
-  if (target === "remote") return null;
+  if (!target || target === "remote") return null;
 
   return (
     <Switch
@@ -204,7 +204,7 @@ export function EthMultiClientsAndFallback({
   fallback,
   onFallbackChange
 }: {
-  target: EthClientTarget;
+  target: EthClientTarget | null;
   onTargetChange: (newTarget: EthClientTarget) => void;
   showStats?: boolean;
   fallback: EthClientFallback;
@@ -224,7 +224,7 @@ export function EthMultiClientsAndFallback({
         onFallbackChange={onFallbackChange}
       />
 
-      {target !== "remote" && fallback === "off" && (
+      {target && target !== "remote" && fallback === "off" && (
         <Alert variant="warning">
           This node will need some time to sync and versions in the repository
           may not be up to date until then

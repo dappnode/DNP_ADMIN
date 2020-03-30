@@ -1,14 +1,14 @@
-import { UiNewFeatureStatus, UiNewFeatureId } from "../types";
+import { NewFeatureStatus, NewFeatureId } from "../types";
 
-export const route = "uiNewFeatureStatusSet.dappmanager.dnp.dappnode.eth";
+export const route = "newFeatureStatusSet.dappmanager.dnp.dappnode.eth";
 
 /**
  * Set a domain alias to a DAppNode package by name
  */
 
 export interface RequestData {
-  featureId: UiNewFeatureId;
-  status: UiNewFeatureStatus;
+  featureId: NewFeatureId;
+  status: NewFeatureStatus;
 }
 
 export type ReturnData = void;

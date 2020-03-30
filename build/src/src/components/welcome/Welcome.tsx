@@ -11,12 +11,13 @@ import WelcomeModalContainer from "./WelcomeModalContainer";
 import HelloFirstTime from "./HelloFirstTime";
 import HelloOnUpdate from "./HelloOnUpdate";
 import Finished from "./Finished";
-import Repository from "./features/Repository";
 import AutoUpdates from "./features/AutoUpdates";
 import ChangeHostPassword from "./features/ChangeHostPassword";
+import Repository from "./features/Repository";
+import RepositoryFallback from "./features/RepositoryFallback";
 // Utils
 import { isEqual } from "lodash";
-import { UiNewFeatureId } from "types";
+import { NewFeatureId } from "types";
 // styles
 import "./welcome.scss";
 
@@ -37,7 +38,7 @@ interface RouteProps {
  * RouteIds will be returned by the DAPPMANAGER is a correct order
  */
 function getRouteIdComponent(
-  routeId: UiNewFeatureId
+  routeId: NewFeatureId
 ): React.FunctionComponent<RouteProps> | undefined {
   switch (routeId) {
     case "auto-updates":
@@ -46,6 +47,8 @@ function getRouteIdComponent(
       return (props: RouteProps) => <ChangeHostPassword {...props} />;
     case "repository":
       return (props: RouteProps) => <Repository {...props} />;
+    case "repository-fallback":
+      return (props: RouteProps) => <RepositoryFallback {...props} />;
     default:
       return undefined;
   }
@@ -60,18 +63,18 @@ function Welcome({
   featureIds,
   isFirstTimeRunning
 }: {
-  featureIds?: UiNewFeatureId[];
+  featureIds?: NewFeatureId[];
   isFirstTimeRunning?: boolean;
 }) {
   const [routeN, setRouteN] = useState(0);
   const [status, setStatus] = useState<Status>("finished");
   // featureIds must be frozen during a welcome wizard flow
   // so the user can go back and next without the views changing
-  const [intFeatureIds, setIntFeatureIds] = useState<UiNewFeatureId[]>([]);
+  const [intFeatureIds, setIntFeatureIds] = useState<NewFeatureId[]>([]);
 
   // Do in two steps to avoid adding routes that don't have a view implemented
   const routes: {
-    featureId: UiNewFeatureId;
+    featureId: NewFeatureId;
     render: React.FunctionComponent<RouteProps>;
   }[] = [];
   for (const featureId of intFeatureIds) {
@@ -102,13 +105,13 @@ function Welcome({
       setRouteN(0);
       setIntFeatureIds(featureIds);
     }
-  }, [featureIds, status]);
+  }, [featureIds, intFeatureIds, status]);
 
   function onBack() {
     setRouteN(n => (n <= 1 ? 0 : n - 1));
   }
 
-  function onNext(id: UiNewFeatureId | false) {
+  function onNext(id: NewFeatureId | false) {
     if (routeN === routesWithHomeFinish.length - 1) {
       // When clicking next on the last view, mark as finished
       setStatus("finished");
@@ -119,8 +122,8 @@ function Welcome({
 
     // Persist in the DAPPMANAGER that this new feature has been seen by the user
     if (id)
-      api.uiNewFeatureStatusSet({ featureId: id, status: "seen" }).catch(e => {
-        console.error(`Error on uiNewFeatureStatusSet(${featureId}, seen)`, e);
+      api.newFeatureStatusSet({ featureId: id, status: "seen" }).catch(e => {
+        console.error(`Error on newFeatureStatusSet(${featureId}, seen)`, e);
       });
   }
 

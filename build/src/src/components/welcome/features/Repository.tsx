@@ -23,9 +23,9 @@ function Repository({
 }: {
   onBack?: () => void;
   onNext?: () => void;
-  ethClientTarget?: EthClientTarget;
+  ethClientTarget?: EthClientTarget | null;
 }) {
-  const [target, setTarget] = useState("" as EthClientTarget);
+  const [target, setTarget] = useState<EthClientTarget>("remote");
   // Use fallback by default
   const [fallback, setFallback] = useState<EthClientFallback>("on");
 
