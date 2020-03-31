@@ -55,7 +55,9 @@ function AutoUpdatesView({
               } auto updates for ${shortNameCapitalized(id)}...`
         }
       )
-      .catch(e => console.error(`Error on autoUpdateSettingsEdit: ${e.stack}`));
+      .catch(e => {
+        console.error(`Error on autoUpdateSettingsEdit: ${e.stack}`);
+      });
   }
 
   return (

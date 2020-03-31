@@ -10,24 +10,7 @@ import { getEthClientFallback } from "services/dappnodeStatus/selectors";
 import BottomButtons from "../BottomButtons";
 import * as api from "API/calls";
 import Alert from "react-bootstrap/Alert";
-import Switch from "react-switch";
-import "./repositoryFallback.scss";
-
-const factor = 2;
-const height = 28 * factor;
-const width = 64 * factor;
-const fontSize = 16 * factor;
-const onColor = "#2fbcb2";
-const offColor = undefined; // "#bc2f39";
-const switchLabelProps = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100%",
-  fontSize,
-  color: "white",
-  paddingRight: 2
-};
+import SwitchBig from "components/SwitchBig";
 
 /**
  * View to chose or change the Eth multi-client
@@ -44,7 +27,7 @@ function RepositoryFallback({
   ethClientFallback
 }: {
   onBack?: () => void;
-  onNext?: () => void;
+  onNext: () => void;
   ethClientFallback?: EthClientFallback;
 }) {
   // Use fallback by default
@@ -59,7 +42,7 @@ function RepositoryFallback({
       console.error(`Error on ethClientFallbackSet: ${e.stack}`);
     });
 
-    if (onNext) onNext();
+    onNext();
   }
 
   return (
@@ -70,32 +53,23 @@ function RepositoryFallback({
           DAppNode uses smart contracts to access a decentralized respository of
           DApps
           <br />
-          Choose to use a remote node if your node syncing or errors
+          Choose to use a remote node maintained by DAppNode Association if your
+          node is not available (while syncing or failed)
         </div>
       </div>
 
       <div className="repository-fallback-switch">
-        <label htmlFor="repository-fallback-switch">
-          <span>Use remote during syncing or errors</span>
-          <Switch
-            checked={fallbackToBoolean(fallback)}
-            onChange={bool => setFallback(booleanToFallback(bool))}
-            uncheckedIcon={<div style={switchLabelProps}>OFF</div>}
-            checkedIcon={<div style={switchLabelProps}>ON</div>}
-            className="react-switch"
-            id="repository-fallback-switch"
-            onColor={onColor}
-            offColor={offColor}
-            height={height}
-            width={width}
-            handleDiameter={height * 0.7}
-          />
-        </label>
+        <SwitchBig
+          checked={fallbackToBoolean(fallback)}
+          onChange={bool => setFallback(booleanToFallback(bool))}
+          label="Use remote during syncing or errors"
+          id="repository-fallback-switch"
+        />
 
         {fallback === "off" && (
           <Alert variant="warning">
-            This node will need some time to sync and versions in the repository
-            may not be up to date until then
+            If your node is not available, you won't be able to update packages
+            or access the DAppStore.
           </Alert>
         )}
       </div>

@@ -22,7 +22,7 @@ function Repository({
   ethClientTarget
 }: {
   onBack?: () => void;
-  onNext?: () => void;
+  onNext: () => void;
   ethClientTarget?: EthClientTarget | null;
 }) {
   const [target, setTarget] = useState<EthClientTarget>("remote");
@@ -45,7 +45,7 @@ function Repository({
           console.error(`Error on ethClientFallbackSet: ${e.stack}`);
         });
     }
-    if (onNext) onNext();
+    onNext();
   }
 
   return (

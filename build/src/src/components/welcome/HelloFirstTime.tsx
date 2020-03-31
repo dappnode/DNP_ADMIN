@@ -10,9 +10,9 @@ export default function HelloFirstTime({
   return (
     <>
       <div className="header">
-        <div className="title">Configure your DAppNode</div>
+        <div className="title">Welcome to your DAppNode</div>
         <div className="description">
-          Welcome! Let's setup your DAppNode and get started
+          Let's get started with the configuration
           {/* <br />
           If you want,{" "}
           <a href={surveyUrl} {...newTabProps}>

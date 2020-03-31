@@ -10,10 +10,8 @@ export default function HelloNewFeature({
   return (
     <>
       <div className="header">
-        <div className="title">Configure your DAppNode</div>
-        <div className="description">
-          Some new features require you attention
-        </div>
+        <div className="title">New settings require your attention</div>
+        <div className="description">Let's go ahead and set it up</div>
       </div>
 
       <Button
