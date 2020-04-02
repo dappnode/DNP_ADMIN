@@ -3,7 +3,12 @@ import Card from "components/Card";
 import "./ethMultiClient.scss";
 import { joinCssClass } from "utils/css";
 import Select from "components/Select";
-import { EthClientTarget, EthClientFallback } from "types";
+import {
+  EthClientTarget,
+  EthClientFallback,
+  EthClientStatus,
+  EthClientStatusError
+} from "types";
 import { AiFillSafetyCertificate, AiFillClockCircle } from "react-icons/ai";
 import { FaDatabase } from "react-icons/fa";
 import Switch from "./Switch";
@@ -27,6 +32,59 @@ export function getEthClientPrettyName(target: EthClientTarget) {
     default:
       return target;
   }
+}
+
+function getEthClientPrettyStatusError(
+  statusError: EthClientStatusError
+): string {
+  // Be safe against possible nested object errors
+  // @ts-ignore
+  if (!statusError.error) statusError.error = {};
+
+  switch (statusError.code) {
+    case "UNKNOWN_ERROR":
+      return `Unknown error: ${statusError.error.message}`;
+
+    case "STATE_NOT_SYNCED":
+      return "State is not synced";
+
+    case "STATE_CALL_ERROR":
+      return `State call error: ${statusError.error.message}`;
+
+    case "IS_SYNCING":
+      return "Is syncing";
+
+    case "NOT_AVAILABLE":
+      return `Not available: ${statusError.error.message}`;
+
+    case "NOT_RUNNING":
+      return "Not running";
+
+    case "NOT_INSTALLED":
+      return "Not installed";
+
+    case "INSTALLING":
+      return "Is installing";
+
+    case "INSTALLING_ERROR":
+      return `Install error: ${statusError.error.message}`;
+
+    case "UNINSTALLED":
+      return `Package is uninstalled`;
+  }
+}
+
+export function getEthClientPrettyStatus(
+  status: EthClientStatus | null | undefined,
+  fallback: EthClientFallback | null | undefined
+): string {
+  if (!status) return "";
+
+  if (status.ok) return "Active";
+
+  const message = getEthClientPrettyStatusError(status);
+  const fallbackOn = fallback && fallback === "on";
+  return `Not available ${fallbackOn ? "(using fallback)" : ""} - ${message}`;
 }
 
 const clients: EthClientData[] = [

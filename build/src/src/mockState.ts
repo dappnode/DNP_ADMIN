@@ -790,13 +790,21 @@ const dappnodeStatusState: DappnodeStatusState = {
     dappmanagerNaclPublicKey: "cYo1NA7/+PQ22PeqrRNGhs1B84SY/fuomNtURj5SUmQ=",
     identityAddress: "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B",
     ethClientTarget: "geth-light",
-    ethClientStatus: "installed",
-    ethClientStatusError: "Error fetching manifest from ...",
     ethClientFallback: "on",
+    ethClientStatus: {
+      ok: false,
+      code: "STATE_CALL_ERROR",
+      error: { message: "Some Error", stack: "Some Error\nline 56 file.ts" }
+    },
     ethProvider: "http://geth.dappnode:8545",
     fullnodeDomainTarget: "geth.dnp.dappnode.eth",
     isFirstTimeRunning: false,
-    newFeatureIds: ["repository", "repository-fallback", "auto-updates", "change-host-password"]
+    newFeatureIds: [
+      // "repository",
+      // "repository-fallback",
+      // "auto-updates",
+      // "change-host-password"
+    ]
   },
   stats: {
     cpu: "34%",

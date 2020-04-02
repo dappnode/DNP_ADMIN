@@ -6,14 +6,14 @@ import Card from "components/Card";
 import Button from "components/Button";
 import {
   getEthClientPrettyName,
+  getEthClientPrettyStatus,
   EthMultiClientsAndFallback
 } from "components/EthMultiClient";
 import { EthClientTarget, EthClientStatus, EthClientFallback } from "types";
 import {
   getEthClientTarget,
-  getEthClientStatus,
   getEthClientFallback,
-  getEthMultiClientWarning
+  getEthClientStatus
 } from "services/dappnodeStatus/selectors";
 import { changeEthClientTarget } from "pages/system/actions";
 import Alert from "react-bootstrap/Alert";
@@ -23,14 +23,12 @@ function Repository({
   ethClientTarget,
   ethClientStatus,
   ethClientFallback,
-  changeEthClientTarget,
-  ethMultiClientWarning
+  changeEthClientTarget
 }: {
   ethClientTarget?: EthClientTarget | null;
-  ethClientStatus?: EthClientStatus;
+  ethClientStatus?: EthClientStatus | null;
   ethClientFallback?: EthClientFallback;
   changeEthClientTarget: (newTarget: EthClientTarget) => void;
-  ethMultiClientWarning?: "not-installed" | "not-running";
 }) {
   const [target, setTarget] = useState<EthClientTarget | null>(null);
   const [fallback, setFallback] = useState<EthClientFallback>("on");
@@ -54,6 +52,42 @@ function Repository({
       .catch(e => console.log("Error on ethClientFallbackSet", e));
   }
 
+  /**
+   * There are a few edge cases which the user must be warned about
+   *
+   * 1. if (!dnp) && status !== "installed", "selected", "error-installing"
+   *    NOT-OK Client should be installed
+   *    Something or someone removed the client, re-install?
+   *  > Show an error or something in the UI as
+   *    "Alert!" you target is OFF, go to remote or install it again
+   *
+   * 2. if (!dnp.running)
+   *    Package can be stopped because the user stopped it or
+   *    because the DAppNode is too full and auto-stop kicked in
+   *  > Show an error or something in the UI as
+   *    "Alert!" you target is OFF, go to remote or install it again
+   */
+  function renderEthMultiClientWarning() {
+    if (ethClientStatus && !ethClientStatus.ok)
+      switch (ethClientStatus.code) {
+        case "NOT_RUNNING":
+          return (
+            <Alert variant="warning">
+              Selected client is not running. Please, restart the client or
+              select remote
+            </Alert>
+          );
+        case "NOT_INSTALLED":
+        case "UNINSTALLED":
+          return (
+            <Alert variant="warning">
+              Selected client is not installed. Please, re-install the client or
+              select remote
+            </Alert>
+          );
+      }
+  }
+
   return (
     <Card className="dappnode-identity">
       <div>
@@ -62,23 +96,14 @@ function Repository({
       </div>
       {ethClientTarget && ethClientTarget !== "remote" && (
         <div className="description">
-          Client status: <strong>{ethClientStatus}</strong> (
-          {getEthClientPrettyName(ethClientTarget)})
+          <strong>Client:</strong> {getEthClientPrettyName(ethClientTarget)}
+          <br />
+          <strong>Status:</strong>{" "}
+          {getEthClientPrettyStatus(ethClientStatus, ethClientFallback)}
         </div>
       )}
 
-      {ethMultiClientWarning === "not-installed" && (
-        <Alert variant="warning">
-          Selected client is not installed. Please, re-install the client or
-          select remote
-        </Alert>
-      )}
-      {ethMultiClientWarning === "not-running" && (
-        <Alert variant="warning">
-          Selected client is not running. Please, restart the client or select
-          remote
-        </Alert>
-      )}
+      {renderEthMultiClientWarning()}
 
       <EthMultiClientsAndFallback
         target={target}
@@ -103,8 +128,7 @@ function Repository({
 const mapStateToProps = createStructuredSelector({
   ethClientTarget: getEthClientTarget,
   ethClientStatus: getEthClientStatus,
-  ethClientFallback: getEthClientFallback,
-  ethMultiClientWarning: getEthMultiClientWarning
+  ethClientFallback: getEthClientFallback
 });
 
 const mapDispatchToProps = {
