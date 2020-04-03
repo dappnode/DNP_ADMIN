@@ -207,6 +207,11 @@ export function EthMultiClients({
 
               {selected && options.length > 1 && (
                 <Select
+                  value={
+                    selectedTarget
+                      ? getEthClientPrettyName(selectedTarget)
+                      : undefined
+                  }
                   options={options.map(getEthClientPrettyName)}
                   onValueChange={(newOpt: string) => {
                     onTargetChange(optionMap[newOpt]);

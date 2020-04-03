@@ -800,10 +800,10 @@ const dappnodeStatusState: DappnodeStatusState = {
     fullnodeDomainTarget: "geth.dnp.dappnode.eth",
     isFirstTimeRunning: false,
     newFeatureIds: [
-      "repository",
-      "repository-fallback",
-      "system-auto-updates",
-      "change-host-password"
+      // "repository",
+      // "repository-fallback",
+      // "system-auto-updates",
+      // "change-host-password"
     ]
   },
   stats: {
