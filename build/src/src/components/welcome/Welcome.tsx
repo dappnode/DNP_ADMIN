@@ -11,7 +11,7 @@ import WelcomeModalContainer from "./WelcomeModalContainer";
 import HelloFirstTime from "./HelloFirstTime";
 import HelloOnUpdate from "./HelloOnUpdate";
 import Finished from "./Finished";
-import AutoUpdates from "./features/AutoUpdates";
+import SystemAutoUpdates from "./features/SystemAutoUpdates";
 import ChangeHostPassword from "./features/ChangeHostPassword";
 import Repository from "./features/Repository";
 import RepositoryFallback from "./features/RepositoryFallback";
@@ -41,8 +41,8 @@ function getRouteIdComponent(
   routeId: NewFeatureId
 ): React.FunctionComponent<RouteProps> | undefined {
   switch (routeId) {
-    case "auto-updates":
-      return (props: RouteProps) => <AutoUpdates {...props} />;
+    case "system-auto-updates":
+      return (props: RouteProps) => <SystemAutoUpdates {...props} />;
     case "change-host-password":
       return (props: RouteProps) => <ChangeHostPassword {...props} />;
     case "repository":
