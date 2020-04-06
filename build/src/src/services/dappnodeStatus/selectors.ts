@@ -1,6 +1,7 @@
 import { mountPoint, autoUpdateIds } from "./data";
 import { createSelector } from "reselect";
 import { DappnodeStatusState } from "./types";
+import { getEthClientPrettyStatusError } from "components/EthMultiClient";
 
 // Service > dappnodeStatus
 
@@ -41,6 +42,18 @@ export const getIsFirstTimeRunning = (state: any) =>
   (getSystemInfo(state) || {}).isFirstTimeRunning;
 export const getNewFeatureIds = (state: any) =>
   (getSystemInfo(state) || {}).newFeatureIds;
+
+/**
+ * Returns a pretty warning about the eth client only if the user has to see it
+ * @param state
+ */
+export const getEthClientWarning = (state: any): string | null => {
+  const ethClientFallback = getEthClientFallback(state);
+  const ethClientStatus = getEthClientStatus(state);
+  if (ethClientStatus && !ethClientStatus.ok && ethClientFallback === "off")
+    return getEthClientPrettyStatusError(ethClientStatus);
+  else return null;
+};
 
 /**
  * Returns the DAppNode "network" identity to be shown in the TopBar

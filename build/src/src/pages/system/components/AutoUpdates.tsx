@@ -1,5 +1,5 @@
 import React from "react";
-import { createStructuredSelector, createSelector } from "reselect";
+import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 // Components
@@ -7,25 +7,15 @@ import Card from "components/Card";
 import Alert from "react-bootstrap/Alert";
 import AutoUpdatesView from "components/AutoUpdatesView";
 // External
-import {
-  getEthClientFallback,
-  getEthClientStatus
-} from "services/dappnodeStatus/selectors";
-import { EthClientStatus, EthClientFallback } from "types";
-import { getEthClientPrettyStatusError } from "components/EthMultiClient";
-import {
-  rootPath as systemRootPath,
-  subPaths as systemSubPaths
-} from "pages/system/data";
+import { getEthClientWarning } from "services/dappnodeStatus/selectors";
+import { activateFallbackPath } from "pages/system/data";
 // Styles
 import "./autoUpdates.scss";
 
 function AutoUpdates({
-  ethClientStatus,
-  ethClientFallback
+  ethClientWarning
 }: {
-  ethClientStatus?: EthClientStatus | null;
-  ethClientFallback?: EthClientFallback;
+  ethClientWarning: string | null;
 }) {
   return (
     <Card>
@@ -35,13 +25,13 @@ function AutoUpdates({
         required.
       </div>
 
-      {ethClientStatus && !ethClientStatus.ok && ethClientFallback === "off" && (
+      {ethClientWarning && (
         <Alert variant="warning">
           Auto-updates will not work temporarily. Eth client not available:{" "}
-          {getEthClientPrettyStatusError(ethClientStatus)}
+          {ethClientWarning}
           <br />
           Enable the{" "}
-          <NavLink to={`${systemRootPath}/${systemSubPaths.repository}`}>
+          <NavLink to={activateFallbackPath}>
             repository source fallback
           </NavLink>{" "}
           to have auto-updates meanwhile
@@ -56,8 +46,7 @@ function AutoUpdates({
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  ethClientStatus: getEthClientStatus,
-  ethClientFallback: getEthClientFallback
+  ethClientWarning: getEthClientWarning
 });
 
 const mapDispatchToProps = null;

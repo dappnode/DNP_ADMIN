@@ -20,5 +20,8 @@ export const subPaths = {
   power: "power"
 };
 
+// Computed paths
+export const activateFallbackPath = `${rootPath}/${subPaths.repository}`;
+
 // DAppNode data
 export const ipfsApiUrl = "http://ipfs.dappnode:5001/api/v0";
