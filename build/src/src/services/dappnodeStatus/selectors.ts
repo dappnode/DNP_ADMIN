@@ -38,8 +38,6 @@ export const getEthClientFallback = (state: any) =>
   (getSystemInfo(state) || {}).ethClientFallback;
 export const getEthClientStatus = (state: any) =>
   (getSystemInfo(state) || {}).ethClientStatus;
-export const getIsFirstTimeRunning = (state: any) =>
-  (getSystemInfo(state) || {}).isFirstTimeRunning;
 export const getNewFeatureIds = (state: any) =>
   (getSystemInfo(state) || {}).newFeatureIds;
 

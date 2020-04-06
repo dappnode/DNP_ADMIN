@@ -724,7 +724,6 @@ const dappnodeStatusState: DappnodeStatusState = {
     },
     ethProvider: "http://geth.dappnode:8545",
     fullnodeDomainTarget: "geth.dnp.dappnode.eth",
-    isFirstTimeRunning: false,
     newFeatureIds: [
       // "repository",
       // "repository-fallback",

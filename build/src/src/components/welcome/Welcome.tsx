@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import {
-  getIsFirstTimeRunning,
-  getNewFeatureIds
-} from "services/dappnodeStatus/selectors";
+import { getNewFeatureIds } from "services/dappnodeStatus/selectors";
 import * as api from "API/calls";
 // Components
 import WelcomeModalContainer from "./WelcomeModalContainer";
-import HelloFirstTime from "./HelloFirstTime";
-import HelloOnUpdate from "./HelloOnUpdate";
+import Start from "./Start";
 import Finished from "./Finished";
 import SystemAutoUpdates from "./features/SystemAutoUpdates";
 import ChangeHostPassword from "./features/ChangeHostPassword";
@@ -59,13 +55,7 @@ function getRouteIdComponent(
 /**
  * Handles routing and each subroute should have "Next" & "Back"
  */
-function Welcome({
-  featureIds,
-  isFirstTimeRunning
-}: {
-  featureIds?: NewFeatureId[];
-  isFirstTimeRunning?: boolean;
-}) {
+function Welcome({ featureIds }: { featureIds?: NewFeatureId[] }) {
   const [routeN, setRouteN] = useState(0);
   const [status, setStatus] = useState<Status>("finished");
   // featureIds must be frozen during a welcome wizard flow
@@ -83,10 +73,8 @@ function Welcome({
   }
 
   // Append first and last view to make the UX less abrupt
-  const routesWithHomeFinish = [
-    isFirstTimeRunning
-      ? { render: (props: RouteProps) => <HelloFirstTime {...props} /> }
-      : { render: (props: RouteProps) => <HelloOnUpdate {...props} /> },
+  const routesWithStartFinish = [
+    { render: (props: RouteProps) => <Start {...props} /> },
     ...routes,
     { render: (props: RouteProps) => <Finished {...props} /> }
   ];
@@ -112,7 +100,7 @@ function Welcome({
   }
 
   function onNext(id: NewFeatureId | false) {
-    if (routeN === routesWithHomeFinish.length - 1) {
+    if (routeN === routesWithStartFinish.length - 1) {
       // When clicking next on the last view, mark as finished
       setStatus("finished");
     } else {
@@ -127,7 +115,7 @@ function Welcome({
       });
   }
 
-  const currentRoute = routesWithHomeFinish[routeN];
+  const currentRoute = routesWithStartFinish[routeN];
   const featureId = "featureId" in currentRoute && currentRoute.featureId;
 
   return (
@@ -140,7 +128,6 @@ function Welcome({
 }
 
 const mapStateToProps = createStructuredSelector({
-  isFirstTimeRunning: getIsFirstTimeRunning,
   featureIds: getNewFeatureIds
 });
 

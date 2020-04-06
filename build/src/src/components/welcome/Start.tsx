@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "components/Button";
 
-export default function HelloNewFeature({
+export default function Start({
   onNext
 }: {
   onBack?: () => void;
@@ -10,7 +10,7 @@ export default function HelloNewFeature({
   return (
     <>
       <div className="header">
-        <div className="title">New settings require your attention</div>
+        <div className="title">Some settings require your attention</div>
         <div className="description">Let's go ahead and set it up</div>
       </div>
 
