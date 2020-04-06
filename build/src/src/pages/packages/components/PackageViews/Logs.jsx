@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import api from "API/rpcMethods";
-import Toast from "components/toast/Toast";
+import newTabProps from "utils/newTabProps";
 // Components
 import Card from "components/Card";
 import Switch from "components/Switch";
@@ -11,10 +11,12 @@ import Terminal from "./Terminal";
 // Utils
 import { stringIncludes, stringSplit } from "utils/strings";
 
+const baseUrlDownloadAll =
+  "http://my.dappmanager.dnp.dappnode.eth:3000/container-logs";
 const refreshInterval = 2 * 1000;
 const terminalID = "terminal";
 
-const validateLines = lines => !isNaN(lines) && lines > 0;
+const validateLines = (lines) => !isNaN(lines) && lines > 0;
 
 function Logs({ id }) {
   // User options
@@ -24,7 +26,6 @@ function Logs({ id }) {
   const [lines, setLines] = useState(200);
   // Fetched data
   const [logs, setLogs] = useState("");
-  const [downloading, setDownloading] = useState(false);
 
   /**
    * This use effect fetches the logs again everytime any of this variables changes:
@@ -68,27 +69,6 @@ function Logs({ id }) {
     }
   }, [autoRefresh, timestamps, lines, id]);
 
-  async function downloadAll() {
-    try {
-      setDownloading(true);
-      const logs = await api.logPackage({ id, options: { timestamps } });
-      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(logs);
-      var dlAnchorElem = document.getElementById("downloadAnchorElem");
-      dlAnchorElem.setAttribute("href", dataStr);
-      dlAnchorElem.setAttribute("download", `DAppNodeLogs-${id}.txt`);
-      dlAnchorElem.click();
-    } catch (e) {
-      console.error(`Error downloading logs: ${e.stack}`);
-      Toast({
-        message: `Error downloading logs: ${e.message}`,
-        success: false,
-        hideDetailsButton: true
-      });
-    } finally {
-      setDownloading(false);
-    }
-  }
-
   /**
    * Filter the logs text by lines that contain the query
    * If the query is empty, skip the filter
@@ -97,7 +77,7 @@ function Logs({ id }) {
    */
   const logsArray = stringSplit(logs, /\r?\n/);
   let logsFiltered = query
-    ? logsArray.filter(line => stringIncludes(line, query)).join("\n")
+    ? logsArray.filter((line) => stringIncludes(line, query)).join("\n")
     : logs;
   if (logs && query && !logsFiltered) logsFiltered = "No match found";
 
@@ -129,9 +109,9 @@ function Logs({ id }) {
         type="number"
         prepend="Lines"
         append={
-          <Button disabled={downloading} onClick={downloadAll}>
-            Download all
-          </Button>
+          <a href={`${baseUrlDownloadAll}/${id}`} {...newTabProps}>
+            <Button>Download all</Button>
+          </a>
         }
       />
 
@@ -143,16 +123,12 @@ function Logs({ id }) {
       />
 
       <Terminal text={terminalText} id={terminalID} />
-
-      <a id="downloadAnchorElem" style={{ display: "none" }} href="/">
-        Download Anchor
-      </a>
     </Card>
   );
 }
 
 Logs.propTypes = {
-  id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired,
 };
 
 export default Logs;
