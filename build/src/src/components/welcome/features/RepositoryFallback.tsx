@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import React, { useState } from "react";
 import {
   fallbackToBoolean,
   booleanToFallback
 } from "components/EthMultiClient";
 import { EthClientFallback } from "types";
-import { getEthClientFallback } from "services/dappnodeStatus/selectors";
 import BottomButtons from "../BottomButtons";
 import * as api from "API/calls";
 import Alert from "react-bootstrap/Alert";
@@ -20,27 +17,21 @@ import SwitchBig from "components/SwitchBig";
  * - Full node
  * There may be multiple available light-clients and fullnodes
  */
-function RepositoryFallback({
+export default function RepositoryFallback({
   onBack,
-  onNext,
-  // Redux
-  ethClientFallback
+  onNext
 }: {
   onBack?: () => void;
   onNext: () => void;
-  ethClientFallback?: EthClientFallback;
 }) {
   // Use fallback by default
   const [fallback, setFallback] = useState<EthClientFallback>("on");
 
-  useEffect(() => {
-    if (ethClientFallback) setFallback(ethClientFallback);
-  }, [ethClientFallback]);
-
   async function changeFallback() {
-    api.ethClientFallbackSet({ fallback }).catch(e => {
-      console.error(`Error on ethClientFallbackSet: ${e.stack}`);
-    });
+    if (fallback === "on")
+      api.ethClientFallbackSet({ fallback }).catch(e => {
+        console.error(`Error on ethClientFallbackSet: ${e.stack}`);
+      });
 
     onNext();
   }
@@ -78,14 +69,3 @@ function RepositoryFallback({
     </>
   );
 }
-
-const mapStateToProps = createStructuredSelector({
-  ethClientFallback: getEthClientFallback
-});
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RepositoryFallback);
