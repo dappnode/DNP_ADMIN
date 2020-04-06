@@ -28,7 +28,7 @@ function ChainDataDropdown({ chainData }: { chainData: ChainData[] }) {
       )}
       Icon={() => <FiBox size={"1.4em"} />}
       className="chainstatus"
-      placeholder="Mainnet chain state is not available, click the report icon"
+      placeholder="No chains installed"
     />
   );
 }

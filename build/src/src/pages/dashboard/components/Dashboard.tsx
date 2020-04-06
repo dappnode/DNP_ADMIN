@@ -20,7 +20,7 @@ import { ChainData, HostStats } from "types";
 
 /**
  * @param {array} chainData = [{
- *   name: "Mainnet",
+ *   name: "Geth",
  *   message: "Syncing 4785835/3748523",
  *   progress: 0.647234,
  *   syncing: true

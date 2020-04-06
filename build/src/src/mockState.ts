@@ -808,7 +808,7 @@ const dappnodeStatusState: DappnodeStatusState = {
         feedback: {
           inQueue: true,
           errorMessage:
-            "Error updating LN: Mainnet is still syncing. More lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
+            "More lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
         }
       }
     ]
