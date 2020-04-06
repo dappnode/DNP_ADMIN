@@ -2,18 +2,18 @@ import { prettyVolumeName } from "../../utils/format";
 
 describe("utils > format", () => {
   describe("prettyVolumeName", () => {
-    const dnpName = "vipnode.dnp.dappnode.eth";
+    const dnpName = "geth-user.dnp.dappnode.eth";
     it("Prettify own volume name", () => {
       expect(
-        prettyVolumeName("dncore_ethchaindnpdappnodeeth_data", dnpName)
+        prettyVolumeName("dncore_gethdnpdappnodeeth_data", dnpName)
       ).toEqual({
         name: "Data",
-        owner: "Ethchain"
+        owner: "Geth"
       });
     });
 
     it("Prettify other volume name", () => {
-      expect(prettyVolumeName("vipnodednpdappnodeeth_data", dnpName)).toEqual({
+      expect(prettyVolumeName("gethuserdnpdappnodeeth_data", dnpName)).toEqual({
         name: "Data"
       });
     });

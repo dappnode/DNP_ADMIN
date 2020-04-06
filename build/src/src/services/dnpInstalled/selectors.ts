@@ -1,14 +1,12 @@
 import { mountPoint } from "./data";
 import {
   wifiName,
-  ethchainName,
   ipfsName,
   wifiDefaultSSID,
   wifiDefaultWPA_PASSPHRASE,
   wifiEnvWPA_PASSPHRASE,
   wifiEnvSSID
 } from "params";
-import { createSelector } from "reselect";
 import { DnpInstalledState } from "./types";
 import { PackageContainer, PackageDetailData } from "types";
 
@@ -51,39 +49,17 @@ export const getHostPortMappings = (state: any) => {
   return hostPortMappings;
 };
 
-const defaultClientEnvName = "DEFAULT_CLIENT";
-export const getEthchainClient = createSelector(
-  getDnpInstalled,
-  dnps => {
-    if (!dnps.length) return null;
-    const mainnetDnp = dnps.find(dnp => dnp.name === ethchainName);
-    if (
-      !mainnetDnp ||
-      !mainnetDnp.envs ||
-      !(defaultClientEnvName in mainnetDnp.envs)
-    )
-      return null;
-
-    return (mainnetDnp.envs[defaultClientEnvName] || "")
-      .toLowerCase()
-      .includes("geth")
-      ? "Geth"
-      : "Parity";
-  }
-);
-
 interface VolumeStats {
   name: string;
   size: number;
 }
 
 /**
- * Returns the volume sizes of the `ethchain` and `ipfs` DNPs
+ * Returns the volume sizes of `ipfs` DNPs
  * - ipfs.dnp.dappnode.eth > dncore_ipfsdnpdappnodeeth_data
  */
 export const getDappnodeVolumes = (state: any): VolumeStats[] => {
   const dnps = getDnpInstalled(state);
-  const ethchainClient = getEthchainClient(state);
 
   const volumeStats: VolumeStats[] = [];
 
@@ -96,20 +72,6 @@ export const getDappnodeVolumes = (state: any): VolumeStats[] => {
     const ipfsDataVolume = findVolume(ipfsDnp, "_data");
     if (ipfsDataVolume)
       volumeStats.push({ name: "Ipfs size", size: ipfsDataVolume.size || 0 });
-  }
-
-  const ethchainDnp = findDnp(ethchainName);
-  if (ethchainDnp) {
-    const ethchainDataVolume = findVolume(
-      ethchainDnp,
-      ethchainClient === "Geth" ? "_geth" : "_data"
-    );
-    if (ethchainDataVolume) {
-      volumeStats.push({
-        name: `Ethchain size${ethchainClient ? ` (${ethchainClient})` : ""}`,
-        size: ethchainDataVolume.size || 0
-      });
-    }
   }
 
   return volumeStats;

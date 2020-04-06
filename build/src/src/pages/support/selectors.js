@@ -167,7 +167,6 @@ const getDiagnoseCoreDnpsRunning = createSelector(
       "vpn.dnp.dappnode.eth",
       "admin.dnp.dappnode.eth",
       "ipfs.dnp.dappnode.eth",
-      "ethforward.dnp.dappnode.eth",
       "wamp.dnp.dappnode.eth",
       "bind.dnp.dappnode.eth"
     ];

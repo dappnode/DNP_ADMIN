@@ -17,7 +17,6 @@ function getRootPath(dnpName) {
     "admin.dnp.dappnode.eth",
     "vpn.dnp.dappnode.eth",
     "bind.dnp.dappnode.eth",
-    "ethforward.dnp.dappnode.eth",
     "wamp.dnp.dappnode.eth"
   ].includes(dnpName)
     ? "/system"

@@ -9,11 +9,11 @@ describe("services > chainData, integral test of the redux components", () => {
   it("Should set chainData and retrieve it", () => {
     const chainData = [
       { name: "kovan", message: "Synced" },
-      { name: "ethchain", message: "Synced" }
+      { name: "geth", message: "Synced" }
     ];
     const expected = [
       { name: "kovan", message: "Synced" },
-      { name: "Mainnet", message: "Synced" }
+      { name: "geth", message: "Synced" }
     ];
     state = reducer(state, a.updateChainData(chainData));
     expect(s.getChainData({ [mountPoint]: state })).toEqual(expected);

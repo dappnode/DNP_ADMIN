@@ -47,8 +47,6 @@ const bitcoinAvatar = "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png";
 const lightningNetworkAvatar = "https://i.ibb.co/Twjv2f3/ln.png";
 const raidenAvatar = "https://i.ibb.co/Y0YzyrG/raiden300-min.png";
 const raidenTestnetAvatar = "https://i.ibb.co/2ynnctD/raiden-testnet-300.png";
-const vipnodeAvatar =
-  "https://i.ibb.co/ypjjMVJ/Qmen3sr-ZXEHnc-MM2-RPsg-VKk-Pbk-JPTMN9-SNFVEAQQY4a7-Nf.png";
 const trustlinesAvatar = "https://i.ibb.co/vLBbdGZ/avatar-min.png";
 
 /**
@@ -107,7 +105,7 @@ const lightningNetworkMetadata = {
 };
 
 const lightningNetworkSetupSchema: SetupSchema = {
-  description: `This setup wizard will help you start. In case of problems: https://vipnode.io`,
+  description: "This setup wizard will help you start",
   type: "object",
   required: ["rtlPassword", "network"],
   properties: {
@@ -152,74 +150,6 @@ const lightningNetworkSetup: UserSettings = {
     ALIAS: "",
     COLOR: "#5ACDC5",
     EXT_IP: ""
-  }
-};
-
-/**
- * Vipnode
- */
-
-const vipnodeMetadata = {
-  name: "vipnode.dnp.dappnode.eth",
-  version: "0.1.0",
-  upstreamVersion: "2.2.1",
-  shortDescription: "Economic incentive for running Ethereum full nodes",
-  description:
-    "[Vipnode](https://vipnode.org)'s goal is to allow the Ethereum network to remain decentralized by creating a financial marketplace for more people to run full nodes and serve native light clients. Check this [medium article](https://medium.com/vipnode/an-economic-incentive-for-running-ethereum-full-nodes-ecc0c9ebe22) to understand the motivation behind this project and this [2.0 release article](https://medium.com/vipnode/vipnode-2-0-released-9af1d65b4552) for a tutorial on how to use Vipnode.",
-  avatar: "https://ipfs.io/ipfs/Qmen3srZXEHncMM2RPsgVKkPbkJPTMN9SNFVEAQQY4a7Nf",
-  type: "service",
-  author:
-    "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
-  categories: ["Economic incentive"],
-  links: {
-    homepage: "https://github.com/dappnode/DAppNodePackage-vipnode"
-  },
-  wizard: {},
-  disclaimer: {
-    message:
-      "This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package."
-  },
-  repository: {
-    type: "git",
-    url: "https://github.com/dappnode/DAppNodePackage-vipnode.git"
-  },
-  bugs: {
-    url: "https://github.com/dappnode/DAppNodePackage-vipnode/issues"
-  },
-  license: "GPL-3.0"
-};
-
-const vipnodeSetup: UserSettings = {
-  environment: { PAYOUT_ADDRESS: "" }
-};
-
-const vipnodeSetupSchema: SetupSchema = {
-  description: `This setup wizard will help you start. In case of problems: https://github.com/dappnode/DAppNodePackage-vipnode#installing-and-setting-up-vipnode`,
-  type: "object",
-  required: ["payoutAddress"],
-  properties: {
-    payoutAddress: {
-      type: "string",
-      title: "Payout address",
-      description: "Define an Ethereum mainnet address to get rewards to",
-      pattern: "^0x[a-fA-F0-9]{40}$"
-    }
-  }
-};
-
-const vipnodeSetupTarget: SetupTarget = {
-  payoutAddress: {
-    type: "environment",
-    name: "PAYOUT_ADDRESS"
-  }
-};
-
-const vipnodeSetupUiJson: SetupUiJson = {
-  payoutAddress: {
-    "ui:help": "Don't use your main address",
-    errorMessages: {
-      pattern: "Must be a valid address (0x1fd16a...)"
-    }
   }
 };
 
@@ -491,10 +421,6 @@ const bitcoinSetupTarget: SetupTarget = {
 };
 
 const bitcoinSetupUiJson: SetupUiJson = {};
-
-/**
- * Ethchain
- */
 
 const openEthereumManifest = {
   name: "openethereum.dnp.dappnode.eth",
@@ -1015,13 +941,6 @@ const dnpDirectoryState: DnpDirectoryState = {
     },
     {
       ...sampleDirectoryState,
-      name: "vipnode.dnp.dappnode.eth",
-      description: getDescription(vipnodeMetadata),
-      avatarUrl: vipnodeAvatar,
-      categories: ["Economic incentive"]
-    },
-    {
-      ...sampleDirectoryState,
       name: "trustlines.dnp.dappnode.eth",
       description: getDescription(trustlinesMetadata),
       avatarUrl: trustlinesAvatar,
@@ -1239,18 +1158,7 @@ Content in the first column | Content in the second column
       manifest: openEthereumManifest
     }
   ],
-  dnpInstalledData: {
-    [lightningNetworkMetadata.name]: {
-      volumes: {
-        dncore_ethchaindnpdappnodeeth_mountpoint: {
-          size: "1749123152",
-          devicePath:
-            "/dev1/data/dappnode-volumes/bitcoin.dnp.dappnode.eth/data",
-          mountpoint: "/dev1/data"
-        }
-      }
-    }
-  },
+  dnpInstalledData: {},
   dnpInstalledDataRequestStatus: {}
 };
 
@@ -1352,48 +1260,6 @@ const dnpRequestState: DnpRequestState = {
       }
     },
 
-    [vipnodeMetadata.name]: {
-      ...sampleRequestState,
-      name: vipnodeMetadata.name,
-      reqVersion: vipnodeMetadata.version,
-      semVersion: vipnodeMetadata.version,
-      avatarUrl: vipnodeAvatar,
-      metadata: vipnodeMetadata,
-
-      imageSize: 10000000,
-      isUpdated: false,
-      isInstalled: true,
-
-      settings: {
-        [vipnodeMetadata.name]: vipnodeSetup
-      },
-      setupSchema: {
-        [vipnodeMetadata.name]: vipnodeSetupSchema
-      },
-      setupTarget: {
-        [vipnodeMetadata.name]: vipnodeSetupTarget
-      },
-      setupUiJson: {
-        [vipnodeMetadata.name]: vipnodeSetupUiJson
-      },
-
-      request: {
-        compatible: {
-          requiresCoreUpdate: false,
-          resolving: false,
-          isCompatible: true,
-          error: "",
-          dnps: {
-            [vipnodeMetadata.name]: { from: "0.2.0", to: "0.2.5" }
-          }
-        },
-        available: {
-          isAvailable: true,
-          message: ""
-        }
-      }
-    },
-
     [trustlinesMetadata.name]: {
       ...sampleRequestState,
       name: trustlinesMetadata.name,
@@ -1447,46 +1313,6 @@ const dnpRequestState: DnpRequestState = {
 
       settings: {
         [raidenTestnetMetadata.name]: raidenTestnetSetup
-      }
-    },
-
-    "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy": {
-      ...sampleRequestState,
-      name: vipnodeMetadata.name,
-      reqVersion: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
-      origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
-      avatarUrl: vipnodeAvatar,
-      metadata: vipnodeMetadata,
-
-      imageSize: 10000000,
-      isUpdated: false,
-      isInstalled: true,
-
-      settings: {},
-
-      setupSchema: {
-        [vipnodeMetadata.name]: vipnodeSetupSchema
-      },
-      setupTarget: {
-        [vipnodeMetadata.name]: vipnodeSetupTarget
-      },
-      setupUiJson: {
-        [vipnodeMetadata.name]: vipnodeSetupUiJson
-      },
-      request: {
-        compatible: {
-          requiresCoreUpdate: false,
-          resolving: false,
-          isCompatible: true,
-          error: "",
-          dnps: {
-            "vipnode.dnp.dappnode.eth": { from: "0.2.0", to: "0.2.5" }
-          }
-        },
-        available: {
-          isAvailable: true,
-          message: ""
-        }
       }
     },
 
@@ -1571,24 +1397,13 @@ const chainDataState: ChainDataState = [
     progress: 0.83027522935
   },
   {
-    name: "Geth with states (table)",
-    syncing: true,
-    error: false,
-    message: `
-  |  |
------------- | -------------
-Blocks synced: | 543000 / 654000
-States pulled: | 25314123 / 154762142 
-[What does this mean?](geth.io)`
-  },
-  {
     name: "Geth with states (line-break)",
     syncing: true,
     error: false,
     message: [
       "Blocks synced: 543000 / 654000",
       "States pulled: 25314123 / 154762142",
-      "[What does this mean?](geth.io)"
+      "[Some link to info?](geth.io)"
     ].join("\n\n")
   }
 ];

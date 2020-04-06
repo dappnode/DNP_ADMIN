@@ -31,7 +31,7 @@ import { ChainData, HostStats } from "types";
  *   memory: 56%
  * }
  * @param {array} dappnodeVolumes = [{
- *   name: "Ethchain size",
+ *   name: "IPFS size",
  *   size: "53.45 GB"
  * }, ... ]
  */

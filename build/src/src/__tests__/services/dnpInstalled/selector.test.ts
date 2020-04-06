@@ -7,7 +7,7 @@ import { installedDnpSample } from "schemas";
 
 describe("service > dnpInstalled", () => {
   describe("getDappnodeVolumes", () => {
-    it("Should return a the volume sizes of the DNPs ETHCHAIN and IPFS", () => {
+    it("Should return a the volume sizes of the DNP IPFS", () => {
       const ipfs = "ipfs.dnp.dappnode.eth";
 
       const dnpInstalledState: DnpInstalledState = {
@@ -26,6 +26,8 @@ describe("service > dnpInstalled", () => {
             ]
           }
         ],
+        dnpInstalledData: {},
+        dnpInstalledDataRequestStatus: {},
         requestStatus: {}
       };
 

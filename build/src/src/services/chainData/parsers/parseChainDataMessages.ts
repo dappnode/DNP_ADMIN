@@ -7,10 +7,7 @@ import { ChainData } from "types";
  */
 export default function parseChainDataMessages(chain: ChainData): ChainData {
   let { name, message, syncing } = chain;
-  // Rename chain name
-  if (stringIncludes(name, "ethchain")) {
-    name = "Mainnet";
-  }
+
   // Rename known errors
   if (stringIncludes(message, "ECONNREFUSED")) {
     message = `DAppNode Package stopped or unreachable (connection refused)`;
