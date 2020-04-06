@@ -1,5 +1,5 @@
 import React from "react";
-import { title, updatePath, securityPath } from "../data";
+import { title, subPaths } from "../data";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 // Components
 import StaticIp from "./StaticIp";
@@ -22,49 +22,49 @@ function SystemRoot({ match }) {
   const availableRoutes = [
     {
       name: "Info",
-      subPath: "info",
+      subPath: subPaths.info,
       component: SystemInfo
     },
     {
       name: "Identity",
-      subPath: "identity",
+      subPath: subPaths.identity,
       component: Identity,
       hideFromMenu: true
     },
     {
       name: "Security",
-      subPath: securityPath,
+      subPath: subPaths.security,
       component: Security
     },
     {
       name: "Auto updates",
-      subPath: "auto-updates",
+      subPath: subPaths.autoUpdates,
       component: AutoUpdates
     },
     {
       name: "Repository",
-      subPath: "repository",
+      subPath: subPaths.repository,
       component: Repository
     },
     {
       name: "Static IP",
-      subPath: "static-ip",
+      subPath: subPaths.staticIp,
       component: StaticIp
     },
     {
       name: "Update",
-      subPath: updatePath,
+      subPath: subPaths.update,
       component: SystemUpdate,
       hideFromMenu: true
     },
     {
       name: "Peers",
-      subPath: "add-ipfs-peer",
+      subPath: subPaths.peers,
       component: Peers
     },
     {
       name: "Power",
-      subPath: "power",
+      subPath: subPaths.power,
       component: PowerManagment
     }
   ];

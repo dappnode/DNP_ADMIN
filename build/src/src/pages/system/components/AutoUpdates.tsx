@@ -1,28 +1,50 @@
 import React from "react";
 import { createStructuredSelector, createSelector } from "reselect";
 import { connect } from "react-redux";
+import { NavLink } from "react-router-dom";
 // Components
 import Card from "components/Card";
 import Alert from "react-bootstrap/Alert";
+import AutoUpdatesView from "components/AutoUpdatesView";
 // External
-import { getMainnet } from "services/chainData/selectors";
-import { getIsMainnetDnpNotRunning } from "services/dnpInstalled/selectors";
+import {
+  getEthClientFallback,
+  getEthClientStatus
+} from "services/dappnodeStatus/selectors";
+import { EthClientStatus, EthClientFallback } from "types";
+import { getEthClientPrettyStatusError } from "components/EthMultiClient";
+import {
+  rootPath as systemRootPath,
+  subPaths as systemSubPaths
+} from "pages/system/data";
 // Styles
 import "./autoUpdates.scss";
-import AutoUpdatesView from "components/AutoUpdatesView";
 
-function AutoUpdates({ mainnetBadStatus }: { mainnetBadStatus?: string }) {
+function AutoUpdates({
+  ethClientStatus,
+  ethClientFallback
+}: {
+  ethClientStatus?: EthClientStatus | null;
+  ethClientFallback?: EthClientFallback;
+}) {
   return (
     <Card>
       <div className="auto-updates-explanation">
-        Enable auto-updates for DAppNode to stay automatically up to date to the
-        latest versions. <strong>Note</strong> that for major breaking updates,
-        the interaction of an admin will always be required.
+        Enable auto-updates for DAppNode to install automatically the latest
+        versions. For major breaking updates, your approval will always be
+        required.
       </div>
 
-      {mainnetBadStatus && (
+      {ethClientStatus && !ethClientStatus.ok && ethClientFallback === "off" && (
         <Alert variant="warning">
-          {mainnetBadStatus}. Note that auto-updates will not work meanwhile.
+          Auto-updates will not work temporarily. Eth client not available:{" "}
+          {getEthClientPrettyStatusError(ethClientStatus)}
+          <br />
+          Enable the{" "}
+          <NavLink to={`${systemRootPath}/${systemSubPaths.repository}`}>
+            repository source fallback
+          </NavLink>{" "}
+          to have auto-updates meanwhile
         </Alert>
       )}
 
@@ -34,16 +56,8 @@ function AutoUpdates({ mainnetBadStatus }: { mainnetBadStatus?: string }) {
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  mainnetBadStatus: createSelector(
-    getMainnet,
-    getIsMainnetDnpNotRunning,
-    (mainnet, isMainnetDnpNotRunning) => {
-      if (isMainnetDnpNotRunning) return "Mainnet is not running";
-      if (!mainnet) return "Mainnet not found";
-      if (mainnet.syncing) return "Mainnet is syncing";
-      if (mainnet.error) return "Mainnet error";
-    }
-  )
+  ethClientStatus: getEthClientStatus,
+  ethClientFallback: getEthClientFallback
 });
 
 const mapDispatchToProps = null;

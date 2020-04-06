@@ -17,8 +17,7 @@ import {
 } from "services/dappnodeStatus/selectors";
 import {
   rootPath as systemRootPath,
-  updatePath,
-  securityPath
+  subPaths as systemSubPaths
 } from "pages/system/data";
 import Alert from "react-bootstrap/Alert";
 import Button from "components/Button";
@@ -79,7 +78,7 @@ const NotificationsView = ({
     {
       id: "systemUpdate",
       linkText: "Update",
-      linkPath: systemRootPath + "/" + updatePath,
+      linkPath: systemRootPath + "/" + systemSubPaths.update,
       body:
         "**DAppNode system update available.** Click **Update** to review and approve it",
       active:
@@ -95,7 +94,7 @@ const NotificationsView = ({
     {
       id: "wifiCredentials",
       linkText: "Change",
-      linkPath: systemRootPath + "/" + securityPath,
+      linkPath: systemRootPath + "/" + systemSubPaths.security,
       body:
         "**Change the DAppNode WIFI credentials**, they are insecure default values.",
       active: areWifiCredentialsDefault && isWifiRunning
@@ -107,7 +106,7 @@ const NotificationsView = ({
     {
       id: "hostPasswordInsecure",
       linkText: "Change",
-      linkPath: systemRootPath + "/" + securityPath,
+      linkPath: systemRootPath + "/" + systemSubPaths.security,
       body:
         "**Change the host 'dappnode' user password**, it's an insecure default.",
       active: passwordIsInsecure

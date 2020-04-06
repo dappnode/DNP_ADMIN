@@ -34,7 +34,7 @@ export function getEthClientPrettyName(target: EthClientTarget) {
   }
 }
 
-function getEthClientPrettyStatusError(
+export function getEthClientPrettyStatusError(
   statusError: EthClientStatusError
 ): string {
   // Be safe against possible nested object errors
@@ -43,34 +43,34 @@ function getEthClientPrettyStatusError(
 
   switch (statusError.code) {
     case "UNKNOWN_ERROR":
-      return `Unknown error: ${statusError.error.message}`;
+      return `unknown error: ${statusError.error.message}`;
 
     case "STATE_NOT_SYNCED":
-      return "State is not synced";
+      return "state is not synced";
 
     case "STATE_CALL_ERROR":
-      return `State call error: ${statusError.error.message}`;
+      return `state call error: ${statusError.error.message}`;
 
     case "IS_SYNCING":
-      return "Is syncing";
+      return "is syncing";
 
     case "NOT_AVAILABLE":
-      return `Not available: ${statusError.error.message}`;
+      return `not available: ${statusError.error.message}`;
 
     case "NOT_RUNNING":
-      return "Not running";
+      return "not running";
 
     case "NOT_INSTALLED":
-      return "Not installed";
+      return "not installed";
 
     case "INSTALLING":
-      return "Is installing";
+      return "is installing";
 
     case "INSTALLING_ERROR":
-      return `Install error: ${statusError.error.message}`;
+      return `install error: ${statusError.error.message}`;
 
     case "UNINSTALLED":
-      return `Package is uninstalled`;
+      return `client package has been removed`;
   }
 }
 

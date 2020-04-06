@@ -30,23 +30,19 @@ function Repository({
   ethClientFallback?: EthClientFallback;
   changeEthClientTarget: (newTarget: EthClientTarget) => void;
 }) {
-  const [target, setTarget] = useState<EthClientTarget | null>(null);
-  const [fallback, setFallback] = useState<EthClientFallback>("on");
+  const [target, setTarget] = useState<EthClientTarget | null>(
+    ethClientTarget || null
+  );
 
   useEffect(() => {
     if (ethClientTarget) setTarget(ethClientTarget);
   }, [ethClientTarget]);
-
-  useEffect(() => {
-    if (typeof ethClientFallback === "boolean") setFallback(ethClientFallback);
-  }, [ethClientFallback]);
 
   function changeClient() {
     if (target) changeEthClientTarget(target);
   }
 
   function changeFallback(newFallback: EthClientFallback) {
-    setFallback(newFallback);
     api
       .ethClientFallbackSet({ fallback: newFallback }, { toastOnError: true })
       .catch(e => console.log("Error on ethClientFallbackSet", e));
@@ -108,7 +104,7 @@ function Repository({
       <EthMultiClientsAndFallback
         target={target}
         onTargetChange={setTarget}
-        fallback={fallback}
+        fallback={ethClientFallback || "off"}
         onFallbackChange={changeFallback}
       />
 

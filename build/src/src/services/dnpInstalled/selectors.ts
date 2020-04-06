@@ -51,13 +51,6 @@ export const getHostPortMappings = (state: any) => {
   return hostPortMappings;
 };
 
-export const getIsMainnetDnpNotRunning = (state: any): boolean => {
-  const dnps = getDnpInstalled(state);
-  const mainnetDnp = dnps.find(dnp => dnp.name === ethchainName);
-  if (!mainnetDnp) return true;
-  return !mainnetDnp.running;
-};
-
 const defaultClientEnvName = "DEFAULT_CLIENT";
 export const getEthchainClient = createSelector(
   getDnpInstalled,

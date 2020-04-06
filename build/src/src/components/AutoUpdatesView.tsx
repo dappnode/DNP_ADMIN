@@ -14,7 +14,10 @@ import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 import { coreName } from "services/coreUpdate/data";
 import { autoUpdateIds } from "services/dappnodeStatus/data";
 import { rootPath as installerRootPath } from "pages/installer";
-import { rootPath as systemRootPath, updatePath } from "pages/system/data";
+import {
+  rootPath as systemRootPath,
+  subPaths as systemSubPaths
+} from "pages/system/data";
 // Styles
 import "./autoUpdates.scss";
 import { AutoUpdateDataView, ProgressLogsByDnp } from "types";
@@ -127,7 +130,7 @@ function AutoUpdateItem({
     id === MY_PACKAGES
       ? null
       : id === SYSTEM_PACKAGES
-      ? `${systemRootPath}/${updatePath}`
+      ? `${systemRootPath}/${systemSubPaths.update}`
       : `${installerRootPath}/${id}`;
 
   const feedbackText = !enabled
