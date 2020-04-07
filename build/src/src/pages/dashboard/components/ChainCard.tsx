@@ -1,25 +1,35 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Card from "components/Card";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import RenderMarkdown from "components/RenderMarkdown";
+import newTabProps from "utils/newTabProps";
+import { MdHelpOutline } from "react-icons/md";
 
-function ChainCard({
+export default function ChainCard({
   name,
   message,
+  help,
   progress,
   error,
   syncing
 }: {
   name: string;
   message: string;
+  help?: string;
   progress?: number;
   error: boolean;
   syncing: boolean;
 }) {
   return (
     <Card className="chain-card">
-      <div className="name">{name}</div>
+      <div className="name">
+        <span className="text">{name}</span>
+        {help && (
+          <a className="help" href={help} {...newTabProps}>
+            <MdHelpOutline />
+          </a>
+        )}
+      </div>
 
       {syncing ? (
         typeof progress === "number" && (
@@ -41,12 +51,3 @@ function ChainCard({
     </Card>
   );
 }
-
-ChainCard.propTypes = {
-  name: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired,
-  syncing: PropTypes.bool.isRequired,
-  progress: PropTypes.number
-};
-
-export default ChainCard;

@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import RenderMarkdown from "components/RenderMarkdown";
-import "./dropdown.css";
+import "./dropdown.scss";
+import { MdHelpOutline } from "react-icons/md";
+import newTabProps from "utils/newTabProps";
 
 // Utilities
 
@@ -36,7 +38,7 @@ interface BaseDropdownMessage {
   type: MessageType;
   title: string;
   body: string;
-  isMarkdown?: boolean;
+  help?: string; // href link to attach to help icon
   progress?: number;
   showProgress?: boolean;
   viewed?: boolean;
@@ -134,17 +136,22 @@ function BaseDropdown({
       <div className={`menu ${collapsed ? "" : "show"}`}>
         <div className="header">{name}</div>
         {messages.map(
-          ({ type, title, body, isMarkdown, progress, showProgress }, i) => (
+          ({ type, title, body, progress, showProgress, help }, i) => (
             <div key={i}>
-              {title && <div className={`title text-${type}`}>{title}</div>}
+              {title && (
+                <div className="title">
+                  <span className={`text text-${type}`}>{title}</span>
+                  {help && (
+                    <a className="help" href={help} {...newTabProps}>
+                      <MdHelpOutline />
+                    </a>
+                  )}
+                </div>
+              )}
 
               {body && (
                 <div className="text">
-                  {isMarkdown ? (
-                    <RenderMarkdown source={body} noMargin />
-                  ) : (
-                    body
-                  )}
+                  <RenderMarkdown source={body} noMargin />
                 </div>
               )}
 

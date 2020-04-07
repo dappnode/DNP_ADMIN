@@ -12,7 +12,7 @@ import { title } from "../data";
 import ChainCard from "./ChainCard";
 import StatsCard from "./StatsCard";
 import VolumeCard from "./VolumeCard";
-import "./dashboard.css";
+import "./dashboard.scss";
 // Components
 import SubTitle from "components/SubTitle";
 import Title from "components/Title";

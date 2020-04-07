@@ -17,10 +17,10 @@ function ChainDataDropdown({ chainData }: { chainData: ChainData[] }) {
     <BaseDropdown
       name="Chain status"
       messages={chainData.map(
-        ({ name, message, error, syncing, progress }) => ({
+        ({ name, message, help, error, syncing, progress }) => ({
           title: name,
           body: message,
-          isMarkdown: true,
+          help: help,
           type: error ? "danger" : syncing ? "warning" : "success",
           progress: progress,
           showProgress: syncing

@@ -1389,21 +1389,21 @@ const userActionLogsState = [
 
 const chainDataState: ChainDataState = [
   {
-    name: "Ethereum",
-    syncing: true,
-    error: false,
-    message: "Blocks synced: 543000 / 654000",
-    progress: 0.83027522935
-  },
-  {
-    name: "Geth with states (line-break)",
+    name: "Geth",
     syncing: true,
     error: false,
     message: [
       "Blocks synced: 543000 / 654000",
-      "States pulled: 25314123 / 154762142",
-      "[Some link to info?](geth.io)"
-    ].join("\n\n")
+      "States pulled: 25314123 / 154762142"
+    ].join("\n\n"),
+    help: "http://geth.io"
+  },
+  {
+    name: "Rinkeby",
+    syncing: true,
+    error: false,
+    message: "Blocks synced: 543000 / 654000",
+    progress: 0.83027522935
   }
 ];
 

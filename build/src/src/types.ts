@@ -424,6 +424,7 @@ export interface ChainData {
   syncing: boolean; // if chain is syncing
   error: boolean; // If there was an error retrieving state
   message: string; // "Blocks synced: 543000 / 654000"
+  help?: string; // External link to show as help if needed
   progress?: number; // 0.83027522935
 }
 
