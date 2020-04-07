@@ -4,6 +4,8 @@ import RenderMarkdown from "components/RenderMarkdown";
 import "./dropdown.scss";
 import { MdHelpOutline } from "react-icons/md";
 import newTabProps from "utils/newTabProps";
+import { NavLink } from "react-router-dom";
+import { HelpTo } from "components/Help";
 
 // Utilities
 
@@ -141,11 +143,7 @@ function BaseDropdown({
               {title && (
                 <div className="title">
                   <span className={`text text-${type}`}>{title}</span>
-                  {help && (
-                    <a className="help" href={help} {...newTabProps}>
-                      <MdHelpOutline />
-                    </a>
-                  )}
+                  {help && <HelpTo url={help} />}
                 </div>
               )}
 

@@ -34,6 +34,21 @@ export function getEthClientPrettyName(target: EthClientTarget) {
   }
 }
 
+/**
+ * Get client type from a target
+ */
+export function getEthClientType(target: EthClientTarget): string {
+  switch (target) {
+    case "remote":
+      return "Remote";
+    case "geth-light":
+      return "Light client";
+    case "geth":
+    case "openethereum":
+      return "Full node";
+  }
+}
+
 export function getEthClientPrettyStatusError(
   statusError: EthClientStatusError
 ): string {
