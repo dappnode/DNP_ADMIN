@@ -1389,7 +1389,7 @@ const userActionLogsState = [
 
 const chainDataState: ChainDataState = [
   {
-    name: "Geth",
+    dnpName: "geth.dnp.dappnode.eth",
     syncing: true,
     error: false,
     message: [
@@ -1399,7 +1399,7 @@ const chainDataState: ChainDataState = [
     help: "http://geth.io"
   },
   {
-    name: "Rinkeby",
+    dnpName: "rinkeby.dnp.dappnode.eth",
     syncing: true,
     error: false,
     message: "Blocks synced: 543000 / 654000",

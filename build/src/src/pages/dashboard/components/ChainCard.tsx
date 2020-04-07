@@ -4,26 +4,15 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import RenderMarkdown from "components/RenderMarkdown";
 import newTabProps from "utils/newTabProps";
 import { MdHelpOutline } from "react-icons/md";
+import { shortNameCapitalized } from "utils/format";
+import { ChainData } from "types";
 
-export default function ChainCard({
-  name,
-  message,
-  help,
-  progress,
-  error,
-  syncing
-}: {
-  name: string;
-  message: string;
-  help?: string;
-  progress?: number;
-  error: boolean;
-  syncing: boolean;
-}) {
+export default function ChainCard(chain: ChainData) {
+  const { dnpName, name, message, help, progress, error, syncing } = chain;
   return (
     <Card className="chain-card">
       <div className="name">
-        <span className="text">{name}</span>
+        <span className="text">{name || shortNameCapitalized(dnpName)}</span>
         {help && (
           <a className="help" href={help} {...newTabProps}>
             <MdHelpOutline />

@@ -3,9 +3,10 @@ import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
 import { getChainData } from "services/chainData/selectors";
+import { ChainData } from "types";
+import { shortNameCapitalized } from "utils/format";
 // Icons
 import { FiBox } from "react-icons/fi";
-import { ChainData } from "types";
 
 function ChainDataDropdown({ chainData }: { chainData: ChainData[] }) {
   if (!Array.isArray(chainData)) {
@@ -17,8 +18,8 @@ function ChainDataDropdown({ chainData }: { chainData: ChainData[] }) {
     <BaseDropdown
       name="Chain status"
       messages={chainData.map(
-        ({ name, message, help, error, syncing, progress }) => ({
-          title: name,
+        ({ dnpName, name, message, help, error, syncing, progress }) => ({
+          title: name || shortNameCapitalized(dnpName),
           body: message,
           help: help,
           type: error ? "danger" : syncing ? "warning" : "success",

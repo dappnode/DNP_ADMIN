@@ -62,7 +62,7 @@ function Dashboard({
       <SubTitle>Chains</SubTitle>
       <div className="dashboard-cards">
         {chainData.map(chain => (
-          <ChainCard key={chain.name} {...chain} />
+          <ChainCard key={chain.dnpName} {...chain} />
         ))}
       </div>
 
