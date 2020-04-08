@@ -99,7 +99,7 @@ export function getEthClientPrettyStatus(
 
   const message = getEthClientPrettyStatusError(status);
   const fallbackOn = fallback && fallback === "on";
-  return `Not available ${fallbackOn ? "(using fallback)" : ""} - ${message}`;
+  return `Not available ${fallbackOn ? "(using remote)" : ""} - ${message}`;
 }
 
 const clients: EthClientData[] = [

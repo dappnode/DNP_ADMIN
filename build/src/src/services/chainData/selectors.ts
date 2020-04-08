@@ -78,7 +78,7 @@ function getRepositorySourceChainItem(
         return {
           error: false,
           syncing: true,
-          message: multiline(`${clientType}: using fallback`, prettyStatus)
+          message: multiline(`${clientType}: using remote`, prettyStatus)
         };
       } else {
         // Error, not using anything
