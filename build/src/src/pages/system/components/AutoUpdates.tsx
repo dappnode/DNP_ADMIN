@@ -1,22 +1,168 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
+import * as api from "API/calls";
 // Components
 import Card from "components/Card";
 import Alert from "react-bootstrap/Alert";
-import AutoUpdatesView from "components/AutoUpdatesView";
+import Switch from "components/Switch";
+// Utils
+import { shortNameCapitalized } from "utils/format";
+import { parseStaticDate, parseDiffDates } from "utils/dates";
 // External
 import { getEthClientWarning } from "services/dappnodeStatus/selectors";
 import { activateFallbackPath } from "pages/system/data";
+import { getAutoUpdateData } from "services/dappnodeStatus/selectors";
+import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
+import { coreName } from "services/coreUpdate/data";
+import { autoUpdateIds } from "services/dappnodeStatus/data";
+import { rootPath as installerRootPath } from "pages/installer";
+import {
+  rootPath as systemRootPath,
+  subPaths as systemSubPaths
+} from "pages/system/data";
+import { AutoUpdateDataView, ProgressLogsByDnp } from "types";
 // Styles
 import "./autoUpdates.scss";
 
+const { MY_PACKAGES, SYSTEM_PACKAGES } = autoUpdateIds;
+const getIsSinglePackage = (id: string) =>
+  id !== MY_PACKAGES && id !== SYSTEM_PACKAGES;
+
+/**
+ * Single row in the auto-updates grid table
+ */
+function AutoUpdateItem({
+  id,
+  displayName,
+  enabled,
+  feedback,
+  isInstalling,
+  isSinglePackage,
+  // Actions
+  setUpdateSettings
+}: {
+  id: string;
+  displayName: string;
+  enabled: boolean;
+  feedback: any;
+  isInstalling: boolean;
+  isSinglePackage: boolean;
+  setUpdateSettings: (id: string, enable: boolean) => void;
+}) {
+  const [collapsed, setCollapsed] = useState(true);
+
+  const { updated, manuallyUpdated, inQueue, scheduled } = feedback;
+  const errorMessage = feedback.errorMessage;
+
+  const dnpInstallPath =
+    id === MY_PACKAGES
+      ? null
+      : id === SYSTEM_PACKAGES
+      ? `${systemRootPath}/${systemSubPaths.update}`
+      : `${installerRootPath}/${id}`;
+
+  const feedbackText = !enabled
+    ? "-"
+    : isInstalling
+    ? "Updating..."
+    : manuallyUpdated
+    ? "Manually updated"
+    : inQueue
+    ? "In queue..."
+    : scheduled
+    ? `Scheduled, in ${parseDiffDates(scheduled)}`
+    : updated
+    ? parseStaticDate(updated)
+    : "-";
+
+  const showUpdateLink = isInstalling || inQueue || scheduled;
+
+  return (
+    <React.Fragment key={id}>
+      <span
+        className={`stateBadge center badge-${
+          enabled ? "success" : "secondary"
+        }`}
+        style={{ opacity: 0.85 }}
+      >
+        <span className="content">{enabled ? "on" : "off"}</span>
+      </span>
+
+      <span className="name">
+        {isSinglePackage && <span>> </span>}
+        {displayName}
+      </span>
+
+      <span className="last-update">
+        {showUpdateLink && dnpInstallPath ? (
+          <NavLink className="name" to={dnpInstallPath}>
+            {feedbackText}
+          </NavLink>
+        ) : (
+          <span>{feedbackText}</span>
+        )}
+        {errorMessage ? (
+          <span className="error" onClick={() => setCollapsed(!collapsed)}>
+            Error on update
+          </span>
+        ) : null}
+      </span>
+
+      <Switch
+        checked={enabled ? true : false}
+        onToggle={() => setUpdateSettings(id, !Boolean(enabled))}
+        label=""
+      />
+
+      {!collapsed && <div className="extra-info">{errorMessage}</div>}
+
+      <hr />
+    </React.Fragment>
+  );
+}
+
+/**
+ * Main auto-udpates view
+ */
 function AutoUpdates({
+  autoUpdateData,
+  progressLogsByDnp,
   ethClientWarning
 }: {
+  autoUpdateData?: AutoUpdateDataView;
+  progressLogsByDnp?: ProgressLogsByDnp;
   ethClientWarning: string | null;
 }) {
+  const { dnpsToShow = [] } = autoUpdateData || {};
+  const someAutoUpdateIsEnabled =
+    dnpsToShow.length > 0 && dnpsToShow.some(dnp => dnp.enabled);
+
+  // Force a re-render every 15 seconds for the timeFrom to show up correctly
+  const [, setClock] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => setClock(n => n + 1), 15 * 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  function setUpdateSettings(id: string, enabled: boolean): void {
+    api
+      .autoUpdateSettingsEdit(
+        { id, enabled },
+        {
+          toastMessage: `${
+            enabled ? "Enabling" : "Disabling"
+          } auto updates for ${shortNameCapitalized(id)}...`
+        }
+      )
+      .catch(e => {
+        console.error(`Error on autoUpdateSettingsEdit: ${e.stack}`);
+      });
+  }
+
   return (
     <Card>
       <div className="auto-updates-explanation">
@@ -25,7 +171,7 @@ function AutoUpdates({
         required.
       </div>
 
-      {ethClientWarning && (
+      {ethClientWarning && someAutoUpdateIsEnabled && (
         <Alert variant="warning">
           Auto-updates will not work temporarily. Eth client not available:{" "}
           {ethClientWarning}
@@ -38,7 +184,35 @@ function AutoUpdates({
         </Alert>
       )}
 
-      <AutoUpdatesView />
+      <div className="list-grid auto-updates">
+        {/* Table header */}
+        <span className="stateBadge" />
+        <span className="name" />
+        <span className="last-update header">Last auto-update</span>
+        <span className="header">Enabled</span>
+
+        <hr />
+        {/* Items of the table */}
+        {dnpsToShow.map(({ id, displayName, enabled, feedback }) => (
+          <AutoUpdateItem
+            key={id}
+            {...{
+              id,
+              displayName,
+              enabled,
+              feedback,
+              isInstalling: Boolean(
+                (progressLogsByDnp || {})[
+                  id === SYSTEM_PACKAGES ? coreName : id
+                ]
+              ),
+              isSinglePackage: getIsSinglePackage(id),
+              // Actions
+              setUpdateSettings
+            }}
+          />
+        ))}
+      </div>
     </Card>
   );
 }
@@ -46,12 +220,12 @@ function AutoUpdates({
 // Container
 
 const mapStateToProps = createStructuredSelector({
+  autoUpdateData: getAutoUpdateData,
+  progressLogsByDnp: getProgressLogsByDnp,
   ethClientWarning: getEthClientWarning
 });
 
-const mapDispatchToProps = null;
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(AutoUpdates);
