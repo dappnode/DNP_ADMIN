@@ -304,8 +304,8 @@ export function EthMultiClientsAndFallback({
 
       {target && target !== "remote" && fallback === "off" && (
         <Alert variant="warning">
-          This node will need some time to sync and versions in the repository
-          may not be up to date until then
+          If your node is not available, you won't be able to update packages or
+          access the DAppStore.
         </Alert>
       )}
     </div>

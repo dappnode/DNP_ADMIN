@@ -143,9 +143,14 @@ const InstallerHome: React.FunctionComponent<
 
       {ethClientWarning && (
         <Alert variant="warning">
-          Package installer will not work temporarily (enable{" "}
-          <NavLink to={activateFallbackPath}>fallback</NavLink>). Eth client not
-          available: {ethClientWarning}
+          The installer will not work temporarily. Eth client not available:{" "}
+          {ethClientWarning}
+          <br />
+          Enable the{" "}
+          <NavLink to={activateFallbackPath}>
+            repository source fallback
+          </NavLink>{" "}
+          to use the installer meanwhile
         </Alert>
       )}
 
