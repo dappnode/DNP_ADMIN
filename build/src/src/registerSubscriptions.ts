@@ -7,6 +7,7 @@ import * as packages from "./route-types/subscriptionPackages";
 import * as directory from "./route-types/subscriptionDirectory";
 import * as progressLog from "./route-types/subscriptionProgressLog";
 import * as pushNotification from "./route-types/subscriptionPushNotification";
+import * as reloadClient from "./route-types/subscriptionReloadClient";
 import * as systemInfo from "./route-types/subscriptionSystemInfo";
 import * as userActionLog from "./route-types/subscriptionUserActionLog";
 import * as volumes from "./route-types/subscriptionVolumes";
@@ -73,6 +74,7 @@ export function registerSubscriptions(
     packages: wampBusFactory(packages),
     progressLog: wampBusFactory(progressLog),
     pushNotification: wampBusFactory(pushNotification),
+    reloadClient: wampBusFactory(reloadClient),
     systemInfo: wampBusFactory(systemInfo),
     userActionLog: wampBusFactory(userActionLog),
     volumes: wampBusFactory(volumes)

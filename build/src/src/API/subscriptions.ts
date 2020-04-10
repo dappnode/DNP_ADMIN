@@ -84,6 +84,14 @@ export default function subscriptions(session: autobahn.Session) {
     store.dispatch(updateVolumes(volumes));
   });
 
+  // The DAPPMANAGER may ask the UI to reload
+  wampSubscriptions.reloadClient.on(data => {
+    console.log(`DAPPMANAGER triggered a client reload`, data);
+    // If we needed to pull the document from the web-server again (such as where
+    // the document contents change dynamically) we would pass the argument as 'true'.
+    window.location.reload(true);
+  });
+
   /**
    * [VPN] (un-typed)
    *
