@@ -66,6 +66,7 @@
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
     "analyze": "source-map-explorer build/static/js/main.*",
     "lint": "./node_modules/.bin/eslint . --ext js --fix",
+    "prettier": "prettier --write 'src/**/*.*'",
     "pre-commit": "yarn lint && CI=true yarn test"
   },
   "devDependencies": {
