@@ -2,7 +2,7 @@ import { put, call, delay } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import APIcall from "API/rpcMethods";
 import * as a from "./actions";
-import * as t from "./actionTypes";
+import * as t from "./types";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 
 // Service > chainData

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, NavLink } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
 import { throttle, isEmpty } from "lodash";
 import { DirectoryItem, RequestStatus } from "types";
@@ -14,28 +14,29 @@ import { rootPath } from "../data";
 import NoPackageFound from "./NoPackageFound";
 import CategoryFilter from "./CategoryFilter";
 import DnpStore from "./DnpStore";
-import IsSyncing from "./IsSyncing";
 // Components
 import Title from "components/Title";
 import Input from "components/Input";
 import Button, { ButtonLight } from "components/Button";
 import Loading from "components/generic/Loading";
 import Error from "components/generic/Error";
+import Alert from "react-bootstrap/Alert";
 // Selectors
-import { getMainnet } from "services/chainData/selectors";
 import {
   getDnpDirectory,
   getDirectoryRequestStatus
 } from "services/dnpDirectory/selectors";
 import { fetchDnpDirectory } from "services/dnpDirectory/actions";
 import { rootPath as packagesRootPath } from "pages/packages/data";
+import { activateFallbackPath } from "pages/system/data";
+import { getEthClientWarning } from "services/dappnodeStatus/selectors";
 // Styles
 import "./installer.scss";
 
 interface InstallerHomeProps {
   directory: DirectoryItem[];
-  mainnetIsSyncing: boolean;
   requestStatus: RequestStatus;
+  ethClientWarning: string | null;
   fetchDnpDirectory: () => void;
 }
 
@@ -44,8 +45,9 @@ const InstallerHome: React.FunctionComponent<
 > = ({
   // variables
   directory,
-  mainnetIsSyncing,
   requestStatus,
+  ethClientWarning,
+  // React Routes
   history,
   // Actions
   fetchDnpDirectory
@@ -113,14 +115,6 @@ const InstallerHome: React.FunctionComponent<
     ...selectedCategories
   };
 
-  /**
-   * Switching logic:
-   * 1. If there is a search and it's empty show "NoDnp"
-   * 2. If it is still syncing, show "IsSyncing"
-   * 3. If it is loading, show "Loading"
-   * 0. Else show the DnpStore
-   */
-
   const dnpsNoError = directoryFiltered.filter(dnp => dnp.status !== "error");
   const dnpsFeatured = dnpsNoError.filter(dnp => dnp.isFeatured);
   const dnpsNormal = dnpsNoError.filter(dnp => !dnp.isFeatured);
@@ -147,6 +141,19 @@ const InstallerHome: React.FunctionComponent<
         />
       )}
 
+      {ethClientWarning && (
+        <Alert variant="warning">
+          The installer will not work temporarily. Eth client not available:{" "}
+          {ethClientWarning}
+          <br />
+          Enable the{" "}
+          <NavLink to={activateFallbackPath}>
+            repository source fallback
+          </NavLink>{" "}
+          to use the installer meanwhile
+        </Alert>
+      )}
+
       {directory.length ? (
         !directoryFiltered.length ? (
           <NoPackageFound query={query} />
@@ -165,8 +172,6 @@ const InstallerHome: React.FunctionComponent<
             ) : null}
           </div>
         )
-      ) : mainnetIsSyncing ? (
-        <IsSyncing />
       ) : requestStatus.error ? (
         <Error
           msg={`Error loading DAppNode Packages: ${requestStatus.error}`}
@@ -183,7 +188,7 @@ const InstallerHome: React.FunctionComponent<
 const mapStateToProps = createStructuredSelector({
   directory: getDnpDirectory,
   requestStatus: getDirectoryRequestStatus,
-  mainnetIsSyncing: state => Boolean((getMainnet(state) || {}).syncing)
+  ethClientWarning: getEthClientWarning
 });
 
 const mapDispatchToProps = {

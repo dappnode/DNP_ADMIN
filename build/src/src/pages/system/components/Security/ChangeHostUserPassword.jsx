@@ -87,8 +87,9 @@ function ChangeHostUserPassword({ passwordChange }) {
           <Switch
             checked={showPassword}
             onToggle={() => setShowPassword(_show => !_show)}
-            label={"Show my password"}
-            id={"switch-password-visibility"}
+            label="Show my password"
+            id="switch-password-visibility"
+            highlightOnHover
           />
         </div>
 

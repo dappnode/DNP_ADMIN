@@ -1,7 +1,7 @@
 import { put, call, all } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import apiOld from "API/rpcMethods";
-import * as apiNew from "API/calls";
+import apiOldUntyped from "API/rpcMethods";
+import * as api from "API/calls";
 import * as a from "./actions";
 import * as t from "./types";
 import checkIpfsConnection from "./diagnoseFunctions/checkIpfsNode";
@@ -14,7 +14,7 @@ import { stringSplit, stringIncludes } from "utils/strings";
 import { wifiName } from "params";
 import { MountpointData, VolumeData } from "types";
 
-const api: any = apiOld;
+const apiOld: any = apiOldUntyped;
 
 // Service > dappnodeStatus
 
@@ -25,10 +25,10 @@ const api: any = apiOld;
  * [Tested]
  */
 export const fetchDappnodeParams = wrapErrorsAndLoading(
-  loadingIds.dappnodeParams,
+  loadingIds.systemInfo,
   function*() {
-    const dappnodeParams = yield call(api.getParams);
-    yield put(a.updateDappnodeParams(dappnodeParams));
+    const systemInfo = yield call(api.systemInfoGet, {});
+    yield put(a.setSystemInfo(systemInfo));
   }
 );
 
@@ -43,8 +43,17 @@ export const fetchDappnodeParams = wrapErrorsAndLoading(
 const fetchDappnodeStats = wrapErrorsAndLoading(
   loadingIds.dappnodeStats,
   function*() {
-    const dappnodeStats = yield call(api.getStats);
+    const dappnodeStats = yield call(api.getStats, {});
     yield put(a.updateDappnodeStats(dappnodeStats));
+  }
+);
+
+const fetchVpnVersionData = wrapErrorsAndLoading(
+  loadingIds.versionData,
+  function*() {
+    yield call(assertConnectionOpen);
+    const vpnVersionData = yield call(apiOld.vpn.getVpnVersionData);
+    yield put(a.updateVpnVersionData(vpnVersionData));
   }
 );
 
@@ -56,7 +65,7 @@ const fetchDappnodeStats = wrapErrorsAndLoading(
 const fetchDappnodeDiagnose = wrapErrorsAndLoading(
   loadingIds.dappnodeDiagnose,
   function*() {
-    const dappnoseDiagnose = yield call(api.diagnose);
+    const dappnoseDiagnose = yield call(api.diagnose, {});
     yield put(a.updateDappnodeDiagnose(dappnoseDiagnose));
   }
 );
@@ -73,27 +82,12 @@ const pingDappnodeDnps = wrapErrorsAndLoading(
     yield call(assertConnectionOpen);
     for (const dnp of ["dappmanager", "vpn"]) {
       try {
-        yield call(api[dnp].ping, { test: "test-ping" });
+        yield call(apiOld[dnp].ping, { test: "test-ping" });
         // If the previous call does not throw, the ping was successful
         yield put(a.updatePingReturn(dnp, true));
       } catch (e) {
         console.error(`Error on pingDappnodeDnps/${dnp}: ${e.stack}`);
         yield put(a.updatePingReturn(dnp, false));
-      }
-    }
-  }
-);
-
-const getDnpsVersionData = wrapErrorsAndLoading(
-  loadingIds.versionData,
-  function*() {
-    yield call(assertConnectionOpen);
-    for (const dnp of ["dappmanager", "vpn"]) {
-      try {
-        const versionData = yield call(api[dnp].getVersionData);
-        yield put(a.updateVersionData(dnp, versionData));
-      } catch (e) {
-        console.error(`Error on getDnpsVersionData/${dnp}: ${e.stack}`);
       }
     }
   }
@@ -120,7 +114,7 @@ const checkIpfsConnectionStatus = wrapErrorsAndLoading(
 const checkWifiStatus = wrapErrorsAndLoading(
   loadingIds.wifiStatus,
   function*() {
-    const logs = yield call(api.logPackage, {
+    const logs = yield call(apiOld.logPackage, {
       id: wifiName,
       options: {}
     });
@@ -136,7 +130,7 @@ const checkWifiStatus = wrapErrorsAndLoading(
 const checkIfPasswordIsInsecure = wrapErrorsAndLoading(
   loadingIds.passwordIsInsecure,
   function*() {
-    const passwordIsSecure = yield call(api.passwordIsSecure);
+    const passwordIsSecure = yield call(api.passwordIsSecure, {});
     yield put(a.updatePasswordIsInsecure(!passwordIsSecure));
   }
 );
@@ -151,20 +145,8 @@ const fetchAutoUpdateData = wrapErrorsAndLoading(
   loadingIds.autoUpdateData,
   function*() {
     // If there are no settings the return will be null
-    const autoUpdateData = yield call(api.autoUpdateDataGet);
+    const autoUpdateData = yield call(api.autoUpdateDataGet, {});
     yield put(a.updateAutoUpdateData(autoUpdateData) || {});
-  }
-);
-
-/**
- * Get DAppNode identity (eth address):
- */
-const fetchIdentityAddress = wrapErrorsAndLoading(
-  loadingIds.identity,
-  function*() {
-    // If there are no settings the return will be null
-    const identityAddress = yield call(api.seedPhraseGetPublicKey);
-    yield put(a.updateIdentityAddress(identityAddress) || {});
   }
 );
 
@@ -176,7 +158,7 @@ const fetchMountpointData = wrapErrorsAndLoading(
   loadingIds.mountpoints,
   function*() {
     // If there are no settings the return will be null
-    const mountpoints: MountpointData[] = yield call(apiNew.mountpointsGet, {});
+    const mountpoints: MountpointData[] = yield call(api.mountpointsGet, {});
     yield put(a.updateMountpoints(mountpoints));
   }
 );
@@ -186,7 +168,7 @@ const fetchMountpointData = wrapErrorsAndLoading(
  */
 const fetchVolumes = wrapErrorsAndLoading(loadingIds.volumes, function*() {
   // If there are no settings the return will be null
-  const volumes: VolumeData[] = yield call(apiNew.volumesGet, {});
+  const volumes: VolumeData[] = yield call(api.volumesGet, {});
   yield put(a.updateVolumes(volumes));
 });
 
@@ -198,14 +180,13 @@ function* fetchAllDappnodeStatus() {
     yield all([
       call(fetchDappnodeParams),
       call(fetchDappnodeStats),
+      call(fetchVpnVersionData),
       call(fetchDappnodeDiagnose),
       call(pingDappnodeDnps),
-      call(getDnpsVersionData),
       call(checkIpfsConnectionStatus),
       call(checkWifiStatus),
       call(checkIfPasswordIsInsecure),
       call(fetchAutoUpdateData),
-      call(fetchIdentityAddress),
       call(fetchVolumes)
     ]);
   } catch (e) {
@@ -226,7 +207,6 @@ export default rootWatcher([
   [t.FETCH_DAPPNODE_STATS, fetchDappnodeStats],
   [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],
   [t.FETCH_IF_PASSWORD_IS_INSECURE, checkIfPasswordIsInsecure],
-  [t.FETCH_IDENTITY_ADDRESS, fetchIdentityAddress],
   [t.FETCH_MOUNTPOINTS, fetchMountpointData],
   [t.PING_DAPPNODE_DNPS, pingDappnodeDnps]
 ]);

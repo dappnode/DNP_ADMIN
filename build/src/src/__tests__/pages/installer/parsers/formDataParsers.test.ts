@@ -167,8 +167,8 @@ describe("formDataToUserSettings", () => {
 describe("cleanInitialFormData", () => {
   it("should clean empty formData", () => {
     const formData = {
-      "vipnode.dnp.dappnode.eth": {
-        payoutAddress: ""
+      "geth.dnp.dappnode.eth": {
+        address: ""
       }
     };
     expect(cleanInitialFormData(formData)).toEqual(undefined);
@@ -176,8 +176,8 @@ describe("cleanInitialFormData", () => {
 
   it("should not edit an properties with data", () => {
     const formData = {
-      "vipnode.dnp.dappnode.eth": {
-        payoutAddress: "0x12356123",
+      "geth.dnp.dappnode.eth": {
+        address: "0x12356123",
         emptyProp: ""
       },
       "dep.dnp.dappnode.eth": {
@@ -185,8 +185,8 @@ describe("cleanInitialFormData", () => {
       }
     };
     expect(cleanInitialFormData(formData)).toEqual({
-      "vipnode.dnp.dappnode.eth": {
-        payoutAddress: "0x12356123"
+      "geth.dnp.dappnode.eth": {
+        address: "0x12356123"
       }
     });
   });

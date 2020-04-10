@@ -13,29 +13,15 @@ import VolumesGrid from "./VolumesGrid";
 import StatsCard from "pages/dashboard/components/StatsCard";
 // Components
 import SubTitle from "components/SubTitle";
-import { VolumeData } from "types";
+import { VolumeData, HostStats } from "types";
 
-/**
- * @param {array} chainData = [{
- *   name: "Mainnet",
- *   message: "Syncing 4785835/3748523",
- *   progress: 0.647234,
- *   syncing: true
- * }, ... ]
- * @param {object} dappnodeStats = {
- *   cpu: 35%,
- *   disk: 86%,
- *   memory: 56%
- * }
- */
-
-function Dashboard({
+function SystemInfo({
   dappnodeStats,
   volumes,
   fetchDappnodeStats,
   volumeRemove
 }: {
-  dappnodeStats: { [key: string]: string };
+  dappnodeStats: HostStats;
   volumes: VolumeData[];
   fetchDappnodeStats: () => void;
   volumeRemove: (name: string) => void;
@@ -76,4 +62,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Dashboard);
+)(SystemInfo);
