@@ -16,7 +16,7 @@ const baseUrlDownloadAll =
 const refreshInterval = 2 * 1000;
 const terminalID = "terminal";
 
-const validateLines = (lines) => !isNaN(lines) && lines > 0;
+const validateLines = lines => !isNaN(lines) && lines > 0;
 
 function Logs({ id }) {
   // User options
@@ -77,7 +77,7 @@ function Logs({ id }) {
    */
   const logsArray = stringSplit(logs, /\r?\n/);
   let logsFiltered = query
-    ? logsArray.filter((line) => stringIncludes(line, query)).join("\n")
+    ? logsArray.filter(line => stringIncludes(line, query)).join("\n")
     : logs;
   if (logs && query && !logsFiltered) logsFiltered = "No match found";
 
@@ -128,7 +128,7 @@ function Logs({ id }) {
 }
 
 Logs.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 export default Logs;

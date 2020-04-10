@@ -135,18 +135,12 @@ function Ports({ dnp, loading, hostPortMapping }) {
   const errors = [];
   if (duplicatedHostPort)
     errors.push(
-      `Duplicated mapping for host port ${duplicatedHostPort.host}/${
-        duplicatedHostPort.protocol
-      }. Each host port can only be mapped once.`
+      `Duplicated mapping for host port ${duplicatedHostPort.host}/${duplicatedHostPort.protocol}. Each host port can only be mapped once.`
     );
 
   if (duplicatedContainerPort)
     errors.push(
-      `Duplicated mapping for package port ${
-        duplicatedContainerPort.container
-      }/${
-        duplicatedContainerPort.protocol
-      }. Each package port can only be mapped once.`
+      `Duplicated mapping for package port ${duplicatedContainerPort.container}/${duplicatedContainerPort.protocol}. Each package port can only be mapped once.`
     );
 
   if (conflictingPort)
@@ -160,9 +154,7 @@ function Ports({ dnp, loading, hostPortMapping }) {
 
   if (portOverTheMax)
     errors.push(
-      `Port mapping ${portOverTheMax.container}/${
-        portOverTheMax.protocol
-      } is in the ephemeral port range (32768-65535). It must be avoided.`
+      `Port mapping ${portOverTheMax.container}/${portOverTheMax.protocol} is in the ephemeral port range (32768-65535). It must be avoided.`
     );
 
   // Aggregate conditions to disable the update
