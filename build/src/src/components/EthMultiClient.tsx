@@ -19,7 +19,7 @@ export const fallbackToBoolean = (fallback: EthClientFallback): boolean =>
 export const booleanToFallback = (bool: boolean): EthClientFallback =>
   bool ? "on" : "off";
 
-export function getEthClientPrettyName(target: EthClientTarget) {
+export function getEthClientPrettyName(target: EthClientTarget): string {
   switch (target) {
     case "remote":
       return "Remote";
@@ -29,8 +29,8 @@ export function getEthClientPrettyName(target: EthClientTarget) {
       return "Geth";
     case "openethereum":
       return "OpenEthereum";
-    default:
-      return target;
+    case "nethermind":
+      return "Nethermind";
   }
 }
 
@@ -45,6 +45,7 @@ export function getEthClientType(target: EthClientTarget): string {
       return "Light client";
     case "geth":
     case "openethereum":
+    case "nethermind":
       return "Full node";
   }
 }
@@ -128,7 +129,7 @@ const clients: EthClientData[] = [
   {
     title: "Full node",
     description: "Your own Ethereum node w/out 3rd parties",
-    options: ["geth", "openethereum"],
+    options: ["geth", "openethereum", "nethermind"],
     stats: {
       syncTime: "Slow sync",
       requirements: "High requirements",
