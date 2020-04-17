@@ -15,7 +15,8 @@ export default function SystemAutoUpdates({
   onBack?: () => void;
   onNext: () => void;
 }) {
-  const [autoUpdateOn, setAutoUpdateOn] = useState(false);
+  // By default, activate system auto-updates if user doesn't change anything
+  const [autoUpdateOn, setAutoUpdateOn] = useState(true);
 
   /**
    * The only change it will persist is turning all auto-update settings on
