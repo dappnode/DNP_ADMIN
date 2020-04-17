@@ -5,6 +5,7 @@ import { createStructuredSelector } from "reselect";
 import { throttle, isEmpty } from "lodash";
 import { DirectoryItem, RequestStatus } from "types";
 import { SelectedCategories } from "../types";
+import { title } from "../data";
 // This page
 import isIpfsHash from "utils/isIpfsHash";
 import isDnpDomain from "utils/isDnpDomain";
@@ -122,7 +123,7 @@ const InstallerHome: React.FunctionComponent<
 
   return (
     <>
-      <Title title="Installer" />
+      <Title title={title} />
 
       <Input
         placeholder="DAppNode Package's name or IPFS hash"
@@ -143,14 +144,14 @@ const InstallerHome: React.FunctionComponent<
 
       {ethClientWarning && (
         <Alert variant="warning">
-          The installer will not work temporarily. Eth client not available:{" "}
+          The DAppStore will not work temporarily. Eth client not available:{" "}
           {ethClientWarning}
           <br />
           Enable the{" "}
           <NavLink to={activateFallbackPath}>
             repository source fallback
           </NavLink>{" "}
-          to use the installer meanwhile
+          to use the DAppStore meanwhile
         </Alert>
       )}
 

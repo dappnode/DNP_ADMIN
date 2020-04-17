@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
+import { title } from "../data";
 // This module
 import InstallDnpView from "./InstallDnpView";
 // Utils
@@ -58,7 +59,7 @@ const InstallDnpContainer: React.FunctionComponent<
   return (
     <>
       <Title
-        title="Installer"
+        title={title}
         subtitle={dnp && dnp.name ? shortNameCapitalized(dnp.name) : id}
       />
 
