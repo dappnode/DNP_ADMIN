@@ -8,10 +8,10 @@ const NoPackagesYet = () => (
   <div className="centered-container">
     <h4>No installed DAppNode Packages yet</h4>
     <p>
-      If you would like install a DAppNode package, go to the installer tab.
+      If you would like install a DAppNode package, go to the DAppStore tab.
     </p>
     <Link to={installerRootPath}>
-      <ButtonLight>Go to Install</ButtonLight>
+      <ButtonLight>Go to DAppStore</ButtonLight>
     </Link>
   </div>
 );

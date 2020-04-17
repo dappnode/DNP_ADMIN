@@ -47,7 +47,7 @@ export const sidenavItems = [
     icon: Devices
   },
   {
-    name: "Installer",
+    name: "DAppStore",
     href: "/installer",
     icon: NewFolder
   },
