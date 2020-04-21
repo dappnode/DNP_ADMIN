@@ -59,9 +59,9 @@ const coreString = "dncore_";
 /**
  * Formats nicely a docker volume name
  *
- * @param {string} volName "dncore_ethchaindnpdappnodeeth_data"
- * @param {string} dnpName "vipnode.dnp.dappnode.eth"
- * @return res = { name: "Data", "owner": "Vipnode" }
+ * @param {string} volName "dncore_gethdnpdappnodeeth_data"
+ * @param {string} dnpName "geth-user.dnp.dappnode.eth"
+ * @return res = { name: "Data", "owner": "Geth User" }
  */
 export function prettyVolumeName(
   volName: string,

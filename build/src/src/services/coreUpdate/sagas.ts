@@ -8,10 +8,8 @@ import {
   updateIsLoaded
 } from "services/loadingStatus/actions";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
-import { pushNotification } from "services/notifications/actions";
 import { clearIsInstallingLog } from "services/isInstallingLogs/actions";
 // Utilities
-import isSyncing from "utils/isSyncing";
 import { CoreUpdateData } from "types";
 import { UPDATE_CORE } from "./types";
 import { updateCoreUpdateData, updateUpdatingCore } from "./actions";
@@ -54,23 +52,6 @@ const coreVersion = coreVersionDevSet || undefined;
 
 /***************************** Subroutines ************************************/
 
-function* putMainnetIsStillSyncing() {
-  try {
-    yield put({ type: "UPDATE_IS_SYNCING", isSyncing: true });
-    yield put(
-      pushNotification({
-        id: "mainnetStillSyncing",
-        type: "warning",
-        title: "Mainnet is still syncing",
-        body:
-          "Ethereum mainnet is still syncing. Until complete syncronization you will not be able to navigate to decentralized websites or install packages via .eth names."
-      })
-    );
-  } catch (e) {
-    console.error(`Error putting mainnet is still syncing: ${e.stack}`);
-  }
-}
-
 /**
  * Does a call to `api.resolveRequest` with `id = core.dnp.dappnode.eth@latest`
  * to know if there is an update available. If so, it fetches the manifests
@@ -80,11 +61,6 @@ export function* checkCoreUpdate() {
   try {
     console.log("Check core update");
     // If chain is not synced yet, cancel request.
-    if (yield call(isSyncing)) {
-      yield call(putMainnetIsStillSyncing);
-      // Only stop if there is not a custom core version
-      if (!coreVersionDevSet) return;
-    }
     yield put(updateIsLoading(loadingId));
 
     const coreUpdateData: CoreUpdateData = yield call(api.fetchCoreUpdateData, {

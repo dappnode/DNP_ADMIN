@@ -13,7 +13,6 @@ import StatusIcon from "components/StatusIcon";
 import Loading from "components/generic/Loading";
 // External
 import { getIdentityAddress } from "services/dappnodeStatus/selectors";
-import { fetchIdentityAddress } from "services/dappnodeStatus/actions";
 import { adminNaclSecretKey } from "params";
 // Images
 import etherCardSample from "img/ether-card-sample.png";
@@ -21,7 +20,7 @@ import blankCardSample from "img/blank-card-sample.png";
 // Style
 import "./identity.scss";
 
-function Identity({ identityAddress, fetchIdentityAddress }) {
+function Identity({ identityAddress }) {
   const [showRealCard, setShowRealCard] = useState(false);
   const [seedPhrase, setSeedPhrase] = useState("");
   const [isOnProgress, setIsOnProgress] = useState(false);
@@ -51,8 +50,6 @@ function Identity({ identityAddress, fetchIdentityAddress }) {
         { seedPhraseEncrypted },
         { toastMessage: `Setting seed phrase...` }
       );
-
-      fetchIdentityAddress();
     } catch (e) {
       console.error(`Error on sendSeedPhrase: ${e.stack}`);
     } finally {
@@ -135,8 +132,7 @@ function Identity({ identityAddress, fetchIdentityAddress }) {
 }
 
 Identity.propTypes = {
-  identityAddress: PropTypes.string.isRequired,
-  fetchIdentityAddress: PropTypes.func.isRequired
+  identityAddress: PropTypes.string.isRequired
 };
 
 // Container
@@ -145,9 +141,7 @@ const mapStateToProps = createStructuredSelector({
   identityAddress: getIdentityAddress
 });
 
-const mapDispatchToProps = {
-  fetchIdentityAddress
-};
+const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,

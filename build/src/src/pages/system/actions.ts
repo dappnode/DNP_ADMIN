@@ -4,13 +4,13 @@ import * as api from "API/calls";
 import { ThunkAction } from "redux-thunk";
 import { AnyAction } from "redux";
 import { shortNameCapitalized, prettyVolumeName } from "utils/format";
+import { getEthClientPrettyName } from "components/EthMultiClient";
 // External actions
 import { fetchIfPasswordIsInsecure } from "services/dappnodeStatus/actions";
 // Selectors
-import {
-  getDnpInstalledById,
-  getDependantsOfId
-} from "services/dnpInstalled/selectors";
+import { getDnpInstalledById } from "services/dnpInstalled/selectors";
+import { getEthClientTarget } from "services/dappnodeStatus/selectors";
+import { EthClientTarget } from "types";
 
 // pages > system
 
@@ -18,6 +18,47 @@ export const setStaticIp = (staticIp: string) => ({
   type: t.SET_STATIC_IP,
   staticIp
 });
+
+// Redux Thunk actions
+
+export const changeEthClientTarget = (
+  nextTarget: EthClientTarget
+): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+  const prevTarget = getEthClientTarget(getState());
+
+  // Make sure the target has changed or the call will error
+  if (nextTarget === prevTarget) return;
+
+  // If the previous target is package, ask the user if deleteVolumes
+  const deleteVolumes =
+    prevTarget && prevTarget !== "remote"
+      ? await new Promise((resolve: (_deleteVolumes: boolean) => void) =>
+          confirm({
+            title: `Remove ${getEthClientPrettyName(prevTarget)} volumes?`,
+            text: `Do you want to keep or remove the volumes of your current Ethereum client? This action cannot be undone.`,
+            buttons: [
+              {
+                label: "Keep",
+                variant: "dappnode",
+                onClick: () => resolve(false)
+              },
+              {
+                label: "Remove",
+                variant: "danger",
+                onClick: () => resolve(true)
+              }
+            ]
+          })
+        )
+      : false;
+
+  await api
+    .ethClientTargetSet(
+      { target: nextTarget, deleteVolumes },
+      { toastMessage: "Changing Eth client..." }
+    )
+    .catch(console.error);
+};
 
 export const passwordChange = (
   newPassword: string

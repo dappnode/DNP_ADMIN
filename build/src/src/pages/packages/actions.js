@@ -55,11 +55,6 @@ export const restartPackageVolumes = id => async (_, getState) => {
   const dnp = getDnpInstalledById(getState(), id);
 
   const warningsList = [];
-  if (dnp.name === "ethchain.dnp.dappnode.eth")
-    warningsList.push({
-      title: "Warning! Resync time",
-      body: "The mainnet chain will have to resync and may take a few days"
-    });
 
   /**
    * If there are volumes which this DNP is the owner and some other

@@ -1,6 +1,6 @@
 {
   "name": "admin.dnp.dappnode.eth",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "description": "Dappnode package responsible for providing the administrative user interface",
   "type": "dncore",
   "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
@@ -15,7 +15,7 @@
   ],
   "links": {
     "ui": "http://my.dappnode/",
-    "homepage": "https://github.com/dappnode/DNP_ETHCHAIN#readme"
+    "homepage": "https://github.com/dappnode/DNP_ADMIN#readme"
   },
   "repository": {
     "type": "git",

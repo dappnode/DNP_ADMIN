@@ -63,14 +63,7 @@ function VolumesGrid({
       {showRemove && <header>Remove</header>}
 
       {volumesFiltered.map(volData => {
-        const {
-          name,
-          owner,
-          size,
-          fileSystem,
-          createdAt,
-          isOrphan
-        } = volData;
+        const { name, owner, size, fileSystem, createdAt, isOrphan } = volData;
         const ownerPretty = getPrettyVolumeOwner(volData);
         const namePretty = getPrettyVolumeName(volData);
         const onDelete = isOrphan
@@ -78,7 +71,7 @@ function VolumesGrid({
           : owner
           ? () => packageVolumeRemove(owner, name)
           : () => {};
-        const isDeletable = Boolean(isOrphan || owner)
+        const isDeletable = Boolean(isOrphan || owner);
 
         return (
           <React.Fragment key={name}>

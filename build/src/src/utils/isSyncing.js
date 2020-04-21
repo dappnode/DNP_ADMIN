@@ -1,8 +1,9 @@
-const Web3 = require("web3");
+import { fullnodeHttpJsonRpc } from "params";
+import Web3 from "web3";
 
 let web3;
 function getWeb3() {
-  if (!web3) web3 = new Web3("http://my.ethchain.dnp.dappnode.eth:8545");
+  if (!web3) web3 = new Web3(fullnodeHttpJsonRpc);
   return web3;
 }
 

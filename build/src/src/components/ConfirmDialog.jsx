@@ -4,7 +4,7 @@ import Button from "components/Button";
 import { render, unmountComponentAtNode } from "react-dom";
 import RenderMarkdown from "components/RenderMarkdown";
 import { stringIncludes } from "utils/strings";
-import "./confirmDialog.css";
+import "./confirmDialog.scss";
 
 /**
  * Render a dialog modal

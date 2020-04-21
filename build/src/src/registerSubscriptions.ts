@@ -7,6 +7,8 @@ import * as packages from "./route-types/subscriptionPackages";
 import * as directory from "./route-types/subscriptionDirectory";
 import * as progressLog from "./route-types/subscriptionProgressLog";
 import * as pushNotification from "./route-types/subscriptionPushNotification";
+import * as reloadClient from "./route-types/subscriptionReloadClient";
+import * as systemInfo from "./route-types/subscriptionSystemInfo";
 import * as userActionLog from "./route-types/subscriptionUserActionLog";
 import * as volumes from "./route-types/subscriptionVolumes";
 
@@ -31,14 +33,20 @@ export function registerSubscriptions(
     });
   }
 
-  /* eslint-disable-next-line @typescript-eslint/explicit-function-return-type */
+  /**
+   * Bind each subscription typings to a WAMP session
+   */
   function wampBusFactory<T>({
     route,
     returnDataSchema: dataSchema
   }: {
     route: string;
     returnDataSchema?: object;
-  }) {
+    returnDataSample: T;
+  }): {
+    on: (listener: (arg: T) => void) => void;
+    emit: (data: T) => void;
+  } {
     const validateData = dataSchema
       ? getValidator<T>(dataSchema, "data")
       : null;
@@ -60,15 +68,15 @@ export function registerSubscriptions(
   }
 
   return {
-    autoUpdateData: wampBusFactory<autoUpdateData.ReturnData>(autoUpdateData),
-    chainData: wampBusFactory<chainData.ReturnData>(chainData),
-    directory: wampBusFactory<directory.ReturnData>(directory),
-    packages: wampBusFactory<packages.ReturnData>(packages),
-    progressLog: wampBusFactory<progressLog.ReturnData>(progressLog),
-    pushNotification: wampBusFactory<pushNotification.ReturnData>(
-      pushNotification
-    ),
-    userActionLog: wampBusFactory<userActionLog.ReturnData>(userActionLog),
-    volumes: wampBusFactory<volumes.ReturnData>(volumes)
+    autoUpdateData: wampBusFactory(autoUpdateData),
+    chainData: wampBusFactory(chainData),
+    directory: wampBusFactory(directory),
+    packages: wampBusFactory(packages),
+    progressLog: wampBusFactory(progressLog),
+    pushNotification: wampBusFactory(pushNotification),
+    reloadClient: wampBusFactory(reloadClient),
+    systemInfo: wampBusFactory(systemInfo),
+    userActionLog: wampBusFactory(userActionLog),
+    volumes: wampBusFactory(volumes)
   };
 }

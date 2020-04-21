@@ -2,6 +2,8 @@
 # - ignore any node_modules folder down the tree
 build/src*/node_modules
 node_modules/
+# This project uses yarn
+build/src/package-lock.json
 
 # build files
 build/src/dist/

@@ -14,7 +14,7 @@ interface PropWithErrorMessages extends SetupUiJson {
 }
 
 interface AjvErrorWithPath extends AjvError {
-  schemaPath?: string; // "#/properties/vipnode.dnp.dappnode.eth/properties/payoutAddress/pattern"
+  schemaPath?: string; // "#/properties/geth.dnp.dappnode.eth/properties/payoutAddress/pattern"
 }
 
 const widgets = {

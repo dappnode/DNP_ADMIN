@@ -28,7 +28,7 @@ export function assertObjTypes(obj, referenceTypes, id = "Obj") {
 
 /**
  * @param {array} array of objects: [ {id: 1}, {id: 2} ]
- * @param {Function} key: Can be:
+ * @param {Function|string} key: Can be:
  * 1. The key of the item to become the id
  * 2. Function to get the id from each item: (item) => item.id
  * @returns {object} resulting object: { 1: {id: 1}, 2: {id: 2} }

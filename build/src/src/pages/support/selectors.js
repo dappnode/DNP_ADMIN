@@ -167,8 +167,6 @@ const getDiagnoseCoreDnpsRunning = createSelector(
       "vpn.dnp.dappnode.eth",
       "admin.dnp.dappnode.eth",
       "ipfs.dnp.dappnode.eth",
-      "ethchain.dnp.dappnode.eth",
-      "ethforward.dnp.dappnode.eth",
       "wamp.dnp.dappnode.eth",
       "bind.dnp.dappnode.eth"
     ];
@@ -194,7 +192,7 @@ const getDiagnoseCoreDnpsRunning = createSelector(
       ok,
       msg: ok ? "All core DAppNode Packages are running" : errorMsg,
       solutions: [
-        "Make sure the disk is not too full. If so DAppNode automatically stops the ethchain.dnp.dappnode.eth and ipfs.dnp.dappnode.eth DAppNode Packages to prevent it from becoming un-usable",
+        "Make sure the disk is not too full. If so DAppNode automatically stops the IPFS package to prevent it from becoming un-usable",
         "Go to the System tab and restart each stopped DAppNode Package. Please inspect the logs to understand cause and report it if it was not expected"
       ]
     };

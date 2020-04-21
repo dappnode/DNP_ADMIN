@@ -1,7 +1,7 @@
 import React from "react";
 // DropdownMenu components
 import DappnodeIdentity from "./dropdownMenus/DappnodeIdentity";
-import ChainData from "./dropdownMenus/ChainData";
+import ChainDataDropdown from "./dropdownMenus/ChainDataDropdown";
 import Notifications from "./dropdownMenus/Notifications";
 // Components
 import { toggleSideNav } from "./SideBar";
@@ -23,7 +23,7 @@ const TopBar = () => (
     <div className="right">
       <DappnodeIdentity />
       <div className="topnav-icon-separator" />
-      <ChainData />
+      <ChainDataDropdown />
       <Notifications />
     </div>
   </div>

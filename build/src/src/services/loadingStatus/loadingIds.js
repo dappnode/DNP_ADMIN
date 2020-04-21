@@ -10,6 +10,7 @@ export const autoUpdateData = "autoUpdateData";
 export const identity = "identity";
 export const mountpoints = "mountpoints";
 export const volumes = "volumes";
+export const systemInfo = "systemInfo";
 // Service > dnpDirectory
 export const dnpDirectory = "dnpDirectory";
 // Service > dnpInstalled

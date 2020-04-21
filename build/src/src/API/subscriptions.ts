@@ -12,7 +12,8 @@ import {
 } from "services/isInstallingLogs/actions";
 import {
   updateAutoUpdateData,
-  updateVolumes
+  updateVolumes,
+  setSystemInfo
 } from "services/dappnodeStatus/actions";
 import { setDnpInstalled } from "services/dnpInstalled/actions";
 import { setDnpDirectory } from "services/dnpDirectory/actions";
@@ -71,12 +72,24 @@ export default function subscriptions(session: autobahn.Session) {
     store.dispatch(pushNotificationFromDappmanager(notification));
   });
 
+  wampSubscriptions.systemInfo.on(systemInfo => {
+    store.dispatch(setSystemInfo(systemInfo));
+  });
+
   wampSubscriptions.userActionLog.on(userActionLog => {
     store.dispatch(pushUserActionLog(userActionLog));
   });
 
   wampSubscriptions.volumes.on(volumes => {
     store.dispatch(updateVolumes(volumes));
+  });
+
+  // The DAPPMANAGER may ask the UI to reload
+  wampSubscriptions.reloadClient.on(data => {
+    console.log(`DAPPMANAGER triggered a client reload`, data);
+    // If we needed to pull the document from the web-server again (such as where
+    // the document contents change dynamically) we would pass the argument as 'true'.
+    window.location.reload(true);
   });
 
   /**
