@@ -9,7 +9,7 @@ export const getLocal = (state: any): DappnodeStatusState => state[mountPoint];
 
 // Sub-local properties
 export const getSystemInfo = (state: any) => getLocal(state).systemInfo;
-export const getDappnodeParams = getSystemInfo;
+export const getDappnodeParams = (state: any) => getSystemInfo(state) || {};
 export const getDappnodeStats = (state: any) => getLocal(state).stats;
 export const getDappnodeDiagnose = (state: any) => getLocal(state).diagnose;
 export const getPing = (state: any) => getLocal(state).pingReturns;
