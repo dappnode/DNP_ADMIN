@@ -30,6 +30,8 @@ function ChangeWifiPassword({
   }, [prevSsid]);
 
   const errorsSsid: string[] = [];
+  if (ssid && ssid.length < 8)
+    errorsSsid.push("SSID must be at least 8 characters long");
 
   const errors: string[] = [];
   if (password && password.length < 8)
@@ -46,6 +48,7 @@ function ChangeWifiPassword({
     errorsConfirm.push("Passwords do not match");
 
   const invalid =
+    !ssid ||
     !password ||
     !confirmPassword ||
     errorsSsid.length > 0 ||
