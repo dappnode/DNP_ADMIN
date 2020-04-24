@@ -61,6 +61,7 @@ function SystemSecurity({
         <div>
           {securityIssues.map(issue => (
             <Ok
+              key={issue.name}
               msg={issue.isActive ? issue.name : issue.okMessage}
               ok={!issue.isActive}
             />
