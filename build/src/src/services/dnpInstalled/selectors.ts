@@ -22,17 +22,28 @@ export const getDnpInstalledData = (
   state: any
 ): { [dnpName: string]: PackageDetailData } => getLocal(state).dnpInstalledData;
 
+export const getWifiCredentials = (
+  state: any
+): { ssid: string; pass: string } | null => {
+  const dnps = getDnpInstalled(state);
+  const wifiDnp = dnps.find(dnp => dnp.name === wifiName);
+  if (!wifiDnp || !wifiDnp.envs) return null;
+  return {
+    ssid: wifiDnp.envs[wifiEnvSSID],
+    pass: wifiDnp.envs[wifiEnvWPA_PASSPHRASE]
+  };
+};
+
 /**
  * Check if the wifi DNP has the same credentials as the default ones
  * @returns credentials are the same as the default ones
  */
 export const getAreWifiCredentialsDefault = (state: any): boolean => {
-  const dnps = getDnpInstalled(state);
-  const wifiDnp = dnps.find(dnp => dnp.name === wifiName);
-  if (!wifiDnp || !wifiDnp.envs) return false;
+  const wifiCredentials = getWifiCredentials(state);
+  if (!wifiCredentials) return false;
   return (
-    wifiDnp.envs[wifiEnvWPA_PASSPHRASE] === wifiDefaultWPA_PASSPHRASE &&
-    wifiDnp.envs[wifiEnvSSID] === wifiDefaultSSID
+    wifiCredentials.pass === wifiDefaultWPA_PASSPHRASE &&
+    wifiCredentials.ssid === wifiDefaultSSID
   );
 };
 

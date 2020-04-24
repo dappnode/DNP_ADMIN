@@ -2,9 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import RenderMarkdown from "components/RenderMarkdown";
 import "./dropdown.scss";
-import { MdHelpOutline } from "react-icons/md";
-import newTabProps from "utils/newTabProps";
-import { NavLink } from "react-router-dom";
 import { HelpTo } from "components/Help";
 
 // Utilities

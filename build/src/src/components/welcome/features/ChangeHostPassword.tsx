@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import * as api from "API/calls";
+import { connect } from "react-redux";
+import { passwordChangeInBackground } from "pages/system/actions";
 // Components
 import Input from "components/Input";
 import Switch from "components/Switch";
@@ -14,12 +15,16 @@ import BottomButtons from "../BottomButtons";
  * - Full node
  * There may be multiple available light-clients and fullnodes
  */
-export default function ChangeHostPassword({
+function ChangeHostPassword({
   onBack,
-  onNext
+  onNext,
+  // Redux
+  passwordChangeInBackground
 }: {
   onBack?: () => void;
   onNext: () => void;
+  // Redux
+  passwordChangeInBackground: (newPassword: string) => void;
 }) {
   const [input, setInput] = useState("");
   const [confirmInput, setConfirmInput] = useState("");
@@ -47,11 +52,7 @@ export default function ChangeHostPassword({
 
     // Change password in the background and don't stop for errors
     // The user can change the password latter again if it failed
-    try {
-      await api.passwordChange({ newPassword: input });
-    } catch (e) {
-      console.error(`Error changing host password in welcome flow`, e);
-    }
+    passwordChangeInBackground(input);
   }
 
   return (
@@ -111,3 +112,16 @@ export default function ChangeHostPassword({
     </>
   );
 }
+
+// Container
+
+const mapStateToProps = null;
+
+const mapDispatchToProps = {
+  passwordChangeInBackground
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ChangeHostPassword);

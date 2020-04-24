@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import api from "API/rpcMethods";
-import * as a from "../../actions";
+import { createStructuredSelector } from "reselect";
+import apiUntyped from "API/rpcMethods";
+import { wifiName, wifiEnvSSID, wifiEnvWPA_PASSPHRASE } from "params";
 // Components
 import Card from "components/Card";
 import Input from "components/Input";
@@ -10,17 +10,30 @@ import Button from "components/Button";
 import Switch from "components/Switch";
 // Style
 import "./changeHostUserPassword.scss";
-import { wifiName } from "params";
+import { getWifiCredentials } from "services/dnpInstalled/selectors";
 
-function ChangeWifiPassword() {
-  const [ssid, setSsid] = useState("");
+const api: any = apiUntyped;
+
+function ChangeWifiPassword({
+  wifiCredentials
+}: {
+  wifiCredentials: { ssid: string; pass: string } | null;
+}) {
+  const prevSsid = (wifiCredentials || {}).ssid || "";
+  const [ssid, setSsid] = useState(prevSsid);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const errorsSsid = [];
+  useEffect(() => {
+    if (prevSsid) setSsid(prevSsid);
+  }, [prevSsid]);
 
-  const errors = [];
+  const errorsSsid: string[] = [];
+  if (ssid && ssid.length < 8)
+    errorsSsid.push("SSID must be at least 8 characters long");
+
+  const errors: string[] = [];
   if (password && password.length < 8)
     errors.push("Password must be at least 8 characters long");
   if (password.includes("'"))
@@ -35,14 +48,27 @@ function ChangeWifiPassword() {
     errorsConfirm.push("Passwords do not match");
 
   const invalid =
-    !password || !confirmPassword || errors.length || errorsConfirm.length;
+    !ssid ||
+    !password ||
+    !confirmPassword ||
+    errorsSsid.length > 0 ||
+    errors.length > 0 ||
+    errorsConfirm.length > 0;
 
   const update = () => {
+    const envs = {
+      [wifiEnvSSID]: ssid,
+      [wifiEnvWPA_PASSPHRASE]: password
+    };
     if (!invalid)
-      api.updatePackageEnv(
-        { id: wifiName, envs: {}, restart: true },
-        { toastMessage: `Changing WIFI credentials...` }
-      );
+      api
+        .updatePackageEnv(
+          { id: wifiName, envs, restart: true },
+          { toastMessage: `Changing WIFI credentials...` }
+        )
+        .catch((e: Error) => {
+          console.error(`Error on api.updatePackageEnv`, e);
+        });
   };
 
   return (
@@ -62,7 +88,7 @@ function ChangeWifiPassword() {
             value={ssid}
             onValueChange={setSsid}
             onEnterPress={update}
-            className={errors.length ? "is-invalid" : ""}
+            className={errorsSsid.length ? "is-invalid" : ""}
           />
           <div className="feedback-error">
             {errorsSsid.map((line, i) => (
@@ -135,17 +161,13 @@ function ChangeWifiPassword() {
   );
 }
 
-ChangeWifiPassword.propTypes = {
-  passwordChange: PropTypes.func.isRequired
-};
-
 // Container
 
-const mapStateToProps = null;
+const mapStateToProps = createStructuredSelector({
+  wifiCredentials: getWifiCredentials
+});
 
-const mapDispatchToProps = {
-  passwordChange: a.passwordChange
-};
+const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,

@@ -60,6 +60,14 @@ export const changeEthClientTarget = (
     .catch(console.error);
 };
 
+export const passwordChangeInBackground = (
+  newPassword: string
+): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
+  await api.passwordChange({ newPassword }).catch(console.error);
+
+  dispatch(fetchIfPasswordIsInsecure());
+};
+
 export const passwordChange = (
   newPassword: string
 ): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
