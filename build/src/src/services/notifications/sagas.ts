@@ -1,5 +1,5 @@
 import { put, call, select } from "redux-saga/effects";
-import api from "API/rpcMethods";
+import { api } from "API/start";
 import * as a from "./actions";
 import * as t from "./actionTypes";
 import * as s from "./selectors";
@@ -51,8 +51,8 @@ export function* removeDappmanagerNotifications() {
     const notifications = yield select(s.getNotifications);
     // Check the ones that came from the dappmanager
     const ids = Object.values(notifications)
-      .filter(notification => notification.fromDappmanager)
-      .map(notification => notification.id);
+      .filter((notification: any) => notification.fromDappmanager)
+      .map((notification: any) => notification.id);
     if (ids.length) {
       // Send the ids to the dappmanager
       yield call(api.notificationsRemove, { ids });

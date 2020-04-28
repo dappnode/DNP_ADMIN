@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
-import * as api from "API/calls";
+import { api } from "API/start";
 // Components
 import Card from "components/Card";
 import Alert from "react-bootstrap/Alert";
@@ -25,6 +25,7 @@ import {
 import { AutoUpdateDataView, ProgressLogsByDnp } from "types";
 // Styles
 import "./autoUpdates.scss";
+import { withToast } from "components/toast/Toast";
 
 const { MY_PACKAGES, SYSTEM_PACKAGES } = autoUpdateIds;
 const getIsSinglePackage = (id: string) =>
@@ -148,19 +149,21 @@ function AutoUpdates({
     };
   }, []);
 
-  function setUpdateSettings(id: string, enabled: boolean): void {
-    api
-      .autoUpdateSettingsEdit(
-        { id, enabled },
-        {
-          toastMessage: `${
-            enabled ? "Enabling" : "Disabling"
-          } auto updates for ${shortNameCapitalized(id)}...`
-        }
-      )
-      .catch(e => {
-        console.error(`Error on autoUpdateSettingsEdit: ${e.stack}`);
+  async function setUpdateSettings(
+    id: string,
+    enabled: boolean
+  ): Promise<void> {
+    try {
+      const actioning = enabled ? "Enabling" : "Disabling";
+      const actioned = enabled ? "Enabled" : "Disabled";
+      const name = shortNameCapitalized(id);
+      await withToast(() => api.autoUpdateSettingsEdit({ id, enabled }), {
+        message: `${actioning} auto updates for ${name}...`,
+        onSuccess: `${actioned} auto updates for ${name}`
       });
+    } catch (e) {
+      console.error(`Error on autoUpdateSettingsEdit: ${e.stack}`);
+    }
   }
 
   return (

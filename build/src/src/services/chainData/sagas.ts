@@ -1,6 +1,6 @@
-import { put, call, delay } from "redux-saga/effects";
+import { put, call } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import APIcall from "API/rpcMethods";
+import { api } from "API/start";
 import * as a from "./actions";
 import * as t from "./types";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
@@ -13,9 +13,11 @@ import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
  */
 function* requestChainData() {
   try {
-    yield call(APIcall.requestChainData);
-    yield delay(5 * 60 * 1000);
-    yield put(a.requestChainData);
+    yield call(api.requestChainData);
+    yield call(async function() {
+      await new Promise(r => setTimeout(r, 5 * 60 * 1000));
+    });
+    yield put(a.requestChainData());
   } catch (e) {
     console.error(`Error on requestChainData: ${e.stack}`);
   }

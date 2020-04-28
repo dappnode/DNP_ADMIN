@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import PropTypes from "prop-types";
-import api from "API/rpcMethods";
+import { api } from "API/start";
 // Components
 import Input from "components/Input";
 import Button from "components/Button";
@@ -9,8 +8,9 @@ import { shortName } from "utils/format";
 import dataUriToBlob from "utils/dataUriToBlob";
 import { saveAs } from "file-saver";
 import { stringSplit } from "utils/strings";
+import { withToast } from "components/toast/Toast";
 
-function From({ id, from }) {
+export default function From({ id, from }: { id: string; from?: string }) {
   const [fromPathInput, setFromPathInput] = useState("");
 
   const downloadFile = useCallback(
@@ -31,9 +31,12 @@ function From({ id, from }) {
          *   Same for relative paths to directories.
          * @returns {string} dataUri = "data:application/zip;base64,UEsDBBQAAAg..."
          */
-        const dataUri = await api.copyFileFrom(
-          { id, fromPath },
-          { toastMessage: `Copying file from ${shortName(id)} ${fromPath}...` }
+        const dataUri = await withToast(
+          () => api.copyFileFrom({ id, fromPath }),
+          {
+            message: `Copying file from ${shortName(id)} ${fromPath}...`,
+            onSuccess: `Copied file from ${shortName(id)} ${fromPath}`
+          }
         );
         if (!dataUri) return;
 
@@ -62,6 +65,7 @@ function From({ id, from }) {
         placeholder="Container from path"
         value={fromPathInput}
         onValueChange={setFromPathInput}
+        onEnterPress={() => downloadFile(fromPathInput)}
         append={
           <Button
             onClick={() => downloadFile(fromPathInput)}
@@ -76,7 +80,7 @@ function From({ id, from }) {
   );
 }
 
-function parseFileName(path, mimeType) {
+function parseFileName(path: string, mimeType: string): string {
   if (!path || typeof path !== "string") return path;
   const subPaths = stringSplit(path, "/");
   let fileName = subPaths[subPaths.length - 1] || "";
@@ -91,9 +95,3 @@ function parseFileName(path, mimeType) {
 
   return fileName;
 }
-
-From.propTypes = {
-  id: PropTypes.string.isRequired
-};
-
-export default From;

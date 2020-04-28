@@ -1,6 +1,6 @@
 import { put, call } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import api from "API/rpcMethods";
+import { api } from "API/start";
 import * as a from "./actions";
 import * as t from "./actionTypes";
 import { loadingId } from "./data";
@@ -15,7 +15,7 @@ import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 export function* fetchDevices() {
   try {
     yield put(updateIsLoading(loadingId));
-    const devices = yield call(api.listDevices, {}, { toastOnError: true });
+    const devices = yield call(api.devicesList);
     yield put(a.updateDevices(devices));
     yield put(updateIsLoaded(loadingId));
   } catch (e) {

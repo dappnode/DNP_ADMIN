@@ -1,6 +1,5 @@
 import React from "react";
-
-import PropTypes from "prop-types";
+import { RouteComponentProps } from "react-router-dom";
 // Components
 import Card from "components/Card";
 import To from "./To";
@@ -11,14 +10,19 @@ import From from "./From";
  * Since it's not critical, errors are logged and ignored
  * @param {string} searchQuery
  */
-function fetchParamsFromExtraUrl(searchQuery) {
+function fetchParamsFromExtraUrl(
+  searchQuery: string
+): {
+  from?: string;
+  to?: string;
+} {
   try {
     if (!searchQuery) return {};
     const searchParams = new URLSearchParams(searchQuery);
     if (!searchParams) return {};
     return {
-      from: searchParams.get("from"),
-      to: searchParams.get("to")
+      from: searchParams.get("from") || undefined,
+      to: searchParams.get("to") || undefined
     };
   } catch (e) {
     console.error(`Error parsing extra URL: ${e.stack}`);
@@ -26,9 +30,9 @@ function fetchParamsFromExtraUrl(searchQuery) {
   }
 }
 
-function FileManager({ location, dnp }) {
-  const id = dnp.name;
-
+const FileManager: React.FunctionComponent<
+  { location: string; id: string } & RouteComponentProps
+> = ({ location, id }) => {
   const { from, to } = fetchParamsFromExtraUrl(location.search);
 
   return (
@@ -43,12 +47,6 @@ function FileManager({ location, dnp }) {
       </div>
     </Card>
   );
-}
-
-FileManager.propTypes = {
-  dnp: PropTypes.shape({
-    name: PropTypes.string.isRequired
-  }).isRequired
 };
 
 export default FileManager;

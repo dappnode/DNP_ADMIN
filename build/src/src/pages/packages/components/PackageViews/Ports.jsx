@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import api from "API/rpcMethods";
+import { api } from "API/start";
 import { createStructuredSelector } from "reselect";
+import { withToast } from "components/toast/Toast";
 // Components
 import Card from "components/Card";
 import TableInputs from "components/TableInputs";
@@ -37,10 +38,11 @@ function Ports({ dnp, loading, hostPortMapping }) {
     const id = dnp.name;
     try {
       setUpdating(true);
-      await api.updatePortMappings(
-        { id, portMappings: ports },
+      await withToast(
+        () => api.updatePortMappings({ id, portMappings: ports }),
         {
-          toastMessage: `Updating ${shortNameCapitalized(id)} port mappings...`
+          message: `Updating ${shortNameCapitalized(id)} port mappings...`,
+          onSuccess: `Updated ${shortNameCapitalized(id)} port mappings`
         }
       );
     } catch (e) {

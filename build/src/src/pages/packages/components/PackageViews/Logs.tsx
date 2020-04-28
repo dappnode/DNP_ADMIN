@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import api from "API/rpcMethods";
+import { api } from "API/start";
 import newTabProps from "utils/newTabProps";
 // Components
 import Card from "components/Card";
@@ -16,9 +16,9 @@ const baseUrlDownloadAll =
 const refreshInterval = 2 * 1000;
 const terminalID = "terminal";
 
-const validateLines = lines => !isNaN(lines) && lines > 0;
+const validateLines = (lines: number) => !isNaN(lines) && lines > 0;
 
-function Logs({ id }) {
+function Logs({ id }: { id: string }) {
   // User options
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [timestamps, setTimestamps] = useState(false);
@@ -40,7 +40,7 @@ function Logs({ id }) {
       if (el) el.scrollTop = el.scrollHeight;
       scrollToBottom = () => {};
     };
-    let unmounted;
+    let unmounted: boolean;
 
     async function logDnp() {
       try {
@@ -105,6 +105,7 @@ function Logs({ id }) {
       <Input
         placeholder="Number of lines to display..."
         value={lines}
+        // @ts-ignore
         onValueChange={setLines}
         type="number"
         prepend="Lines"

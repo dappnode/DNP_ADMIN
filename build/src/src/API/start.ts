@@ -1,11 +1,21 @@
 import autobahn from "autobahn";
+import { mapValues } from "lodash";
 import store from "../store";
-import subscriptions from "./subscriptions";
+import { stringIncludes } from "utils/strings";
+// Transport
+import { subscriptionsFactory, callRoute } from "common/transport/autobahn";
+import { Subscriptions, subscriptionsData } from "common/subscriptions";
+import { Routes, routesData } from "common/routes";
+import { Args } from "common/transport/types";
+// Internal
+import {
+  legacyVpnSubscription,
+  mapSubscriptionsToRedux
+} from "./subscriptions";
 import {
   connectionOpen,
   connectionClose
 } from "services/connectionStatus/actions";
-import { stringIncludes } from "utils/strings";
 
 // Initalize app
 // Development
@@ -19,7 +29,18 @@ let sessionCache: autobahn.Session;
 
 export const getSession = (): autobahn.Session | undefined => sessionCache;
 
-export default function start() {
+export const api: Routes = mapValues(routesData, (data, route) => {
+  return async function(...args: any[]) {
+    const session = getSession();
+    // If session is not available, fail gently
+    if (!session) throw Error("Session object is not defined");
+    if (!session.isOpen) throw Error("Connection is not open");
+
+    return await callRoute<any>(session, route, args);
+  };
+});
+
+export function start() {
   const connection = new autobahn.Connection({ url, realm });
 
   connection.onopen = session => {
@@ -27,7 +48,20 @@ export default function start() {
     store.dispatch(connectionOpen({ session }));
     console.log("CONNECTED to \nurl: " + url + " \nrealm: " + realm);
     // Start subscriptions
-    subscriptions(session);
+
+    const subscriptions = subscriptionsFactory<Subscriptions>(
+      session,
+      subscriptionsData,
+      {
+        onError: (route: string, error: Error, args?: Args): void => {
+          console.error(`Subscription error ${route}: ${error.stack}`, args);
+        }
+      }
+    );
+
+    mapSubscriptionsToRedux(subscriptions);
+    legacyVpnSubscription(session);
+
     // For testing:
     // @ts-ignore
     window.call = (event, kwargs = {}) => session.call(event, [], kwargs);

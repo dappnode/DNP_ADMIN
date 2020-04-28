@@ -9,7 +9,6 @@ const initialState: DappnodeStatusState = {
   systemInfo: null,
   stats: {},
   diagnose: [],
-  vpnVersionData: {},
   pingReturns: {},
   ipfsConnectionStatus: {},
   wifiStatus: {},
@@ -31,12 +30,6 @@ export default function(state = initialState, action: any) {
       return {
         ...state,
         stats: action.stats
-      };
-
-    case t.UPDATE_VPN_VERSION_DATA:
-      return {
-        ...state,
-        stats: action.vpnVersionData
       };
 
     case t.UPDATE_DAPPNODE_DIAGNOSE:

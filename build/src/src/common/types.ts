@@ -819,6 +819,7 @@ export interface ErrorSerialized {
 export interface SystemInfo {
   // Git version data
   versionData: PackageVersionData;
+  versionDataVpn: PackageVersionData;
   // Network params
   ip: string; // "85.84.83.82",
   name: string; // "My-DAppNode",

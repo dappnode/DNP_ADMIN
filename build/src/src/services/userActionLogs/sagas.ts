@@ -1,16 +1,22 @@
 import { put, call } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import api from "API/rpcMethods";
+import { api } from "API/start";
 import * as a from "./actions";
 import * as t from "./actionTypes";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
+import { UserActionLog } from "common/types";
+
+interface UserActionLogWithCount extends UserActionLog {
+  count?: number;
+  timestamp: number;
+}
 
 /**
  * [Tested]
  */
 export function* fetchUserActionLogs() {
   try {
-    const userActionLogsString = yield call(api.getUserActionLogs);
+    const userActionLogsString = yield call(api.getUserActionLogs, {});
     // fetchDirectory CALL DOCUMENTATION:
     // > kwargs: {}
     // > result: logs <string>
@@ -37,7 +43,7 @@ export function* fetchUserActionLogs() {
       );
 
     // Process userActionLogs. They are json objects appended in a log file
-    let userActionLogs = [];
+    let userActionLogs: UserActionLogWithCount[] = [];
     userActionLogsString
       .trim()
       .split(/\r?\n/)
@@ -74,7 +80,8 @@ export function* fetchUserActionLogs() {
 
     // Order by newest first
     const userActionLogsSorted = userActionLogs.sort(
-      (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
 
     // Update userActionLogs

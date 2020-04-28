@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as api from "API/calls";
+import { api } from "API/start";
 import {
   Switch,
   Route,
@@ -23,6 +23,7 @@ import StatusIcon from "components/StatusIcon";
 // External
 import { rootPath as packagesRootPath } from "pages/packages/data";
 import { RequestedDnp, UserSettingsAllDnps, ProgressLogs } from "types";
+import { withToast } from "components/toast/Toast";
 
 const BYPASS_CORE_RESTRICTION = "BYPASS_CORE_RESTRICTION";
 const SHOW_ADVANCED_EDITOR = "SHOW_ADVANCED_EDITOR";
@@ -99,8 +100,9 @@ const InstallDnpView: React.FunctionComponent<
     console.log("Installing DNP", kwargs);
     try {
       setIsInstalling(true);
-      await api.installPackage(kwargs, {
-        toastMessage: `Installing ${shortNameCapitalized(name)}...`
+      await withToast(() => api.installPackage(kwargs), {
+        message: `Installing ${shortNameCapitalized(name)}...`,
+        onSuccess: `Installed ${shortNameCapitalized(name)}`
       });
       // Re-direct user to package page if installation is successful
       if (componentIsMounted.current) {

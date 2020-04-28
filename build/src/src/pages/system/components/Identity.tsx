@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import api from "API/rpcMethods";
+import { api } from "API/start";
 import { confirm } from "components/ConfirmDialog";
 import { encrypt } from "utils/publicKeyEncryption";
+import { withToast } from "components/toast/Toast";
 // Components
 import Card from "components/Card";
 import Button from "components/Button";
@@ -12,7 +13,10 @@ import Form from "react-bootstrap/Form";
 import StatusIcon from "components/StatusIcon";
 import Loading from "components/generic/Loading";
 // External
-import { getIdentityAddress } from "services/dappnodeStatus/selectors";
+import {
+  getIdentityAddress,
+  getDappmanagerNaclPublicKey
+} from "services/dappnodeStatus/selectors";
 import { adminNaclSecretKey } from "params";
 // Images
 import etherCardSample from "img/ether-card-sample.png";
@@ -20,7 +24,13 @@ import blankCardSample from "img/blank-card-sample.png";
 // Style
 import "./identity.scss";
 
-function Identity({ identityAddress }) {
+function Identity({
+  identityAddress,
+  dappmanagerNaclPublicKey
+}: {
+  identityAddress?: string;
+  dappmanagerNaclPublicKey?: string;
+}) {
   const [showRealCard, setShowRealCard] = useState(false);
   const [seedPhrase, setSeedPhrase] = useState("");
   const [isOnProgress, setIsOnProgress] = useState(false);
@@ -40,16 +50,17 @@ function Identity({ identityAddress }) {
           })
         );
 
-      const dappmanagerPublicKey = await api.naclEncryptionGetPublicKey({}, {});
+      if (!dappmanagerNaclPublicKey)
+        throw Error(`Could not get dappmanagerNaclPublicKey`);
       const seedPhraseEncrypted = encrypt(
         seedPhrase,
         adminNaclSecretKey,
-        dappmanagerPublicKey
+        dappmanagerNaclPublicKey
       );
-      await api.seedPhraseSet(
-        { seedPhraseEncrypted },
-        { toastMessage: `Setting seed phrase...` }
-      );
+      await withToast(() => api.seedPhraseSet({ seedPhraseEncrypted }), {
+        message: "Setting seed phrase...",
+        onSuccess: "Set seed phrase"
+      });
     } catch (e) {
       console.error(`Error on sendSeedPhrase: ${e.stack}`);
     } finally {
@@ -108,7 +119,9 @@ function Identity({ identityAddress }) {
               rows="3"
               placeholder="word1 word2..."
               value={seedPhrase}
-              onChange={e => setSeedPhrase(e.target.value)}
+              onChange={e => {
+                if (e.target) setSeedPhrase((e.target as any).value);
+              }}
             />
           </div>
 
@@ -138,7 +151,8 @@ Identity.propTypes = {
 // Container
 
 const mapStateToProps = createStructuredSelector({
-  identityAddress: getIdentityAddress
+  identityAddress: getIdentityAddress,
+  dappmanagerNaclPublicKey: getDappmanagerNaclPublicKey
 });
 
 const mapDispatchToProps = {};

@@ -29,7 +29,8 @@ export const getVolumes = (state: any) => getLocal(state).volumes;
 // Sub-sub local properties
 export const getDappmanagerVersionData = (state: any) =>
   (getSystemInfo(state) || {}).versionData;
-export const getVpnVersionData = (state: any) => getLocal(state).vpnVersionData;
+export const getVpnVersionData = (state: any) =>
+  (getSystemInfo(state) || {}).versionDataVpn;
 export const getDappmanagerPing = (state: any) => getPing(state).dappmanager;
 export const getVpnPing = (state: any) => getPing(state).vpn;
 export const getEthClientTarget = (state: any) =>
@@ -40,6 +41,8 @@ export const getEthClientStatus = (state: any) =>
   (getSystemInfo(state) || {}).ethClientStatus;
 export const getNewFeatureIds = (state: any) =>
   (getSystemInfo(state) || {}).newFeatureIds;
+export const getDappmanagerNaclPublicKey = (state: any) =>
+  (getSystemInfo(state) || {}).dappmanagerNaclPublicKey;
 
 /**
  * Returns a pretty warning about the eth client only if the user has to see it

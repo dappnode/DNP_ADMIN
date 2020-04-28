@@ -1,6 +1,6 @@
 import { ThunkAction } from "redux-thunk";
 import { AnyAction } from "redux";
-import * as api from "API/calls";
+import { api } from "API/start";
 import {
   SetDnpDirectory,
   UpdateDirectoryStatus,
@@ -37,7 +37,7 @@ export const fetchDnpDirectory = (): ThunkAction<
 > => async dispatch => {
   try {
     dispatch(updateStatus({ loading: true }));
-    dispatch(setDnpDirectory(await api.fetchDirectory({})));
+    dispatch(setDnpDirectory(await api.fetchDirectory()));
     dispatch(updateStatus({ loading: false, success: true }));
   } catch (e) {
     dispatch(updateStatus({ loading: false, error: e.message }));

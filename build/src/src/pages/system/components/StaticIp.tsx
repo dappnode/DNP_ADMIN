@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import { api } from "API/start";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import * as a from "../actions";
 import isIpv4 from "utils/isIpv4";
+import { withToast } from "components/toast/Toast";
 // Components
 import Card from "components/Card";
 import Input from "components/Input";
@@ -11,16 +11,24 @@ import Button from "components/Button";
 // External
 import { getStaticIp } from "services/dappnodeStatus/selectors";
 
-function StaticIp({ staticIp = "", setStaticIp }) {
+function StaticIp({ staticIp = "" }) {
   const [input, setInput] = useState(staticIp);
 
   useEffect(() => {
     setInput(staticIp);
   }, [staticIp]);
 
-  const update = () => {
-    if (isIpv4(input)) setStaticIp(input);
-  };
+  async function updateStaticIp(newStaticIp: string) {
+    if (isIpv4(newStaticIp))
+      try {
+        await withToast(() => api.setStaticIp({ staticIp: newStaticIp }), {
+          message: "Setting static ip...",
+          onSuccess: "Set static ip"
+        });
+      } catch (e) {
+        console.error("Error on setStaticIp", e);
+      }
+  }
 
   return (
     <Card spacing>
@@ -35,20 +43,20 @@ function StaticIp({ staticIp = "", setStaticIp }) {
           placeholder="Your static ip..."
           value={input}
           onValueChange={setInput}
-          onEnterPress={update}
+          onEnterPress={() => updateStaticIp(input)}
           append={
             <>
               <Button
                 variant="dappnode"
                 disabled={!isIpv4(input)}
-                onClick={update}
+                onClick={() => updateStaticIp(input)}
               >
                 {staticIp ? "Update" : "Enable"}
               </Button>
               {staticIp && (
                 <Button
                   variant="outline-dappnode"
-                  onClick={() => setStaticIp("")}
+                  onClick={() => updateStaticIp("")}
                 >
                   Disable
                 </Button>
@@ -61,22 +69,13 @@ function StaticIp({ staticIp = "", setStaticIp }) {
   );
 }
 
-StaticIp.propTypes = {
-  staticIp: PropTypes.string.isRequired,
-  setStaticIp: PropTypes.func.isRequired
-};
-
 // Container
 
 const mapStateToProps = createStructuredSelector({
   staticIp: getStaticIp
 });
 
-const mapDispatchToProps = {
-  setStaticIp: a.setStaticIp
-};
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(StaticIp);

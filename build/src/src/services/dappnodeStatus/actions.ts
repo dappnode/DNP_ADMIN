@@ -5,8 +5,7 @@ import {
   Diagnose,
   AutoUpdateDataView,
   MountpointData,
-  VolumeData,
-  PackageVersionData
+  VolumeData
 } from "types";
 
 // Service > dappnodeStatus
@@ -16,11 +15,6 @@ import {
 export const setSystemInfo = (systemInfo: SystemInfo) => ({
   type: t.SET_SYSTEM_INFO,
   systemInfo
-});
-
-export const updateVpnVersionData = (vpnVersionData: PackageVersionData) => ({
-  type: t.UPDATE_VPN_VERSION_DATA,
-  vpnVersionData
 });
 
 export const updateDappnodeStats = (stats: HostStats) => ({

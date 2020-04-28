@@ -1,6 +1,6 @@
 import { ThunkAction } from "redux-thunk";
 import { AnyAction } from "redux";
-import * as api from "API/calls";
+import { api } from "API/start";
 import { RequestStatus, PackageContainer, PackageDetailData } from "types";
 import {
   SetDnpInstalled,
@@ -65,7 +65,7 @@ export const fetchDnpInstalled = (): ThunkAction<
 > => async dispatch => {
   try {
     dispatch(updateStatus({ loading: true }));
-    dispatch(setDnpInstalled(await api.listPackages({})));
+    dispatch(setDnpInstalled(await api.listPackages()));
     dispatch(updateStatus({ loading: false, success: true }));
   } catch (e) {
     dispatch(updateStatus({ loading: false, error: e.message }));

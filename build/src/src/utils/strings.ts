@@ -3,7 +3,7 @@
  * @param {string} s
  * @returns {string}
  */
-export const toLowercase = s => {
+export const toLowercase = (s: string): string => {
   if (!s || typeof s !== "string") return "";
   return s.toLowerCase();
 };
@@ -13,7 +13,7 @@ export const toLowercase = s => {
  * @param {string} string = "hello world"
  * @returns {string} "Hello world"
  */
-export const capitalize = s => {
+export const capitalize = (s: string): string => {
   if (!s || typeof s !== "string") return s;
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
@@ -26,7 +26,7 @@ export const capitalize = s => {
  * @param {string} content = "lo"
  * @returns {bool} = true
  */
-export const stringIncludes = (s, content) => {
+export const stringIncludes = (s: string, content: string): boolean => {
   if (!s || typeof s !== "string") return false;
   if (!content || typeof content !== "string") return false;
   return s.toLowerCase().includes(content.toLowerCase());
@@ -40,7 +40,7 @@ export const stringIncludes = (s, content) => {
  * @param {string} content = "lo"
  * @returns {bool} = true
  */
-export const stringEndsWith = (s, content) => {
+export const stringEndsWith = (s: string, content: string): boolean => {
   if (!s || typeof s !== "string") return false;
   if (!content || typeof content !== "string") return false;
   return s.toLowerCase().endsWith(content.toLowerCase());
@@ -53,7 +53,10 @@ export const stringEndsWith = (s, content) => {
  * @param {string|object} separator = ".", /\.(.+)/
  * @returns {array} ["vpn", "eth"]
  */
-export const stringSplit = (s, separator) => {
+export const stringSplit = (
+  s: string,
+  separator: string | RegExp
+): string[] => {
   if (!s || typeof s !== "string") return [""];
   if (!separator) return [""];
   return s.split(separator);
@@ -63,7 +66,7 @@ export const stringSplit = (s, separator) => {
  * Converts constant case "SOME_BAR", to a sentence "Some bar"
  * @param {string} s
  */
-export const toSentence = s => {
+export const toSentence = (s: string): string => {
   if (!s || typeof s !== "string") return s;
   return capitalize(s.replace(new RegExp("_", "g"), " ").toLowerCase());
 };

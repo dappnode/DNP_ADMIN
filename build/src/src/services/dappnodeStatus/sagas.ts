@@ -1,7 +1,6 @@
 import { put, call, all } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import apiOldUntyped from "API/rpcMethods";
-import * as api from "API/calls";
+import { api } from "API/start";
 import * as a from "./actions";
 import * as t from "./types";
 import checkIpfsConnection from "./diagnoseFunctions/checkIpfsNode";
@@ -9,16 +8,11 @@ import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 import { wrapErrorsAndLoading } from "services/loadingStatus/sagas";
 import * as loadingIds from "services/loadingStatus/loadingIds";
 // Utils
-import { assertConnectionOpen } from "utils/redux";
 import { stringSplit, stringIncludes } from "utils/strings";
 import { wifiName } from "params";
 import { MountpointData, VolumeData } from "types";
 
-const apiOld: any = apiOldUntyped;
-
 // Service > dappnodeStatus
-
-// It's okay, because all non-handled sagas are wrapped on a try/catch
 
 /**
  * Fetches the DAppNode params and statusUpnp from the VPN
@@ -27,7 +21,7 @@ const apiOld: any = apiOldUntyped;
 export const fetchDappnodeParams = wrapErrorsAndLoading(
   loadingIds.systemInfo,
   function*() {
-    const systemInfo = yield call(api.systemInfoGet, {});
+    const systemInfo = yield call(api.systemInfoGet);
     yield put(a.setSystemInfo(systemInfo));
   }
 );
@@ -43,7 +37,7 @@ export const fetchDappnodeParams = wrapErrorsAndLoading(
 const fetchDappnodeStats = wrapErrorsAndLoading(
   loadingIds.dappnodeStats,
   function*() {
-    const dappnodeStats = yield call(api.getStats, {});
+    const dappnodeStats = yield call(api.getStats);
     yield put(a.updateDappnodeStats(dappnodeStats));
   }
 );
@@ -51,9 +45,9 @@ const fetchDappnodeStats = wrapErrorsAndLoading(
 const fetchVpnVersionData = wrapErrorsAndLoading(
   loadingIds.versionData,
   function*() {
-    yield call(assertConnectionOpen);
-    const vpnVersionData = yield call(apiOld.vpn.getVpnVersionData);
-    yield put(a.updateVpnVersionData(vpnVersionData));
+    // yield call(assertConnectionOpen);
+    // const vpnVersionData = yield call(apiOld.vpn.getVpnVersionData);
+    // yield put(a.updateVpnVersionData(vpnVersionData));
   }
 );
 
@@ -65,7 +59,7 @@ const fetchVpnVersionData = wrapErrorsAndLoading(
 const fetchDappnodeDiagnose = wrapErrorsAndLoading(
   loadingIds.dappnodeDiagnose,
   function*() {
-    const dappnoseDiagnose = yield call(api.diagnose, {});
+    const dappnoseDiagnose = yield call(api.diagnose);
     yield put(a.updateDappnodeDiagnose(dappnoseDiagnose));
   }
 );
@@ -79,17 +73,17 @@ const fetchDappnodeDiagnose = wrapErrorsAndLoading(
 const pingDappnodeDnps = wrapErrorsAndLoading(
   loadingIds.pingDappnodeDnps,
   function*() {
-    yield call(assertConnectionOpen);
-    for (const dnp of ["dappmanager", "vpn"]) {
-      try {
-        yield call(apiOld[dnp].ping, { test: "test-ping" });
-        // If the previous call does not throw, the ping was successful
-        yield put(a.updatePingReturn(dnp, true));
-      } catch (e) {
-        console.error(`Error on pingDappnodeDnps/${dnp}: ${e.stack}`);
-        yield put(a.updatePingReturn(dnp, false));
-      }
-    }
+    // yield call(assertConnectionOpen);
+    // for (const dnp of ["dappmanager", "vpn"]) {
+    //   try {
+    //     yield call(apiOld[dnp].ping, { test: "test-ping" });
+    //     // If the previous call does not throw, the ping was successful
+    //     yield put(a.updatePingReturn(dnp, true));
+    //   } catch (e) {
+    //     console.error(`Error on pingDappnodeDnps/${dnp}: ${e.stack}`);
+    //     yield put(a.updatePingReturn(dnp, false));
+    //   }
+    // }
   }
 );
 
@@ -114,10 +108,7 @@ const checkIpfsConnectionStatus = wrapErrorsAndLoading(
 const checkWifiStatus = wrapErrorsAndLoading(
   loadingIds.wifiStatus,
   function*() {
-    const logs = yield call(apiOld.logPackage, {
-      id: wifiName,
-      options: {}
-    });
+    const logs = yield call(api.logPackage, { id: wifiName });
     const firstLogLine = stringSplit(logs.trim(), "\n")[0];
     const running = !stringIncludes(firstLogLine, "No interface found");
     yield put(a.updateWifiStatus({ running }));
@@ -130,7 +121,7 @@ const checkWifiStatus = wrapErrorsAndLoading(
 const checkIfPasswordIsInsecure = wrapErrorsAndLoading(
   loadingIds.passwordIsInsecure,
   function*() {
-    const passwordIsSecure = yield call(api.passwordIsSecure, {});
+    const passwordIsSecure = yield call(api.passwordIsSecure);
     yield put(a.updatePasswordIsInsecure(!passwordIsSecure));
   }
 );
@@ -145,7 +136,7 @@ const fetchAutoUpdateData = wrapErrorsAndLoading(
   loadingIds.autoUpdateData,
   function*() {
     // If there are no settings the return will be null
-    const autoUpdateData = yield call(api.autoUpdateDataGet, {});
+    const autoUpdateData = yield call(api.autoUpdateDataGet);
     yield put(a.updateAutoUpdateData(autoUpdateData) || {});
   }
 );
@@ -158,7 +149,7 @@ const fetchMountpointData = wrapErrorsAndLoading(
   loadingIds.mountpoints,
   function*() {
     // If there are no settings the return will be null
-    const mountpoints: MountpointData[] = yield call(api.mountpointsGet, {});
+    const mountpoints: MountpointData[] = yield call(api.mountpointsGet);
     yield put(a.updateMountpoints(mountpoints));
   }
 );
@@ -168,7 +159,7 @@ const fetchMountpointData = wrapErrorsAndLoading(
  */
 const fetchVolumes = wrapErrorsAndLoading(loadingIds.volumes, function*() {
   // If there are no settings the return will be null
-  const volumes: VolumeData[] = yield call(api.volumesGet, {});
+  const volumes: VolumeData[] = yield call(api.volumesGet);
   yield put(a.updateVolumes(volumes));
 });
 

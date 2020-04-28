@@ -106,4 +106,34 @@ const Toast = ({
   };
 };
 
+export async function withToast<R>(
+  fn: () => Promise<R>,
+  toastOptions?: {
+    message?: string;
+    onSuccess?: string;
+    onError?: boolean | string;
+  }
+): Promise<R> {
+  const { message, onSuccess, onError } = toastOptions || {};
+
+  const pendingToast = message ? Toast({ message, pending: true }) : null;
+
+  try {
+    const result = await fn();
+    if (pendingToast)
+      pendingToast.resolve({
+        success: true,
+        message: onSuccess || message || "Success"
+      });
+    return result;
+  } catch (e) {
+    if (pendingToast) {
+      pendingToast.resolve({ success: false, message: e.message });
+    } else if (onError) {
+      Toast({ success: false, message: e.message });
+    }
+    throw e;
+  }
+}
+
 export default Toast;

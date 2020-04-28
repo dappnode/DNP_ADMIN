@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import * as api from "API/calls";
+import { api } from "API/start";
 import BottomButtons from "../BottomButtons";
 import SwitchBig from "components/SwitchBig";
 // External

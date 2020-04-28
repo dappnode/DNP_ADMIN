@@ -24,9 +24,9 @@ const checkIpfsConnection = retryable(async () => {
 
 // Utils:
 
-function fetchWithTimeout(url, options, timeout = 3000) {
+async function fetchWithTimeout(url: string, timeout = 3000): Promise<any> {
   return Promise.race([
-    fetch(url, options),
+    fetch(url),
     new Promise((_, reject) =>
       setTimeout(() => reject(new Error("timeout")), timeout)
     )

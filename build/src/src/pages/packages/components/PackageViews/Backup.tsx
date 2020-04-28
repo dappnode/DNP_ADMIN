@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import api from "API/rpcMethods";
+import { api } from "API/start";
 import { confirm } from "components/ConfirmDialog";
 // Components
 import Card from "components/Card";
@@ -11,17 +11,19 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import { shortName } from "utils/format";
 import humanFS from "utils/humanFileSize";
 import newTabProps from "utils/newTabProps";
+import { PackageBackup } from "common/types";
+import { withToast } from "components/toast/Toast";
 
 const baseUrlUpload = "http://my.dappmanager.dnp.dappnode.eth:3000/upload";
 const baseUrlDownload = "http://my.dappmanager.dnp.dappnode.eth:3000/download";
 
-function Backup({ dnp }) {
-  const id = dnp.name;
-  const backup = (dnp.manifest || {}).backup;
-
-  const [progress, setProgress] = useState();
+function Backup({ id, backup }: { id: string; backup: PackageBackup[] }) {
+  const [progress, setProgress] = useState<{
+    label: string;
+    percent?: number;
+  }>();
   const [error, setError] = useState("");
-  const isOnProgress = progress && progress.label;
+  const isOnProgress = Boolean(progress && progress.label);
   // Specific state for get backup
   const [url, setUrl] = useState("");
 
@@ -32,17 +34,17 @@ function Backup({ dnp }) {
     try {
       setError("");
       setProgress({ label: "Preparing backup" });
-      const fileId = await api.backupGet(
-        { id, backup },
-        { toastMessage: `Preparing backup for ${shortName(id)}...` }
-      );
-      setProgress(null);
+      const fileId = await withToast(() => api.backupGet({ id, backup }), {
+        message: `Preparing backup for ${shortName(id)}...`,
+        onSuccess: `Backup for ${shortName(id)} ready`
+      });
+      setProgress(undefined);
       if (!fileId) throw Error("Error preparing backup");
       const _url = `${baseUrlDownload}/${fileId}`;
       setUrl(_url);
       window.open(_url, "_newtab");
     } catch (e) {
-      setProgress(null);
+      setProgress(undefined);
       setError(e.message);
       console.error(`Error requesting Backup: ${e.message}`);
     }
@@ -50,9 +52,9 @@ function Backup({ dnp }) {
 
   /**
    * Restores a DNP backup given a backup file
-   * @param {object} file
+   * @param file
    */
-  function restoreBackup(file) {
+  async function restoreBackup(file: File) {
     setError("");
 
     const xhr = new XMLHttpRequest();
@@ -62,26 +64,26 @@ function Backup({ dnp }) {
 
     // Define what happens on successful data submission
     xhr.addEventListener("load", e => {
-      setProgress(null);
+      setProgress(undefined);
+      if (!e.target) return setError(`No upload responseText`);
+      // @ts-ignore
       const fileId = e.target.responseText;
       // if responseText is not a 32bytes hex, abort
       if (!/[0-9A-Fa-f]{64}/.test(fileId))
         return setError(`Wrong response: ${fileId}`);
 
       setProgress({ label: "Restoring backup..." });
-      api
-        .backupRestore(
-          { id, backup, fileId },
-          { toastMessage: `Restoring backup for ${shortName(id)}...` }
-        )
-        .then(() => {
-          setProgress(null);
-        });
+      withToast(() => api.backupRestore({ id, backup, fileId }), {
+        message: `Restoring backup for ${shortName(id)}...`,
+        onSuccess: `Restored backup for ${shortName(id)}`
+      }).then(() => {
+        setProgress(undefined);
+      });
     });
 
     // Define what happens in case of error
     xhr.addEventListener("error", e => {
-      setProgress(null);
+      setProgress(undefined);
       setError("Something went wrong");
     });
 
@@ -90,7 +92,9 @@ function Backup({ dnp }) {
         "progress",
         e => {
           const { loaded, total } = e;
-          const percent = ((100 * (loaded || 0)) / (total || 1)).toFixed(2);
+          const percent = parseFloat(
+            ((100 * (loaded || 0)) / (total || 1)).toFixed(2)
+          );
           setProgress({
             percent,
             label: `${percent}% ${humanFS(loaded)} / ${humanFS(total)}`
@@ -105,7 +109,7 @@ function Backup({ dnp }) {
     xhr.send(formData);
   }
 
-  function handleClickRestore(file) {
+  function handleClickRestore(file: File) {
     confirm({
       title: `Restoring backup`,
       text: `This action cannot be undone. The backup data will overwrite any previously existing data.`,
@@ -169,14 +173,16 @@ function Backup({ dnp }) {
               id="backup_upload"
               name="file"
               accept=".tar, .xz, .tar.xz, .zip"
-              onChange={e => handleClickRestore(e.target.files[0])}
+              onChange={e => {
+                if (e.target.files) handleClickRestore(e.target.files[0]);
+              }}
               disabled={isOnProgress}
             />
           </Button>
         </div>
       </Columns>
 
-      {isOnProgress && (
+      {progress && (
         <div>
           <ProgressBar
             now={progress.percent || 100}

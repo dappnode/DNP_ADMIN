@@ -70,6 +70,7 @@
     "pre-commit": "yarn lint && CI=true yarn test"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.1",
     "@types/jest": "^24.9.1",
     "coveralls": "^3.0.2",
     "eslint-config-prettier": "^4.1.0",

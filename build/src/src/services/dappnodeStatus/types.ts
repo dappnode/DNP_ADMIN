@@ -5,7 +5,6 @@ import {
   MountpointData,
   VolumeData,
   AutoUpdateDataView,
-  PackageVersionData
 } from "types";
 
 // Service > dappnodeStatus
@@ -14,7 +13,6 @@ export interface DappnodeStatusState {
   systemInfo: SystemInfo | null;
   stats: HostStats;
   diagnose: Diagnose;
-  vpnVersionData: PackageVersionData;
   pingReturns: {
     [dnpName: string]: boolean;
   };
@@ -32,7 +30,6 @@ export interface DappnodeStatusState {
 // Update: triggers a reducer
 export const UPDATE_DAPPNODE_PARAMS = "UPDATE_DAPPNODE_PARAMS";
 export const UPDATE_DAPPNODE_STATS = "UPDATE_DAPPNODE_STATS";
-export const UPDATE_VPN_VERSION_DATA = "UPDATE_VPN_VERSION_DATA";
 export const UPDATE_DAPPNODE_DIAGNOSE = "UPDATE_DAPPNODE_DIAGNOSE";
 export const UPDATE_PING_RETURN = "UPDATE_PING_RETURN";
 export const UPDATE_IPFS_CONNECTION_STATUS = "UPDATE_IPFS_CONNECTION_STATUS";
