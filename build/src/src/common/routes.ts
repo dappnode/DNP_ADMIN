@@ -18,7 +18,9 @@ import {
   PackageBackup,
   EthClientFallback,
   NewFeatureId,
-  NewFeatureStatus
+  NewFeatureStatus,
+  VpnDeviceCredentials,
+  VpnDevice
 } from "./types";
 
 export interface Routes {
@@ -114,7 +116,7 @@ export interface Routes {
    * Generates certificates and keys needed for OpenVPN.
    * @param id Device id name
    */
-  deviceAdd: (kwargs: { id: string }) => Promise<string>;
+  deviceAdd: (kwargs: { id: string }) => Promise<void>;
 
   /**
    * Creates a new OpenVPN credentials file, encrypted.
@@ -124,11 +126,7 @@ export interface Routes {
    */
   deviceCredentialsGet: (kwargs: {
     id: string;
-  }) => Promise<{
-    filename: string;
-    key: string;
-    url: string;
-  }>;
+  }) => Promise<VpnDeviceCredentials>;
 
   /**
    * Removes the device with the provided id, if exists.
@@ -151,13 +149,7 @@ export interface Routes {
   /**
    * Returns a list of the existing devices, with the admin property
    */
-  devicesList: () => Promise<
-    {
-      id: string;
-      admin: boolean;
-      ip: string;
-    }[]
-  >;
+  devicesList: () => Promise<VpnDevice[]>;
 
   /**
    * Run system diagnose to inform the user

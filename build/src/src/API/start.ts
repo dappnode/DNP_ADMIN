@@ -64,7 +64,8 @@ export function start() {
 
     // For testing:
     // @ts-ignore
-    window.call = (event, kwargs = {}) => session.call(event, [], kwargs);
+    window.call = (event, args, kwargs = {}) =>
+      session.call(event, args, kwargs);
   };
 
   // connection closed, lost or unable to connect

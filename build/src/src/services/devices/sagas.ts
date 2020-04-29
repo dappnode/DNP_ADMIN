@@ -2,7 +2,6 @@ import { put, call } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import { api } from "API/start";
 import * as a from "./actions";
-import * as t from "./actionTypes";
 import { loadingId } from "./data";
 import {
   updateIsLoading,
@@ -27,7 +26,4 @@ export function* fetchDevices() {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-export default rootWatcher([
-  [CONNECTION_OPEN, fetchDevices],
-  [t.FETCH_DEVICES, fetchDevices]
-]);
+export default rootWatcher([[CONNECTION_OPEN, fetchDevices]]);
