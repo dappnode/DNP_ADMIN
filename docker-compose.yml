@@ -12,7 +12,7 @@ services:
     build:
       context: .
       dockerfile: ./build/Dockerfile
-    image: 'admin.dnp.dappnode.eth:0.2.19'
+    image: 'admin.dnp.dappnode.eth:0.2.20'
     container_name: DAppNodeCore-admin.dnp.dappnode.eth
     restart: always
     dns: 172.33.1.2
