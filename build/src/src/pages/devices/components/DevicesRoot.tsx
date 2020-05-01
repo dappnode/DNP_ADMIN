@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, RouteComponentProps } from "react-router-dom";
 // Components
 import DeviceDetails from "./DeviceDetails";
 import DevicesHome from "./DevicesHome";
@@ -7,7 +7,7 @@ import withLoading from "components/hoc/withLoading";
 // General styles
 import "./devices.css";
 
-const DevicesRoot = ({ match }) => (
+const DevicesRoot: React.FC<RouteComponentProps> = ({ match }) => (
   <>
     <Route exact path={match.path} component={DevicesHome} />
     <Route path={match.path + "/:id"} component={DeviceDetails} />
