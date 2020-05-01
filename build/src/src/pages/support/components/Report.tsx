@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
-import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import * as s from "../selectors";
 import { connect } from "react-redux";
-import marked from "marked";
 // Components
 import Card from "components/Card";
 // Actions
@@ -12,8 +10,19 @@ import { fetchAllDappnodeStatus } from "services/dappnodeStatus/actions";
 import Github from "Icons/Github";
 // Styles
 import "./support.css";
+import RenderMarkdown from "components/RenderMarkdown";
 
-function Report({ issueBody, issueUrl, issueUrlRaw, fetchAllDappnodeStatus }) {
+function Report({
+  issueBody,
+  issueUrl,
+  issueUrlRaw,
+  fetchAllDappnodeStatus
+}: {
+  issueBody: string;
+  issueUrl: string;
+  issueUrlRaw: string;
+  fetchAllDappnodeStatus: () => void;
+}) {
   useEffect(() => {
     fetchAllDappnodeStatus(); // = componentDidMount
   }, [fetchAllDappnodeStatus]);
@@ -36,12 +45,9 @@ function Report({ issueBody, issueUrl, issueUrlRaw, fetchAllDappnodeStatus }) {
         <span className="github-issue-arrow">></span>
         <span>Body</span>
       </div>
-      <div
-        className="github-issue-body"
-        dangerouslySetInnerHTML={{
-          __html: marked(issueBody)
-        }}
-      />
+      <div className="github-issue-body">
+        <RenderMarkdown source={issueBody} />
+      </div>
       <a className="btn btn-dappnode mt-3 mr-3" href={issueUrl}>
         Report issue
       </a>
@@ -51,12 +57,6 @@ function Report({ issueBody, issueUrl, issueUrlRaw, fetchAllDappnodeStatus }) {
     </Card>
   );
 }
-
-Report.propTypes = {
-  issueBody: PropTypes.string.isRequired,
-  issueUrl: PropTypes.string.isRequired,
-  issueUrlRaw: PropTypes.string.isRequired
-};
 
 // Container
 

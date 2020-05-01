@@ -4,7 +4,7 @@ import {
   Diagnose,
   MountpointData,
   VolumeData,
-  AutoUpdateDataView
+  AutoUpdateDataView,
 } from "types";
 
 // Service > dappnodeStatus

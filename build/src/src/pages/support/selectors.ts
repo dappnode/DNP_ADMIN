@@ -19,6 +19,9 @@ import {
   getIsConnectionOpen
 } from "services/connectionStatus/selectors";
 import { getIsLoading } from "services/loadingStatus/selectors";
+import { DiagnoseResult } from "./types";
+
+type DiagnoseResultOrNull = DiagnoseResult | null;
 
 /**
  * Diagnose selectors
@@ -35,21 +38,9 @@ import { getIsLoading } from "services/loadingStatus/selectors";
  * can also return null, and that diagnose will be ignored
  */
 
-type DiagnoseResult =
-  | null
-  | {
-      loading: boolean;
-      msg: string;
-    }
-  | {
-      ok: boolean;
-      msg: string;
-      solutions: string[];
-    };
-
 const getDiagnoseConnection = createSelector(
   getConnectionStatus,
-  ({ isOpen, error }): DiagnoseResult => ({
+  ({ isOpen, error }): DiagnoseResultOrNull => ({
     ok: isOpen,
     msg: isOpen ? "Session is open" : `Session is closed: ${error || ""}`,
     solutions: [
@@ -62,7 +53,7 @@ const getDiagnoseConnection = createSelector(
 const getDiagnoseOpenPorts = onlyIfConnectionIsOpen(
   createSelector(
     getDappnodeParams,
-    (dappnodeParams): DiagnoseResult => {
+    (dappnodeParams): DiagnoseResultOrNull => {
       if (!dappnodeParams) return null;
       const { alertToOpenPorts } = dappnodeParams;
       return {
@@ -82,7 +73,7 @@ const getDiagnoseOpenPorts = onlyIfConnectionIsOpen(
 const getDiagnoseNoNatLoopback = onlyIfConnectionIsOpen(
   createSelector(
     getDappnodeParams,
-    (dappnodeParams): DiagnoseResult => {
+    (dappnodeParams): DiagnoseResultOrNull => {
       if (!dappnodeParams) return null;
       const { noNatLoopback, internalIp } = dappnodeParams;
       return {
@@ -101,7 +92,7 @@ const getDiagnoseNoNatLoopback = onlyIfConnectionIsOpen(
 const getDiagnoseIpfs = createSelector(
   getIpfsConnectionStatus,
   getIsLoading.ipfsConnectionStatus,
-  (ipfsConnectionStatus, loading): DiagnoseResult => {
+  (ipfsConnectionStatus, loading): DiagnoseResultOrNull => {
     if (loading) return { loading: true, msg: "Checking if IPFS resolves..." };
     if (!ipfsConnectionStatus) return null;
     return {
@@ -123,7 +114,7 @@ const getDiagnoseIpfs = createSelector(
 const getDiagnoseDiskSpace = createSelector(
   getDappnodeStats,
   getIsLoading.dappnodeStats,
-  (stats, loading): DiagnoseResult => {
+  (stats, loading): DiagnoseResultOrNull => {
     if (loading) return { loading, msg: "Checking disk usage..." };
     if (!stats || !stats.disk) return null;
     const ok = parseInt(stats.disk) < 95;
@@ -141,7 +132,7 @@ const getDiagnoseDiskSpace = createSelector(
 const getDiagnoseCoreDnpsRunning = createSelector(
   getDnpInstalled,
   getIsLoading.dnpInstalled,
-  (dnpInstalled, isLoading): DiagnoseResult => {
+  (dnpInstalled, isLoading): DiagnoseResultOrNull => {
     if (isLoading)
       return {
         loading: true,
@@ -195,12 +186,14 @@ export const getDiagnoses = createSelector(
     getDiagnoseDiskSpace,
     getDiagnoseCoreDnpsRunning
   }),
-  diagnoseObjects =>
-    Object.entries(diagnoseObjects)
-      // Filter out null diagnoses
-      .filter(([_, diagnose]) => diagnose)
-      // The id is used by react as key={id}
-      .map(([id, diagnose]) => ({ ...diagnose, id }))
+  (diagnoseObjects): DiagnoseResult[] => {
+    const diagnoseResults: DiagnoseResult[] = [];
+    for (const diagnose of Object.values(diagnoseObjects)) {
+      // Ignore diagnoses that are null
+      if (diagnose) diagnoseResults.push(diagnose);
+    }
+    return diagnoseResults;
+  }
 );
 
 /**
@@ -365,7 +358,11 @@ function printVersionData(
  * @returns
  */
 function onlyIfConnectionIsOpen(
-  selector: OutputSelector<any, DiagnoseResult, (res: any) => DiagnoseResult>
+  selector: OutputSelector<
+    any,
+    DiagnoseResultOrNull,
+    (res: any) => DiagnoseResultOrNull
+  >
 ) {
   return createSelector(
     getIsConnectionOpen,

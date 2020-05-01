@@ -1,15 +1,21 @@
 import React from "react";
-import withTitle from "components/hoc/withTitle";
-import { Switch, Route, NavLink, Redirect } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  NavLink,
+  Redirect,
+  RouteComponentProps
+} from "react-router-dom";
 import { title } from "../data";
 // Components
 import AutoDiagnose from "./AutoDiagnose";
 import Report from "./Report";
 import Activity from "./Activity";
+import Title from "components/Title";
 // Styles
 import "./support.css";
 
-function SupportRoot({ match }) {
+const SupportRoot: React.FC<RouteComponentProps> = ({ match }) => {
   const routes = [
     {
       name: "Auto Diagnose",
@@ -30,6 +36,8 @@ function SupportRoot({ match }) {
 
   return (
     <>
+      <Title title={title} />
+
       <div className="horizontal-navbar">
         {routes.map(route => (
           <button key={route.subPath} className="item-container">
@@ -60,6 +68,6 @@ function SupportRoot({ match }) {
       </div>
     </>
   );
-}
+};
 
-export default withTitle(title)(SupportRoot);
+export default SupportRoot;

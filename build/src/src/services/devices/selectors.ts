@@ -21,7 +21,10 @@ export function areThereDevices(state: any): boolean {
   return getDevices(state).length > 0;
 }
 
-export function getDeviceById(state: any, id: string): VpnDeviceState | {} {
+export function getDeviceById(
+  state: any,
+  id: string
+): VpnDeviceState | undefined {
   const devices = getLocal(state);
-  return devices[id] || {};
+  return devices[id];
 }

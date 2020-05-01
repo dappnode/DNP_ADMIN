@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import * as s from "../selectors";
 import { connect } from "react-redux";
+import { DiagnoseResult } from "../types";
 // Components
 import Card from "components/Card";
 // Actions
@@ -12,7 +12,13 @@ import Ok from "components/Ok";
 // Styles
 import "./support.css";
 
-function AutoDiagnose({ diagnoses, fetchAllDappnodeStatus }) {
+function AutoDiagnose({
+  diagnoses,
+  fetchAllDappnodeStatus
+}: {
+  diagnoses: DiagnoseResult[];
+  fetchAllDappnodeStatus: () => void;
+}) {
   useEffect(() => {
     fetchAllDappnodeStatus(); // = componentDidMount
   }, [fetchAllDappnodeStatus]);
@@ -34,10 +40,6 @@ function AutoDiagnose({ diagnoses, fetchAllDappnodeStatus }) {
     </Card>
   );
 }
-
-AutoDiagnose.propTypes = {
-  diagnoses: PropTypes.array.isRequired
-};
 
 // Container
 
