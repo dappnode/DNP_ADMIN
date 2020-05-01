@@ -14,10 +14,10 @@ import "./readMore.css";
  * Which limits the height of the component to 1px extra
  * to the height of 4 lines in default font size.
  */
-function ReadMore({ children }) {
+const ReadMore: React.FC = ({ children }) => {
   const [readMore, setReadMore] = useState(false);
   const [showReadMore, setShowReadMore] = useState(false);
-  const readMoreEl = useRef();
+  const readMoreEl = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function update() {
@@ -55,6 +55,6 @@ function ReadMore({ children }) {
       )}
     </div>
   );
-}
+};
 
 export default ReadMore;

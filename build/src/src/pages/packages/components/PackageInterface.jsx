@@ -19,8 +19,8 @@ import NoDnpInstalled from "./NoDnpInstalled";
 import * as s from "../selectors";
 import { title } from "../data";
 // Components
-import Loading from "components/generic/Loading";
-import Error from "components/generic/Error";
+import Loading from "components/Loading";
+import Error from "components/Error";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 // Selectors

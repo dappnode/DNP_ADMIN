@@ -19,8 +19,8 @@ import DnpStore from "./DnpStore";
 import Title from "components/Title";
 import Input from "components/Input";
 import Button, { ButtonLight } from "components/Button";
-import Loading from "components/generic/Loading";
-import Error from "components/generic/Error";
+import Loading from "components/Loading";
+import Error from "components/Error";
 import Alert from "react-bootstrap/Alert";
 // Selectors
 import {

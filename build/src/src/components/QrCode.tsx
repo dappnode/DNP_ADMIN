@@ -1,7 +1,7 @@
 import React from "react";
 import QRCode from "qrcode.react";
 
-function QrCode({ width, url }) {
+function QrCode({ width, url }: { width: string; url: string }) {
   if (!url) return null;
 
   return (

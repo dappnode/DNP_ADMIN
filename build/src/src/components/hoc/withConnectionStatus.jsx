@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { getDisplayName } from "./utilities";
 import { getConnectionStatus } from "services/connectionStatus/selectors";
-import Loading from "components/generic/Loading";
-import Error from "components/generic/Error";
+import Loading from "components/Loading";
+import Error from "components/Error";
 
 export default function withConnectionStatus(WrappedComponent) {
   class WithConnectionStatus extends React.Component {

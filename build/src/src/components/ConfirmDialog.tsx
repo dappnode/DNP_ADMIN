@@ -1,17 +1,36 @@
 import React, { useRef } from "react";
-import PropTypes from "prop-types";
 import Button from "components/Button";
 import { render, unmountComponentAtNode } from "react-dom";
 import RenderMarkdown from "components/RenderMarkdown";
 import { stringIncludes } from "utils/strings";
 import "./confirmDialog.scss";
 
+interface ModalButtonData {
+  label: string;
+  variant?: string;
+  onClick?: () => void;
+}
+
+interface ConfirmDialogProps {
+  title: string;
+  text: string;
+  list?: {
+    title: string;
+    body: string;
+  }[];
+  buttons?: ModalButtonData[];
+  // Main Button
+  label?: string;
+  onClick?: () => void;
+  variant?: string;
+}
+
 /**
  * Render a dialog modal
  *
- * @param {string} title Important action
- * @param {string} text Are you sure you want to do this?
- * @param {array} buttons = [{
+ * @param title Important action
+ * @param text Are you sure you want to do this?
+ * @param buttons = [{
  *   label: "Cancel",
  *   onClick: () => null
  * },{
@@ -27,13 +46,10 @@ function Modal({
   label: mainLabel,
   onClick: mainOnClick,
   variant: mainVariant,
-  close
-}) {
+  onClose
+}: ConfirmDialogProps & { onClose: () => void }) {
   // If user clicks the modal itself, do not close
   const modalEl = useRef(null);
-  function handleClickOverlay(e) {
-    if (modalEl.current === e.target) close();
-  }
 
   // Add a button from the shorthand form
   if (mainLabel && mainOnClick)
@@ -51,7 +67,9 @@ function Modal({
     <div
       className="confirm-dialog-root"
       ref={modalEl}
-      onClick={handleClickOverlay}
+      onClick={e => {
+        if (modalEl.current === e.target) onClose();
+      }}
     >
       <div className="dialog no-p-style">
         {title && <h3 className="title">{title}</h3>}
@@ -60,7 +78,7 @@ function Modal({
             {typeof text === "string" ? <RenderMarkdown source={text} /> : text}
           </div>
         )}
-        {Array.isArray(list) && (
+        {list && Array.isArray(list) && list.length > 0 && (
           <div className="list">
             {list.map((item, i) => (
               <div key={i} className="list-item">
@@ -84,7 +102,7 @@ function Modal({
               variant={variant || "outline-danger"}
               onClick={() => {
                 if (onClick) onClick();
-                close();
+                onClose();
               }}
             >
               {label}
@@ -96,29 +114,18 @@ function Modal({
   );
 }
 
-Modal.propTypes = {
-  title: PropTypes.string,
-  message: PropTypes.string,
-  label: PropTypes.string,
-  onClick: PropTypes.func,
-  buttons: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      variant: PropTypes.string,
-      onClick: PropTypes.func
-    }).isRequired
-  )
-};
-
 // If multiple dialogs are used within a single session,
 // the root-modal DOM node will be reused
-let root;
-export function confirm(props) {
+let root: Element;
+export function confirm(props: ConfirmDialogProps) {
   if (!root) {
     // Create the root-modal element
     root = document.createElement("div");
     document.body.appendChild(root);
   }
   // render (or re-render) and mount the dialog
-  render(<Modal {...props} close={() => unmountComponentAtNode(root)} />, root);
+  render(
+    <Modal {...props} onClose={() => unmountComponentAtNode(root)} />,
+    root
+  );
 }

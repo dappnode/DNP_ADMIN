@@ -1,8 +1,15 @@
 import React from "react";
 import { MdCheckCircle, MdError } from "react-icons/md";
 
-export default function StatusIcon({ success, message }) {
-  const styleSvg = { fontSize: "1.8rem", marginRight: "0.5rem" };
+const styleSvg = { fontSize: "1.8rem", marginRight: "0.5rem" };
+
+export default function StatusIcon({
+  success,
+  message
+}: {
+  success: boolean;
+  message: string | JSX.Element;
+}) {
   return (
     <div
       style={{

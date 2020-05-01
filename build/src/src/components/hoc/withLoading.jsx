@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { getDisplayName } from "./utilities";
 import { getIsLoadingById } from "services/loadingStatus/selectors";
-import Loading from "components/generic/Loading";
+import Loading from "components/Loading";
 
 export default function withLoading(loadingId, loadingMsg) {
   return function(WrappedComponent) {

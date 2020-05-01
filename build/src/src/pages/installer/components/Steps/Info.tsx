@@ -76,7 +76,7 @@ const InstallerStepInfo: React.FunctionComponent<InstallerStepInfoProps> = ({
   // Otherwise, show info an allow an install
   const {
     shortDescription,
-    description,
+    description = "No description",
     author = "Unknown",
     version,
     upstreamVersion

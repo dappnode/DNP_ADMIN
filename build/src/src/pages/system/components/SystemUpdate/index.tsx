@@ -15,7 +15,7 @@ import {
 import Card from "components/Card";
 import StatusIcon from "components/StatusIcon";
 import SystemUpdateDetails from "./SystemUpdateDetails";
-import Loading from "components/generic/Loading";
+import Loading from "components/Loading";
 import SubTitle from "components/SubTitle";
 import { ProgressLogs } from "types";
 

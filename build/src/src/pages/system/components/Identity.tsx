@@ -11,7 +11,7 @@ import Card from "components/Card";
 import Button from "components/Button";
 import Form from "react-bootstrap/Form";
 import StatusIcon from "components/StatusIcon";
-import Loading from "components/generic/Loading";
+import Loading from "components/Loading";
 // External
 import {
   getIdentityAddress,

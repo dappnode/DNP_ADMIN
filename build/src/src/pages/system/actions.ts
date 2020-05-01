@@ -145,7 +145,7 @@ export const packageVolumeRemove = (
     confirm({
       title: `Removing ${prettyVolRef}`,
       text: `Are you sure you want to permanently remove this volume? This action cannot be undone. If this DAppNode Package is a blockchain node, it will lose all the chain data and start syncing from scratch.`,
-      list: warningsList.length ? warningsList : null,
+      list: warningsList,
       label: "Remove",
       onClick: resolve
     })

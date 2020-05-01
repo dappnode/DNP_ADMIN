@@ -6,6 +6,14 @@ import PropTypes from "prop-types";
 import { MdClose } from "react-icons/md";
 import "./tableInputs.scss";
 
+// interface TableInputColumnProps {
+//   empty?: boolean;
+//   deleteButton?: boolean;
+//   onClick?: () => void;
+//   select?: boolean;
+// }
+type TableInputColumnProps = any;
+
 /**
  * Note to self:
  * `styled.*` calls MUST be outside the render function.
@@ -17,7 +25,17 @@ import "./tableInputs.scss";
  * many components re-rendering uselessly
  */
 
-function TableInputs({ headers, content, numOfRows = 2, rowsTemplate }) {
+function TableInputs({
+  headers,
+  content,
+  numOfRows = 2,
+  rowsTemplate
+}: {
+  headers: string[];
+  content: TableInputColumnProps[][];
+  numOfRows?: number;
+  rowsTemplate?: string;
+}) {
   if (!Array.isArray(headers)) {
     // eslint-disable-next-line no-console
     console.error("headers must be an array");

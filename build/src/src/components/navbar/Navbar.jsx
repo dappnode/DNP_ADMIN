@@ -2,7 +2,7 @@ import React from "react";
 // Components
 import SideNav from "./SideNav";
 import TopNav from "./TopNav";
-import ErrorBoundary from "components/generic/ErrorBoundary";
+import ErrorBoundary from "components/ErrorBoundary";
 
 export default class Navbar extends React.Component {
   constructor(props) {

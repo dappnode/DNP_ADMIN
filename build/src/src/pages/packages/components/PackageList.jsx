@@ -9,8 +9,8 @@ import { NavLink } from "react-router-dom";
 import NoPackagesYet from "./NoPackagesYet";
 import StateBadge from "./PackageViews/StateBadge";
 import Card from "components/Card";
-import Loading from "components/generic/Loading";
-import Error from "components/generic/Error";
+import Loading from "components/Loading";
+import Error from "components/Error";
 // Selectors
 import {
   getIsLoading,

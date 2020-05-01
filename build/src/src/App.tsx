@@ -1,16 +1,15 @@
-import React from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Switch, Route, Redirect, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 // Components
 import NotificationsMain from "./components/NotificationsMain";
 import NonAdmin from "./components/NonAdmin";
 import NoConnection from "components/NoConnection";
-import ErrorBoundary from "./components/generic/ErrorBoundary";
+import ErrorBoundary from "./components/ErrorBoundary";
 import TopBar from "./components/navbar/TopBar";
 import SideBar from "./components/navbar/SideBar";
-import Loading from "components/generic/Loading";
-import ScrollToTop from "components/ScrollToTop";
+import Loading from "components/Loading";
 // Pages
 import pages, { defaultPage } from "./pages";
 // Redux
@@ -33,6 +32,12 @@ function App({
   // Even make the non-admin a route and fore a redirect
 
   const { isOpen, isNotAdmin, error } = connectionStatus || {};
+
+  // Scroll to top on pathname change
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   if (isOpen) {
     return (
@@ -68,7 +73,6 @@ function App({
         {/* Place here non-page components */}
         <Welcome />
         <ToastContainer />
-        <ScrollToTop />
       </div>
     );
   } else if (isNotAdmin) {

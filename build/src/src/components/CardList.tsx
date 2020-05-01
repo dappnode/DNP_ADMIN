@@ -1,6 +1,10 @@
 import React from "react";
 
-const CardList = ({ children, className = "", ...props }) => (
+const CardList: React.FC<{ className?: string }> = ({
+  children,
+  className = "",
+  ...props
+}) => (
   <div className={`card card-list ${className}`} {...props}>
     {children}
   </div>

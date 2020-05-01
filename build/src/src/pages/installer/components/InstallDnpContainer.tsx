@@ -13,8 +13,8 @@ import {
 } from "services/dnpRequest/selectors";
 import { fetchDnpRequest } from "services/dnpRequest/actions";
 import Title from "components/Title";
-import Loading from "components/generic/Loading";
-import Error from "components/generic/Error";
+import Loading from "components/Loading";
+import Error from "components/Error";
 import { RequestedDnp, RequestStatus, ProgressLogsByDnp } from "types";
 import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 
