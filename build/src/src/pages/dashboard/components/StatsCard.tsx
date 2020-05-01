@@ -1,15 +1,20 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Card from "components/Card";
 import ProgressBar from "react-bootstrap/ProgressBar";
 
-function parseVariant(value) {
+function parseVariant(value: number) {
   if (value > 90) return "danger";
   if (value > 75) return "warning";
   return "success";
 }
 
-function StatsCard({ id, percent }) {
+export default function StatsCard({
+  id,
+  percent
+}: {
+  id: string;
+  percent: string;
+}) {
   const value = parseInt(percent);
   return (
     <Card className="stats-card">
@@ -20,10 +25,3 @@ function StatsCard({ id, percent }) {
     </Card>
   );
 }
-
-StatsCard.propTypes = {
-  id: PropTypes.string.isRequired,
-  percent: PropTypes.string.isRequired
-};
-
-export default StatsCard;
