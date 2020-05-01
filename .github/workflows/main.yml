@@ -1,34 +1,47 @@
-name: Release
-on: 
+name: "Main"
+on:
+  pull_request:
+    paths:
+      - "build/**"
   push:
-    branches: 
+    branches:
       - master
+    paths:
+      - "build/**"
+
 jobs:
   unit-test:
-    name: Unit Tests
     runs-on: ubuntu-16.04
     env:
       working-directory: ./build/src
       CI: true
+    name: Unit Tests
     steps:
       - uses: actions/checkout@v2
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '10.x'
-      - name: yarn install
-        run: yarn install
+          node-version: "10.x"
+      - run: yarn install
         working-directory: ${{ env.working-directory }}
-      - name: yarn lint
-        run: yarn lint
+      - run: yarn build
         working-directory: ${{ env.working-directory }}
-      - name: yarn test
-        run: yarn test
+      - run: yarn test
         working-directory: ${{ env.working-directory }}
+
+  build-test:
+    runs-on: ubuntu-16.04
+    name: Build test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - run: docker-compose build
+
   release:
     name: Release
     runs-on: ubuntu-latest
     needs: [unit-test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     env:
       TRAVIS: yes
       GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -37,10 +50,8 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '10.x'
-      - name: dappnodesdk install
-        run: npm install -g @dappnode/dappnodesdk
-      - name: Docker-Compose Build
-        run: docker-compose build
-      - name: publish
+          node-version: "10.x"
+      - run: npm install -g @dappnode/dappnodesdk
+      - run: docker-compose build
+      - name: Publish
         run: dappnodesdk publish patch --dappnode_team_preset --provider infura
