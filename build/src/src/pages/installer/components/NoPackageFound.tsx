@@ -1,9 +1,8 @@
 import React from "react";
 import newTabProps from "utils/newTabProps";
+import { packageSurveyLink } from "params";
 
-const PACKAGE_SURVEY_LINK = "https://goo.gl/forms/EjVTHu6UBWBk60Z62";
-
-function NoPackageFound({ query }) {
+function NoPackageFound({ query }: { query: string }) {
   return (
     <div className="centered-container">
       <h4>Not found</h4>
@@ -11,7 +10,7 @@ function NoPackageFound({ query }) {
         If you would like a specific DAppNode package to be developed, express
         so in the survery below
       </p>
-      <a href={PACKAGE_SURVEY_LINK} {...newTabProps}>
+      <a href={packageSurveyLink} {...newTabProps}>
         Request {query}
       </a>
     </div>

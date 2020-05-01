@@ -27,3 +27,4 @@ export const fullnodeHttpJsonRpc = "http://fullnode.dappnode:8545";
 
 // URLs / Links
 export const surveyUrl = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
+export const packageSurveyLink = "https://goo.gl/forms/EjVTHu6UBWBk60Z62";

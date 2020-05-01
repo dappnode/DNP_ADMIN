@@ -1,9 +1,15 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { isEmpty } from "lodash";
 import Button from "components/Button";
 
-function TypeFilter({ categories, onCategoryChange }) {
-  if (Object.keys(categories).length === 0) return null;
+export default function TypeFilter({
+  categories,
+  onCategoryChange
+}: {
+  categories: { [category: string]: boolean };
+  onCategoryChange: (category: string) => void;
+}) {
+  if (isEmpty(categories)) return null;
 
   return (
     <div className="type-filter">
@@ -21,16 +27,3 @@ function TypeFilter({ categories, onCategoryChange }) {
     </div>
   );
 }
-
-/**
- * @param {object} categories = {
- *   "library": true,
- *   "service": false
- * }
- */
-TypeFilter.protoTypes = {
-  categories: PropTypes.objectOf(PropTypes.bool.isRequired).isRequired,
-  onCategoryChange: PropTypes.func.isRequired
-};
-
-export default TypeFilter;
