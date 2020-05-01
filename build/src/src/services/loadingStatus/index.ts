@@ -14,8 +14,6 @@ import { mountPoint } from "./data";
  *   const data = yield call(api);
  *   yield put(a.updateDevices(devices));
  *
- * Assists the `withLoadingStatus` HOC
- *
  * [Tested]
  */
 

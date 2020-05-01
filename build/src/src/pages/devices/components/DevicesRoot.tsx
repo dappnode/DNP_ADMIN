@@ -3,16 +3,21 @@ import { Route, RouteComponentProps } from "react-router-dom";
 // Components
 import DeviceDetails from "./DeviceDetails";
 import DevicesHome from "./DevicesHome";
-import withLoading from "components/hoc/withLoading";
 // General styles
 import "./devices.css";
+import { useSelector } from "react-redux";
+import Loading from "components/Loading";
+import { getIsLoading } from "services/loadingStatus/selectors";
 
-const DevicesRoot: React.FC<RouteComponentProps> = ({ match }) => (
-  <>
-    <Route exact path={match.path} component={DevicesHome} />
-    <Route path={match.path + "/:id"} component={DeviceDetails} />
-  </>
-);
+export const DevicesRoot: React.FC<RouteComponentProps> = ({ match }) => {
+  const loading = useSelector(getIsLoading.devices);
 
-// Use `compose` from "redux" if you need multiple HOC
-export default withLoading("devices")(DevicesRoot);
+  if (loading) return <Loading msg={`Loading devices...`} />;
+  else
+    return (
+      <>
+        <Route exact path={match.path} component={DevicesHome} />
+        <Route path={match.path + "/:id"} component={DeviceDetails} />
+      </>
+    );
+};

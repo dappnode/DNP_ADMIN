@@ -105,7 +105,6 @@ const mapDispatchToProps = {
   toggleAdmin: a.toggleAdmin
 };
 
-// withLoading is applied at DevicesRoot
 export default connect(
   mapStateToProps,
   mapDispatchToProps

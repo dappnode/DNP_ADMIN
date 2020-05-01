@@ -109,9 +109,7 @@ const DeviceDetails: React.FC<
 
 const mapStateToProps = createStructuredSelector({
   device: (state: any, ownProps: any) =>
-    getDeviceById(state, ownProps.match.params.id),
-  // For the withTitle HOC
-  subtitle: (_: any, ownProps: any) => ownProps.match.params.id
+    getDeviceById(state, ownProps.match.params.id)
 });
 
 const mapDispatchToProps = {
