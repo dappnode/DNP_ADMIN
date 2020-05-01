@@ -7,8 +7,8 @@ import { capitalize } from "utils/strings";
  * @param {string} id
  * @param {function} fn
  */
-export function wrapErrorsAndLoading(id, fn) {
-  return function*(action) {
+export function wrapErrorsAndLoading(id: string, fn: any): any {
+  return function*(action: any) {
     try {
       yield put(a.updateLoading(id, true));
       const res = yield call(fn, action);

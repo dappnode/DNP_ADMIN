@@ -1,4 +1,10 @@
-import * as t from "./actionTypes";
+import {
+  UPDATE_LOADING,
+  UPDATE_IS_LOADING,
+  UPDATE_IS_LOADED,
+  LoadingStatusState,
+  AllReducerActions
+} from "./types";
 
 // Service > loadingStatus
 
@@ -12,9 +18,12 @@ import * as t from "./actionTypes";
  * [Tested]
  */
 
-export default function(state = {}, action) {
+export default function(
+  state: LoadingStatusState = {},
+  action: AllReducerActions
+): LoadingStatusState {
   switch (action.type) {
-    case t.UPDATE_LOADING:
+    case UPDATE_LOADING:
       return {
         ...state,
         [action.id]: {
@@ -23,7 +32,7 @@ export default function(state = {}, action) {
           error: action.error
         }
       };
-    case t.UPDATE_IS_LOADING:
+    case UPDATE_IS_LOADING:
       return {
         ...state,
         [action.id]: {
@@ -32,7 +41,7 @@ export default function(state = {}, action) {
         }
       };
 
-    case t.UPDATE_IS_LOADED:
+    case UPDATE_IS_LOADED:
       return {
         ...state,
         [action.id]: {

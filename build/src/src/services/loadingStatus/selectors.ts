@@ -2,13 +2,13 @@ import { mountPoint } from "./data";
 import { createSelector } from "reselect";
 import { mapValues } from "lodash";
 import * as loadingIds from "./loadingIds";
+import { LoadingStatusState } from "./types";
 
 // Service > loadingStatus
 
-export const getLoadingStatuses = createSelector(
-  state => state[mountPoint],
-  loadingStatuses => loadingStatuses
-);
+const getLocal = (state: any): LoadingStatusState => state[mountPoint];
+
+export const getLoadingStatuses = getLocal;
 
 /**
  * The `loadingId` variable is constant,
@@ -18,7 +18,7 @@ export const getLoadingStatuses = createSelector(
  * @param {string} loadingId
  * [Tested]
  */
-export const getIsLoadingById = loadingId => {
+export const getIsLoadingById = (loadingId: string) => {
   return createSelector(
     getLoadingStatuses,
     loadingStatuses =>
@@ -37,7 +37,7 @@ export const getIsLoadingById = loadingId => {
  * @param {string} loadingId
  * [Tested]
  */
-export const getLoadingErrorById = loadingId => {
+export const getLoadingErrorById = (loadingId: string) => {
   return createSelector(
     getLoadingStatuses,
     loadingStatuses => (loadingStatuses[loadingId] || {}).error || ""
@@ -51,7 +51,7 @@ export const getLoadingErrorById = loadingId => {
  * Returns true if the data has is loading now, EVEN if it has loaded in the past
  * @param {string} loadingId
  */
-export const getIsLoadingStrictById = loadingId => {
+export const getIsLoadingStrictById = (loadingId: string) => {
   return createSelector(
     getLoadingStatuses,
     loadingStatuses => Boolean((loadingStatuses[loadingId] || {}).isLoading)
