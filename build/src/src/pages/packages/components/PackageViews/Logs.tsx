@@ -6,7 +6,7 @@ import Card from "components/Card";
 import Switch from "components/Switch";
 import Input from "components/Input";
 import Button from "components/Button";
-import Terminal from "./Terminal";
+import { Terminal } from "./Terminal";
 // Utils
 import { stringIncludes, stringSplit } from "utils/strings";
 

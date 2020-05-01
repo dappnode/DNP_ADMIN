@@ -1,6 +1,5 @@
 import { createSelector } from "reselect";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
-import { stringSplit } from "utils/strings";
 
 // pages > packages
 
@@ -30,15 +29,6 @@ export const getUrlId = createSelector(
   (_: any, ownProps: OwnPropsPackageRoute) =>
     ((ownProps.match || {}).params || {}).id,
   id => id
-);
-
-// moduleName = "system" or "packages"
-export const getModuleName = createSelector(
-  (_: any, ownProps: OwnPropsPackageRoute) => (ownProps.match || {}).path,
-  (path = "") => {
-    if (path.startsWith("/")) path = path.slice(1);
-    return stringSplit(path, "/")[0];
-  }
 );
 
 export const areThereDnps = createSelector(

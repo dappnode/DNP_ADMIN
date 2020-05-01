@@ -1,13 +1,13 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, RouteComponentProps } from "react-router-dom";
 import { systemPackagesSubPath } from "../data";
 // Components
-import PackagesHome from "./PackagesHome";
-import PackageInterface from "./PackageInterface";
+import { PackagesHome } from "./PackagesHome";
+import { PackageInterface } from "./PackageInterface";
 // Styles
 import "./packages.scss";
 
-const PackagesRoot = ({ match }) => (
+export const PackagesRoot: React.FC<RouteComponentProps> = ({ match }) => (
   <Switch>
     <Route exact path={match.path} component={PackagesHome} />
     <Route
@@ -17,6 +17,3 @@ const PackagesRoot = ({ match }) => (
     <Route path={match.path + "/:id"} component={PackageInterface} />
   </Switch>
 );
-
-// Use `compose` from "redux" if you need multiple HOC
-export default PackagesRoot;

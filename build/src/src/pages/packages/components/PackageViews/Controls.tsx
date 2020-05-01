@@ -1,15 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import * as action from "../../actions";
+import { useDispatch } from "react-redux";
 // Components
 import CardList from "components/CardList";
 import Button from "components/Button";
 // Utils
 import { toLowercase } from "utils/strings";
 import { wifiName, ipfsName } from "params";
+import { PackageContainer } from "common/types";
+import {
+  togglePackage,
+  restartPackageVolumes,
+  removePackage,
+  restartPackage
+} from "pages/packages/actions";
 
-function getRootPath(dnpName) {
+function getRootPath(dnpName: string) {
   return [
     "dappmanager.dnp.dappnode.eth",
     "ipfs.dnp.dappnode.eth",
@@ -23,29 +29,26 @@ function getRootPath(dnpName) {
     : "/packages";
 }
 
-function PackageControls({
-  dnp,
-  togglePackage,
-  restartPackage,
-  restartPackageVolumes,
-  removePackage
-}) {
+export function Controls({ dnp }: { dnp: PackageContainer }) {
+  const dispatch = useDispatch();
   const state = toLowercase(dnp.state); // toLowercase always returns a string
 
   const namedVols = (dnp.volumes || []).filter(vol => vol.name);
   const namedOwnedVols = namedVols.filter(vol => vol.isOwner);
   const namedExternalVols = namedVols
-    .filter(vol => !vol.isOwner)
-    .map(vol => {
-      return { ...vol, ownerPath: getRootPath(vol.owner) + "/" + vol.owner };
-    });
+    .filter(vol => !vol.isOwner && vol.owner)
+    .map(vol => ({
+      name: vol.name,
+      owner: vol.owner,
+      ownerPath: getRootPath(vol.owner || "") + "/" + vol.owner
+    }));
 
   const actions = [
     {
       name:
         state === "running" ? "Stop" : state === "exited" ? "Start" : "Toggle",
       text: "Toggle the state of the package from running to paused",
-      action: () => togglePackage(dnp.name),
+      action: () => dispatch(togglePackage(dnp.name)),
       availableForCore: false,
       whitelist: [wifiName, ipfsName],
       type: "secondary"
@@ -54,7 +57,7 @@ function PackageControls({
       name: "Restart",
       text:
         "Restarting a package will interrupt the service during 1-10s but preserve its data",
-      action: () => restartPackage(dnp.name),
+      action: () => dispatch(restartPackage(dnp.name)),
       availableForCore: true,
       type: "secondary"
     },
@@ -73,7 +76,7 @@ function PackageControls({
           ))}
         </div>
       ),
-      action: () => restartPackageVolumes(dnp.name),
+      action: () => dispatch(restartPackageVolumes(dnp.name)),
       availableForCore: true,
       disabled: !namedOwnedVols.length,
       type: "danger"
@@ -81,7 +84,7 @@ function PackageControls({
     {
       name: "Remove ",
       text: "Deletes a package permanently.",
-      action: () => removePackage(dnp.name),
+      action: () => dispatch(removePackage(dnp.name)),
       availableForCore: false,
       type: "danger"
     }
@@ -116,17 +119,3 @@ function PackageControls({
     </CardList>
   );
 }
-
-const mapStateToProps = null;
-
-const mapDispatchToProps = {
-  togglePackage: action.togglePackage,
-  restartPackage: action.restartPackage,
-  restartPackageVolumes: action.restartPackageVolumes,
-  removePackage: action.removePackage
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PackageControls);

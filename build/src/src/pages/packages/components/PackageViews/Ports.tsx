@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import React, { useState, useEffect, useMemo } from "react";
+import { useSelector } from "react-redux";
 import { api } from "api";
-import { createStructuredSelector } from "reselect";
 import { withToast } from "components/toast/Toast";
 // Components
 import Card from "components/Card";
@@ -15,24 +14,20 @@ import { getIsLoadingStrict } from "services/loadingStatus/selectors";
 import { getHostPortMappings } from "services/dnpInstalled/selectors";
 // Style
 import "./ports.scss";
+import { PackageContainer, PortMapping } from "common/types";
 
 const maxPortNumber = 32768 - 1;
 
-function getPortsFromDnp(dnp) {
-  return (dnp.ports || [])
-    .filter(({ host }) => host)
-    .sort((a, b) => a.container - b.container)
-    .sort((a, b) =>
-      a.deletable && !b.deletable ? 1 : !a.deletable && b.deletable ? -1 : 0
-    );
-}
+export default function Ports({ dnp }: { dnp: PackageContainer }) {
+  const loading = useSelector(getIsLoadingStrict.dnpInstalled);
+  const hostPortMapping = useSelector(getHostPortMappings);
 
-function Ports({ dnp, loading, hostPortMapping }) {
-  const [ports, setPorts] = useState(getPortsFromDnp(dnp));
+  const portsFromDnp = useMemo(() => getPortsFromDnp(dnp), [dnp]);
+  const [ports, setPorts] = useState<PortMapping[]>(portsFromDnp);
   const [updating, setUpdating] = useState(false);
   useEffect(() => {
-    setPorts(getPortsFromDnp(dnp));
-  }, [dnp]);
+    setPorts(portsFromDnp);
+  }, [portsFromDnp]);
 
   async function onUpdateEnvsSubmit() {
     const id = dnp.name;
@@ -52,20 +47,24 @@ function Ports({ dnp, loading, hostPortMapping }) {
     }
   }
 
-  function addNewPort({ container = "", protocol = "TCP" } = {}) {
-    setPorts(ps => [...ps, { host: "", container, protocol, deletable: true }]);
+  function addNewPort() {
+    const newPort: PortMapping = {
+      container: 8000,
+      protocol: "TCP",
+      deletable: true
+    };
+    setPorts(ps => [...ps, newPort]);
   }
 
-  function editPort(i, data) {
+  function editPort(i: number, data: Partial<PortMapping>) {
     setPorts(ps =>
       ps.map((p, _i) => {
-        if (i === _i) return { ...p, ...data };
-        else return p;
+        return i === _i ? { ...p, ...data } : p;
       })
     );
   }
 
-  function removePort(i) {
+  function removePort(i: number) {
     setPorts(ps =>
       ps.filter(({ deletable }, _i) => {
         return _i !== i || !deletable;
@@ -74,24 +73,24 @@ function Ports({ dnp, loading, hostPortMapping }) {
   }
 
   function getDuplicatedContainerPort() {
-    const portsObj = {};
+    const existingPorts = new Set<string>();
     for (const { container, protocol } of ports) {
       if (container) {
         const key = `${container}-${protocol}`;
-        if (portsObj[key]) return { container, protocol };
-        else portsObj[key] = true;
+        if (existingPorts.has(key)) return { container, protocol };
+        else existingPorts.add(key);
       }
     }
     return null;
   }
 
   function getDuplicatedHostPort() {
-    const portsObj = {};
+    const existingPorts = new Set<string>();
     for (const { host, protocol } of ports) {
       if (host) {
         const key = `${host}-${protocol}`;
-        if (portsObj[key]) return { host, protocol };
-        else portsObj[key] = true;
+        if (existingPorts.has(key)) return { host, protocol };
+        else existingPorts.add(key);
       }
     }
     return null;
@@ -110,17 +109,6 @@ function Ports({ dnp, loading, hostPortMapping }) {
     );
   }
 
-  function getArePortsTheSame() {
-    function portsToId(_ports) {
-      return _ports
-        .map(({ host, container, protocol }) =>
-          [host, container, protocol].join("")
-        )
-        .join("");
-    }
-    return portsToId(getPortsFromDnp(dnp)) === portsToId(ports);
-  }
-
   const areNewMappingsInvalid = ports.some(
     ({ container, protocol, deletable }) =>
       deletable && (!container || !protocol)
@@ -131,10 +119,10 @@ function Ports({ dnp, loading, hostPortMapping }) {
   const portOverTheMax = getPortOverTheMax();
 
   const thereAreNewPorts = ports.some(({ deletable }) => deletable);
-  const arePortsTheSame = getArePortsTheSame();
+  const arePortsTheSame = portsToId(portsFromDnp) === portsToId(ports);
 
   // Aggregate error messages as an array of strings
-  const errors = [];
+  const errors: string[] = [];
   if (duplicatedHostPort)
     errors.push(
       `Duplicated mapping for host port ${duplicatedHostPort.host}/${duplicatedHostPort.protocol}. Each host port can only be mapped once.`
@@ -160,15 +148,16 @@ function Ports({ dnp, loading, hostPortMapping }) {
     );
 
   // Aggregate conditions to disable the update
-  const disableUpdate =
+  const disableUpdate = Boolean(
     areNewMappingsInvalid ||
-    duplicatedContainerPort ||
-    duplicatedHostPort ||
-    conflictingPort ||
-    portOverTheMax ||
-    arePortsTheSame ||
-    updating ||
-    loading;
+      duplicatedContainerPort ||
+      duplicatedHostPort ||
+      conflictingPort ||
+      portOverTheMax ||
+      arePortsTheSame ||
+      updating ||
+      loading
+  );
 
   return (
     <Card spacing className="ports-editor">
@@ -190,14 +179,16 @@ function Ports({ dnp, loading, hostPortMapping }) {
             {
               placeholder: "Ephemeral port if unspecified",
               value: host || "",
-              onValueChange: value => editPort(i, { host: value })
+              onValueChange: (value: string) =>
+                editPort(i, { host: parseInt(value) || undefined })
             },
 
             deletable
               ? {
                   placeholder: "enter container port...",
                   value: container,
-                  onValueChange: value => editPort(i, { container: value })
+                  onValueChange: (value: string) =>
+                    editPort(i, { container: parseInt(value) || undefined })
                 }
               : { lock: true, value: container },
 
@@ -206,7 +197,8 @@ function Ports({ dnp, loading, hostPortMapping }) {
                   select: true,
                   options: ["TCP", "UDP"],
                   value: protocol,
-                  onValueChange: value => editPort(i, { protocol: value })
+                  onValueChange: (value: string) =>
+                    editPort(i, { protocol: value === "UDP" ? "UDP" : "TCP" })
                 }
               : { lock: true, value: protocol },
 
@@ -244,16 +236,27 @@ function Ports({ dnp, loading, hostPortMapping }) {
   );
 }
 
-// Container
+/**
+ * Util to parse ports from container
+ * @param dnp
+ */
+function getPortsFromDnp(dnp: PackageContainer) {
+  return (dnp.ports || [])
+    .filter(({ host }) => host)
+    .sort((a, b) => a.container - b.container)
+    .sort((a, b) =>
+      a.deletable && !b.deletable ? 1 : !a.deletable && b.deletable ? -1 : 0
+    );
+}
 
-const mapStateToProps = createStructuredSelector({
-  loading: getIsLoadingStrict.dnpInstalled,
-  hostPortMapping: getHostPortMappings
-});
-
-const mapDispatchToProps = null;
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Ports);
+/**
+ * Convert a port mapping into a unique deterministic ID
+ * @param portMappings
+ */
+function portsToId(portMappings: PortMapping[]): string {
+  return portMappings
+    .map(({ host, container, protocol }) =>
+      [host, container, protocol].join("")
+    )
+    .join("");
+}

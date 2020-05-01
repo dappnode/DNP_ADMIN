@@ -1,9 +1,27 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 // Components
 import Card from "components/Card";
 import To from "./To";
 import From from "./From";
+
+export const FileManager = ({ id }: { id: string }) => {
+  const location = useLocation();
+  const { from, to } = fetchParamsFromExtraUrl(location.search);
+
+  return (
+    <Card spacing divider className="file-manager">
+      <div>
+        <div className="subtle-header">Upload file to package</div>
+        <To id={id} to={to} />
+      </div>
+      <div>
+        <div className="subtle-header">Download file from package</div>
+        <From id={id} from={from} />
+      </div>
+    </Card>
+  );
+};
 
 /**
  * Additional feature to auto-complete the from and to paths
@@ -29,24 +47,3 @@ function fetchParamsFromExtraUrl(
     return {};
   }
 }
-
-const FileManager: React.FunctionComponent<
-  { location: string; id: string } & RouteComponentProps
-> = ({ location, id }) => {
-  const { from, to } = fetchParamsFromExtraUrl(location.search);
-
-  return (
-    <Card spacing divider className="file-manager">
-      <div>
-        <div className="subtle-header">Upload file to package</div>
-        <To id={id} to={to} />
-      </div>
-      <div>
-        <div className="subtle-header">Download file from package</div>
-        <From id={id} from={from} />
-      </div>
-    </Card>
-  );
-};
-
-export default FileManager;

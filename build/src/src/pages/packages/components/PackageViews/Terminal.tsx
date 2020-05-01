@@ -17,14 +17,14 @@ const TerminalBox = styled.div`
   color: white;
 `;
 
-export default function Terminal({ text, ...props }) {
+export function Terminal({ text, id }: { text: string; id: string }) {
   return (
     <div className="card">
       <TerminalBox
+        id={id}
         dangerouslySetInnerHTML={{
           __html: ansi_up.ansi_to_html(striptags(text || "No input"))
         }}
-        {...props}
       />
     </div>
   );

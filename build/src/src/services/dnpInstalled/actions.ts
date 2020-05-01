@@ -72,11 +72,9 @@ export const fetchDnpInstalled = (): ThunkAction<
   }
 };
 
-export const fetchDnpInstalledData = ({
-  id
-}: {
-  id: string;
-}): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
+export const fetchDnpInstalledData = (
+  id: string
+): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
   const updateStatusDnp = (requestStatus: RequestStatus) =>
     updateDnpInstalledDataStatus(requestStatus, id);
   try {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import * as action from "../../actions";
-import { createStructuredSelector } from "reselect";
 import merge from "deepmerge";
 // Components
 import Card from "components/Card";
@@ -11,17 +10,20 @@ import { ButtonLight } from "components/Button";
 import parseManifestEnvs from "pages/installer/parsers/parseManifestEnvs";
 import parseInstalledDnpEnvs from "pages/installer/parsers/parseInstalledDnpEnvs";
 import { sortBy } from "lodash";
+import { PackageContainer, PackageEnvs, ManifestWithImage } from "common/types";
+import { EnvsVerbose } from "pages/installer/types";
 
-function stringifyEnvs(envs) {
-  const envsReduced = {};
+function stringifyEnvs(envs: EnvsVerbose) {
+  const envsReduced: PackageEnvs = {};
   for (const { name, value } of Object.values(envs)) {
     envsReduced[name] = value;
   }
   return envsReduced;
 }
 
-function Config({ dnp, updateEnvs }) {
-  const [envs, setEnvs] = useState({});
+export default function Config({ dnp }: { dnp: PackageContainer }) {
+  const dispatch = useDispatch();
+  const [envs, setEnvs] = useState<EnvsVerbose>({});
   useEffect(() => {
     /**
      * Mix the ENVs from the manifest and the already set on the DNP
@@ -37,7 +39,12 @@ function Config({ dnp, updateEnvs }) {
      *   }
      * }
      */
-    setEnvs(merge(parseManifestEnvs(dnp.manifest), parseInstalledDnpEnvs(dnp)));
+    setEnvs(
+      merge(
+        parseManifestEnvs(dnp.manifest as ManifestWithImage | undefined),
+        parseInstalledDnpEnvs(dnp)
+      )
+    );
   }, [dnp]);
 
   const envsArray = sortBy(Object.values(envs), env => env.index);
@@ -54,27 +61,18 @@ function Config({ dnp, updateEnvs }) {
           {
             placeholder: "enter value...",
             value,
-            onValueChange: value =>
+            onValueChange: (value: string) =>
               setEnvs(envs => ({ ...envs, [name]: { ...envs[name], value } }))
           }
         ])}
       />
-      <ButtonLight onClick={() => updateEnvs(dnp.name, stringifyEnvs(envs))}>
+      <ButtonLight
+        onClick={() =>
+          dispatch(action.updatePackageEnv(dnp.name, stringifyEnvs(envs)))
+        }
+      >
         Update environment variables
       </ButtonLight>
     </Card>
   );
 }
-
-// Container
-
-const mapStateToProps = createStructuredSelector({});
-
-const mapDispatchToProps = {
-  updateEnvs: action.updatePackageEnv
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Config);

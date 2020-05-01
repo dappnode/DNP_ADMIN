@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 // Components
 import { ButtonLight } from "components/Button";
@@ -8,7 +7,13 @@ import { rootPath as installerRootPath } from "pages/installer";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 
-const NoPackagesYet = ({ id, moduleName }) => (
+const NoPackagesYet = ({
+  id,
+  moduleName
+}: {
+  id: string;
+  moduleName: string;
+}) => (
   <div className="centered-container">
     <h4>{id} is not installed</h4>
     <p>Go back to {moduleName} or click below to install it</p>
@@ -22,10 +27,5 @@ const NoPackagesYet = ({ id, moduleName }) => (
     </Link>
   </div>
 );
-
-NoPackagesYet.propTypes = {
-  id: PropTypes.string.isRequired,
-  moduleName: PropTypes.string.isRequired
-};
 
 export default NoPackagesYet;

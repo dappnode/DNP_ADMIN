@@ -1,9 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { createStructuredSelector } from "reselect";
 import * as s from "../selectors";
-import * as a from "../actions";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 // Components
 import NoPackagesYet from "./NoPackagesYet";
@@ -12,10 +9,6 @@ import Card from "components/Card";
 import Loading from "components/Loading";
 import Error from "components/Error";
 // Selectors
-import {
-  getIsLoading,
-  getLoadingError
-} from "services/loadingStatus/selectors";
 import { getDnpInstalledStatus } from "services/dnpInstalled/selectors";
 // Icons
 import { MdRefresh, MdOpenInNew } from "react-icons/md";
@@ -25,16 +18,19 @@ import { sortBy } from "lodash";
 // Images
 import defaultAvatar from "img/defaultAvatar.png";
 import dappnodeIcon from "img/dappnode-logo-only.png";
+import { restartPackage } from "../actions";
 
-const xnor = (a, b) => Boolean(a) === Boolean(b);
-
-const PackagesList = ({
-  dnps = [],
+export const PackagesList = ({
   moduleName,
-  coreDnps,
-  requestStatus: { loading, error },
-  restartPackage
+  coreDnps
+}: {
+  moduleName: string;
+  coreDnps: boolean;
 }) => {
+  const dispatch = useDispatch();
+  const dnps = useSelector(s.getFilteredPackages);
+  const { loading, error } = useSelector(getDnpInstalledStatus);
+
   if (!dnps.length) {
     if (loading)
       return <Loading msg="Loading installed DAppNode Packages..." />;
@@ -44,7 +40,9 @@ const PackagesList = ({
       );
   }
 
-  const filteredDnps = dnps.filter(dnp => xnor(coreDnps, dnp.isCore));
+  const filteredDnps = dnps.filter(
+    dnp => Boolean(coreDnps) === Boolean(dnp.isCore)
+  );
   if (!filteredDnps.length) return <NoPackagesYet />;
 
   const modulePath = moduleName.toLowerCase();
@@ -74,7 +72,7 @@ const PackagesList = ({
             <MdRefresh
               className="restart"
               style={{ fontSize: "1.05rem" }}
-              onClick={() => restartPackage(name)}
+              onClick={() => dispatch(restartPackage(name))}
             />
             <hr />
           </React.Fragment>
@@ -83,27 +81,3 @@ const PackagesList = ({
     </Card>
   );
 };
-
-PackagesList.propTypes = {
-  dnps: PropTypes.array.isRequired,
-  moduleName: PropTypes.string.isRequired,
-  coreDnps: PropTypes.bool
-};
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  dnps: s.getFilteredPackages,
-  requestStatus: getDnpInstalledStatus,
-  loading: getIsLoading.dnpInstalled,
-  error: getLoadingError.dnpInstalled
-});
-
-const mapDispatchToProps = {
-  restartPackage: a.restartPackage
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PackagesList);

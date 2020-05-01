@@ -1,10 +1,6 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import withTitle from "components/hoc/withTitle";
-import { compose } from "redux";
-import { createStructuredSelector } from "reselect";
-import PropTypes from "prop-types";
+import { useSelector, useDispatch } from "react-redux";
+import { RouteComponentProps } from "react-router-dom";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 // This module
 import Info from "./PackageViews/Info";
@@ -12,15 +8,16 @@ import { dnpSpecificList, dnpSpecific } from "./PackageViews/DnpSpecific";
 import Logs from "./PackageViews/Logs";
 import Config from "./PackageViews/Config";
 import Ports from "./PackageViews/Ports";
-import FileManager from "./PackageViews/FileManager";
+import { FileManager } from "./PackageViews/FileManager";
 import Backup from "./PackageViews/Backup";
-import Controls from "./PackageViews/Controls";
+import { Controls } from "./PackageViews/Controls";
 import NoDnpInstalled from "./NoDnpInstalled";
 import * as s from "../selectors";
 import { title } from "../data";
 // Components
 import Loading from "components/Loading";
 import Error from "components/Error";
+import Title from "components/Title";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 // Selectors
@@ -30,27 +27,40 @@ import {
 } from "services/dnpInstalled/selectors";
 import { fetchDnpInstalledData } from "services/dnpInstalled/actions";
 
-const PackageInterface = ({
-  dnp,
-  dnpDetail,
-  id,
-  moduleName,
-  areThereDnps,
-  requestStatus: { loading, error },
-  match,
-  // Actions
-  fetchDnpInstalledData
-}) => {
+export const PackageInterface: React.FC<
+  RouteComponentProps<{ id: string }>
+> = ({ match }) => {
+  const dispatch = useDispatch();
+  const id = decodeURIComponent(match.params.id || "");
+
+  // Fetching status
+  const { loading, error } = useSelector(getDnpInstalledStatus);
+  const areThereDnps = useSelector(s.areThereDnps);
+  // moduleName = "system" or "packages"
+  const moduleName = match.path.replace(/\//g, "");
+  // Dnp data
+  const dnp = useSelector(state => s.getDnpById(state, id));
+  const dnpDetail = useSelector(state => getDnpInstalledDataById(state, id));
+
   useEffect(() => {
-    fetchDnpInstalledData({ id });
-  }, [id, fetchDnpInstalledData]);
+    dispatch(fetchDnpInstalledData(id));
+  }, [id, dispatch]);
 
   if (!dnp) {
-    if (loading) return <Loading msg="Loading your DAppNode Packages..." />;
-    if (error)
-      return <Error msg={`Error loading your DAppNode Packages: ${error}`} />;
-    if (areThereDnps) return <NoDnpInstalled id={id} moduleName={moduleName} />;
-    return <Error msg={`Unknown error, package not found`} />;
+    return (
+      <>
+        <Title title={title} subtitle={id} />
+        {loading ? (
+          <Loading msg="Loading your DAppNode Packages..." />
+        ) : error ? (
+          <Error msg={`Error loading your DAppNode Packages: ${error}`} />
+        ) : areThereDnps ? (
+          <NoDnpInstalled id={id} moduleName={moduleName} />
+        ) : (
+          <Error msg={`Unknown error, package not found`} />
+        )}
+      </>
+    );
   }
 
   const DnpSpecific = dnpSpecific[dnp.name];
@@ -101,7 +111,7 @@ const PackageInterface = ({
     {
       name: "File Manager",
       subPath: "file-manager",
-      render: ({ ...props }) => <FileManager {...props} id={dnp.name} />,
+      render: () => <FileManager id={dnp.name} />,
       available: true
     },
     // DnpSpecific is a variable dynamic per DNP component
@@ -121,6 +131,8 @@ const PackageInterface = ({
 
   return (
     <>
+      <Title title={title} subtitle={shortNameCapitalized(dnp.name || id)} />
+
       <div className="horizontal-navbar">
         {availableRoutes.map(route => (
           <button key={route.subPath} className="item-container">
@@ -152,42 +164,3 @@ const PackageInterface = ({
     </>
   );
 };
-
-PackageInterface.propTypes = {
-  dnp: PropTypes.object,
-  id: PropTypes.string,
-  moduleName: PropTypes.string.isRequired
-};
-
-// Container
-
-function getIdFromMatch(match) {
-  return decodeURIComponent(((match || {}).params || {}).id || "");
-}
-
-const mapStateToProps = createStructuredSelector({
-  dnp: s.getDnp,
-  // id and moduleName are parsed from the url at the selector (with the router state)
-  id: (_, ownProps) => ((ownProps.match || {}).params || {}).id,
-  moduleName: s.getModuleName,
-  areThereDnps: s.areThereDnps,
-  requestStatus: getDnpInstalledStatus,
-  // For the withTitle HOC
-  subtitle: (state, ownProps) =>
-    shortNameCapitalized(getIdFromMatch(ownProps.match)),
-  dnpDetail: (state, ownProps) =>
-    getDnpInstalledDataById(state, getIdFromMatch(ownProps.match))
-});
-
-const mapDispatchToProps = {
-  fetchDnpInstalledData
-};
-
-export default compose(
-  withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  withTitle(title)
-)(PackageInterface);

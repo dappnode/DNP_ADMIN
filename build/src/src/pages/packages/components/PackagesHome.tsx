@@ -1,11 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { title, rootPath, systemPackagesSubPath } from "../data";
-import withTitle from "components/hoc/withTitle";
 // Components
-import PackageList from "./PackageList";
+import { PackagesList } from "./PackagesList";
+import Title from "components/Title";
 
-const PackagesHome = ({ showCoreDnps }) => {
+export function PackagesHome({ showCoreDnps }: { showCoreDnps: boolean }) {
   const options = [
     { name: "My packages", path: rootPath },
     { name: "System packages", path: rootPath + systemPackagesSubPath }
@@ -13,6 +13,8 @@ const PackagesHome = ({ showCoreDnps }) => {
 
   return (
     <>
+      <Title title={title} />
+
       <div className="horizontal-navbar">
         {options.map(option => (
           <button key={option.path} className="item-container">
@@ -28,9 +30,7 @@ const PackagesHome = ({ showCoreDnps }) => {
         ))}
       </div>
 
-      <PackageList moduleName={title} coreDnps={showCoreDnps} />
+      <PackagesList moduleName={title} coreDnps={showCoreDnps} />
     </>
   );
-};
-
-export default withTitle(title)(PackagesHome);
+}
