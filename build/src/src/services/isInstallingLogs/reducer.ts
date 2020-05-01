@@ -14,7 +14,7 @@ const initialState: IsInstallingLogsState = {
 };
 
 export default function(
-  state = initialState,
+  state: IsInstallingLogsState = initialState,
   action: AllActionTypes
 ): IsInstallingLogsState {
   switch (action.type) {

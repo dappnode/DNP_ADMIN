@@ -1,5 +1,5 @@
 import * as t from "./types";
-import { DappnodeStatusState } from "./types";
+import { DappnodeStatusState, AllReducerActions } from "./types";
 import { keyBy } from "lodash";
 import merge from "deepmerge";
 
@@ -9,15 +9,18 @@ const initialState: DappnodeStatusState = {
   systemInfo: null,
   stats: {},
   diagnose: [],
-  ipfsConnectionStatus: {},
-  wifiStatus: {},
+  ipfsConnectionStatus: null,
+  wifiStatus: null,
   passwordIsInsecure: false,
   autoUpdateData: null,
   mountpoints: [],
   volumes: []
 };
 
-export default function(state = initialState, action: any) {
+export default function(
+  state: DappnodeStatusState = initialState,
+  action: AllReducerActions
+): DappnodeStatusState {
   switch (action.type) {
     case t.SET_SYSTEM_INFO:
       return {

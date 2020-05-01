@@ -13,7 +13,7 @@ const initialState: CoreUpdateState = {
 };
 
 export default function(
-  state = initialState,
+  state: CoreUpdateState = initialState,
   action: AllActionTypes
 ): CoreUpdateState {
   switch (action.type) {

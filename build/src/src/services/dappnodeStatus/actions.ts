@@ -1,4 +1,3 @@
-import * as t from "./types";
 import {
   SystemInfo,
   HostStats,
@@ -7,86 +6,115 @@ import {
   MountpointData,
   VolumeData
 } from "types";
+import {
+  UPDATE_DAPPNODE_STATS,
+  UPDATE_DAPPNODE_DIAGNOSE,
+  UPDATE_IPFS_CONNECTION_STATUS,
+  UPDATE_WIFI_STATUS,
+  UPDATE_PASSWORD_IS_INSECURE,
+  UPDATE_AUTO_UPDATE_DATA,
+  UPDATE_MOUNTPOINTS,
+  UPDATE_VOLUMES,
+  FETCH_ALL_DAPPNODE_STATUS,
+  FETCH_DAPPNODE_PARAMS,
+  FETCH_DAPPNODE_STATS,
+  FETCH_DAPPNODE_DIAGNOSE,
+  FETCH_IF_PASSWORD_IS_INSECURE,
+  FETCH_MOUNTPOINTS,
+  SET_SYSTEM_INFO,
+  UpdateDappnodeStats,
+  UpdateDappnodeDiagnose,
+  SetSystemInfo,
+  UpdateIpfsConnectionStatus,
+  UpdateWifiStatus,
+  UpdatePasswordIsInsecure,
+  UpdateAutoUpdateData,
+  UpdateMountpoints,
+  UpdateVolumes
+} from "./types";
+import { IpfsConnectionStatus, WifiStatus } from "./types";
 
 // Service > dappnodeStatus
 
 // Update
 
-export const setSystemInfo = (systemInfo: SystemInfo) => ({
-  type: t.SET_SYSTEM_INFO,
+export const setSystemInfo = (systemInfo: SystemInfo): SetSystemInfo => ({
+  type: SET_SYSTEM_INFO,
   systemInfo
 });
 
-export const updateDappnodeStats = (stats: HostStats) => ({
-  type: t.UPDATE_DAPPNODE_STATS,
+export const updateDappnodeStats = (stats: HostStats): UpdateDappnodeStats => ({
+  type: UPDATE_DAPPNODE_STATS,
   stats
 });
 
-export const updateDappnodeDiagnose = (diagnose: Diagnose) => ({
-  type: t.UPDATE_DAPPNODE_DIAGNOSE,
+export const updateDappnodeDiagnose = (
+  diagnose: Diagnose
+): UpdateDappnodeDiagnose => ({
+  type: UPDATE_DAPPNODE_DIAGNOSE,
   diagnose
 });
 
-export const updateIpfsConnectionStatus = (ipfsConnectionStatus: {
-  resolves: boolean;
-  error?: string;
-}) => ({
-  type: t.UPDATE_IPFS_CONNECTION_STATUS,
+export const updateIpfsConnectionStatus = (
+  ipfsConnectionStatus: IpfsConnectionStatus
+): UpdateIpfsConnectionStatus => ({
+  type: UPDATE_IPFS_CONNECTION_STATUS,
   ipfsConnectionStatus
 });
 
-export const updateWifiStatus = (wifiStatus: { running: boolean }) => ({
-  type: t.UPDATE_WIFI_STATUS,
+export const updateWifiStatus = (wifiStatus: WifiStatus): UpdateWifiStatus => ({
+  type: UPDATE_WIFI_STATUS,
   wifiStatus
 });
 
-export const updatePasswordIsInsecure = (passwordIsInsecure: boolean) => ({
-  type: t.UPDATE_PASSWORD_IS_INSECURE,
+export const updatePasswordIsInsecure = (
+  passwordIsInsecure: boolean
+): UpdatePasswordIsInsecure => ({
+  type: UPDATE_PASSWORD_IS_INSECURE,
   passwordIsInsecure
 });
 
-export const updateAutoUpdateData = (autoUpdateData: AutoUpdateDataView) => ({
-  type: t.UPDATE_AUTO_UPDATE_DATA,
+export const updateAutoUpdateData = (
+  autoUpdateData: AutoUpdateDataView
+): UpdateAutoUpdateData => ({
+  type: UPDATE_AUTO_UPDATE_DATA,
   autoUpdateData
 });
 
-export const updateIdentityAddress = (identityAddress: string) => ({
-  type: t.UPDATE_IDENTITY_ADDRESS,
-  identityAddress
-});
-
-export const updateMountpoints = (mountpoints: MountpointData[]) => ({
-  type: t.UPDATE_MOUNTPOINTS,
+export const updateMountpoints = (
+  mountpoints: MountpointData[]
+): UpdateMountpoints => ({
+  type: UPDATE_MOUNTPOINTS,
   mountpoints
 });
 
-export const updateVolumes = (volumes: VolumeData[]) => ({
-  type: t.UPDATE_VOLUMES,
+export const updateVolumes = (volumes: VolumeData[]): UpdateVolumes => ({
+  type: UPDATE_VOLUMES,
   volumes
 });
 
 // Fetch
 
 export const fetchAllDappnodeStatus = () => ({
-  type: t.FETCH_ALL_DAPPNODE_STATUS
+  type: FETCH_ALL_DAPPNODE_STATUS
 });
 
 export const fetchDappnodeParams = () => ({
-  type: t.FETCH_DAPPNODE_PARAMS
+  type: FETCH_DAPPNODE_PARAMS
 });
 
 export const fetchDappnodeStats = () => ({
-  type: t.FETCH_DAPPNODE_STATS
+  type: FETCH_DAPPNODE_STATS
 });
 
 export const fetchDappnodeDiagnose = () => ({
-  type: t.FETCH_DAPPNODE_DIAGNOSE
+  type: FETCH_DAPPNODE_DIAGNOSE
 });
 
 export const fetchIfPasswordIsInsecure = () => ({
-  type: t.FETCH_IF_PASSWORD_IS_INSECURE
+  type: FETCH_IF_PASSWORD_IS_INSECURE
 });
 
 export const fetchMountpoints = () => ({
-  type: t.FETCH_MOUNTPOINTS
+  type: FETCH_MOUNTPOINTS
 });

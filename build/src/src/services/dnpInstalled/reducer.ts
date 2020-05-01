@@ -17,7 +17,7 @@ const initialState: DnpInstalledState = {
 };
 
 export default function(
-  state = initialState,
+  state: DnpInstalledState = initialState,
   action: AllActionTypes
 ): DnpInstalledState {
   switch (action.type) {

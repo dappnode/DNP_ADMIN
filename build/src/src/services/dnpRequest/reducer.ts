@@ -15,7 +15,7 @@ const initialState: DnpRequestState = {
 };
 
 export default function(
-  state = initialState,
+  state: DnpRequestState = initialState,
   action: AllActionTypes
 ): DnpRequestState {
   switch (action.type) {

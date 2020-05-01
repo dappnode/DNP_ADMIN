@@ -14,7 +14,7 @@ const initialState: DnpDirectoryState = {
 };
 
 export default (
-  state = initialState,
+  state: DnpDirectoryState = initialState,
   action: AllReducerActions
 ): DnpDirectoryState => {
   switch (action.type) {
