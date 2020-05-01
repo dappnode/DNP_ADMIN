@@ -1,6 +1,10 @@
-// PACKAGES
 import { issueBaseUrl } from "./data";
-import { createSelector, createStructuredSelector } from "reselect";
+import {
+  createSelector,
+  createStructuredSelector,
+  OutputSelector
+} from "reselect";
+import { PackageVersionData } from "types";
 import {
   getDappnodeParams,
   getDappnodeStats,
@@ -31,9 +35,21 @@ import { getIsLoading } from "services/loadingStatus/selectors";
  * can also return null, and that diagnose will be ignored
  */
 
+type DiagnoseResult =
+  | null
+  | {
+      loading: boolean;
+      msg: string;
+    }
+  | {
+      ok: boolean;
+      msg: string;
+      solutions: string[];
+    };
+
 const getDiagnoseConnection = createSelector(
   getConnectionStatus,
-  ({ isOpen, error }) => ({
+  ({ isOpen, error }): DiagnoseResult => ({
     ok: isOpen,
     msg: isOpen ? "Session is open" : `Session is closed: ${error || ""}`,
     solutions: [
@@ -46,59 +62,71 @@ const getDiagnoseConnection = createSelector(
 const getDiagnoseOpenPorts = onlyIfConnectionIsOpen(
   createSelector(
     getDappnodeParams,
-    ({ alertToOpenPorts }) => ({
-      ok: !alertToOpenPorts,
-      msg: alertToOpenPorts
-        ? "Ports have to be opened and there is no UPnP device available"
-        : "No ports have to be opened OR the router has UPnP enabled",
-      solutions: [
-        "If you are capable of opening ports manually, please ignore this error",
-        "Your router may have UPnP but it is not turned on yet. Please research if your specific router has UPnP and turn it on"
-      ]
-    })
+    (dappnodeParams): DiagnoseResult => {
+      if (!dappnodeParams) return null;
+      const { alertToOpenPorts } = dappnodeParams;
+      return {
+        ok: !alertToOpenPorts,
+        msg: alertToOpenPorts
+          ? "Ports have to be opened and there is no UPnP device available"
+          : "No ports have to be opened OR the router has UPnP enabled",
+        solutions: [
+          "If you are capable of opening ports manually, please ignore this error",
+          "Your router may have UPnP but it is not turned on yet. Please research if your specific router has UPnP and turn it on"
+        ]
+      };
+    }
   )
 );
 
 const getDiagnoseNoNatLoopback = onlyIfConnectionIsOpen(
   createSelector(
     getDappnodeParams,
-    ({ noNatLoopback, internalIp }) => ({
-      ok: !noNatLoopback,
-      msg: noNatLoopback
-        ? "No NAT loopback, external IP did not resolve"
-        : "NAT loopback enabled, external IP resolves",
-      solutions: [
-        `Please use the internal IP: ${internalIp} when you are in the same network as your DAppNode`
-      ]
-    })
+    (dappnodeParams): DiagnoseResult => {
+      if (!dappnodeParams) return null;
+      const { noNatLoopback, internalIp } = dappnodeParams;
+      return {
+        ok: !noNatLoopback,
+        msg: noNatLoopback
+          ? "No NAT loopback, external IP did not resolve"
+          : "NAT loopback enabled, external IP resolves",
+        solutions: [
+          `Please use the internal IP: ${internalIp} when you are in the same network as your DAppNode`
+        ]
+      };
+    }
   )
 );
 
 const getDiagnoseIpfs = createSelector(
   getIpfsConnectionStatus,
   getIsLoading.ipfsConnectionStatus,
-  ({ resolves, error }, loading) => ({
-    loading,
-    ok: resolves,
-    msg: loading
-      ? "Checking if IPFS resolves..."
-      : resolves
-      ? "IPFS resolves"
-      : "IPFS is not resolving: " + error,
-    solutions: [
-      `Go to the system tab and make sure IPFS is running. Otherwise open the package and click 'restart'`,
-      `If the problem persist make sure your disk has not run of space; IPFS may malfunction in that case.`
-    ]
-  })
+  (ipfsConnectionStatus, loading): DiagnoseResult => {
+    if (loading) return { loading: true, msg: "Checking if IPFS resolves..." };
+    if (!ipfsConnectionStatus) return null;
+    return {
+      loading,
+      ok: ipfsConnectionStatus.resolves,
+      msg: loading
+        ? "Checking if IPFS resolves..."
+        : ipfsConnectionStatus.resolves
+        ? "IPFS resolves"
+        : "IPFS is not resolving: " + ipfsConnectionStatus.error,
+      solutions: [
+        `Go to the system tab and make sure IPFS is running. Otherwise open the package and click 'restart'`,
+        `If the problem persist make sure your disk has not run of space; IPFS may malfunction in that case.`
+      ]
+    };
+  }
 );
 
 const getDiagnoseDiskSpace = createSelector(
   getDappnodeStats,
   getIsLoading.dappnodeStats,
-  ({ disk }, loading) => {
+  (stats, loading): DiagnoseResult => {
     if (loading) return { loading, msg: "Checking disk usage..." };
-    if (!disk) return null;
-    const ok = parseInt(disk) < 95;
+    if (!stats || !stats.disk) return null;
+    const ok = parseInt(stats.disk) < 95;
     return {
       ok,
       msg: ok ? "Disk usage is ok (<95%)" : "Disk usage is over 95%",
@@ -113,7 +141,7 @@ const getDiagnoseDiskSpace = createSelector(
 const getDiagnoseCoreDnpsRunning = createSelector(
   getDnpInstalled,
   getIsLoading.dnpInstalled,
-  (dnpInstalled, isLoading) => {
+  (dnpInstalled, isLoading): DiagnoseResult => {
     if (isLoading)
       return {
         loading: true,
@@ -187,25 +215,17 @@ export const getDiagnoses = createSelector(
  *   error: {string}
  * }
  */
+interface IssueDataItem {
+  name: string;
+  result?: string;
+  error?: string;
+}
 
-const getDiskUsageInfo = createSelector(
-  getDappnodeStats,
-  dappnodeStats => ({
-    name: "Disk usage",
-    result: (dappnodeStats || {}).disk
-  })
-);
-
-const getDnpInstalledWithVersionData = createSelector(
-  getDnpInstalled,
-  createStructuredSelector({
-    "dappmanager.dnp.dappnode.eth": getDappmanagerVersionData,
-    "vpn.dnp.dappnode.eth": getVpnVersionData,
-    "admin.dnp.dappnode.eth": () => window.versionData
-  }),
-  (dnps, versionDatas) =>
-    dnps.map(dnp => ({ ...dnp, ...(versionDatas[dnp.name] || {}) }))
-);
+const getVersionDatas = createStructuredSelector({
+  "dappmanager.dnp.dappnode.eth": getDappmanagerVersionData,
+  "vpn.dnp.dappnode.eth": getVpnVersionData,
+  "admin.dnp.dappnode.eth": () => window.versionData
+});
 
 /**
  * Agreggates single info selectors with info comming from the DAPPMANAGER
@@ -223,11 +243,15 @@ const getDnpInstalledWithVersionData = createSelector(
  */
 const getSystemInfo = createSelector(
   getDappnodeDiagnose,
-  createStructuredSelector({ getDiskUsageInfo }),
-  (dappmanagerDiagnoses, infoObjects) =>
-    Object.entries({ ...dappmanagerDiagnoses, ...infoObjects })
-      .filter(([_, value]) => value)
-      .map(([id, infoObject]) => ({ ...infoObject, id }))
+  getDappnodeStats,
+  (dappmanagerDiagnoses, dappnodeStats): IssueDataItem[] => {
+    return [
+      // Diagnose items from DAPPMANAGER
+      ...dappmanagerDiagnoses,
+      // Diagnose items computed locally
+      { name: "Disk usage", result: (dappnodeStats || {}).disk }
+    ];
+  }
 );
 
 /**
@@ -245,29 +269,39 @@ const getSystemInfo = createSelector(
  * ...
  */
 
+interface IssueBodySection {
+  title: string;
+  items: { name: string; data: string }[];
+}
+
 export const getIssueBody = createSelector(
-  getDnpInstalledWithVersionData,
+  getDnpInstalled,
+  getVersionDatas,
+  // System info
   getSystemInfo,
-  (dnps, systemInfo) => {
-    const sections = [
+  (dnps, versionDatas, systemInfo) => {
+    const sections: IssueBodySection[] = [
       {
         title: "Core DAppNode Packages versions",
         items: dnps
           .filter(dnp => dnp.isCore)
-          .map(({ name, version, branch, commit }) => ({
+          .map(({ name, version }) => ({
             name,
-            data:
-              version +
-              (branch && branch !== "master" ? `, branch: ${branch}` : "") +
-              (commit ? `, commit: ${commit.slice(0, 8)}` : "")
+            data: printVersionData(
+              version,
+              // Using keyof typeof to preserve the typing of the object
+              versionDatas[name as keyof typeof versionDatas]
+            )
           }))
       },
       {
         title: "System info",
-        items: Object.values(systemInfo).map(({ name, result, error }) => ({
-          name,
-          data: (result || error || "").trim()
-        }))
+        items: Object.values(systemInfo)
+          .filter(Boolean)
+          .map(({ name, result, error }) => ({
+            name,
+            data: (result || error || "").trim()
+          }))
       }
     ];
 
@@ -305,12 +339,34 @@ export const getIssueUrlRaw = () => issueBaseUrl;
  */
 
 /**
+ * Print git version data
+ * @param version "0.2.0"
+ * @param versionData { version: "0.2.1", branch: "next" }
+ * @returns "0.2.0, branch: next"
+ */
+function printVersionData(
+  version: string,
+  versionData?: PackageVersionData
+): string {
+  const { branch, commit, version: gitVersion } = versionData || {};
+  return [
+    gitVersion || version,
+    branch && branch !== "master" && `branch: ${branch}`,
+    commit && `commit: ${commit.slice(0, 8)}`
+  ]
+    .filter(data => data)
+    .join(", ");
+}
+
+/**
  * To be composed with `createSelector`
  * If connection is not open, the selector returns null
- * @param {Function} selector
- * @returns {Function}
+ * @param selector
+ * @returns
  */
-function onlyIfConnectionIsOpen(selector) {
+function onlyIfConnectionIsOpen(
+  selector: OutputSelector<any, DiagnoseResult, (res: any) => DiagnoseResult>
+) {
   return createSelector(
     getIsConnectionOpen,
     selector,
