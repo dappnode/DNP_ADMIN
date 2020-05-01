@@ -19,15 +19,14 @@ function StaticIp({ staticIp = "" }) {
   }, [staticIp]);
 
   async function updateStaticIp(newStaticIp: string) {
-    if (isIpv4(newStaticIp))
-      try {
-        await withToast(() => api.setStaticIp({ staticIp: newStaticIp }), {
-          message: "Setting static ip...",
-          onSuccess: "Set static ip"
-        });
-      } catch (e) {
-        console.error("Error on setStaticIp", e);
-      }
+    try {
+      await withToast(() => api.setStaticIp({ staticIp: newStaticIp }), {
+        message: "Setting static ip...",
+        onSuccess: "Set static ip"
+      });
+    } catch (e) {
+      console.error("Error on setStaticIp", e);
+    }
   }
 
   return (
@@ -43,12 +42,19 @@ function StaticIp({ staticIp = "" }) {
           placeholder="Your static ip..."
           value={input}
           onValueChange={setInput}
-          onEnterPress={() => updateStaticIp(input)}
+          onEnterPress={() => {
+            if (isIpv4(input)) updateStaticIp(input);
+          }}
           append={
             <>
               <Button
                 variant="dappnode"
-                disabled={!isIpv4(input)}
+                disabled={
+                  // Invalid input
+                  !isIpv4(input) ||
+                  // Input is the same as previous IP
+                  (Boolean(staticIp) && staticIp === input)
+                }
                 onClick={() => updateStaticIp(input)}
               >
                 {staticIp ? "Update" : "Enable"}
