@@ -4,7 +4,7 @@ import { api } from "api";
 import * as a from "./actions";
 import * as t from "./types";
 import checkIpfsConnection from "./diagnoseFunctions/checkIpfsNode";
-import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
+import { CONNECTION_OPEN } from "services/connectionStatus";
 import { wrapErrorsAndLoading } from "services/loadingStatus/sagas";
 import * as loadingIds from "services/loadingStatus/loadingIds";
 // Utils

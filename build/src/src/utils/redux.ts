@@ -1,6 +1,6 @@
 import { select, take, takeEvery, all } from "redux-saga/effects";
 import { getIsConnectionOpen } from "services/connectionStatus/selectors";
-import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
+import { CONNECTION_OPEN } from "services/connectionStatus";
 
 /**
  * Blocks the execution of a saga until the WAMP connection is open

@@ -8,10 +8,11 @@ import { mountPoint } from "./data";
  * Keeps track of the DAppNode's WAMP connection status.
  * Some redux-sagas may want to consult this state to know if the connection is open
  * before doing a call that will fail.
- * Also is used by the `withConnectionStatus` HOC
  *
  * [Tested]
  */
+
+export { CONNECTION_OPEN, CONNECTION_CLOSE } from "./types";
 
 export default {
   mountPoint,

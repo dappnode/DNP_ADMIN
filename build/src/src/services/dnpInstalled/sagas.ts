@@ -1,6 +1,6 @@
 import { put, call } from "redux-saga/effects";
 import { api } from "api";
-import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
+import { CONNECTION_OPEN } from "services/connectionStatus";
 import { rootWatcher } from "utils/redux";
 import { updateStatus, setDnpInstalled } from "./actions";
 

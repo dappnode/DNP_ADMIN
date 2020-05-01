@@ -7,7 +7,7 @@ import {
   updateIsLoading,
   updateIsLoaded
 } from "services/loadingStatus/actions";
-import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
+import { CONNECTION_OPEN } from "services/connectionStatus";
 // Utils
 import { rootWatcher } from "utils/redux";
 import { FETCH_NOTIFICATIONS } from "./types";

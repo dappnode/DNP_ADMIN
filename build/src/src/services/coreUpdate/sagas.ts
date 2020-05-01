@@ -7,7 +7,7 @@ import {
   updateIsLoading,
   updateIsLoaded
 } from "services/loadingStatus/actions";
-import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
+import { CONNECTION_OPEN } from "services/connectionStatus";
 import { clearIsInstallingLog } from "services/isInstallingLogs/actions";
 // Utilities
 import { CoreUpdateData } from "types";

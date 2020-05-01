@@ -3,7 +3,7 @@ import { rootWatcher } from "utils/redux";
 import { api } from "api";
 import * as a from "./actions";
 import * as t from "./types";
-import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
+import { CONNECTION_OPEN } from "services/connectionStatus";
 
 // Service > chainData
 

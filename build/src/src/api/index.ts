@@ -42,7 +42,7 @@ export function start() {
 
   connection.onopen = session => {
     _session = session;
-    store.dispatch(connectionOpen({ session }));
+    store.dispatch(connectionOpen());
     console.log("CONNECTED to \nurl: " + url + " \nrealm: " + realm);
     // Start subscriptions
 
@@ -66,7 +66,6 @@ export function start() {
     store.dispatch(
       connectionClose({
         error: [reason, (details || {}).message].filter(x => x).join(" - "),
-        session: connection,
         isNotAdmin: stringIncludes(
           details.message,
           "could not authenticate session"

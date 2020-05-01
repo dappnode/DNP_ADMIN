@@ -2,7 +2,7 @@ import { put, call } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import { api } from "api";
 import * as a from "./actions";
-import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
+import { CONNECTION_OPEN } from "services/connectionStatus";
 import { FETCH_USER_ACTION_LOGS } from "./types";
 import { parseUserActionLogsString } from "utils/parseUserActionLogsString";
 

@@ -21,7 +21,11 @@ import Welcome from "components/welcome/Welcome";
 function App({
   connectionStatus
 }: {
-  connectionStatus?: { isOpen: boolean; isNotAdmin: boolean; error: string };
+  connectionStatus?: {
+    isOpen: boolean;
+    isNotAdmin: boolean;
+    error: string | null;
+  };
 }) {
   // App is the parent container of any other component.
   // If this re-renders, the whole app will. So DON'T RERENDER APP!
