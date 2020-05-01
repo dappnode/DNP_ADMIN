@@ -1,17 +1,15 @@
 /**
  * Checks if the given string is a DNP domain
- * @param {string} id "dnpName.dnp.dappnode.eth"
+ * @param id "dnpName.dnp.dappnode.eth"
  */
-function isDnpDomain(id) {
+export default function isDnpDomain(id: string): boolean {
   if (!id || typeof id !== "string") return false;
   if (!id.includes(".")) return false;
   const [, dnpTag, , extension] = id.split(".");
-  return (
+  return Boolean(
     dnpTag &&
-    (dnpTag === "dnp" || dnpTag === "public") &&
-    extension &&
-    extension === "eth"
+      (dnpTag === "dnp" || dnpTag === "public") &&
+      extension &&
+      extension === "eth"
   );
 }
-
-export default isDnpDomain;

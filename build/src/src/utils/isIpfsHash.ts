@@ -1,6 +1,7 @@
+// @ts-ignore // No type definitions for "is-ipfs"
 import isIPFS from "is-ipfs";
 
-function isMultihash(hash) {
+function isMultihash(hash: string) {
   return isIPFS.cid(hash);
 }
 
@@ -11,10 +12,9 @@ function isMultihash(hash) {
  * isIPFS.cid('zdj7WWeQ43G6JJvLWQWZpyHuAMq6uYWRjkBXFad11vE2LHhQ7') // true (CIDv1)
  * isIPFS.cid('noop') // false
  *
- * @param {string} hash
- * @returns {bool}
+ * @param hash
  */
-export default function isIpfsHash(hash) {
+export default function isIpfsHash(hash: string): boolean {
   if (!hash || typeof hash !== "string") return false;
   // Correct hash prefix
   if (hash.includes("ipfs/")) {

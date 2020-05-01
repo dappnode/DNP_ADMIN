@@ -1,7 +1,7 @@
 import * as t from "./types";
 import { DappnodeStatusState } from "./types";
+import { keyBy } from "lodash";
 import merge from "deepmerge";
-import { arrayToObj } from "utils/objects";
 
 // Service > dappnodeStatus
 
@@ -33,7 +33,7 @@ export default function(state = initialState, action: any) {
 
     case t.UPDATE_DAPPNODE_DIAGNOSE:
       return merge(state, {
-        diagnose: arrayToObj(action.diagnose, "name")
+        diagnose: keyBy(action.diagnose, diagnose => diagnose.name)
       });
 
     case t.UPDATE_IPFS_CONNECTION_STATUS:

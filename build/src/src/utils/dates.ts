@@ -1,19 +1,23 @@
 /**
- * @param {string|number} rawDate 1563728142
- * @param {boolean} [hideTime]
- * @returns {string} Today, 15 min ago
+ * @param rawDate 1563728142
+ * @param [hideTime]
+ * @returns Today, 15 min ago
  */
-export function parseStaticDate(rawDate, hideTime = false) {
-  if (!rawDate) return null;
+export function parseStaticDate(
+  rawDate: string | number,
+  hideTime = false
+): string {
+  if (!rawDate) return "";
 
-  let date = new Date(rawDate);
-  let now = new Date();
+  const date = new Date(rawDate);
+  const now = new Date();
   if (sameDay(date, now)) {
-    const minAgo = Math.floor((now - date) / 1000 / 60);
+    const minAgo = Math.floor((now.getTime() - date.getTime()) / 1000 / 60);
     if (minAgo < 30) {
       return "Today, " + minAgo + " min ago";
+    } else {
+      return "Today, " + date.toLocaleTimeString();
     }
-    return "Today, " + date.toLocaleTimeString();
   }
   // Show as: "Nov 19, 2019, 14:50"
   return date.toLocaleString([], {
@@ -28,11 +32,11 @@ export function parseStaticDate(rawDate, hideTime = false) {
 
 /**
  * Check if two date objects are in the same calendar day
- * @param {date} d1
- * @param {date} d2
- * @returns {bool} isSameDay
+ * @param d1
+ * @param d2
+ * @returns isSameDay
  */
-function sameDay(d1, d2) {
+function sameDay(d1: Date, d2: Date): boolean {
   return (
     d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
@@ -41,23 +45,24 @@ function sameDay(d1, d2) {
 }
 
 /**
- * @param {string|number} rawDatePrev 1563728142
- * @param {string|number} [rawDateNext] 1563728142
- * @returns {string} Today, 15 min ago
+ * @param prevRaw 1563728142
+ * @param rawDateNext 1563728142
+ * @returns Today, 15 min ago
  */
-export function parseDiffDates(rawDatePrev, rawDateNext) {
-  if (!rawDatePrev) return null;
-  if (!rawDateNext) rawDateNext = Date.now();
+export function parseDiffDates(
+  prevRaw: string | number,
+  nextRaw: string | number = Date.now()
+) {
+  const prev = typeof prevRaw === "string" ? parseInt(prevRaw) : prevRaw;
+  const next = typeof nextRaw === "string" ? parseInt(nextRaw) : nextRaw;
+
+  if (!prev || !next) return "";
 
   // The difference will always be absolute.
   // Make sure rawDatePrev < rawDateNext
-  if (rawDatePrev > rawDateNext) {
-    const _rawDatePrev = rawDatePrev;
-    rawDatePrev = rawDateNext;
-    rawDateNext = _rawDatePrev;
-  }
+  const diff = Math.abs(prev - next);
 
-  const secDiff = Math.floor((rawDateNext - rawDatePrev) / 1000);
+  const secDiff = Math.floor(diff / 1000);
   const minDiff = Math.floor(secDiff / 60);
   const hourDiff = Math.floor(minDiff / 60);
 

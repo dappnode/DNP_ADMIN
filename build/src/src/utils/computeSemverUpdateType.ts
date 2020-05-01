@@ -2,13 +2,17 @@ import semver from "semver";
 
 /**
  * Compute the release type: major, minor, patch
- * @param {string} from 0.1.21
- * @param {string} to 0.2.0
- * @param {bool} dontUpSmallVersions, prevent 0.2.0 from becoming 2.0.0
- * @returns {string} release type: major, minor, patch
+ * @param from 0.1.21
+ * @param to 0.2.0
+ * @param dontUpSmallVersions, prevent 0.2.0 from becoming 2.0.0
+ * @returns release type: major, minor, patch
  */
-function computeSemverUpdateType(from, to, dontUpSmallVersions) {
-  if (!semver.valid(from) || !semver.valid(to)) return;
+function computeSemverUpdateType(
+  from: string | null,
+  to: string | null,
+  dontUpSmallVersions?: boolean
+): "major" | "minor" | "patch" | "downgrade" | null {
+  if (!from || !to || !semver.valid(from) || !semver.valid(to)) return null;
 
   // Make sure there are no downgrades
   if (semver.lt(to, from)) return "downgrade";
@@ -18,7 +22,7 @@ function computeSemverUpdateType(from, to, dontUpSmallVersions) {
   from = semver.valid(semver.coerce(from));
   to = semver.valid(semver.coerce(to));
   // For safety, check again
-  if (!semver.valid(from) || !semver.valid(to)) return;
+  if (!from || !to || !semver.valid(from) || !semver.valid(to)) return null;
 
   if (!dontUpSmallVersions) {
     // Semver considers 0.1.21 -> 0.2.0 a minor update
@@ -41,11 +45,12 @@ function computeSemverUpdateType(from, to, dontUpSmallVersions) {
   }
 
   // For safety, check again
-  if (!semver.valid(from) || !semver.valid(to)) return;
+  if (!from || !to || !semver.valid(from) || !semver.valid(to)) return null;
 
-  for (const type of ["major", "minor", "patch"]) {
-    if (semver[type](from) !== semver[type](to)) return type;
-  }
+  if (semver.major(from) !== semver.major(to)) return "major";
+  if (semver.minor(from) !== semver.minor(to)) return "minor";
+  if (semver.patch(from) !== semver.patch(to)) return "patch";
+  return null;
 }
 
 export default computeSemverUpdateType;

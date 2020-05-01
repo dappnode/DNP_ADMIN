@@ -10,7 +10,7 @@ import { ButtonLight } from "components/Button";
 // Utils
 import parseManifestEnvs from "pages/installer/parsers/parseManifestEnvs";
 import parseInstalledDnpEnvs from "pages/installer/parsers/parseInstalledDnpEnvs";
-import sortByProp from "utils/sortByProp";
+import { sortBy } from "lodash";
 
 function stringifyEnvs(envs) {
   const envsReduced = {};
@@ -40,7 +40,7 @@ function Config({ dnp, updateEnvs }) {
     setEnvs(merge(parseManifestEnvs(dnp.manifest), parseInstalledDnpEnvs(dnp)));
   }, [dnp]);
 
-  const envsArray = Object.values(envs).sort(sortByProp("index"));
+  const envsArray = sortBy(Object.values(envs), env => env.index);
 
   // If there are no ENVs don't render the component
   if (!envsArray.length) return null;

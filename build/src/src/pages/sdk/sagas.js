@@ -204,11 +204,7 @@ function* onUpdateQuery({ id, value }) {
 const watchers = [
   [t.FETCH_REGISTRY, fetchRegistry],
   [t.UPDATE_QUERY, onUpdateQuery],
-  ...Object.keys(inputHanlders).map(id => [
-    getId(id),
-    inputHanlders[id],
-    { throttle: 1000 }
-  ]),
+  ...Object.keys(inputHanlders).map(id => [getId(id), inputHanlders[id]]),
   [t.CONNECT_METAMASK, connectMetamask]
 ];
 

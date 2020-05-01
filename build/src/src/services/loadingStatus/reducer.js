@@ -1,6 +1,4 @@
 import * as t from "./actionTypes";
-import { assertAction } from "utils/redux";
-import Joi from "joi";
 
 // Service > loadingStatus
 
@@ -17,14 +15,6 @@ import Joi from "joi";
 export default function(state = {}, action) {
   switch (action.type) {
     case t.UPDATE_LOADING:
-      assertAction(
-        action,
-        Joi.object({
-          id: Joi.string().required(),
-          loading: Joi.boolean().required(),
-          error: Joi.string()
-        })
-      );
       return {
         ...state,
         [action.id]: {
@@ -34,7 +24,6 @@ export default function(state = {}, action) {
         }
       };
     case t.UPDATE_IS_LOADING:
-      assertAction(action, Joi.object({ id: Joi.string().required() }));
       return {
         ...state,
         [action.id]: {
@@ -44,7 +33,6 @@ export default function(state = {}, action) {
       };
 
     case t.UPDATE_IS_LOADED:
-      assertAction(action, Joi.object({ id: Joi.string().required() }));
       return {
         ...state,
         [action.id]: {

@@ -20,8 +20,8 @@ import { getDnpInstalledStatus } from "services/dnpInstalled/selectors";
 // Icons
 import { MdRefresh, MdOpenInNew } from "react-icons/md";
 // Utils
-import sortByProp from "utils/sortByProp";
 import { shortNameCapitalized } from "utils/format";
+import { sortBy } from "lodash";
 // Images
 import defaultAvatar from "img/defaultAvatar.png";
 import dappnodeIcon from "img/dappnode-logo-only.png";
@@ -56,9 +56,8 @@ const PackagesList = ({
       <header>Name</header>
       <header>Open</header>
       <header className="restart">Restart</header>
-      {filteredDnps
-        .sort(sortByProp("name"))
-        .map(({ name, state, avatarUrl }) => (
+      {sortBy(filteredDnps, pkg => pkg.name).map(
+        ({ name, state, avatarUrl }) => (
           <React.Fragment key={name}>
             <StateBadge state={state} />
             <img
@@ -79,7 +78,8 @@ const PackagesList = ({
             />
             <hr />
           </React.Fragment>
-        ))}
+        )
+      )}
     </Card>
   );
 };

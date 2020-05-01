@@ -7,7 +7,7 @@
  *   const blob = dataUriToBlob(fileContent);
  *   saveAs(blob, file.name);
  */
-export default function dataUriToBlob(dataURI) {
+export default function dataUriToBlob(dataURI: string): Blob {
   if (!dataURI || typeof dataURI !== "string")
     throw Error("dataUri must be a string");
 

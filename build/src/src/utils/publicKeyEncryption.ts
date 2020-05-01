@@ -8,7 +8,11 @@ import {
 
 const newNonce = () => randomBytes(box.nonceLength);
 
-export function encrypt(plainMessage, mySecretKey, theirPublicKey) {
+export function encrypt(
+  plainMessage: string,
+  mySecretKey: string,
+  theirPublicKey: string
+): string {
   const nonce = newNonce();
   const messageUint8 = decodeUTF8(plainMessage);
   const encrypted = box(
@@ -26,7 +30,11 @@ export function encrypt(plainMessage, mySecretKey, theirPublicKey) {
   return base64FullMessage;
 }
 
-export function decrypt(messageWithNonce, mySecretKey, theirPublicKey) {
+export function decrypt(
+  messageWithNonce: string,
+  mySecretKey: string,
+  theirPublicKey: string
+): string {
   const messageWithNonceAsUint8Array = decodeBase64(messageWithNonce);
   const nonce = messageWithNonceAsUint8Array.slice(0, box.nonceLength);
   const message = messageWithNonceAsUint8Array.slice(

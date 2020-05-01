@@ -7,9 +7,7 @@ const v4 =
   "(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)){3}";
 const ipv4RegExp = new RegExp(`(?:^${v4}$)`);
 
-function isIpv4(ip) {
+export default function isIpv4(ip: string): boolean {
   if (!ip) return false;
   return ipv4RegExp.test(ip);
 }
-
-export default isIpv4;
