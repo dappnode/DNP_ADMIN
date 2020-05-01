@@ -52,11 +52,7 @@ export function start() {
     const subscriptions = subscriptionsFactory<Subscriptions>(
       session,
       subscriptionsData,
-      {
-        onError: (route: string, error: Error, args?: Args): void => {
-          console.error(`Subscription error ${route}: ${error.stack}`, args);
-        }
-      }
+      { loggerMiddleware: subscriptionsLoggerMiddleware }
     );
 
     mapSubscriptionsToRedux(subscriptions);
@@ -86,3 +82,9 @@ export function start() {
 
   connection.open();
 }
+
+const subscriptionsLoggerMiddleware = {
+  onError: (route: string, error: Error, args?: Args): void => {
+    console.error(`Subscription error ${route}: ${error.stack}`, args);
+  }
+};

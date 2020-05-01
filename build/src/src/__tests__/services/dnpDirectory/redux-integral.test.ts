@@ -21,6 +21,7 @@ describe("services > dnpDirectory, whitelisted mechanism", () => {
     };
 
     const sampleDirectoryItem: DirectoryItem = {
+      status: "ok",
       name: "demo-name",
       description: "Demo description",
       avatarUrl: "",
