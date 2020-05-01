@@ -1,6 +1,6 @@
 import { put, call, select } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import { api } from "API/start";
+import { api } from "api";
 import { loadingId, coreName } from "./data";
 // Actions
 import {

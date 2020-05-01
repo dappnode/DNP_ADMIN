@@ -1,6 +1,6 @@
 import { put, call, all } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import { api } from "API/start";
+import { api } from "api";
 import * as a from "./actions";
 import * as t from "./types";
 import checkIpfsConnection from "./diagnoseFunctions/checkIpfsNode";

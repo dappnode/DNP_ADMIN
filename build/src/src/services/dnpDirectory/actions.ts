@@ -1,6 +1,6 @@
 import { ThunkAction } from "redux-thunk";
 import { AnyAction } from "redux";
-import { api } from "API/start";
+import { api } from "api";
 import {
   SetDnpDirectory,
   UpdateDirectoryStatus,

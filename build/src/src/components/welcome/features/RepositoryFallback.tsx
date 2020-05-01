@@ -5,7 +5,7 @@ import {
 } from "components/EthMultiClient";
 import { EthClientFallback } from "types";
 import BottomButtons from "../BottomButtons";
-import { api } from "API/start";
+import { api } from "api";
 import Alert from "react-bootstrap/Alert";
 import SwitchBig from "components/SwitchBig";
 

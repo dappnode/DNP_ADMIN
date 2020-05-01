@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { api } from "API/start";
+import { api } from "api";
 import { createStructuredSelector } from "reselect";
 import { withToast } from "components/toast/Toast";
 // Components

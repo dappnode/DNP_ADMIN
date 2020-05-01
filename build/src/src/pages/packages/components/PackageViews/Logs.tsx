@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { api } from "API/start";
+import { api } from "api";
 import newTabProps from "utils/newTabProps";
 // Components
 import Card from "components/Card";

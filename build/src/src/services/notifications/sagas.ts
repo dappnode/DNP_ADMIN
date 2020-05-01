@@ -1,5 +1,5 @@
 import { put, call, select } from "redux-saga/effects";
-import { api } from "API/start";
+import { api } from "api";
 import * as a from "./actions";
 import * as t from "./actionTypes";
 import * as s from "./selectors";

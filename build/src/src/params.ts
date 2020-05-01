@@ -1,3 +1,7 @@
+// WAMP
+export const wampUrl = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
+export const wampRealm = "dappnode_admin";
+
 // WIFI
 export const wifiDefaultSSID = "DAppNodeWIFI";
 export const wifiDefaultWPA_PASSPHRASE = "dappnode";

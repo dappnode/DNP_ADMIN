@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { api } from "API/start";
+import { api } from "api";
 // Components
 import Input from "components/Input";
 import Button from "components/Button";

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { getNewFeatureIds } from "services/dappnodeStatus/selectors";
-import { api } from "API/start";
+import { api } from "api";
 // Components
 import WelcomeModalContainer from "./WelcomeModalContainer";
 import Start from "./Start";

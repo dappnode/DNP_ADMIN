@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import { api } from "API/start";
+import { api } from "api";
 import { wifiName, wifiEnvSSID, wifiEnvWPA_PASSPHRASE } from "params";
 // Components
 import Card from "components/Card";

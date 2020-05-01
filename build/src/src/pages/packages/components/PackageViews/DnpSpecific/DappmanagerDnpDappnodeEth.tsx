@@ -1,5 +1,5 @@
 import React from "react";
-import { api } from "API/start";
+import { api } from "api";
 // Components
 import Card from "components/Card";
 import Button from "components/Button";

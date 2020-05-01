@@ -1,5 +1,5 @@
 import React from "react";
-import { api } from "API/start";
+import { api } from "api";
 import { confirm } from "components/ConfirmDialog";
 // Components
 import Card from "components/Card";

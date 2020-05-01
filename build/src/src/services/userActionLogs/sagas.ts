@@ -1,6 +1,6 @@
 import { put, call } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import { api } from "API/start";
+import { api } from "api";
 import * as a from "./actions";
 import * as t from "./actionTypes";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";

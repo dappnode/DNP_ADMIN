@@ -10,7 +10,7 @@ import resolveEns from "./sagaUtils/resolveEns";
 import apm from "./sagaUtils/apm";
 import connectToMetamask from "./sagaUtils/connectToMetamask";
 import executePublishTx from "./sagaUtils/executePublishTx";
-import { api } from "API/start";
+import { api } from "api";
 import { assertConnectionOpen } from "utils/redux";
 
 // getRegistry("dnp.dappnode.eth");

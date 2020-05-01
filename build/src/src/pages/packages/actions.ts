@@ -1,7 +1,7 @@
 // INSTALLER
 import { confirm } from "components/ConfirmDialog";
 import { shortNameCapitalized as sn } from "utils/format";
-import { api } from "API/start";
+import { api } from "api";
 import { ThunkAction } from "redux-thunk";
 import { AnyAction } from "redux";
 // Selectors

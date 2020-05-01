@@ -12,7 +12,7 @@ The administrative user interface allows users to control and monitor their DApp
 
 ## Admin UI <-> DAppNode communication
 
-The `src/API` handles the communication with the DAppNode's WAMP. It uses the [`autobahn`](https://github.com/crossbario/autobahn-js) library to connect to the DAppNode's `crossbar` instance. Typically actions cause a change in the destination DNP state which emits its new state through `crossbar`'s pubsub, so multiple instances of the admin console observe the same state.
+The `src/api` handles the communication with the DAppNode's WAMP. It uses the [`autobahn`](https://github.com/crossbario/autobahn-js) library to connect to the DAppNode's `crossbar` instance. Typically actions cause a change in the destination DNP state which emits its new state through `crossbar`'s pubsub, so multiple instances of the admin console observe the same state.
 
 ## General developer / style notes
 

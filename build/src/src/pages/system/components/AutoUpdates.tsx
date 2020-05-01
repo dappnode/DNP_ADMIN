@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { api } from "API/start";
+import { api } from "api";
 // Components
 import Card from "components/Card";
 import Alert from "react-bootstrap/Alert";

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { api } from "API/start";
+import { api } from "api";
 import { confirm } from "components/ConfirmDialog";
 // Components
 import Card from "components/Card";

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import { api } from "API/start";
+import { api } from "api";
 import { confirm } from "components/ConfirmDialog";
 import { encrypt } from "utils/publicKeyEncryption";
 import { withToast } from "components/toast/Toast";

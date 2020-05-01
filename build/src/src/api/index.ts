@@ -1,5 +1,6 @@
 import autobahn from "autobahn";
 import { mapValues } from "lodash";
+import { wampUrl, wampRealm } from "params";
 import store from "../store";
 import { stringIncludes } from "utils/strings";
 // Transport
@@ -17,34 +18,30 @@ import {
   connectionClose
 } from "services/connectionStatus/actions";
 
-// Initalize app
-// Development
-// const url = 'ws://localhost:8080/ws';
-// const realm = 'realm1';
-// Produccion
-const url = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
-const realm = "dappnode_admin";
+const url = wampUrl;
+const realm = wampRealm;
 
-let sessionCache: autobahn.Session;
-
-export const getSession = (): autobahn.Session | undefined => sessionCache;
+let _session: autobahn.Session;
 
 export const api: Routes = mapValues(routesData, (data, route) => {
   return async function(...args: any[]) {
-    const session = getSession();
     // If session is not available, fail gently
-    if (!session) throw Error("Session object is not defined");
-    if (!session.isOpen) throw Error("Connection is not open");
+    if (!_session) throw Error("Session object is not defined");
+    if (!_session.isOpen) throw Error("Connection is not open");
 
-    return await callRoute<any>(session, route, args);
+    return await callRoute<any>(_session, route, args);
   };
 });
 
+/**
+ * Connect to the WAMP with an autobahn client
+ * Store the session and map subscriptions
+ */
 export function start() {
   const connection = new autobahn.Connection({ url, realm });
 
   connection.onopen = session => {
-    sessionCache = session;
+    _session = session;
     store.dispatch(connectionOpen({ session }));
     console.log("CONNECTED to \nurl: " + url + " \nrealm: " + realm);
     // Start subscriptions
