@@ -1,11 +1,10 @@
 import React from "react";
-import PropTypes from "prop-types";
 import DataList from "./DataList";
 import { Soft } from "./Soft";
 import { prettyVolumeName, prettyBytes } from "utils/format";
 import { PackageContainer } from "types";
 
-function Vols({
+export default function Vols({
   dnp,
   volumesDetail
 }: {
@@ -62,17 +61,3 @@ function Vols({
     />
   );
 }
-
-Vols.propTypes = {
-  dnp: PropTypes.shape({
-    volumes: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        container: PropTypes.string,
-        size: PropTypes.number
-      })
-    ).isRequired
-  }).isRequired
-};
-
-export default Vols;

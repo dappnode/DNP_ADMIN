@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { api } from "api";
 import { confirm } from "components/ConfirmDialog";
 // Components
@@ -17,7 +16,13 @@ import { withToast } from "components/toast/Toast";
 const baseUrlUpload = "http://my.dappmanager.dnp.dappnode.eth:3000/upload";
 const baseUrlDownload = "http://my.dappmanager.dnp.dappnode.eth:3000/download";
 
-function Backup({ id, backup }: { id: string; backup: PackageBackup[] }) {
+export default function Backup({
+  id,
+  backup
+}: {
+  id: string;
+  backup: PackageBackup[];
+}) {
   const [progress, setProgress] = useState<{
     label: string;
     percent?: number;
@@ -196,11 +201,3 @@ function Backup({ id, backup }: { id: string; backup: PackageBackup[] }) {
     </Card>
   );
 }
-
-Backup.propTypes = {
-  dnp: PropTypes.shape({
-    name: PropTypes.string.isRequired
-  }).isRequired
-};
-
-export default Backup;

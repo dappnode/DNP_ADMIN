@@ -2,7 +2,6 @@ import React from "react";
 import Input from "components/Input";
 import Select from "components/Select";
 import Button from "components/Button";
-import PropTypes from "prop-types";
 import { MdClose } from "react-icons/md";
 import "./tableInputs.scss";
 
@@ -25,7 +24,7 @@ type TableInputColumnProps = any;
  * many components re-rendering uselessly
  */
 
-function TableInputs({
+export default function TableInputs({
   headers,
   content,
   numOfRows = 2,
@@ -91,10 +90,3 @@ function TableInputs({
     </div>
   );
 }
-
-TableInputs.propTypes = {
-  headers: PropTypes.array.isRequired,
-  content: PropTypes.arrayOf(PropTypes.array).isRequired
-};
-
-export default TableInputs;

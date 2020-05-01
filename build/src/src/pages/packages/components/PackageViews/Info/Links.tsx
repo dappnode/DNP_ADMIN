@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import DataList from "./DataList";
 // Utils
 import newTabProps from "utils/newTabProps";
@@ -10,7 +9,7 @@ interface ManifestLegacyWithHomepage extends Manifest {
   homepage?: { [linkName: string]: string };
 }
 
-function Links({ dnp }: { dnp: PackageContainer }) {
+export default function Links({ dnp }: { dnp: PackageContainer }) {
   // In the manifest, homepage = {userui: "http://some.link"}
   const manifest = (dnp.manifest
     ? dnp.manifest
@@ -69,9 +68,3 @@ function Links({ dnp }: { dnp: PackageContainer }) {
     />
   );
 }
-
-Links.propTypes = {
-  dnp: PropTypes.object.isRequired
-};
-
-export default Links;
