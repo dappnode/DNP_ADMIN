@@ -1,5 +1,0 @@
-// Service > userActionLogs
-
-export const UPDATE_USER_ACTION_LOGS = "UPDATE_USER_ACTION_LOGS";
-export const PUSH_USER_ACTION_LOG = "PUSH_USER_ACTION_LOG";
-export const FETCH_USER_ACTION_LOGS = "FETCH_USER_ACTION_LOGS";

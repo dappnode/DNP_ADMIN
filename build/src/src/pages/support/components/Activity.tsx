@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { getUserActionLogs } from "services/userActionLogs/selectors";
+import { UserActionLogWithCount } from "types";
 // Components
 import CardList from "components/CardList";
 // Utils
@@ -13,13 +14,18 @@ import "./activity.css";
 
 const badgeClass = "badge badge-pill badge-";
 
-function parseLevel(level) {
+function parseLevel(level: "error" | "warn" | "info"): string {
   if (level === "error") return "danger";
   if (level === "warn") return "warning";
   if (level === "info") return "success";
+  return "";
 }
 
-function Activity({ userActionLogs }) {
+function Activity({
+  userActionLogs
+}: {
+  userActionLogs: UserActionLogWithCount[];
+}) {
   // Force a re-render every 15 seconds for the timeFrom to show up correctly
   const [, setClock] = useState(0);
   useEffect(() => {
@@ -34,9 +40,11 @@ function Activity({ userActionLogs }) {
       "data:text/json;charset=utf-8," +
       encodeURIComponent(JSON.stringify(userActionLogs, null, 2));
     var dlAnchorElem = document.getElementById("downloadAnchorElem");
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", "DAppNodeLogs.json");
-    dlAnchorElem.click();
+    if (dlAnchorElem) {
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", "DAppNodeLogs.json");
+      dlAnchorElem.click();
+    }
   }
 
   return (
@@ -63,7 +71,7 @@ function Activity({ userActionLogs }) {
   );
 }
 
-function ActivityItem({ log }) {
+function ActivityItem({ log }: { log: UserActionLogWithCount }) {
   const [collapsed, setCollapsed] = useState(true);
 
   const type = parseLevel(log.level);
@@ -80,7 +88,7 @@ function ActivityItem({ log }) {
           {/* Top row - left */}
           <div className="log-header">
             {/* Error badge */}
-            {log.level === "warn" || log.level === "error" ? (
+            {log.level === "error" ? (
               <span className={badgeClass + type}>{log.level}</span>
             ) : null}
             {/* Count badge */}

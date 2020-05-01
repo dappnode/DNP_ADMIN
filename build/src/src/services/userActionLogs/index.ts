@@ -1,4 +1,3 @@
-import * as actionTypes from "./actionTypes";
 import * as actions from "./actions";
 import * as selectors from "./selectors";
 import reducer from "./reducer";
@@ -16,7 +15,6 @@ import { mountPoint } from "./data";
 
 export default {
   mountPoint,
-  actionTypes,
   actions,
   selectors,
   reducer,
