@@ -65,29 +65,6 @@ const fetchDappnodeDiagnose = wrapErrorsAndLoading(
 );
 
 /**
- * Calls each DNP's WAMP method `ping`
- * - If the ping succeeds, returns the DNP versionData
- * - On error, returns null
- * Should never throw
- */
-const pingDappnodeDnps = wrapErrorsAndLoading(
-  loadingIds.pingDappnodeDnps,
-  function*() {
-    // yield call(assertConnectionOpen);
-    // for (const dnp of ["dappmanager", "vpn"]) {
-    //   try {
-    //     yield call(apiOld[dnp].ping, { test: "test-ping" });
-    //     // If the previous call does not throw, the ping was successful
-    //     yield put(a.updatePingReturn(dnp, true));
-    //   } catch (e) {
-    //     console.error(`Error on pingDappnodeDnps/${dnp}: ${e.stack}`);
-    //     yield put(a.updatePingReturn(dnp, false));
-    //   }
-    // }
-  }
-);
-
-/**
  * Calls checkIpfsConnection: Attempts to cat a common IPFS hash
  * - If the cat succeeds, returns { resolves: true }
  * - On error, returns { resolves: false, error: e.message }
@@ -173,7 +150,6 @@ function* fetchAllDappnodeStatus() {
       call(fetchDappnodeStats),
       call(fetchVpnVersionData),
       call(fetchDappnodeDiagnose),
-      call(pingDappnodeDnps),
       call(checkIpfsConnectionStatus),
       call(checkWifiStatus),
       call(checkIfPasswordIsInsecure),
@@ -198,6 +174,5 @@ export default rootWatcher([
   [t.FETCH_DAPPNODE_STATS, fetchDappnodeStats],
   [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],
   [t.FETCH_IF_PASSWORD_IS_INSECURE, checkIfPasswordIsInsecure],
-  [t.FETCH_MOUNTPOINTS, fetchMountpointData],
-  [t.PING_DAPPNODE_DNPS, pingDappnodeDnps]
+  [t.FETCH_MOUNTPOINTS, fetchMountpointData]
 ]);

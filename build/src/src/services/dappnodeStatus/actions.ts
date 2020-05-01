@@ -27,12 +27,6 @@ export const updateDappnodeDiagnose = (diagnose: Diagnose) => ({
   diagnose
 });
 
-export const updatePingReturn = (dnp: string, pingReturn: boolean) => ({
-  type: t.UPDATE_PING_RETURN,
-  dnp,
-  pingReturn
-});
-
 export const updateIpfsConnectionStatus = (ipfsConnectionStatus: {
   resolves: boolean;
   error?: string;

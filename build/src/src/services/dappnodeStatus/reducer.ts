@@ -9,7 +9,6 @@ const initialState: DappnodeStatusState = {
   systemInfo: null,
   stats: {},
   diagnose: [],
-  pingReturns: {},
   ipfsConnectionStatus: {},
   wifiStatus: {},
   passwordIsInsecure: false,
@@ -36,16 +35,6 @@ export default function(state = initialState, action: any) {
       return merge(state, {
         diagnose: arrayToObj(action.diagnose, "name")
       });
-
-    case t.UPDATE_PING_RETURN:
-      // pingReturn can be an Object, String or null
-      return {
-        ...state,
-        pingReturns: {
-          ...state.pingReturns,
-          [action.dnp]: action.pingReturn
-        }
-      };
 
     case t.UPDATE_IPFS_CONNECTION_STATUS:
       return {

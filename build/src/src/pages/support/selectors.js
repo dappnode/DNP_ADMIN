@@ -7,8 +7,6 @@ import {
   getDappnodeDiagnose,
   getDappmanagerVersionData,
   getVpnVersionData,
-  getDappmanagerPing,
-  getVpnPing,
   getIpfsConnectionStatus
 } from "services/dappnodeStatus/selectors";
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
@@ -71,46 +69,6 @@ const getDiagnoseNoNatLoopback = onlyIfConnectionIsOpen(
         : "NAT loopback enabled, external IP resolves",
       solutions: [
         `Please use the internal IP: ${internalIp} when you are in the same network as your DAppNode`
-      ]
-    })
-  )
-);
-
-const getDiagnoseDappmanagerConnected = onlyIfConnectionIsOpen(
-  createSelector(
-    getDappmanagerPing,
-    getIsLoading.pingDappnodeDnps,
-    (ok, loading) => ({
-      loading,
-      ok,
-      msg: loading
-        ? "Checking if DAPPMANAGER is connected"
-        : ok
-        ? "DAPPMANAGER is connected"
-        : "DAPPMANAGER is not connected",
-      solutions: [
-        "Close your VPN connection and connect again",
-        "If the problem persists, reset the DAppNode machine"
-      ]
-    })
-  )
-);
-
-const getDiagnoseVpnConnected = onlyIfConnectionIsOpen(
-  createSelector(
-    getVpnPing,
-    getIsLoading.pingDappnodeDnps,
-    (ok, loading) => ({
-      loading,
-      ok,
-      msg: loading
-        ? "Checking if VPN is connected"
-        : ok
-        ? "VPN is connected"
-        : "VPN is not connected",
-      solutions: [
-        "Close your VPN connection and connect again",
-        "If the problem persists, reset the DAppNode machine"
       ]
     })
   )
@@ -205,8 +163,6 @@ export const getDiagnoses = createSelector(
     getDiagnoseConnection,
     getDiagnoseOpenPorts,
     getDiagnoseNoNatLoopback,
-    getDiagnoseDappmanagerConnected,
-    getDiagnoseVpnConnected,
     getDiagnoseIpfs,
     getDiagnoseDiskSpace,
     getDiagnoseCoreDnpsRunning

@@ -12,7 +12,6 @@ export const getSystemInfo = (state: any) => getLocal(state).systemInfo;
 export const getDappnodeParams = (state: any) => getSystemInfo(state) || {};
 export const getDappnodeStats = (state: any) => getLocal(state).stats;
 export const getDappnodeDiagnose = (state: any) => getLocal(state).diagnose;
-export const getPing = (state: any) => getLocal(state).pingReturns;
 export const getVersionData = (state: any) =>
   (getLocal(state).systemInfo || {}).versionData;
 export const getIpfsConnectionStatus = (state: any) =>
@@ -31,8 +30,6 @@ export const getDappmanagerVersionData = (state: any) =>
   (getSystemInfo(state) || {}).versionData;
 export const getVpnVersionData = (state: any) =>
   (getSystemInfo(state) || {}).versionDataVpn;
-export const getDappmanagerPing = (state: any) => getPing(state).dappmanager;
-export const getVpnPing = (state: any) => getPing(state).vpn;
 export const getEthClientTarget = (state: any) =>
   (getSystemInfo(state) || {}).ethClientTarget;
 export const getEthClientFallback = (state: any) =>

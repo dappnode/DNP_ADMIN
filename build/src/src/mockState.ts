@@ -742,7 +742,6 @@ const dappnodeStatusState: DappnodeStatusState = {
     memory: "45%"
   },
   diagnose: [],
-  pingReturns: {},
   ipfsConnectionStatus: {},
   wifiStatus: { running: true },
   passwordIsInsecure: true,
