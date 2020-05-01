@@ -1,7 +1,8 @@
 import { mountPoint } from "./data";
-import { PackageNotification } from "types";
+import { NotificationsState } from "./types";
 
 // Service > notifications
 
-export const getNotifications = (state: any): PackageNotification[] =>
-  Object.values(state[mountPoint] || {});
+const getLocal = (state: any): NotificationsState => state[mountPoint];
+
+export const getNotifications = (state: any) => Object.values(getLocal(state));

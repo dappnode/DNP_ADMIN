@@ -420,6 +420,10 @@ export interface PackageNotification {
   title: string; // "Some notification"
   body: string; // "Some text about notification"
 }
+export interface PackageNotificationDb extends PackageNotification {
+  timestamp: number;
+  viewed: boolean;
+}
 
 export type UpdateType = "major" | "minor" | "patch" | null;
 

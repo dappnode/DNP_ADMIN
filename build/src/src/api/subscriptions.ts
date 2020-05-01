@@ -2,7 +2,7 @@ import store from "../store";
 import autobahn from "autobahn";
 import { Subscriptions } from "../common/subscriptions";
 // Actions to push received content
-import { pushNotificationFromDappmanager } from "services/notifications/actions";
+import { pushNotification } from "services/notifications/actions";
 import { updateChainData } from "services/chainData/actions";
 import { updateDevices } from "services/devices/actions";
 import { pushUserActionLog } from "services/userActionLogs/actions";
@@ -42,7 +42,7 @@ export function mapSubscriptionsToRedux(subscriptions: Subscriptions): void {
   });
 
   subscriptions.pushNotification.on(notification => {
-    store.dispatch(pushNotificationFromDappmanager(notification));
+    store.dispatch(pushNotification(notification));
   });
 
   subscriptions.systemInfo.on(systemInfo => {
