@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import apiUntyped from "API/rpcMethods";
+import { api } from "api";
 import { wifiName, wifiEnvSSID, wifiEnvWPA_PASSPHRASE } from "params";
 // Components
 import Card from "components/Card";
@@ -11,8 +11,7 @@ import Switch from "components/Switch";
 // Style
 import "./changeHostUserPassword.scss";
 import { getWifiCredentials } from "services/dnpInstalled/selectors";
-
-const api: any = apiUntyped;
+import { withToast } from "components/toast/Toast";
 
 function ChangeWifiPassword({
   wifiCredentials
@@ -55,21 +54,21 @@ function ChangeWifiPassword({
     errors.length > 0 ||
     errorsConfirm.length > 0;
 
-  const update = () => {
+  async function update() {
     const envs = {
       [wifiEnvSSID]: ssid,
       [wifiEnvWPA_PASSPHRASE]: password
     };
     if (!invalid)
-      api
-        .updatePackageEnv(
-          { id: wifiName, envs, restart: true },
-          { toastMessage: `Changing WIFI credentials...` }
-        )
-        .catch((e: Error) => {
-          console.error(`Error on api.updatePackageEnv`, e);
+      try {
+        await withToast(() => api.updatePackageEnv({ id: wifiName, envs }), {
+          message: "Changing WIFI credentials...",
+          onSuccess: "Changed WIFI credentials"
         });
-  };
+      } catch (e) {
+        console.error("Error on api.updatePackageEnv", e);
+      }
+  }
 
   return (
     <Card spacing>

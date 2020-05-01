@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import * as api from "API/calls";
+import { api } from "api";
 import Card from "components/Card";
 import Button from "components/Button";
 import {
@@ -17,6 +17,7 @@ import {
 } from "services/dappnodeStatus/selectors";
 import { changeEthClientTarget } from "pages/system/actions";
 import Alert from "react-bootstrap/Alert";
+import { withToast } from "components/toast/Toast";
 
 function Repository({
   // Redux
@@ -42,10 +43,15 @@ function Repository({
     if (target) changeEthClientTarget(target);
   }
 
-  function changeFallback(newFallback: EthClientFallback) {
-    api
-      .ethClientFallbackSet({ fallback: newFallback }, { toastOnError: true })
-      .catch(e => console.log("Error on ethClientFallbackSet", e));
+  async function changeFallback(newFallback: EthClientFallback) {
+    try {
+      await withToast(
+        () => api.ethClientFallbackSet({ fallback: newFallback }),
+        { onError: true }
+      );
+    } catch (e) {
+      console.log("Error on ethClientFallbackSet", e);
+    }
   }
 
   /**

@@ -1,6 +1,6 @@
 import { ThunkAction } from "redux-thunk";
 import { AnyAction } from "redux";
-import * as api from "API/calls";
+import { api } from "api";
 import { RequestedDnp, RequestStatus } from "types";
 import {
   UpdateDnpRequest,

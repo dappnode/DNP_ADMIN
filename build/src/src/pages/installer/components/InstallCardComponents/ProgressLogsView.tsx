@@ -36,7 +36,7 @@ function ProgressLogsView({
         .filter(([dnpName]) => dnpName !== "core.dnp.dappnode.eth")
         .map(([dnpName, log = ""]) => {
           const percent = parsePercent(log);
-          const progressing = percent || stringIncludes(log, "...");
+          const progressing = Boolean(percent) || stringIncludes(log, "...");
           return (
             <div key={dnpName} className="row">
               <div className="col-6 text-truncate">

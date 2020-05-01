@@ -5,7 +5,7 @@ import { EthMultiClientsAndFallback } from "components/EthMultiClient";
 import { EthClientTarget, EthClientFallback } from "types";
 import { getEthClientTarget } from "services/dappnodeStatus/selectors";
 import BottomButtons from "../BottomButtons";
-import * as api from "API/calls";
+import { api } from "api";
 
 /**
  * View to chose or change the Eth multi-client

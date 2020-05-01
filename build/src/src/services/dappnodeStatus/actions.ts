@@ -5,8 +5,7 @@ import {
   Diagnose,
   AutoUpdateDataView,
   MountpointData,
-  VolumeData,
-  PackageVersionData
+  VolumeData
 } from "types";
 
 // Service > dappnodeStatus
@@ -18,11 +17,6 @@ export const setSystemInfo = (systemInfo: SystemInfo) => ({
   systemInfo
 });
 
-export const updateVpnVersionData = (vpnVersionData: PackageVersionData) => ({
-  type: t.UPDATE_VPN_VERSION_DATA,
-  vpnVersionData
-});
-
 export const updateDappnodeStats = (stats: HostStats) => ({
   type: t.UPDATE_DAPPNODE_STATS,
   stats
@@ -31,12 +25,6 @@ export const updateDappnodeStats = (stats: HostStats) => ({
 export const updateDappnodeDiagnose = (diagnose: Diagnose) => ({
   type: t.UPDATE_DAPPNODE_DIAGNOSE,
   diagnose
-});
-
-export const updatePingReturn = (dnp: string, pingReturn: boolean) => ({
-  type: t.UPDATE_PING_RETURN,
-  dnp,
-  pingReturn
 });
 
 export const updateIpfsConnectionStatus = (ipfsConnectionStatus: {

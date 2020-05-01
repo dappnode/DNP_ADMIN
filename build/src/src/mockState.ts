@@ -705,6 +705,11 @@ const dappnodeStatusState: DappnodeStatusState = {
       commit: "a5a5a5a5",
       version: "0.2.0"
     },
+    versionDataVpn: {
+      branch: "test",
+      commit: "a8a8a8a8",
+      version: "0.2.1"
+    },
     ip: "85.84.83.82",
     name: "My-DAppNode",
     staticIp: "", // "85.84.83.82",
@@ -736,13 +741,7 @@ const dappnodeStatusState: DappnodeStatusState = {
     disk: "96%",
     memory: "45%"
   },
-  vpnVersionData: {
-    branch: "test",
-    commit: "a5a5a5a5",
-    version: "0.2.0"
-  },
   diagnose: [],
-  pingReturns: {},
   ipfsConnectionStatus: {},
   wifiStatus: { running: true },
   passwordIsInsecure: true,

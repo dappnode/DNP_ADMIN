@@ -3,9 +3,9 @@ import onEnterKey from "utils/onEnterKey";
 import "./input.css";
 
 interface InputProps {
-  onEnterPress: () => void;
+  onEnterPress?: () => void;
   onValueChange: (value: string) => void;
-  value: string;
+  value: string | number;
   lock?: boolean;
   isInvalid?: boolean;
   prepend?: string | React.ReactElement;
@@ -17,7 +17,7 @@ interface InputProps {
 const Input: React.FunctionComponent<
   InputProps & React.HTMLAttributes<HTMLInputElement>
 > = ({
-  onEnterPress,
+  onEnterPress = () => {},
   onValueChange,
   value,
   lock,

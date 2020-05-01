@@ -9,8 +9,6 @@ const initialState: DappnodeStatusState = {
   systemInfo: null,
   stats: {},
   diagnose: [],
-  vpnVersionData: {},
-  pingReturns: {},
   ipfsConnectionStatus: {},
   wifiStatus: {},
   passwordIsInsecure: false,
@@ -33,26 +31,10 @@ export default function(state = initialState, action: any) {
         stats: action.stats
       };
 
-    case t.UPDATE_VPN_VERSION_DATA:
-      return {
-        ...state,
-        stats: action.vpnVersionData
-      };
-
     case t.UPDATE_DAPPNODE_DIAGNOSE:
       return merge(state, {
         diagnose: arrayToObj(action.diagnose, "name")
       });
-
-    case t.UPDATE_PING_RETURN:
-      // pingReturn can be an Object, String or null
-      return {
-        ...state,
-        pingReturns: {
-          ...state.pingReturns,
-          [action.dnp]: action.pingReturn
-        }
-      };
 
     case t.UPDATE_IPFS_CONNECTION_STATUS:
       return {

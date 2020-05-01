@@ -1,6 +1,6 @@
 import { put, call, select } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
-import * as api from "API/calls";
+import { api } from "api";
 import { loadingId, coreName } from "./data";
 // Actions
 import {
@@ -14,6 +14,7 @@ import { CoreUpdateData } from "types";
 import { UPDATE_CORE } from "./types";
 import { updateCoreUpdateData, updateUpdatingCore } from "./actions";
 import { getUpdatingCore } from "./selectors";
+import { withToast } from "components/toast/Toast";
 
 // Service > coreUpdate
 
@@ -96,15 +97,20 @@ function* updateCore() {
     // blacklist the current package
     yield put(updateUpdatingCore(true));
 
-    yield call(
-      api.installPackage,
-      {
-        name: coreName,
-        version: coreVersion,
-        options: { BYPASS_CORE_RESTRICTION: true, BYPASS_RESOLVER: true }
-      },
-      { toastMessage: "Updating DAppNode core..." }
-    );
+    yield call(async function() {
+      await withToast(
+        () =>
+          api.installPackage({
+            name: coreName,
+            version: coreVersion,
+            options: { BYPASS_CORE_RESTRICTION: true, BYPASS_RESOLVER: true }
+          }),
+        {
+          message: "Updating DAppNode core...",
+          onSuccess: "Updated DAppNode core"
+        }
+      );
+    });
     // Remove package from blacklist
     yield put(updateUpdatingCore(false));
 

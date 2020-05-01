@@ -1,5 +1,5 @@
 import { put, call } from "redux-saga/effects";
-import * as api from "API/calls";
+import { api } from "api";
 import { CONNECTION_OPEN } from "services/connectionStatus/actionTypes";
 import { rootWatcher } from "utils/redux";
 import { updateStatus, setDnpInstalled } from "./actions";
@@ -9,7 +9,7 @@ import { updateStatus, setDnpInstalled } from "./actions";
 function* fetchDnpInstalled() {
   try {
     yield put(updateStatus({ loading: true }));
-    const dnpInstalled = yield call(api.listPackages, {});
+    const dnpInstalled = yield call(api.listPackages);
     yield put(setDnpInstalled(dnpInstalled));
     yield put(updateStatus({ loading: false, success: true }));
   } catch (e) {

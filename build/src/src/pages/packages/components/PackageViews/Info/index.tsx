@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import * as api from "API/calls";
+import { api } from "api";
 // Components
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";

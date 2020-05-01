@@ -6,7 +6,7 @@ import { HashRouter as Router } from "react-router-dom";
 
 import store from "./store";
 import App from "./App";
-import api from "./API";
+import * as api from "./api";
 import { cleanObj } from "utils/objects";
 
 // Init css

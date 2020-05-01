@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 // This module
 import Info from "./PackageViews/Info";
-import DnpSpecific, { dnpSpecificList } from "./PackageViews/DnpSpecific";
+import { dnpSpecificList, dnpSpecific } from "./PackageViews/DnpSpecific";
 import Logs from "./PackageViews/Logs";
 import Config from "./PackageViews/Config";
 import Ports from "./PackageViews/Ports";
@@ -53,6 +53,9 @@ const PackageInterface = ({
     return <Error msg={`Unknown error, package not found`} />;
   }
 
+  const DnpSpecific = dnpSpecific[dnp.name];
+  const backup = (dnp.manifest || {}).backup || [];
+
   /**
    * Construct all subroutes to iterate them both in:
    * - Link (to)
@@ -92,13 +95,13 @@ const PackageInterface = ({
     {
       name: "Backup",
       subPath: "backup",
-      render: () => <Backup dnp={dnp} />,
-      available: ((dnp.manifest || {}).backup || []).length
+      render: () => <Backup id={dnp.name} backup={backup} />,
+      available: backup.length > 0
     },
     {
       name: "File Manager",
       subPath: "file-manager",
-      render: ({ ...props }) => <FileManager {...props} dnp={dnp} />,
+      render: ({ ...props }) => <FileManager {...props} id={dnp.name} />,
       available: true
     },
     // DnpSpecific is a variable dynamic per DNP component
@@ -112,7 +115,7 @@ const PackageInterface = ({
           .replace(new RegExp(" ", "g"), "-")
       ),
       render: () => <DnpSpecific dnp={dnp} />,
-      available: dnpSpecificList[dnp.name]
+      available: DnpSpecific && dnpSpecificList[dnp.name]
     }
   ].filter(route => route.available);
 

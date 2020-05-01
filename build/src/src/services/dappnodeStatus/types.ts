@@ -4,8 +4,7 @@ import {
   Diagnose,
   MountpointData,
   VolumeData,
-  AutoUpdateDataView,
-  PackageVersionData
+  AutoUpdateDataView
 } from "types";
 
 // Service > dappnodeStatus
@@ -14,10 +13,6 @@ export interface DappnodeStatusState {
   systemInfo: SystemInfo | null;
   stats: HostStats;
   diagnose: Diagnose;
-  vpnVersionData: PackageVersionData;
-  pingReturns: {
-    [dnpName: string]: boolean;
-  };
   ipfsConnectionStatus: {
     resolves?: boolean;
     error?: string;
@@ -32,9 +27,7 @@ export interface DappnodeStatusState {
 // Update: triggers a reducer
 export const UPDATE_DAPPNODE_PARAMS = "UPDATE_DAPPNODE_PARAMS";
 export const UPDATE_DAPPNODE_STATS = "UPDATE_DAPPNODE_STATS";
-export const UPDATE_VPN_VERSION_DATA = "UPDATE_VPN_VERSION_DATA";
 export const UPDATE_DAPPNODE_DIAGNOSE = "UPDATE_DAPPNODE_DIAGNOSE";
-export const UPDATE_PING_RETURN = "UPDATE_PING_RETURN";
 export const UPDATE_IPFS_CONNECTION_STATUS = "UPDATE_IPFS_CONNECTION_STATUS";
 export const UPDATE_WIFI_STATUS = "UPDATE_WIFI_STATUS";
 export const UPDATE_PASSWORD_IS_INSECURE = "UPDATE_PASSWORD_IS_INSECURE";
@@ -50,4 +43,3 @@ export const FETCH_DAPPNODE_STATS = "FETCH_DAPPNODE_STATS";
 export const FETCH_DAPPNODE_DIAGNOSE = "FETCH_DAPPNODE_DIAGNOSE";
 export const FETCH_IF_PASSWORD_IS_INSECURE = "FETCH_IF_PASSWORD_IS_INSECURE";
 export const FETCH_MOUNTPOINTS = "FETCH_MOUNTPOINTS";
-export const PING_DAPPNODE_DNPS = "PING_DAPPNODE_DNPS";

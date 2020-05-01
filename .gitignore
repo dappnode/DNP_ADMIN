@@ -20,6 +20,9 @@ build/src*/dist
 build/src/dist/
 build_*/
 
+# Built schemas
+build/src/src/common/schemas
+
 # misc
 .DS_Store
 .env.local

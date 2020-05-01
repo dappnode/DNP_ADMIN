@@ -10,7 +10,7 @@ import resolveEns from "./sagaUtils/resolveEns";
 import apm from "./sagaUtils/apm";
 import connectToMetamask from "./sagaUtils/connectToMetamask";
 import executePublishTx from "./sagaUtils/executePublishTx";
-import APIcall from "API/rpcMethods";
+import { api } from "api";
 import { assertConnectionOpen } from "utils/redux";
 
 // getRegistry("dnp.dappnode.eth");
@@ -171,7 +171,7 @@ const inputHanlders = {
   manifestIpfsHash: function* onUpdateQueryManifestIpfsHash({ id, value }) {
     try {
       yield call(assertConnectionOpen);
-      const res = yield call(APIcall.fetchPackageData, { id: value });
+      const res = yield call(api.fetchPackageData, { id: value });
       if (res.success && res.result && res.result.manifest) {
         const manifest = (res.result || {}).manifest;
         yield put(a.updateQueryResult("manifest", { hash: value, manifest }));

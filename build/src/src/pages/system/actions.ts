@@ -1,6 +1,5 @@
-import * as t from "./actionTypes";
 import { confirm } from "components/ConfirmDialog";
-import * as api from "API/calls";
+import { api } from "api";
 import { ThunkAction } from "redux-thunk";
 import { AnyAction } from "redux";
 import { shortNameCapitalized, prettyVolumeName } from "utils/format";
@@ -11,13 +10,7 @@ import { fetchIfPasswordIsInsecure } from "services/dappnodeStatus/actions";
 import { getDnpInstalledById } from "services/dnpInstalled/selectors";
 import { getEthClientTarget } from "services/dappnodeStatus/selectors";
 import { EthClientTarget } from "types";
-
-// pages > system
-
-export const setStaticIp = (staticIp: string) => ({
-  type: t.SET_STATIC_IP,
-  staticIp
-});
+import { withToast } from "components/toast/Toast";
 
 // Redux Thunk actions
 
@@ -52,12 +45,17 @@ export const changeEthClientTarget = (
         )
       : false;
 
-  await api
-    .ethClientTargetSet(
-      { target: nextTarget, deleteVolumes },
-      { toastMessage: "Changing Eth client..." }
-    )
-    .catch(console.error);
+  try {
+    await withToast(
+      () => api.ethClientTargetSet({ target: nextTarget, deleteVolumes }),
+      {
+        message: "Changing Eth client...",
+        onSuccess: `Changed Eth client`
+      }
+    );
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 export const passwordChangeInBackground = (
@@ -82,10 +80,10 @@ export const passwordChange = (
     })
   );
 
-  await api.passwordChange(
-    { newPassword },
-    { toastMessage: `Changing host user password...` }
-  );
+  await withToast(() => api.passwordChange({ newPassword }), {
+    message: `Changing host user password...`,
+    onSuccess: `Changed host user password`
+  });
 
   dispatch(fetchIfPasswordIsInsecure());
 };
@@ -104,7 +102,10 @@ export const volumeRemove = (
     })
   );
 
-  await api.volumeRemove({ name }, { toastMessage: `Removing volume...` });
+  await withToast(() => api.volumeRemove({ name }), {
+    message: `Removing volume...`,
+    onSuccess: `Removed volume`
+  });
 };
 
 export const packageVolumeRemove = (
@@ -150,8 +151,11 @@ export const packageVolumeRemove = (
     })
   );
 
-  await api.restartPackageVolumes(
-    { id: dnpName, volumeId: volName },
-    { toastMessage: `Removing ${prettyVolRef}...` }
+  await withToast(
+    () => api.restartPackageVolumes({ id: dnpName, volumeId: volName }),
+    {
+      message: `Removing ${prettyVolRef}...`,
+      onSuccess: `Removed ${prettyVolRef}`
+    }
   );
 };
