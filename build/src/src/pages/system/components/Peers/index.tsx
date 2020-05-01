@@ -3,8 +3,9 @@ import React from "react";
 import SubTitle from "components/SubTitle";
 import AddIpfsPeer from "./AddIpfsPeer";
 import ShareIpfsPeer from "./ShareIpfsPeer";
+import { RouteComponentProps } from "react-router-dom";
 
-function Peers({ location, match }) {
+const Peers: React.FC<RouteComponentProps> = ({ location, match }) => {
   const peerFromUrl = getPeerFromUrl(location.pathname, match.url);
   return (
     <>
@@ -14,16 +15,16 @@ function Peers({ location, match }) {
       <AddIpfsPeer peerFromUrl={peerFromUrl} />
     </>
   );
-}
+};
 
 // Utils
 
 /**
  * Parses the peer from the trailing part of the URL
- * @param {string} pathname "/system/add-ipfs-peer/%2Fdns4%2F4b62acf"
- * @param {string} matchedUrl "/system/add-ipfs-peer"
+ * @param pathname "/system/add-ipfs-peer/%2Fdns4%2F4b62acf"
+ * @param matchedUrl "/system/add-ipfs-peer"
  */
-function getPeerFromUrl(pathname, matchedUrl) {
+function getPeerFromUrl(pathname: string, matchedUrl: string): string {
   if (!pathname.includes(matchedUrl)) return "";
   const trailing = pathname.split(matchedUrl)[1];
   // remove first and last slash, and decode

@@ -43,9 +43,15 @@ const ErrMsg = styled.div`
   color: var(--danger-color);
 `;
 
-function ShareIpfsPeer({ dappnodeParams, matchUrl }) {
-  const { staticIp, domain } = dappnodeParams || {};
-
+function ShareIpfsPeer({
+  staticIp,
+  domain,
+  matchUrl
+}: {
+  staticIp?: string;
+  domain?: string;
+  matchUrl: string;
+}) {
   const [peerId, setPeerId] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -98,8 +104,9 @@ function ShareIpfsPeer({ dappnodeParams, matchUrl }) {
         <>
           {origin && peerId ? (
             <Input
-              disabled={true}
+              lock={true}
               value={addMyPeerUrl}
+              onValueChange={() => {}}
               className="copy-input"
               append={
                 <Button
@@ -119,7 +126,7 @@ function ShareIpfsPeer({ dappnodeParams, matchUrl }) {
       ) : (
         <Ok
           loading={loading}
-          ok={peerId}
+          ok={Boolean(peerId)}
           msg={
             loading
               ? "Fetching peer ID..."
@@ -132,6 +139,8 @@ function ShareIpfsPeer({ dappnodeParams, matchUrl }) {
 }
 
 const mapStateToProps = createStructuredSelector({
+  staticIp: (state: any) => (getDappnodeParams(state) || {}).staticIp,
+  domain: (state: any) => (getDappnodeParams(state) || {}).domain,
   dappnodeParams: getDappnodeParams
 });
 

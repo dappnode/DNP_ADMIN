@@ -36,12 +36,19 @@ import { stringIncludes } from "utils/strings";
  * - /dnsaddr/
  */
 
-export default function AddIpfsPeer({ peerFromUrl }) {
+export default function AddIpfsPeer({ peerFromUrl }: { peerFromUrl: string }) {
   const [peerInput, setPeerInput] = useState("");
-  const [addStat, setAddStat] = useState({});
+  const [addStat, setAddStat] = useState<{
+    msg?: string;
+    ok?: boolean;
+    error?: boolean;
+    loading?: boolean;
+  }>({});
 
-  async function addSwarmConnection(peer) {
-    const res = await fetchJson(`${ipfsApiUrl}/swarm/connect?arg=${peer}`);
+  async function addSwarmConnection(peer: string) {
+    const res = await fetchJson<{ Type: string; Message: string }>(
+      `${ipfsApiUrl}/swarm/connect?arg=${peer}`
+    );
     if (res.Type === "error") {
       console.error(`Error on addSwarmConnection:`, res);
       if (stringIncludes(res.Message, "dial attempt failed"))
@@ -52,8 +59,10 @@ export default function AddIpfsPeer({ peerFromUrl }) {
     }
   }
 
-  async function addBootstrap(peer) {
-    const res = await fetchJson(`${ipfsApiUrl}/bootstrap/add?arg=${peer}`);
+  async function addBootstrap(peer: string) {
+    const res = await fetchJson<{ Peers: string[] }>(
+      `${ipfsApiUrl}/bootstrap/add?arg=${peer}`
+    );
     if (!(res.Peers || []).includes(peer)) {
       console.error(`Error on addBootstrap:`, res);
       throw Error(`Error adding bootstrap node`);
@@ -61,35 +70,20 @@ export default function AddIpfsPeer({ peerFromUrl }) {
   }
 
   const addIpfsPeer = useMemo(
-    () => async peer => {
+    () => async (peer: string) => {
       try {
         if (!peer) throw Error("Peer must be defined");
-        setAddStat(s => ({
-          ...s,
-          loading: true,
-          ok: false,
-          msg: "Connecting to peer..."
-        }));
+        setAddStat({ loading: true, msg: "Connecting to peer..." });
         await addSwarmConnection(peer);
-        setAddStat(s => ({
-          ...s,
-          loading: true,
-          ok: false,
-          msg: "Adding peer to boostrap list"
-        }));
+        setAddStat({ loading: true, msg: "Adding peer to boostrap list" });
         await addBootstrap(peer);
-        setAddStat(s => ({
-          ...s,
-          loading: false,
-          ok: true,
-          msg: "Successfully connected and saved peer"
-        }));
+        setAddStat({ ok: true, msg: "Successfully connected and saved peer" });
       } catch (e) {
         console.error(`Error on addIpfsPeer (${peer}): ${e.stack}`);
-        setAddStat(s => ({ ...s, loading: false, ok: false, msg: e.message }));
+        setAddStat({ error: true, msg: e.message });
       }
     },
-    []
+    [setAddStat]
   );
 
   useEffect(() => {
@@ -98,8 +92,6 @@ export default function AddIpfsPeer({ peerFromUrl }) {
       setPeerInput(peerFromUrl);
     }
   }, [peerFromUrl, addIpfsPeer]);
-
-  const { msg, ok, loading } = addStat;
 
   return (
     <>
@@ -114,25 +106,31 @@ export default function AddIpfsPeer({ peerFromUrl }) {
           value={peerInput}
           // Ensure id contains only alphanumeric characters
           onValueChange={value => {
-            setAddStat(s => ({ ...s, msg: null }));
+            setAddStat({});
             setPeerInput(value);
           }}
           onEnterPress={() => {
-            addIpfsPeer(peerInput);
+            if (!addStat.loading) addIpfsPeer(peerInput);
           }}
-          disabled={loading}
           append={
             <Button
               variant="dappnode"
               onClick={() => addIpfsPeer(peerInput)}
-              disabled={loading || !peerInput}
+              disabled={addStat.loading || !peerInput}
             >
               Add peer
             </Button>
           }
         />
 
-        {msg && <Ok {...{ msg, ok, loading }} style={{ marginTop: "1rem" }} />}
+        {addStat.msg && (
+          <Ok
+            msg={addStat.msg}
+            ok={addStat.ok}
+            loading={addStat.loading}
+            style={{ marginTop: "1rem" }}
+          />
+        )}
       </Card>
     </>
   );
@@ -142,9 +140,9 @@ export default function AddIpfsPeer({ peerFromUrl }) {
 
 /**
  * Fetch JSON data
- * @param {string} url
- * @returns {object}
+ * @param url
+ * @returns
  */
-function fetchJson(url) {
+async function fetchJson<R>(url: string): Promise<R> {
   return fetch(url).then(r => r.json());
 }

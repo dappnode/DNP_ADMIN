@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as a from "../../actions";
 // Components
@@ -10,7 +9,11 @@ import Switch from "components/Switch";
 // Style
 import "./changeHostUserPassword.scss";
 
-function ChangeHostUserPassword({ passwordChange }) {
+function ChangeHostUserPassword({
+  passwordChange
+}: {
+  passwordChange: (newPassword: string) => void;
+}) {
   const [input, setInput] = useState("");
   const [confirmInput, setConfirmInput] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -95,7 +98,11 @@ function ChangeHostUserPassword({ passwordChange }) {
 
         <span className="separator" />
         <div className="submit-buttons">
-          <Button variant="dappnode" disabled={invalid} onClick={update}>
+          <Button
+            variant="dappnode"
+            disabled={Boolean(invalid)}
+            onClick={update}
+          >
             Change
           </Button>
         </div>
@@ -103,10 +110,6 @@ function ChangeHostUserPassword({ passwordChange }) {
     </Card>
   );
 }
-
-ChangeHostUserPassword.propTypes = {
-  passwordChange: PropTypes.func.isRequired
-};
 
 // Container
 

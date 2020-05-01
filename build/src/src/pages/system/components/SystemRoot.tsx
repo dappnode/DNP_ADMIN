@@ -1,6 +1,12 @@
 import React from "react";
 import { title, subPaths } from "../data";
-import { Switch, Route, NavLink, Redirect } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  NavLink,
+  Redirect,
+  RouteComponentProps
+} from "react-router-dom";
 // Components
 import StaticIp from "./StaticIp";
 import AutoUpdates from "./AutoUpdates";
@@ -13,7 +19,9 @@ import Identity from "./Identity";
 import SystemInfo from "./SystemInfo";
 import Title from "components/Title";
 
-function SystemRoot({ match }) {
+const SystemRoot: React.FunctionComponent<RouteComponentProps> = ({
+  match
+}) => {
   /**
    * Construct all subroutes to iterate them both in:
    * - Link (to)
@@ -105,6 +113,6 @@ function SystemRoot({ match }) {
       </div>
     </>
   );
-}
+};
 
 export default SystemRoot;

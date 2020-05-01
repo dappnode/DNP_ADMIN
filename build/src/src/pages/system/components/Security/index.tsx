@@ -1,12 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 // Components
 import SubTitle from "components/SubTitle";
 import Card from "components/Card";
 import StatusIcon from "components/StatusIcon";
-import SeverityBadge from "./SeverityBadge";
+import SeverityBadge, { SeverityLevel } from "./SeverityBadge";
 import ChangeHostUserPassword from "./ChangeHostUserPassword";
 import ChangeWifiPassword from "./ChangeWifiPassword";
 // External
@@ -19,12 +18,24 @@ import "./security.scss";
 import { getAreWifiCredentialsDefault } from "services/dnpInstalled/selectors";
 import Ok from "components/Ok";
 
+interface SecurityIssue {
+  name: string;
+  severity: SeverityLevel;
+  component: React.FC;
+  isActive: boolean;
+  okMessage: string;
+}
+
 function SystemSecurity({
   passwordIsInsecure,
   areWifiCredentialsDefault,
   isWifiRunning
+}: {
+  passwordIsInsecure: boolean;
+  areWifiCredentialsDefault: boolean;
+  isWifiRunning: boolean;
 }) {
-  const securityIssues = [
+  const securityIssues: SecurityIssue[] = [
     {
       name: "Change host user password",
       severity: "critical",
@@ -83,10 +94,6 @@ function SystemSecurity({
 }
 
 // Container
-
-SystemSecurity.propTypes = {
-  passwordIsInsecure: PropTypes.bool.isRequired
-};
 
 const mapStateToProps = createStructuredSelector({
   passwordIsInsecure: getPasswordIsInsecure,
