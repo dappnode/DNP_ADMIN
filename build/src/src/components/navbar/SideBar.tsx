@@ -19,7 +19,7 @@ export function toggleSideNav() {
 export default function SideBar() {
   const [collapsed, setCollapsed] = useState(true);
 
-  const sidebarEl = useRef(null);
+  const sidebarEl = useRef<HTMLDivElement>(null);
 
   function collapseSideNav() {
     setCollapsed(true);
@@ -51,8 +51,9 @@ export default function SideBar() {
 
   useEffect(() => {
     if (collapsed) return; // Prevent unnecessary listeners
-    function handleMouseDown(e) {
-      if (!sidebarEl.current.contains(e.target)) setCollapsed(true);
+    function handleMouseDown(e: MouseEvent) {
+      if (sidebarEl.current && !sidebarEl.current.contains(e.target as Node))
+        setCollapsed(true);
     }
     document.addEventListener("mousedown", handleMouseDown);
     return () => {

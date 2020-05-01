@@ -8,8 +8,8 @@ import { shortNameCapitalized } from "utils/format";
 // Icons
 import { FiBox } from "react-icons/fi";
 
-function ChainDataDropdown({ chainData }: { chainData: ChainData[] }) {
-  if (!Array.isArray(chainData)) {
+function ChainDataDropdown({ chainData }: { chainData?: ChainData[] }) {
+  if (!chainData || !Array.isArray(chainData)) {
     console.error("chainData must be an array");
     return null;
   }

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
@@ -12,10 +11,10 @@ import { stringSplit, stringIncludes } from "utils/strings";
  * With the <wbr> (word break opportunity) the domain will be shown as:
  *  12ab34ab12ab23ab
  *  .dyndns.dappnode.io
- * @param {string} key
- * @param {string} value
+ * @param key
+ * @param value
  */
-function parseIdentityKeyValue(key, value) {
+function parseIdentityKeyValue(key: string, value = "") {
   if (stringIncludes(key, "domain")) {
     const [hex, rootDomain] = stringSplit(value, /\.(.+)/);
     return (
@@ -29,8 +28,17 @@ function parseIdentityKeyValue(key, value) {
   }
 }
 
-const DappnodeIdentity = ({ dappnodeIdentity = {} }) => {
-  if (typeof dappnodeIdentity !== "object") {
+const DappnodeIdentity = ({
+  dappnodeIdentity
+}: {
+  dappnodeIdentity?: {
+    name?: string;
+    staticIp?: string;
+    domain?: string;
+    ip?: string;
+  };
+}) => {
+  if (!dappnodeIdentity || typeof dappnodeIdentity !== "object") {
     console.error("dappnodeIdentity must be an object");
     return null;
   }
@@ -63,10 +71,6 @@ const DappnodeIdentity = ({ dappnodeIdentity = {} }) => {
       placeholder="No identity available, click the report icon"
     />
   );
-};
-
-DappnodeIdentity.propTypes = {
-  dappnodeIdentity: PropTypes.object.isRequired
 };
 
 const mapStateToProps = createStructuredSelector({

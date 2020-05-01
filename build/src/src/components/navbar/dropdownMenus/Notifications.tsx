@@ -1,14 +1,20 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
 import { getNotifications } from "services/notifications/selectors";
 import { viewedNotifications } from "services/notifications/actions";
+import { PackageNotificationDb } from "types";
 // Icons
 import Bell from "Icons/Bell";
 
-const Notifications = ({ notifications, viewedNotifications }) => {
+const Notifications = ({
+  notifications,
+  viewedNotifications
+}: {
+  notifications: PackageNotificationDb[];
+  viewedNotifications: () => void;
+}) => {
   return (
     <BaseDropdown
       name="Notifications"
@@ -20,11 +26,6 @@ const Notifications = ({ notifications, viewedNotifications }) => {
       placeholder="No notifications yet"
     />
   );
-};
-
-Notifications.propTypes = {
-  notifications: PropTypes.array.isRequired,
-  viewedNotifications: PropTypes.func.isRequired
 };
 
 const mapStateToProps = createStructuredSelector({
