@@ -168,7 +168,7 @@ function getIdFromMatch(match) {
 const mapStateToProps = createStructuredSelector({
   dnp: s.getDnp,
   // id and moduleName are parsed from the url at the selector (with the router state)
-  id: s.getUrlId,
+  id: (_, ownProps) => ((ownProps.match || {}).params || {}).id,
   moduleName: s.getModuleName,
   areThereDnps: s.areThereDnps,
   requestStatus: getDnpInstalledStatus,

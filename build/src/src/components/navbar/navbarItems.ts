@@ -12,7 +12,7 @@ import Settings from "Icons/Settings";
 import Build from "Icons/Build";
 import ContactSupport from "Icons/ContactSupport";
 
-export const fundedBy = [
+export const fundedBy: { logo: string; text: string; link?: string }[] = [
   {
     logo: EfgLogo,
     text: "Ethereum Foundation",
@@ -35,7 +35,11 @@ export const fundedBy = [
   }
 ];
 
-export const sidenavItems = [
+export const sidenavItems: {
+  name: string;
+  href: string;
+  icon: (props: any) => JSX.Element;
+}[] = [
   {
     name: "Dashboard",
     href: "/dashboard",

@@ -5,17 +5,10 @@ import { NavLink } from "react-router-dom";
 import Card from "components/Card";
 import Switch from "components/Switch";
 import { ButtonLight } from "components/Button";
-// Helpers
-// import downloadVpnCredentials from "../helpers/downloadVpnCredentials";
 // Icons
 import { MdDelete, MdRefresh } from "react-icons/md";
 
 function DeviceGrid({ devices, removeDevice, resetDevice, toggleAdmin }) {
-  // function download(id) {
-  //   const device = devices.find(d => d.id === id);
-  //   if (device) downloadVpnCredentials(device);
-  // }
-
   return (
     <Card className="list-grid devices">
       <header>Name</header>

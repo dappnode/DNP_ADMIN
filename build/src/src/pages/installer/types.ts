@@ -9,3 +9,11 @@ export interface SetupWizardFormDataReturn {
     [propId: string]: string;
   };
 }
+
+export interface EnvsVerbose {
+  [name: string]: {
+    name: string;
+    value: string;
+    index: number;
+  };
+}

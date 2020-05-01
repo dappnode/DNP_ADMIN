@@ -8,6 +8,15 @@ import { stringSplit } from "utils/strings";
 
 export const getPackages = getDnpInstalled;
 
+interface OwnPropsPackageRoute {
+  match?: {
+    path?: string;
+    params?: {
+      id?: string;
+    };
+  };
+}
+
 // pathname = /packages/kovan.dnp.dappnode.eth
 // pathname = /system/kovan.dnp.dappnode.eth
 // ownProps = {
@@ -18,13 +27,14 @@ export const getPackages = getDnpInstalled;
 //   }
 // };
 export const getUrlId = createSelector(
-  (_, ownProps) => ((ownProps.match || {}).params || {}).id,
+  (_: any, ownProps: OwnPropsPackageRoute) =>
+    ((ownProps.match || {}).params || {}).id,
   id => id
 );
 
 // moduleName = "system" or "packages"
 export const getModuleName = createSelector(
-  (_, ownProps) => ownProps.match.path,
+  (_: any, ownProps: OwnPropsPackageRoute) => (ownProps.match || {}).path,
   (path = "") => {
     if (path.startsWith("/")) path = path.slice(1);
     return stringSplit(path, "/")[0];
@@ -56,6 +66,6 @@ export const getDnp = createSelector(
 );
 export const getDnpById = createSelector(
   getDnpInstalled,
-  (_, id) => id,
+  (_: any, id: string) => id,
   (dnps, id) => dnps.find(dnp => dnp.name === id)
 );
