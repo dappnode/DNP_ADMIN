@@ -1,4 +1,4 @@
-import reducer from "services/isInstallingLogs/reducer";
+import { reducer } from "services/isInstallingLogs/reducer";
 import { IsInstallingLogsState } from "services/isInstallingLogs/types";
 import {
   updateIsInstallingLog,

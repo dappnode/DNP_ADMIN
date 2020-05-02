@@ -1,5 +1,5 @@
 import { mountPoint } from "../../../services/loadingStatus/data";
-import reducer from "../../../services/loadingStatus/reducer";
+import { reducer } from "../../../services/loadingStatus/reducer";
 import * as a from "../../../services/loadingStatus/actions";
 import * as s from "../../../services/loadingStatus/selectors";
 

@@ -33,6 +33,7 @@ describe("service/isInstallingLogs", () => {
 
     const state = { [mountPoint]: isInstallingLogsState };
     it("Should a nicely formated object ready to query", () => {
+      // @ts-ignore
       expect(getProgressLogsByDnp(state)).toEqual(progressLogsByDnpExpected);
     });
 
