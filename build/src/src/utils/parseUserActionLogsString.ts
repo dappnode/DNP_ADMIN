@@ -31,8 +31,6 @@ export function parseUserActionLogsString(
       }
     });
 
-  console.log({ userActionLogs });
-
   // Collapse equal errors
   for (let i = 0; i < userActionLogs.length; i++) {
     const log = userActionLogs[i];

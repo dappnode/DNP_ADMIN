@@ -23,6 +23,7 @@ const url = wampUrl;
 const realm = wampRealm;
 
 let _session: autobahn.Session;
+let _subscriptions: Subscriptions;
 
 export const api: Routes = mapValues(routesData, (data, route) => {
   return async function(...args: any[]) {
@@ -33,6 +34,11 @@ export const api: Routes = mapValues(routesData, (data, route) => {
     return await callRoute<any>(_session, route, args);
   };
 });
+
+export function getApiSubscription(): Subscriptions {
+  if (!_subscriptions) throw Error("Subscriptions object is not defined");
+  return _subscriptions;
+}
 
 /**
  * Connect to the WAMP with an autobahn client
@@ -52,6 +58,7 @@ export function start() {
       subscriptionsData,
       { loggerMiddleware: subscriptionsLoggerMiddleware }
     );
+    _subscriptions = subscriptions;
 
     mapSubscriptionsToRedux(subscriptions);
     legacyVpnSubscription(session);

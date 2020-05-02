@@ -54,6 +54,7 @@
     "semver": "^5.5.0",
     "striptags": "^3.1.1",
     "styled-components": "^4.2.0",
+    "swr": "^0.2.0",
     "tether": "^1.4.4",
     "tweetnacl": "^1.0.1",
     "tweetnacl-util": "^0.15.0",

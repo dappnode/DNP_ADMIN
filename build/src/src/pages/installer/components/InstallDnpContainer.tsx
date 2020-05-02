@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import useSWR from "swr";
+import { api } from "api";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { title } from "../data";
@@ -6,11 +8,6 @@ import { title } from "../data";
 import InstallDnpView from "./InstallDnpView";
 // Utils
 import { shortNameCapitalized } from "utils/format";
-import {
-  getDnpRequest,
-  getDnpRequestStatus
-} from "services/dnpRequest/selectors";
-import { fetchDnpRequest } from "services/dnpRequest/actions";
 import Title from "components/Title";
 import Loading from "components/Loading";
 import Error from "components/Error";
@@ -20,18 +17,11 @@ const InstallDnpContainer: React.FC<RouteComponentProps<{ id: string }>> = ({
   match
 }) => {
   const id = decodeURIComponent(match.params.id);
-  const dnp = useSelector((state: any) => getDnpRequest(state, id));
-  const requestStatus = useSelector((state: any) =>
-    getDnpRequestStatus(state, id)
+
+  const { data: dnp, error, isValidating } = useSWR(id, id =>
+    api.fetchDnpRequest({ id })
   );
   const progressLogsByDnp = useSelector(getProgressLogsByDnp);
-  const dispatch = useDispatch();
-
-  const { loading, error, success } = requestStatus || {};
-
-  useEffect(() => {
-    dispatch(fetchDnpRequest(id));
-  }, [id, dispatch]);
 
   // Get progressLogs
   const progressLogs =
@@ -46,12 +36,10 @@ const InstallDnpContainer: React.FC<RouteComponentProps<{ id: string }>> = ({
 
       {dnp ? (
         <InstallDnpView dnp={dnp} progressLogs={progressLogs} />
-      ) : loading ? (
+      ) : isValidating ? (
         <Loading msg={"Loading DAppNode Package data..."} />
       ) : error ? (
         <Error msg={error} />
-      ) : success ? (
-        <Error msg={"Package loaded but is not found"} />
       ) : null}
     </>
   );

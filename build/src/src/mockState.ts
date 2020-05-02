@@ -648,6 +648,177 @@ const samplePackageContainer: PackageContainer = {
   avatarUrl: ""
 };
 
+const dnpRequest = {
+  dnps: {
+    [lightningNetworkMetadata.name]: {
+      ...sampleRequestState,
+      name: lightningNetworkMetadata.name,
+      reqVersion: lightningNetworkMetadata.version,
+      semVersion: lightningNetworkMetadata.version,
+      avatarUrl: lightningNetworkAvatar,
+      metadata: lightningNetworkMetadata,
+
+      imageSize: 19872630,
+      isUpdated: false,
+      isInstalled: false,
+
+      settings: {
+        [lightningNetworkMetadata.name]: lightningNetworkSetup,
+        [bitcoinMetadata.name]: bitcoinUserSettings
+      },
+      setupSchema: {
+        [lightningNetworkMetadata.name]: lightningNetworkSetupSchema,
+        [bitcoinMetadata.name]: bitcoinSetupSchema
+      },
+      setupTarget: {
+        [lightningNetworkMetadata.name]: lightningNetworkSetupTarget,
+        [bitcoinMetadata.name]: bitcoinSetupTarget
+      },
+      setupUiJson: {
+        [lightningNetworkMetadata.name]: lightningNetworkSetupUiJson,
+        [bitcoinMetadata.name]: {}
+      },
+
+      request: {
+        compatible: {
+          requiresCoreUpdate: false,
+          resolving: false,
+          isCompatible: true,
+          error: "",
+          dnps: {
+            [lightningNetworkMetadata.name]: { to: "0.2.2" },
+            [bitcoinMetadata.name]: { from: "0.2.5", to: "0.2.5" }
+          }
+        },
+        available: {
+          isAvailable: true,
+          message: ""
+        }
+      }
+    },
+
+    [bitcoinMetadata.name]: {
+      ...sampleRequestState,
+      name: bitcoinMetadata.name,
+      reqVersion: bitcoinMetadata.version,
+      semVersion: bitcoinMetadata.version,
+      avatarUrl: bitcoinAvatar,
+      metadata: bitcoinMetadata,
+
+      imageSize: 37273582,
+      isUpdated: false,
+      isInstalled: true,
+
+      settings: {
+        [bitcoinMetadata.name]: bitcoinUserSettings
+      },
+      setupSchema: {
+        [bitcoinMetadata.name]: bitcoinSetupSchema
+      },
+      setupTarget: {
+        [bitcoinMetadata.name]: bitcoinSetupTarget
+      },
+      setupUiJson: {
+        [bitcoinMetadata.name]: bitcoinSetupUiJson
+      },
+
+      request: {
+        compatible: {
+          requiresCoreUpdate: false,
+          resolving: false,
+          isCompatible: true,
+          error: "",
+          dnps: {
+            [bitcoinMetadata.name]: { from: "0.2.10", to: "0.2.5" },
+            "dependency.dnp.dappnode.eth": { from: "0.0.0", to: "1.2.0" }
+          }
+        },
+        available: {
+          isAvailable: true,
+          message: ""
+        }
+      }
+    },
+
+    [trustlinesMetadata.name]: {
+      ...sampleRequestState,
+      name: trustlinesMetadata.name,
+      reqVersion: trustlinesMetadata.version,
+      semVersion: trustlinesMetadata.version,
+      avatarUrl: trustlinesAvatar,
+      metadata: trustlinesMetadata,
+      specialPermissions: trustlinesSpecialPermissions,
+
+      settings: {
+        [trustlinesMetadata.name]: trustlinesSetup
+      },
+      setupSchema: {
+        [trustlinesMetadata.name]: trustlinesSetupSchema
+      },
+      setupTarget: {
+        [trustlinesMetadata.name]: trustlinesSetupTarget
+      },
+      setupUiJson: {
+        [trustlinesMetadata.name]: trustlinesSetupUiJson
+      }
+    },
+
+    [raidenMetadata.name]: {
+      ...sampleRequestState,
+      name: raidenMetadata.name,
+      reqVersion: raidenMetadata.version,
+      semVersion: raidenMetadata.version,
+      avatarUrl: raidenAvatar,
+      metadata: raidenMetadata,
+
+      settings: {
+        [raidenMetadata.name]: raidenSetup
+      },
+      setupSchema: {
+        [raidenMetadata.name]: raidenSetupSchema
+      },
+      setupTarget: {
+        [raidenMetadata.name]: raidenSetupTarget
+      },
+      setupUiJson: {}
+    },
+
+    [raidenTestnetMetadata.name]: {
+      ...sampleRequestState,
+      name: raidenTestnetMetadata.name,
+      reqVersion: raidenTestnetMetadata.version,
+      semVersion: raidenTestnetMetadata.version,
+      avatarUrl: raidenTestnetAvatar,
+      metadata: raidenTestnetMetadata,
+
+      settings: {
+        [raidenTestnetMetadata.name]: raidenTestnetSetup
+      }
+    },
+
+    [isInstallingDnp]: {
+      ...sampleRequestState,
+      name: isInstallingDnp,
+      reqVersion: "0.1.0",
+      semVersion: "0.1.0",
+      avatarUrl: isInstallingAvatar,
+      metadata: isInstallingMetadata
+    }
+  },
+
+  requestStatus: {
+    "lightning-network.dnp.dappnode.eth": {
+      loading: true
+    },
+    [inLoadingDnp]: {
+      loading: true
+    },
+    [inErrorDnp]: {
+      error: "Demo error to simulate load failure"
+    }
+  }
+};
+
 /**
  * Actual mockState
  * ================
@@ -1183,177 +1354,6 @@ export const mockState: RootState = {
     dnpInstalledDataRequestStatus: {}
   },
 
-  dnpRequest: {
-    dnps: {
-      [lightningNetworkMetadata.name]: {
-        ...sampleRequestState,
-        name: lightningNetworkMetadata.name,
-        reqVersion: lightningNetworkMetadata.version,
-        semVersion: lightningNetworkMetadata.version,
-        avatarUrl: lightningNetworkAvatar,
-        metadata: lightningNetworkMetadata,
-
-        imageSize: 19872630,
-        isUpdated: false,
-        isInstalled: false,
-
-        settings: {
-          [lightningNetworkMetadata.name]: lightningNetworkSetup,
-          [bitcoinMetadata.name]: bitcoinUserSettings
-        },
-        setupSchema: {
-          [lightningNetworkMetadata.name]: lightningNetworkSetupSchema,
-          [bitcoinMetadata.name]: bitcoinSetupSchema
-        },
-        setupTarget: {
-          [lightningNetworkMetadata.name]: lightningNetworkSetupTarget,
-          [bitcoinMetadata.name]: bitcoinSetupTarget
-        },
-        setupUiJson: {
-          [lightningNetworkMetadata.name]: lightningNetworkSetupUiJson,
-          [bitcoinMetadata.name]: {}
-        },
-
-        request: {
-          compatible: {
-            requiresCoreUpdate: false,
-            resolving: false,
-            isCompatible: true,
-            error: "",
-            dnps: {
-              [lightningNetworkMetadata.name]: { to: "0.2.2" },
-              [bitcoinMetadata.name]: { from: "0.2.5", to: "0.2.5" }
-            }
-          },
-          available: {
-            isAvailable: true,
-            message: ""
-          }
-        }
-      },
-
-      [bitcoinMetadata.name]: {
-        ...sampleRequestState,
-        name: bitcoinMetadata.name,
-        reqVersion: bitcoinMetadata.version,
-        semVersion: bitcoinMetadata.version,
-        avatarUrl: bitcoinAvatar,
-        metadata: bitcoinMetadata,
-
-        imageSize: 37273582,
-        isUpdated: false,
-        isInstalled: true,
-
-        settings: {
-          [bitcoinMetadata.name]: bitcoinUserSettings
-        },
-        setupSchema: {
-          [bitcoinMetadata.name]: bitcoinSetupSchema
-        },
-        setupTarget: {
-          [bitcoinMetadata.name]: bitcoinSetupTarget
-        },
-        setupUiJson: {
-          [bitcoinMetadata.name]: bitcoinSetupUiJson
-        },
-
-        request: {
-          compatible: {
-            requiresCoreUpdate: false,
-            resolving: false,
-            isCompatible: true,
-            error: "",
-            dnps: {
-              [bitcoinMetadata.name]: { from: "0.2.10", to: "0.2.5" },
-              "dependency.dnp.dappnode.eth": { from: "0.0.0", to: "1.2.0" }
-            }
-          },
-          available: {
-            isAvailable: true,
-            message: ""
-          }
-        }
-      },
-
-      [trustlinesMetadata.name]: {
-        ...sampleRequestState,
-        name: trustlinesMetadata.name,
-        reqVersion: trustlinesMetadata.version,
-        semVersion: trustlinesMetadata.version,
-        avatarUrl: trustlinesAvatar,
-        metadata: trustlinesMetadata,
-        specialPermissions: trustlinesSpecialPermissions,
-
-        settings: {
-          [trustlinesMetadata.name]: trustlinesSetup
-        },
-        setupSchema: {
-          [trustlinesMetadata.name]: trustlinesSetupSchema
-        },
-        setupTarget: {
-          [trustlinesMetadata.name]: trustlinesSetupTarget
-        },
-        setupUiJson: {
-          [trustlinesMetadata.name]: trustlinesSetupUiJson
-        }
-      },
-
-      [raidenMetadata.name]: {
-        ...sampleRequestState,
-        name: raidenMetadata.name,
-        reqVersion: raidenMetadata.version,
-        semVersion: raidenMetadata.version,
-        avatarUrl: raidenAvatar,
-        metadata: raidenMetadata,
-
-        settings: {
-          [raidenMetadata.name]: raidenSetup
-        },
-        setupSchema: {
-          [raidenMetadata.name]: raidenSetupSchema
-        },
-        setupTarget: {
-          [raidenMetadata.name]: raidenSetupTarget
-        },
-        setupUiJson: {}
-      },
-
-      [raidenTestnetMetadata.name]: {
-        ...sampleRequestState,
-        name: raidenTestnetMetadata.name,
-        reqVersion: raidenTestnetMetadata.version,
-        semVersion: raidenTestnetMetadata.version,
-        avatarUrl: raidenTestnetAvatar,
-        metadata: raidenTestnetMetadata,
-
-        settings: {
-          [raidenTestnetMetadata.name]: raidenTestnetSetup
-        }
-      },
-
-      [isInstallingDnp]: {
-        ...sampleRequestState,
-        name: isInstallingDnp,
-        reqVersion: "0.1.0",
-        semVersion: "0.1.0",
-        avatarUrl: isInstallingAvatar,
-        metadata: isInstallingMetadata
-      }
-    },
-
-    requestStatus: {
-      "lightning-network.dnp.dappnode.eth": {
-        loading: true
-      },
-      [inLoadingDnp]: {
-        loading: true
-      },
-      [inErrorDnp]: {
-        error: "Demo error to simulate load failure"
-      }
-    }
-  },
-
   isInstallingLogs: {
     /* Core update */
     logs: {
@@ -1387,19 +1387,22 @@ export const mockState: RootState = {
     }
   },
 
-  userActionLogs: [
-    {
-      event: "installPackage.dappmanager.dnp.dappnode.eth",
-      kwargs: {
-        id: "rinkeby.dnp.dappnode.eth",
-        userSetVols: {},
-        userSetPorts: {},
-        options: {}
-      },
-      level: "error",
-      message: "Timeout to cancel expired",
-      stack: "Error: Timeout to cancel expired↵  ...",
-      timestamp: "2019-02-01T19:09:16.503Z"
+  userActionLogs: {
+    ids: ["2019-02-01T19:09:16.503Z"],
+    entities: {
+      "2019-02-01T19:09:16.503Z": {
+        event: "installPackage.dappmanager.dnp.dappnode.eth",
+        kwargs: {
+          id: "rinkeby.dnp.dappnode.eth",
+          userSetVols: {},
+          userSetPorts: {},
+          options: {}
+        },
+        level: "error",
+        message: "Timeout to cancel expired",
+        stack: "Error: Timeout to cancel expired↵  ...",
+        timestamp: "2019-02-01T19:09:16.503Z"
+      }
     }
-  ]
+  }
 };

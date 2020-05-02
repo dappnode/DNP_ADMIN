@@ -5,4 +5,4 @@ import { RootState } from "rootReducer";
 export const getDnpDirectory = (state: RootState) =>
   state.dnpDirectory.directory;
 export const getDirectoryRequestStatus = (state: RootState) =>
-  state.dnpDirectory.requestStatus;
+  state.dnpDirectory.requestStatus || {};

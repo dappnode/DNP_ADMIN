@@ -11,7 +11,6 @@ import { reducer as dappnodeStatus } from "services/dappnodeStatus/reducer";
 import { reducer as devices } from "services/devices/reducer";
 import { reducer as dnpDirectory } from "services/dnpDirectory/reducer";
 import { reducer as dnpInstalled } from "services/dnpInstalled/reducer";
-import { reducer as dnpRequest } from "services/dnpRequest/reducer";
 import { reducer as isInstallingLogs } from "services/isInstallingLogs/reducer";
 import { reducer as loadingStatus } from "services/loadingStatus/reducer";
 import { reducer as notifications } from "services/notifications/reducer";
@@ -25,7 +24,6 @@ const rootReducer = combineReducers({
   devices,
   dnpDirectory,
   dnpInstalled,
-  dnpRequest,
   isInstallingLogs,
   loadingStatus,
   notifications,
