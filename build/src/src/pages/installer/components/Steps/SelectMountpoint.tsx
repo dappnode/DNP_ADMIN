@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useSelector, useDispatch } from "react-redux";
 import Dropdown from "react-bootstrap/Dropdown";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "components/Button";
@@ -84,16 +83,11 @@ export function MountpointDataView({
   );
 }
 
-function SelectMountpoint({
+export default function SelectMountpoint({
   // React JSON form data props
   value,
   onChange,
-  options,
-  // Own DAppNode props from redux
-  mountpoints: mountpointsApi,
-  isLoading,
-  loadingError,
-  fetchMountpoints
+  options
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -106,8 +100,12 @@ function SelectMountpoint({
   mountpoints: MountpointData[] | null;
   isLoading: boolean;
   loadingError?: string;
-  fetchMountpoints: () => {};
 }) {
+  const mountpointsApi = useSelector(getMountpoints);
+  const isLoading = useSelector(getIsLoadingStrict.mountpoints);
+  const loadingError = useSelector(getLoadingError.mountpoints);
+  const dispatch = useDispatch();
+
   const [showHelp, setShowHelp] = useState(false);
 
   const mountpointsLoaded = Boolean(mountpointsApi);
@@ -130,8 +128,8 @@ function SelectMountpoint({
 
   // Automatically fetch mountpoints on component load
   useEffect(() => {
-    if (!mountpointsLoaded) fetchMountpoints();
-  }, [mountpointsLoaded, fetchMountpoints]);
+    if (!mountpointsLoaded) dispatch(fetchMountpoints());
+  }, [mountpointsLoaded, dispatch]);
 
   // If the user has selected an invalid mountpoint and is not loading or already set,
   // reset the value to the host (default) to prevent problems
@@ -228,19 +226,3 @@ function SelectMountpoint({
     </>
   );
 }
-
-const mapStateToProps = createStructuredSelector({
-  mountpoints: getMountpoints,
-  isLoading: getIsLoadingStrict.mountpoints,
-  loadingError: getLoadingError.mountpoints
-});
-
-// Uses bindActionCreators to wrap action creators with dispatch
-const mapDispatchToProps = {
-  fetchMountpoints
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SelectMountpoint);

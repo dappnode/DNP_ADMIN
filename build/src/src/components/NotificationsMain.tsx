@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import RenderMarkdown from "components/RenderMarkdown";
 // Selectors
@@ -24,52 +23,18 @@ import Button from "components/Button";
 // Style
 import "./notificationsMain.scss";
 
-function AlertDismissible({
-  body,
-  linkText,
-  linkPath
-}: {
-  body: string;
-  linkText: string;
-  linkPath: string;
-}) {
-  const [show, setShow] = useState(true);
-  return show ? (
-    <Alert
-      variant="warning"
-      onClose={() => setShow(false)}
-      dismissible
-      className="main-notification"
-    >
-      {/* <Alert.Heading>Oh snap! You got an error!</Alert.Heading> */}
-      <RenderMarkdown source={body} />
-      <NavLink to={linkPath}>
-        <Button variant={"warning"}>{linkText}</Button>
-      </NavLink>
-    </Alert>
-  ) : null;
-}
-
 /**
  * Aggregate notification and display logic
  */
-const NotificationsView = ({
-  coreUpdateAvailable,
-  updatingCore,
-  isCoreUpdateTypePatch,
-  isCoreAutoUpdateActive,
-  areWifiCredentialsDefault,
-  isWifiRunning,
-  passwordIsInsecure
-}: {
-  coreUpdateAvailable?: boolean;
-  updatingCore?: boolean;
-  isCoreUpdateTypePatch?: boolean;
-  isCoreAutoUpdateActive?: boolean;
-  areWifiCredentialsDefault?: boolean;
-  isWifiRunning?: boolean;
-  passwordIsInsecure?: boolean;
-}) => {
+export default function NotificationsView() {
+  const coreUpdateAvailable = useSelector(getCoreUpdateAvailable);
+  const updatingCore = useSelector(getUpdatingCore);
+  const isCoreUpdateTypePatch = useSelector(getIsCoreUpdateTypePatch);
+  const isCoreAutoUpdateActive = useSelector(getIsCoreAutoUpdateActive);
+  const areWifiCredentialsDefault = useSelector(getAreWifiCredentialsDefault);
+  const isWifiRunning = useSelector(getIsWifiRunning);
+  const passwordIsInsecure = useSelector(getPasswordIsInsecure);
+
   const notifications = [
     /**
      * [SYSTEM-UPDATE]
@@ -122,19 +87,33 @@ const NotificationsView = ({
         ))}
     </div>
   );
-};
+}
 
-const mapStateToProps = createStructuredSelector({
-  coreUpdateAvailable: getCoreUpdateAvailable,
-  updatingCore: getUpdatingCore,
-  isCoreUpdateTypePatch: getIsCoreUpdateTypePatch,
-  isCoreAutoUpdateActive: getIsCoreAutoUpdateActive,
-  areWifiCredentialsDefault: getAreWifiCredentialsDefault,
-  isWifiRunning: getIsWifiRunning,
-  passwordIsInsecure: getPasswordIsInsecure
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(NotificationsView);
+/**
+ * Util component, alert banner that can be closed with an X button
+ */
+function AlertDismissible({
+  body,
+  linkText,
+  linkPath
+}: {
+  body: string;
+  linkText: string;
+  linkPath: string;
+}) {
+  const [show, setShow] = useState(true);
+  return show ? (
+    <Alert
+      variant="warning"
+      onClose={() => setShow(false)}
+      dismissible
+      className="main-notification"
+    >
+      {/* <Alert.Heading>Oh snap! You got an error!</Alert.Heading> */}
+      <RenderMarkdown source={body} />
+      <NavLink to={linkPath}>
+        <Button variant={"warning"}>{linkText}</Button>
+      </NavLink>
+    </Alert>
+  ) : null;
+}

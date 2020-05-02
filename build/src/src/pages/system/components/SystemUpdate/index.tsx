@@ -1,6 +1,5 @@
 import React from "react";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 // Modules
 import installer from "pages/installer";
 // Selectors
@@ -17,17 +16,14 @@ import StatusIcon from "components/StatusIcon";
 import SystemUpdateDetails from "./SystemUpdateDetails";
 import Loading from "components/Loading";
 import SubTitle from "components/SubTitle";
-import { ProgressLogs } from "types";
 
-function SystemUpdate({
-  coreProgressLogs,
-  isLoading,
-  coreUpdateAvailable
-}: {
-  coreProgressLogs: ProgressLogs | undefined;
-  isLoading: boolean;
-  coreUpdateAvailable: boolean;
-}) {
+export default function SystemUpdate() {
+  const coreProgressLogs = useSelector((state: any) =>
+    getProgressLogsOfDnp(state, coreName)
+  );
+  const isLoading = useSelector(getIsLoadingStrictById(loadingIdCoreUpdate));
+  const coreUpdateAvailable = useSelector(getCoreUpdateAvailable);
+
   return (
     <>
       <SubTitle>Update</SubTitle>
@@ -46,16 +42,3 @@ function SystemUpdate({
     </>
   );
 }
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  coreProgressLogs: state => getProgressLogsOfDnp(state, coreName),
-  isLoading: getIsLoadingStrictById(loadingIdCoreUpdate),
-  coreUpdateAvailable: getCoreUpdateAvailable
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(SystemUpdate);

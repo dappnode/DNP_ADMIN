@@ -1,14 +1,14 @@
 import React from "react";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
 import { getChainData } from "services/chainData/selectors";
-import { ChainData } from "types";
 import { shortNameCapitalized } from "utils/format";
 // Icons
 import { FiBox } from "react-icons/fi";
 
-function ChainDataDropdown({ chainData }: { chainData?: ChainData[] }) {
+export default function ChainDataDropdown() {
+  const chainData = useSelector(getChainData);
+
   if (!chainData || !Array.isArray(chainData)) {
     console.error("chainData must be an array");
     return null;
@@ -33,12 +33,3 @@ function ChainDataDropdown({ chainData }: { chainData?: ChainData[] }) {
     />
   );
 }
-
-const mapStateToProps = createStructuredSelector({
-  chainData: getChainData
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(ChainDataDropdown);

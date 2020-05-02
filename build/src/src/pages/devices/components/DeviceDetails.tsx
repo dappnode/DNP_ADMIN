@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink, RouteComponentProps } from "react-router-dom";
 import ClipboardJS from "clipboard";
 // Own module
 import * as a from "../actions";
 import { rootPath, title } from "../data";
-import { VpnDeviceState } from "services/devices/types";
 // Services
 import { getDeviceById } from "services/devices/selectors";
 // Components
@@ -20,24 +18,18 @@ import { MdOpenInNew } from "react-icons/md";
 import { GoClippy } from "react-icons/go";
 import Title from "components/Title";
 
-const DeviceDetails: React.FC<
-  RouteComponentProps<{ id: string }> & {
-    device?: VpnDeviceState;
-    getDeviceCredentials: (id: string) => void;
-  }
-> = ({
-  // Route
-  match,
-  // Redux
-  device,
-  getDeviceCredentials
+export const DeviceDetails: React.FC<RouteComponentProps<{ id: string }>> = ({
+  match
 }) => {
-  const id = (device || {}).id || match.params.id;
+  const id = match.params.id;
+  const device = useSelector((state: any) => getDeviceById(state, id));
+  const dispatch = useDispatch();
+
   const { url, admin } = device || {};
 
   useEffect(() => {
-    if (!url && id) getDeviceCredentials(id);
-  }, [url, id, getDeviceCredentials]);
+    if (!url && id) dispatch(a.getDeviceCredentials(id));
+  }, [url, id, dispatch]);
 
   // Activate the copy functionality
   useEffect(() => {
@@ -106,17 +98,3 @@ const DeviceDetails: React.FC<
     </>
   );
 };
-
-const mapStateToProps = createStructuredSelector({
-  device: (state: any, ownProps: any) =>
-    getDeviceById(state, ownProps.match.params.id)
-});
-
-const mapDispatchToProps = {
-  getDeviceCredentials: a.getDeviceCredentials
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeviceDetails);

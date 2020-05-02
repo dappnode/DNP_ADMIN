@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
-import { createStructuredSelector } from "reselect";
 import * as s from "../selectors";
-import { connect } from "react-redux";
-import { DiagnoseResult } from "../types";
+import { useSelector, useDispatch } from "react-redux";
 // Components
 import Card from "components/Card";
 // Actions
@@ -12,16 +10,13 @@ import Ok from "components/Ok";
 // Styles
 import "./support.css";
 
-function AutoDiagnose({
-  diagnoses,
-  fetchAllDappnodeStatus
-}: {
-  diagnoses: DiagnoseResult[];
-  fetchAllDappnodeStatus: () => void;
-}) {
+export default function AutoDiagnose() {
+  const diagnoses = useSelector(s.getDiagnoses);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    fetchAllDappnodeStatus(); // = componentDidMount
-  }, [fetchAllDappnodeStatus]);
+    dispatch(fetchAllDappnodeStatus()); // = componentDidMount
+  }, [dispatch]);
 
   return (
     <Card>
@@ -40,17 +35,3 @@ function AutoDiagnose({
     </Card>
   );
 }
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  diagnoses: s.getDiagnoses
-});
-
-// Uses bindActionCreators to wrap action creators with dispatch
-const mapDispatchToProps = { fetchAllDappnodeStatus };
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AutoDiagnose);

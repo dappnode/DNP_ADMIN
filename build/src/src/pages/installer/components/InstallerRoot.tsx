@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Route, RouteComponentProps } from "react-router-dom";
 // Components
-import InstallerHome from "./InstallerHome";
+import { InstallerHome } from "./InstallerHome";
 import InstallDnpContainer from "./InstallDnpContainer";
 // Modules
 

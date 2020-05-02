@@ -1,4 +1,4 @@
-import { mountPoint } from "./data";
+import { RootState } from "rootReducer";
 import {
   wifiName,
   ipfsName,
@@ -7,23 +7,21 @@ import {
   wifiEnvWPA_PASSPHRASE,
   wifiEnvSSID
 } from "params";
-import { DnpInstalledState } from "./types";
 import { PackageContainer, PackageDetailData } from "types";
 
 // Service > dnpInstalled
 
-const getLocal = (state: any): DnpInstalledState => state[mountPoint];
-
-export const getDnpInstalled = (state: any): PackageContainer[] =>
-  getLocal(state).dnpInstalled;
-export const getDnpInstalledStatus = (state: any) =>
-  getLocal(state).requestStatus;
+export const getDnpInstalled = (state: RootState): PackageContainer[] =>
+  state.dnpInstalled.dnpInstalled;
+export const getDnpInstalledStatus = (state: RootState) =>
+  state.dnpInstalled.requestStatus;
 export const getDnpInstalledData = (
-  state: any
-): { [dnpName: string]: PackageDetailData } => getLocal(state).dnpInstalledData;
+  state: RootState
+): { [dnpName: string]: PackageDetailData } =>
+  state.dnpInstalled.dnpInstalledData;
 
 export const getWifiCredentials = (
-  state: any
+  state: RootState
 ): { ssid: string; pass: string } | null => {
   const dnps = getDnpInstalled(state);
   const wifiDnp = dnps.find(dnp => dnp.name === wifiName);
@@ -38,7 +36,7 @@ export const getWifiCredentials = (
  * Check if the wifi DNP has the same credentials as the default ones
  * @returns credentials are the same as the default ones
  */
-export const getAreWifiCredentialsDefault = (state: any): boolean => {
+export const getAreWifiCredentialsDefault = (state: RootState): boolean => {
   const wifiCredentials = getWifiCredentials(state);
   if (!wifiCredentials) return false;
   return (
@@ -50,7 +48,7 @@ export const getAreWifiCredentialsDefault = (state: any): boolean => {
 /**
  * Returns object ready to check if a port is used or not
  */
-export const getHostPortMappings = (state: any) => {
+export const getHostPortMappings = (state: RootState) => {
   const dnps = getDnpInstalled(state);
   const hostPortMappings: { [portId: string]: string } = {};
   for (const dnp of dnps)
@@ -69,7 +67,7 @@ interface VolumeStats {
  * Returns the volume sizes of `ipfs` DNPs
  * - ipfs.dnp.dappnode.eth > dncore_ipfsdnpdappnodeeth_data
  */
-export const getDappnodeVolumes = (state: any): VolumeStats[] => {
+export const getDappnodeVolumes = (state: RootState): VolumeStats[] => {
   const dnps = getDnpInstalled(state);
 
   const volumeStats: VolumeStats[] = [];
@@ -92,15 +90,15 @@ export const getDappnodeVolumes = (state: any): VolumeStats[] => {
  * Regular selectors, called outside of a normal react-redux situation
  */
 
-export const getDnpInstalledById = (state: any, id: string) =>
+export const getDnpInstalledById = (state: RootState, id: string) =>
   getDnpInstalled(state).find(({ name }) => name === id);
 
-export const getDependantsOfId = (state: any, id: string) =>
+export const getDependantsOfId = (state: RootState, id: string) =>
   getDnpInstalled(state)
     .filter(dnp => dnp.dependencies && dnp.dependencies[id])
     .map(dnp => dnp.name);
 
 export const getDnpInstalledDataById = (
-  state: any,
+  state: RootState,
   id: string
 ): PackageDetailData | undefined => getDnpInstalledData(state)[id];

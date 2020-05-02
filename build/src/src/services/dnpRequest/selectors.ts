@@ -1,17 +1,14 @@
-import { mountPoint } from "./data";
-import { DnpRequestState } from "./types";
+import { RootState } from "rootReducer";
 import { RequestedDnp, RequestStatus } from "types";
 
 // Service > dnpRequest
 
-const getLocal = (state: any): DnpRequestState => state[mountPoint];
-
 export const getDnpRequest = (
-  state: any,
+  state: RootState,
   requestId: string
-): RequestedDnp | undefined => getLocal(state).dnps[requestId];
+): RequestedDnp | undefined => state.dnpRequest.dnps[requestId];
 
 export const getDnpRequestStatus = (
-  state: any,
+  state: RootState,
   requestId: string
-): RequestStatus | undefined => getLocal(state).requestStatus[requestId];
+): RequestStatus | undefined => state.dnpRequest.requestStatus[requestId];

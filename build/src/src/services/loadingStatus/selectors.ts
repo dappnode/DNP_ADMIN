@@ -1,21 +1,18 @@
-import { mountPoint } from "./data";
+import { RootState } from "rootReducer";
 import { createSelector } from "reselect";
 import { mapValues } from "lodash";
 import * as loadingIds from "./loadingIds";
-import { LoadingStatusState } from "./types";
 
 // Service > loadingStatus
 
-const getLocal = (state: any): LoadingStatusState => state[mountPoint];
-
-export const getLoadingStatuses = getLocal;
+export const getLoadingStatuses = (state: RootState) => state.loadingStatus;
 
 /**
  * The `loadingId` variable is constant,
  * never changes on the lifetime of the components consuming it
  *
  * Returns true if the data has never been loaded and if is loading now
- * @param {string} loadingId
+ * @param loadingId
  * [Tested]
  */
 export const getIsLoadingById = (loadingId: string) => {
@@ -34,7 +31,7 @@ export const getIsLoadingById = (loadingId: string) => {
  * never changes on the lifetime of the components consuming it
  *
  * Returns true if the data has never been loaded and if is loading now
- * @param {string} loadingId
+ * @param loadingId
  * [Tested]
  */
 export const getLoadingErrorById = (loadingId: string) => {
@@ -49,7 +46,7 @@ export const getLoadingErrorById = (loadingId: string) => {
  * never changes on the lifetime of the components consuming it
  *
  * Returns true if the data has is loading now, EVEN if it has loaded in the past
- * @param {string} loadingId
+ * @param loadingId
  */
 export const getIsLoadingStrictById = (loadingId: string) => {
   return createSelector(

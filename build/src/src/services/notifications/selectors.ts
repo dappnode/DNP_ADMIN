@@ -1,8 +1,6 @@
-import { mountPoint } from "./data";
-import { NotificationsState } from "./types";
+import { RootState } from "rootReducer";
 
 // Service > notifications
 
-const getLocal = (state: any): NotificationsState => state[mountPoint];
-
-export const getNotifications = (state: any) => Object.values(getLocal(state));
+export const getNotifications = (state: RootState) =>
+  Object.values(state.notifications);

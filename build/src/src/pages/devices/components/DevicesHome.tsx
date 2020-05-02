@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 // Own module
 import * as a from "../actions";
 import { title, maxIdLength } from "../data";
 import coerceDeviceName from "../helpers/coerceDeviceName";
-import { VpnDeviceState } from "services/devices/types";
 // Services
 import { getDevices } from "services/devices/selectors";
 // Components
@@ -19,19 +17,14 @@ import { ButtonLight } from "components/Button";
 // Icons
 import { MdDelete, MdRefresh } from "react-icons/md";
 
-const DevicesHome = ({
-  devices,
-  addDevice,
-  removeDevice,
-  resetDevice,
-  toggleAdmin
-}: {
-  devices: VpnDeviceState[];
-  addDevice: (id: string) => void;
-  removeDevice: (id: string) => void;
-  resetDevice: (id: string) => void;
-  toggleAdmin: (id: string) => void;
-}) => {
+export default function DevicesHome() {
+  const devices = useSelector(getDevices);
+  const dispatch = useDispatch();
+  const addDevice = (id: string) => dispatch(a.addDevice(id));
+  const removeDevice = (id: string) => dispatch(a.removeDevice(id));
+  const resetDevice = (id: string) => dispatch(a.resetDevice(id));
+  const toggleAdmin = (id: string) => dispatch(a.toggleAdmin(id));
+
   const [id, setId] = useState("");
   const idTooLong = id.length === maxIdLength;
   return (
@@ -92,20 +85,4 @@ const DevicesHome = ({
       </Card>
     </>
   );
-};
-
-const mapStateToProps = createStructuredSelector({
-  devices: getDevices
-});
-
-const mapDispatchToProps = {
-  addDevice: a.addDevice,
-  removeDevice: a.removeDevice,
-  resetDevice: a.resetDevice,
-  toggleAdmin: a.toggleAdmin
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DevicesHome);
+}

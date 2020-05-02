@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useSelector } from "react-redux";
 import { api } from "api";
 import { wifiName, wifiEnvSSID, wifiEnvWPA_PASSPHRASE } from "params";
 // Components
@@ -13,11 +12,9 @@ import "./changeHostUserPassword.scss";
 import { getWifiCredentials } from "services/dnpInstalled/selectors";
 import { withToast } from "components/toast/Toast";
 
-function ChangeWifiPassword({
-  wifiCredentials
-}: {
-  wifiCredentials: { ssid: string; pass: string } | null;
-}) {
+export default function ChangeWifiPassword() {
+  const wifiCredentials = useSelector(getWifiCredentials);
+
   const prevSsid = (wifiCredentials || {}).ssid || "";
   const [ssid, setSsid] = useState(prevSsid);
   const [password, setPassword] = useState("");
@@ -159,16 +156,3 @@ function ChangeWifiPassword({
     </Card>
   );
 }
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  wifiCredentials: getWifiCredentials
-});
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChangeWifiPassword);

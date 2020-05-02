@@ -1,6 +1,5 @@
 import React from "react";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 // Components
 import SubTitle from "components/SubTitle";
 import Card from "components/Card";
@@ -26,15 +25,11 @@ interface SecurityIssue {
   okMessage: string;
 }
 
-function SystemSecurity({
-  passwordIsInsecure,
-  areWifiCredentialsDefault,
-  isWifiRunning
-}: {
-  passwordIsInsecure: boolean;
-  areWifiCredentialsDefault: boolean;
-  isWifiRunning: boolean;
-}) {
+export default function SystemSecurity() {
+  const passwordIsInsecure = useSelector(getPasswordIsInsecure);
+  const areWifiCredentialsDefault = useSelector(getAreWifiCredentialsDefault);
+  const isWifiRunning = useSelector(getIsWifiRunning);
+
   const securityIssues: SecurityIssue[] = [
     {
       name: "Change host user password",
@@ -47,7 +42,7 @@ function SystemSecurity({
       name: "Change WIFI default password",
       severity: "critical",
       component: ChangeWifiPassword,
-      isActive: areWifiCredentialsDefault && isWifiRunning,
+      isActive: areWifiCredentialsDefault && Boolean(isWifiRunning),
       okMessage: isWifiRunning
         ? "WIFI credentials changed"
         : "WIFI is not required"
@@ -92,16 +87,3 @@ function SystemSecurity({
     </>
   );
 }
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  passwordIsInsecure: getPasswordIsInsecure,
-  areWifiCredentialsDefault: getAreWifiCredentialsDefault,
-  isWifiRunning: getIsWifiRunning
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(SystemSecurity);

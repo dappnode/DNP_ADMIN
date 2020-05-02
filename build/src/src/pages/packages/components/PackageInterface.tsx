@@ -39,8 +39,10 @@ export const PackageInterface: React.FC<
   // moduleName = "system" or "packages"
   const moduleName = match.path.replace(/\//g, "");
   // Dnp data
-  const dnp = useSelector(state => s.getDnpById(state, id));
-  const dnpDetail = useSelector(state => getDnpInstalledDataById(state, id));
+  const dnp = useSelector((state: any) => s.getDnpById(state, id));
+  const dnpDetail = useSelector((state: any) =>
+    getDnpInstalledDataById(state, id)
+  );
 
   useEffect(() => {
     dispatch(fetchDnpInstalledData(id));

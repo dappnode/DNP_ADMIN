@@ -1,9 +1,5 @@
 import { issueBaseUrl } from "./data";
-import {
-  createSelector,
-  createStructuredSelector,
-  OutputSelector
-} from "reselect";
+import { createSelector, OutputSelector } from "reselect";
 import { PackageVersionData } from "types";
 import {
   getDappnodeParams,
@@ -20,6 +16,8 @@ import {
 } from "services/connectionStatus/selectors";
 import { getIsLoading } from "services/loadingStatus/selectors";
 import { DiagnoseResult } from "./types";
+import { RootState } from "rootReducer";
+import { notEmpty } from "utils/typescript";
 
 type DiagnoseResultOrNull = DiagnoseResult | null;
 
@@ -176,25 +174,16 @@ const getDiagnoseCoreDnpsRunning = createSelector(
   }
 );
 
-// Add diagnose getters here to be reflected on the App
-export const getDiagnoses = createSelector(
-  createStructuredSelector({
-    getDiagnoseConnection,
-    getDiagnoseOpenPorts,
-    getDiagnoseNoNatLoopback,
-    getDiagnoseIpfs,
-    getDiagnoseDiskSpace,
-    getDiagnoseCoreDnpsRunning
-  }),
-  (diagnoseObjects): DiagnoseResult[] => {
-    const diagnoseResults: DiagnoseResult[] = [];
-    for (const diagnose of Object.values(diagnoseObjects)) {
-      // Ignore diagnoses that are null
-      if (diagnose) diagnoseResults.push(diagnose);
-    }
-    return diagnoseResults;
-  }
-);
+export const getDiagnoses = (state: RootState): DiagnoseResult[] => {
+  return [
+    getDiagnoseConnection(state),
+    getDiagnoseOpenPorts(state),
+    getDiagnoseNoNatLoopback(state),
+    getDiagnoseIpfs(state),
+    getDiagnoseDiskSpace(state),
+    getDiagnoseCoreDnpsRunning(state)
+  ].filter(notEmpty);
+};
 
 /**
  * Info selectors
@@ -214,10 +203,10 @@ interface IssueDataItem {
   error?: string;
 }
 
-const getVersionDatas = createStructuredSelector({
-  "dappmanager.dnp.dappnode.eth": getDappmanagerVersionData,
-  "vpn.dnp.dappnode.eth": getVpnVersionData,
-  "admin.dnp.dappnode.eth": () => window.versionData
+const getVersionDatas = (state: RootState) => ({
+  "dappmanager.dnp.dappnode.eth": getDappmanagerVersionData(state),
+  "vpn.dnp.dappnode.eth": getVpnVersionData(state),
+  "admin.dnp.dappnode.eth": window.versionData
 });
 
 /**

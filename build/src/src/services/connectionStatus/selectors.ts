@@ -1,12 +1,9 @@
-import { mountPoint } from "./data";
+import { RootState } from "rootReducer";
 import { createSelector } from "reselect";
-import { ConnectionStatusState } from "./types";
 
 // Service > connectionStatus
 
-const getLocal = (state: any): ConnectionStatusState => state[mountPoint];
-
-export const getConnectionStatus = getLocal;
+export const getConnectionStatus = (state: RootState) => state.connectionStatus;
 
 export const getIsConnectionOpen = createSelector(
   getConnectionStatus,

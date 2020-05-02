@@ -22,12 +22,15 @@ const actionsBlacklist = ["UPDATE_CHAIN_DATA"];
 const composedEnhancers = composeWithDevTools({ actionsBlacklist });
 
 const store = createStore(
+  // @ts-ignore
   rootReducer, // new root reducer with router state,
   composedEnhancers(applyMiddleware(...middlewares))
 );
 
 // ##### DEV
+// @ts-ignore
 window.dispach = store.dispatch;
+// @ts-ignore
 window.store = store;
 
 export default store;

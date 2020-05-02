@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useSelector, useDispatch } from "react-redux";
 import { fetchDappnodeStats } from "services/dappnodeStatus/actions";
 // Selectors
 import { getDappnodeVolumes } from "services/dnpInstalled/selectors";
@@ -15,44 +14,19 @@ import "./dashboard.scss";
 // Components
 import SubTitle from "components/SubTitle";
 import Title from "components/Title";
-import { ChainData, HostStats } from "types";
 
-/**
- * @param {array} chainData = [{
- *   name: "Geth",
- *   message: "Syncing 4785835/3748523",
- *   progress: 0.647234,
- *   syncing: true
- * }, ... ]
- * @param {object} dappnodeStats = {
- *   cpu: 35%,
- *   disk: 86%,
- *   memory: 56%
- * }
- * @param {array} dappnodeVolumes = [{
- *   name: "IPFS size",
- *   size: "53.45 GB"
- * }, ... ]
- */
+export default function Dashboard() {
+  const chainData = useSelector(getChainData);
+  const dappnodeStats = useSelector(getDappnodeStats);
+  const dappnodeVolumes = useSelector(getDappnodeVolumes);
+  const dispatch = useDispatch();
 
-function Dashboard({
-  chainData,
-  dappnodeStats,
-  dappnodeVolumes,
-  fetchDappnodeStats
-}: {
-  chainData: ChainData[];
-  dappnodeStats: HostStats;
-  dappnodeVolumes: { name: string; size: number }[];
-  // Action
-  fetchDappnodeStats: () => void;
-}) {
   useEffect(() => {
-    const interval = setInterval(fetchDappnodeStats, 5 * 1000);
+    const interval = setInterval(() => dispatch(fetchDappnodeStats), 5 * 1000);
     return () => {
       clearInterval(interval);
     };
-  }, [fetchDappnodeStats]);
+  }, [dispatch]);
 
   return (
     <>
@@ -81,19 +55,3 @@ function Dashboard({
     </>
   );
 }
-
-const mapStateToProps = createStructuredSelector({
-  chainData: getChainData,
-  dappnodeStats: getDappnodeStats,
-  dappnodeVolumes: getDappnodeVolumes
-});
-
-// Uses bindActionCreators to wrap action creators with dispatch
-const mapDispatchToProps = {
-  fetchDappnodeStats
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Dashboard);

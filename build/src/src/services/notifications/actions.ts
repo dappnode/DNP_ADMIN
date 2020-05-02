@@ -8,6 +8,7 @@ import {
   PushNotification
 } from "./types";
 import { getNotifications } from "./selectors";
+import { RootState } from "rootReducer";
 
 // Service > notifications
 
@@ -24,7 +25,7 @@ export const pushNotification = (
 
 export const viewedNotifications = (): ThunkAction<
   void,
-  {},
+  RootState,
   null,
   AnyAction
 > => async (dispatch, getState) => {

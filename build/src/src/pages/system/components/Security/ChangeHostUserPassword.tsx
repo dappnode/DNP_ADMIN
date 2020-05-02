@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import * as a from "../../actions";
 // Components
 import Card from "components/Card";
@@ -9,11 +9,8 @@ import Switch from "components/Switch";
 // Style
 import "./changeHostUserPassword.scss";
 
-function ChangeHostUserPassword({
-  passwordChange
-}: {
-  passwordChange: (newPassword: string) => void;
-}) {
+export default function ChangeHostUserPassword() {
+  const dispatch = useDispatch();
   const [input, setInput] = useState("");
   const [confirmInput, setConfirmInput] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +30,7 @@ function ChangeHostUserPassword({
     !input || !confirmInput || errors.length || errorsConfirm.length;
 
   const update = () => {
-    if (!invalid) passwordChange(input);
+    if (!invalid) dispatch(a.passwordChange(input));
   };
 
   return (
@@ -110,16 +107,3 @@ function ChangeHostUserPassword({
     </Card>
   );
 }
-
-// Container
-
-const mapStateToProps = null;
-
-const mapDispatchToProps = {
-  passwordChange: a.passwordChange
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChangeHostUserPassword);

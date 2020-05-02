@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { getNewFeatureIds } from "services/dappnodeStatus/selectors";
 import { api } from "api";
 // Components
@@ -55,7 +54,8 @@ function getRouteIdComponent(
 /**
  * Handles routing and each subroute should have "Next" & "Back"
  */
-function Welcome({ featureIds }: { featureIds?: NewFeatureId[] }) {
+export default function Welcome() {
+  const featureIds = useSelector(getNewFeatureIds);
   const [routeN, setRouteN] = useState(0);
   const [status, setStatus] = useState<Status>("finished");
   // featureIds must be frozen during a welcome wizard flow
@@ -126,12 +126,3 @@ function Welcome({ featureIds }: { featureIds?: NewFeatureId[] }) {
     </WelcomeModalContainer>
   );
 }
-
-const mapStateToProps = createStructuredSelector({
-  featureIds: getNewFeatureIds
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(Welcome);

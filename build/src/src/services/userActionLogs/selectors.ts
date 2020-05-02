@@ -1,8 +1,5 @@
-import { mountPoint } from "./data";
-import { UserActionLogWithCount } from "types";
+import { RootState } from "rootReducer";
 
 // Service > userActionLogs
 
-const getLocal = (state: any): UserActionLogWithCount[] => state[mountPoint];
-
-export const getUserActionLogs = getLocal;
+export const getUserActionLogs = (state: RootState) => state.userActionLogs;

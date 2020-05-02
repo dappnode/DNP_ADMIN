@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, RouteComponentProps } from "react-router-dom";
 // Components
-import DeviceDetails from "./DeviceDetails";
+import { DeviceDetails } from "./DeviceDetails";
 import DevicesHome from "./DevicesHome";
 // General styles
 import "./devices.css";

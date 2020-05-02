@@ -12,6 +12,7 @@ import {
 import { withToast } from "components/toast/Toast";
 import { PackageEnvs } from "types";
 import { PackageContainer } from "common/types";
+import { RootState } from "rootReducer";
 
 /* Notice: togglePackage, restartPackage, etc use redux-thunk
    Since there is no return value, and the state change
@@ -47,7 +48,7 @@ export const togglePackage = (
 
 export const restartPackage = (
   id: string
-): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+): ThunkAction<void, RootState, null, AnyAction> => async (_, getState) => {
   // If the DNP is not gracefully stopped, ask for confirmation to reset
   const dnp = getDnpInstalledById(getState(), id);
   if (!dnp || dnp.running || dnp.state !== "exited")
@@ -68,7 +69,7 @@ export const restartPackage = (
 
 export const restartPackageVolumes = (
   id: string
-): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+): ThunkAction<void, RootState, null, AnyAction> => async (_, getState) => {
   // Make sure there are no colliding volumes with this DNP
   const dnp = getDnpInstalledById(getState(), id);
 
@@ -110,7 +111,7 @@ export const restartPackageVolumes = (
 
 export const removePackage = (
   id: string
-): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+): ThunkAction<void, RootState, null, AnyAction> => async (_, getState) => {
   const dnp = getDnpInstalledById(getState(), id);
   if (!dnp) throw Error(`DNP not found dnpList: ${id}`);
 

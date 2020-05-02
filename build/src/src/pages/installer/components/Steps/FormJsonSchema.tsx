@@ -18,7 +18,7 @@ interface AjvErrorWithPath extends AjvError {
 }
 
 const widgets = {
-  [selectMountpointId]: SelectMountpoint
+  [selectMountpointId]: SelectMountpoint as any
 };
 
 // Memo this component to prevent expensive MarkDown parsing

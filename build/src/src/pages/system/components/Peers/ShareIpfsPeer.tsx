@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useSelector } from "react-redux";
 import ClipboardJS from "clipboard";
 import styled from "styled-components";
 import { ipfsApiUrl } from "../../data";
@@ -43,15 +42,14 @@ const ErrMsg = styled.div`
   color: var(--danger-color);
 `;
 
-function ShareIpfsPeer({
-  staticIp,
-  domain,
-  matchUrl
-}: {
-  staticIp?: string;
-  domain?: string;
-  matchUrl: string;
-}) {
+export default function ShareIpfsPeer({ matchUrl }: { matchUrl: string }) {
+  const staticIp = useSelector(
+    (state: any) => (getDappnodeParams(state) || {}).staticIp
+  );
+  const domain = useSelector(
+    (state: any) => (getDappnodeParams(state) || {}).domain
+  );
+
   const [peerId, setPeerId] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -137,11 +135,3 @@ function ShareIpfsPeer({
     </Card>
   );
 }
-
-const mapStateToProps = createStructuredSelector({
-  staticIp: (state: any) => (getDappnodeParams(state) || {}).staticIp,
-  domain: (state: any) => (getDappnodeParams(state) || {}).domain,
-  dappnodeParams: getDappnodeParams
-});
-
-export default connect(mapStateToProps)(ShareIpfsPeer);

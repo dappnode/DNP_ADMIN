@@ -1,21 +1,21 @@
-import { mountPoint, coreName } from "./data";
+import { RootState } from "rootReducer";
+import { coreName } from "./data";
 // Selectors
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
-import { CoreUpdateState } from "./types";
 import { DependencyListItem, ManifestUpdateAlert } from "types";
 
 // Service > coreUpdate
 
-const getLocal = (state: any): CoreUpdateState => state[mountPoint];
-
-export const getCoreUpdateData = (state: any) => getLocal(state).coreUpdateData;
-export const getUpdatingCore = (state: any) => getLocal(state).updatingCore;
+export const getCoreUpdateData = (state: RootState) =>
+  state.coreUpdate.coreUpdateData;
+export const getUpdatingCore = (state: RootState) =>
+  state.coreUpdate.updatingCore;
 
 /**
  * Returns core dependencies,
  * unless the core package is the only one, them returns it
  */
-export const getCoreDeps = (state: any): DependencyListItem[] => {
+export const getCoreDeps = (state: RootState): DependencyListItem[] => {
   const coreUpdateData = getCoreUpdateData(state);
   if (!coreUpdateData) return [];
 
@@ -41,7 +41,7 @@ export const getCoreDeps = (state: any): DependencyListItem[] => {
  * Appends property `updateType` to the manifest
  * updateType = "major, minor, patch"
  */
-export const getCoreChangelog = (state: any): string | undefined => {
+export const getCoreChangelog = (state: RootState): string | undefined => {
   const coreUpdateData = getCoreUpdateData(state);
   if (!coreUpdateData) return undefined;
   return coreUpdateData.changelog;
@@ -50,7 +50,9 @@ export const getCoreChangelog = (state: any): string | undefined => {
 /**
  * Gets the core update message, computing the current update jump
  */
-export const getCoreUpdateAlerts = (state: any): ManifestUpdateAlert[] => {
+export const getCoreUpdateAlerts = (
+  state: RootState
+): ManifestUpdateAlert[] => {
   const coreUpdateData = getCoreUpdateData(state);
   return (coreUpdateData || {}).updateAlerts || [];
 };
@@ -58,18 +60,18 @@ export const getCoreUpdateAlerts = (state: any): ManifestUpdateAlert[] => {
 /**
  * Gets the core current version
  */
-export const getCoreCurrentVersion = (state: any): string | undefined => {
+export const getCoreCurrentVersion = (state: RootState): string | undefined => {
   const dnpInstalled = getDnpInstalled(state);
   const dnpCore = dnpInstalled.find(dnp => dnp.name === coreName);
   return (dnpCore || {}).version;
 };
 
-export const getCoreUpdateAvailable = (state: any): boolean => {
+export const getCoreUpdateAvailable = (state: RootState): boolean => {
   const coreUpdateData = getCoreUpdateData(state);
   return Boolean(coreUpdateData && coreUpdateData.available);
 };
 
-export const getIsCoreUpdateTypePatch = (state: any): boolean => {
+export const getIsCoreUpdateTypePatch = (state: RootState): boolean => {
   const coreUpdateData = getCoreUpdateData(state);
   return Boolean(coreUpdateData && coreUpdateData.type === "patch");
 };

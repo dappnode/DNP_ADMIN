@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import { createStructuredSelector } from "reselect";
 import * as s from "../selectors";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 // Components
 import Card from "components/Card";
 // Actions
@@ -12,20 +11,15 @@ import Github from "Icons/Github";
 import "./support.css";
 import RenderMarkdown from "components/RenderMarkdown";
 
-function Report({
-  issueBody,
-  issueUrl,
-  issueUrlRaw,
-  fetchAllDappnodeStatus
-}: {
-  issueBody: string;
-  issueUrl: string;
-  issueUrlRaw: string;
-  fetchAllDappnodeStatus: () => void;
-}) {
+export default function Report() {
+  const issueBody = useSelector(s.getIssueBody);
+  const issueUrl = useSelector(s.getIssueUrl);
+  const issueUrlRaw = useSelector(s.getIssueUrlRaw);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    fetchAllDappnodeStatus(); // = componentDidMount
-  }, [fetchAllDappnodeStatus]);
+    dispatch(fetchAllDappnodeStatus());
+  }, [dispatch]);
 
   return (
     <Card>
@@ -57,19 +51,3 @@ function Report({
     </Card>
   );
 }
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  issueBody: s.getIssueBody,
-  issueUrl: s.getIssueUrl,
-  issueUrlRaw: s.getIssueUrlRaw
-});
-
-// Uses bindActionCreators to wrap action creators with dispatch
-const mapDispatchToProps = { fetchAllDappnodeStatus };
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Report);

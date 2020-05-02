@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { api } from "api";
 import { confirm } from "components/ConfirmDialog";
 import { encrypt } from "utils/publicKeyEncryption";
@@ -23,13 +22,10 @@ import blankCardSample from "img/blank-card-sample.png";
 // Style
 import "./identity.scss";
 
-function Identity({
-  identityAddress,
-  dappmanagerNaclPublicKey
-}: {
-  identityAddress?: string;
-  dappmanagerNaclPublicKey?: string;
-}) {
+export default function Identity() {
+  const identityAddress = useSelector(getIdentityAddress);
+  const dappmanagerNaclPublicKey = useSelector(getDappmanagerNaclPublicKey);
+
   const [showRealCard, setShowRealCard] = useState(false);
   const [seedPhrase, setSeedPhrase] = useState("");
   const [isOnProgress, setIsOnProgress] = useState(false);
@@ -142,17 +138,3 @@ function Identity({
     </>
   );
 }
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  identityAddress: getIdentityAddress,
-  dappmanagerNaclPublicKey: getDappmanagerNaclPublicKey
-});
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Identity);

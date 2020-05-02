@@ -1,6 +1,5 @@
 import React from "react";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import BaseDropdown from "./BaseDropdown";
 import makeBlockie from "ethereum-blockies-base64";
 import { getDappnodeIdentityClean } from "services/dappnodeStatus/selectors";
@@ -28,16 +27,8 @@ function parseIdentityKeyValue(key: string, value = "") {
   }
 }
 
-const DappnodeIdentity = ({
-  dappnodeIdentity
-}: {
-  dappnodeIdentity?: {
-    name?: string;
-    staticIp?: string;
-    domain?: string;
-    ip?: string;
-  };
-}) => {
+export default function DappnodeIdentity() {
+  const dappnodeIdentity = useSelector(getDappnodeIdentityClean);
   if (!dappnodeIdentity || typeof dappnodeIdentity !== "object") {
     console.error("dappnodeIdentity must be an object");
     return null;
@@ -71,13 +62,4 @@ const DappnodeIdentity = ({
       placeholder="No identity available, click the report icon"
     />
   );
-};
-
-const mapStateToProps = createStructuredSelector({
-  dappnodeIdentity: getDappnodeIdentityClean
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(DappnodeIdentity);
+}

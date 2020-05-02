@@ -11,12 +11,13 @@ import { getDnpInstalledById } from "services/dnpInstalled/selectors";
 import { getEthClientTarget } from "services/dappnodeStatus/selectors";
 import { EthClientTarget } from "types";
 import { withToast } from "components/toast/Toast";
+import { RootState } from "rootReducer";
 
 // Redux Thunk actions
 
 export const changeEthClientTarget = (
   nextTarget: EthClientTarget
-): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+): ThunkAction<void, RootState, null, AnyAction> => async (_, getState) => {
   const prevTarget = getEthClientTarget(getState());
 
   // Make sure the target has changed or the call will error
@@ -111,7 +112,10 @@ export const volumeRemove = (
 export const packageVolumeRemove = (
   dnpName: string,
   volName: string
-): ThunkAction<void, {}, null, AnyAction> => async (dispatch, getState) => {
+): ThunkAction<void, RootState, null, AnyAction> => async (
+  dispatch,
+  getState
+) => {
   // Make sure there are no colliding volumes with this DNP
   const dnp = getDnpInstalledById(getState(), dnpName);
   const prettyDnpName = shortNameCapitalized(dnpName);

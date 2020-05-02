@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useSelector } from "react-redux";
 import { getUserActionLogs } from "services/userActionLogs/selectors";
 import { UserActionLogWithCount } from "types";
 // Components
@@ -21,11 +20,9 @@ function parseLevel(level: "error" | "warn" | "info"): string {
   return "";
 }
 
-function Activity({
-  userActionLogs
-}: {
-  userActionLogs: UserActionLogWithCount[];
-}) {
+export default function Activity() {
+  const userActionLogs = useSelector(getUserActionLogs);
+
   // Force a re-render every 15 seconds for the timeFrom to show up correctly
   const [, setClock] = useState(0);
   useEffect(() => {
@@ -116,14 +113,3 @@ function ActivityItem({ log }: { log: UserActionLogWithCount }) {
     </div>
   );
 }
-
-const mapStateToProps = createStructuredSelector({
-  userActionLogs: getUserActionLogs
-});
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Activity);

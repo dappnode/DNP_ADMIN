@@ -1,30 +1,20 @@
-import { mountPoint, superAdminId } from "./data";
-import { DevicesState, VpnDeviceState } from "./types";
+import { RootState } from "rootReducer";
+import { superAdminId } from "./data";
+import { VpnDeviceState } from "./types";
 
 // Service > devices
-
-const getLocal = (state: any): DevicesState => state[mountPoint];
 
 /**
  * Return devices as an array and order them to place
  * the superAdmin as the first device
  */
-export function getDevices(state: any): VpnDeviceState[] {
-  const devices = getLocal(state);
-  return Object.values(devices).sort(d1 => {
-    if (d1.id === superAdminId) return -1;
-    else return 0;
-  });
-}
+export const getDevices = (state: RootState): VpnDeviceState[] =>
+  Object.values(state.devices).sort(d1 => (d1.id === superAdminId ? -1 : 0));
 
-export function areThereDevices(state: any): boolean {
-  return getDevices(state).length > 0;
-}
+export const areThereDevices = (state: RootState): boolean =>
+  getDevices(state).length > 0;
 
-export function getDeviceById(
-  state: any,
+export const getDeviceById = (
+  state: RootState,
   id: string
-): VpnDeviceState | undefined {
-  const devices = getLocal(state);
-  return devices[id];
-}
+): VpnDeviceState | undefined => state.devices[id];

@@ -1,51 +1,55 @@
-import { mountPoint, autoUpdateIds } from "./data";
+import { RootState } from "rootReducer";
+import { autoUpdateIds } from "./data";
 import { createSelector } from "reselect";
-import { DappnodeStatusState } from "./types";
 import { getEthClientPrettyStatusError } from "components/EthMultiClient";
 
 // Service > dappnodeStatus
 
-export const getLocal = (state: any): DappnodeStatusState => state[mountPoint];
-
 // Sub-local properties
-export const getSystemInfo = (state: any) => getLocal(state).systemInfo;
-export const getDappnodeParams = (state: any) => getSystemInfo(state);
-export const getDappnodeStats = (state: any) => getLocal(state).stats;
-export const getDappnodeDiagnose = (state: any) => getLocal(state).diagnose;
-export const getVersionData = (state: any) =>
-  (getLocal(state).systemInfo || {}).versionData;
-export const getIpfsConnectionStatus = (state: any) =>
-  getLocal(state).ipfsConnectionStatus;
-export const getWifiStatus = (state: any) => getLocal(state).wifiStatus;
-export const getPasswordIsInsecure = (state: any) =>
-  getLocal(state).passwordIsInsecure;
-export const getAutoUpdateData = (state: any) => getLocal(state).autoUpdateData;
-export const getIdentityAddress = (state: any) =>
+export const getSystemInfo = (state: RootState) =>
+  state.dappnodeStatus.systemInfo;
+export const getDappnodeParams = (state: RootState) => getSystemInfo(state);
+export const getDappnodeStats = (state: RootState) =>
+  state.dappnodeStatus.stats;
+export const getDappnodeDiagnose = (state: RootState) =>
+  state.dappnodeStatus.diagnose;
+export const getVersionData = (state: RootState) =>
+  (state.dappnodeStatus.systemInfo || {}).versionData;
+export const getIpfsConnectionStatus = (state: RootState) =>
+  state.dappnodeStatus.ipfsConnectionStatus;
+export const getWifiStatus = (state: RootState) =>
+  state.dappnodeStatus.wifiStatus;
+export const getPasswordIsInsecure = (state: RootState) =>
+  state.dappnodeStatus.passwordIsInsecure;
+export const getAutoUpdateData = (state: RootState) =>
+  state.dappnodeStatus.autoUpdateData;
+export const getIdentityAddress = (state: RootState) =>
   (getSystemInfo(state) || {}).identityAddress;
-export const getMountpoints = (state: any) => getLocal(state).mountpoints;
-export const getVolumes = (state: any) => getLocal(state).volumes;
+export const getMountpoints = (state: RootState) =>
+  state.dappnodeStatus.mountpoints;
+export const getVolumes = (state: RootState) => state.dappnodeStatus.volumes;
 
 // Sub-sub local properties
-export const getDappmanagerVersionData = (state: any) =>
+export const getDappmanagerVersionData = (state: RootState) =>
   (getSystemInfo(state) || {}).versionData;
-export const getVpnVersionData = (state: any) =>
+export const getVpnVersionData = (state: RootState) =>
   (getSystemInfo(state) || {}).versionDataVpn;
-export const getEthClientTarget = (state: any) =>
+export const getEthClientTarget = (state: RootState) =>
   (getSystemInfo(state) || {}).ethClientTarget;
-export const getEthClientFallback = (state: any) =>
+export const getEthClientFallback = (state: RootState) =>
   (getSystemInfo(state) || {}).ethClientFallback;
-export const getEthClientStatus = (state: any) =>
+export const getEthClientStatus = (state: RootState) =>
   (getSystemInfo(state) || {}).ethClientStatus;
-export const getNewFeatureIds = (state: any) =>
+export const getNewFeatureIds = (state: RootState) =>
   (getSystemInfo(state) || {}).newFeatureIds;
-export const getDappmanagerNaclPublicKey = (state: any) =>
+export const getDappmanagerNaclPublicKey = (state: RootState) =>
   (getSystemInfo(state) || {}).dappmanagerNaclPublicKey;
 
 /**
  * Returns a pretty warning about the eth client only if the user has to see it
  * @param state
  */
-export const getEthClientWarning = (state: any): string | null => {
+export const getEthClientWarning = (state: RootState): string | null => {
   const ethClientFallback = getEthClientFallback(state);
   const ethClientStatus = getEthClientStatus(state);
   if (ethClientStatus && !ethClientStatus.ok && ethClientFallback === "off")
@@ -63,7 +67,7 @@ export const getEthClientWarning = (state: any): string | null => {
  * }
  * [Tested]
  */
-export const getDappnodeIdentityClean = (state: any) => {
+export const getDappnodeIdentityClean = (state: RootState) => {
   const systemInfo = getSystemInfo(state);
   if (systemInfo) {
     // If the static IP is set, don't show the regular IP
@@ -75,13 +79,13 @@ export const getDappnodeIdentityClean = (state: any) => {
   }
 };
 
-export const getStaticIp = (state: any) =>
+export const getStaticIp = (state: RootState) =>
   (getSystemInfo(state) || {}).staticIp || "";
 
-export const getUpnpAvailable = (state: any) =>
+export const getUpnpAvailable = (state: RootState) =>
   (getSystemInfo(state) || {}).upnpAvailable;
 
-export const getIsWifiRunning = (state: any) =>
+export const getIsWifiRunning = (state: RootState) =>
   (getWifiStatus(state) || {}).running;
 
 export const getIsCoreAutoUpdateActive = createSelector(
