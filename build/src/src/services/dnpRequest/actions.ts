@@ -1,5 +1,3 @@
-import { ThunkAction } from "redux-thunk";
-import { AnyAction } from "redux";
 import { api } from "api";
 import { RequestedDnp, RequestStatus } from "types";
 import {
@@ -10,6 +8,7 @@ import {
   SET_DNP_REQUEST,
   UPDATE_DNP_REQUEST_STATUS
 } from "./types";
+import { AppThunk } from "store";
 
 export function updateDnpRequest(
   id: string,
@@ -43,9 +42,7 @@ export function updateStatus(
 
 // Redux-thunk actions
 
-export const fetchDnpRequest = (
-  id: string
-): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
+export const fetchDnpRequest = (id: string): AppThunk => async dispatch => {
   try {
     dispatch(updateStatus({ loading: true }, id));
     dispatch(setDnpRequest(id, await api.fetchDnpRequest({ id })));

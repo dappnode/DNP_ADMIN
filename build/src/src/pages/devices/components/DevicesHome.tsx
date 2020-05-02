@@ -16,6 +16,7 @@ import Switch from "components/Switch";
 import { ButtonLight } from "components/Button";
 // Icons
 import { MdDelete, MdRefresh } from "react-icons/md";
+import { superAdminId } from "params";
 
 export default function DevicesHome() {
   const devices = useSelector(getDevices);
@@ -63,25 +64,28 @@ export default function DevicesHome() {
         <header>Admin</header>
         <header>Reset</header>
         <header>Remove</header>
-        {devices.map(({ id, admin, url }) => (
-          <React.Fragment key={id}>
-            <div className="name">{id}</div>
-            <NavLink to={"/devices/" + id} className="no-a-style">
-              <ButtonLight className="get-link">Get</ButtonLight>
-            </NavLink>
+        {devices
+          // Sort super admin device as first
+          .sort(d1 => (d1.id === superAdminId ? -1 : 0))
+          .map(({ id, admin }) => (
+            <React.Fragment key={id}>
+              <div className="name">{id}</div>
+              <NavLink to={"/devices/" + id} className="no-a-style">
+                <ButtonLight className="get-link">Get</ButtonLight>
+              </NavLink>
 
-            <Switch checked={admin} onToggle={() => toggleAdmin(id)} />
-            <MdRefresh
-              style={{ fontSize: "1.05rem" }}
-              onClick={() => resetDevice(id)}
-            />
-            <MdDelete
-              className={admin ? "disabled" : ""}
-              onClick={() => (admin ? null : removeDevice(id))}
-            />
-            <hr />
-          </React.Fragment>
-        ))}
+              <Switch checked={admin} onToggle={() => toggleAdmin(id)} />
+              <MdRefresh
+                style={{ fontSize: "1.05rem" }}
+                onClick={() => resetDevice(id)}
+              />
+              <MdDelete
+                className={admin ? "disabled" : ""}
+                onClick={() => (admin ? null : removeDevice(id))}
+              />
+              <hr />
+            </React.Fragment>
+          ))}
       </Card>
     </>
   );

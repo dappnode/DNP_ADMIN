@@ -1,6 +1,6 @@
 import { put, call } from "redux-saga/effects";
 import { api } from "api";
-import { CONNECTION_OPEN } from "services/connectionStatus";
+import { connectionOpen } from "services/connectionStatus/actions";
 import { rootWatcher } from "utils/redux";
 import { updateStatus, setDnpInstalled } from "./actions";
 
@@ -21,4 +21,4 @@ function* fetchDnpInstalled() {
 
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
-export default rootWatcher([[CONNECTION_OPEN, fetchDnpInstalled]]);
+export default rootWatcher([[connectionOpen.toString(), fetchDnpInstalled]]);

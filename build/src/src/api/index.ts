@@ -17,6 +17,7 @@ import {
   connectionOpen,
   connectionClose
 } from "services/connectionStatus/actions";
+import { initialCallsOnOpen } from "./initialCalls";
 
 const url = wampUrl;
 const realm = wampRealm;
@@ -54,6 +55,7 @@ export function start() {
 
     mapSubscriptionsToRedux(subscriptions);
     legacyVpnSubscription(session);
+    initialCallsOnOpen();
 
     // For testing:
     // @ts-ignore

@@ -1,24 +1,21 @@
-import { VpnDevice } from "types";
+import { devicesSlice } from "./reducer";
+import { api } from "api";
+import { AppThunk } from "store";
 import {
-  UpdateDevices,
-  UPDATE_DEVICES,
-  VpnDeviceState,
-  UPDATE_DEVICE,
-  UpdateDevice
-} from "./types";
+  updateIsLoading,
+  updateIsLoaded
+} from "services/loadingStatus/actions";
+import * as loadingIds from "services/loadingStatus/loadingIds";
 
-// Service > devices
+export const fetchDevices = (): AppThunk => async dispatch => {
+  try {
+    dispatch(updateIsLoading(loadingIds.devices));
+    dispatch(updateDevices(await api.devicesList()));
+    dispatch(updateIsLoaded(loadingIds.devices));
+  } catch (e) {
+    console.error(`Error on fetchDevices: ${e.stack}`);
+  }
+};
 
-export const updateDevices = (devices: VpnDevice[]): UpdateDevices => ({
-  type: UPDATE_DEVICES,
-  devices
-});
-
-export const updateDevice = (
-  id: string,
-  device: Partial<VpnDeviceState>
-): UpdateDevice => ({
-  type: UPDATE_DEVICE,
-  id,
-  device
-});
+export const updateDevices = devicesSlice.actions.updateDevices;
+export const updateDevice = devicesSlice.actions.updateDevice;

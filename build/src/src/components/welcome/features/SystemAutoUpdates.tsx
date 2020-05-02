@@ -3,7 +3,7 @@ import { api } from "api";
 import BottomButtons from "../BottomButtons";
 import SwitchBig from "components/SwitchBig";
 // External
-import { autoUpdateIds } from "services/dappnodeStatus/data";
+import { autoUpdateIds } from "params";
 
 /**
  * Offer the option to turn on system auto-updates

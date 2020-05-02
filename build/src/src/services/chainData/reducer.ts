@@ -1,17 +1,9 @@
-import { Reducer } from "redux";
-import { UPDATE_CHAIN_DATA, ChainDataState, AllReducerActions } from "./types";
+import { createReducer } from "@reduxjs/toolkit";
+import { updateChainData } from "./actions";
+import { ChainData } from "common/types";
 
 // Service > chainData
 
-export const reducer: Reducer<ChainDataState, AllReducerActions> = (
-  state = [],
-  action
-) => {
-  switch (action.type) {
-    case UPDATE_CHAIN_DATA:
-      return action.chainData;
-
-    default:
-      return state;
-  }
-};
+export const reducer = createReducer<ChainData[]>([], builder =>
+  builder.addCase(updateChainData, (state, action) => action.payload)
+);

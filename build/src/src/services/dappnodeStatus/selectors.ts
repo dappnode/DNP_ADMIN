@@ -1,5 +1,5 @@
 import { RootState } from "rootReducer";
-import { autoUpdateIds } from "./data";
+import { autoUpdateIds } from "params";
 import { createSelector } from "reselect";
 import { getEthClientPrettyStatusError } from "components/EthMultiClient";
 

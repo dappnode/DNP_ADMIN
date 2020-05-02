@@ -1,5 +1,10 @@
 import { RootState } from "rootReducer";
+import { userActionLogsAdapter } from "./reducer";
 
 // Service > userActionLogs
 
-export const getUserActionLogs = (state: RootState) => state.userActionLogs;
+const selector = userActionLogsAdapter.getSelectors<RootState>(
+  state => state.userActionLogs
+);
+
+export const getUserActionLogs = selector.selectAll;

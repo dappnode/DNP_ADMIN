@@ -6,22 +6,20 @@ import installer from "pages/installer";
 import { getProgressLogsOfDnp } from "services/isInstallingLogs/selectors";
 import { getIsLoadingStrictById } from "services/loadingStatus/selectors";
 import { getCoreUpdateAvailable } from "services/coreUpdate/selectors";
-import {
-  loadingId as loadingIdCoreUpdate,
-  coreName
-} from "services/coreUpdate/data";
+import * as loadingIds from "services/loadingStatus/loadingIds";
 // Components
 import Card from "components/Card";
 import StatusIcon from "components/StatusIcon";
 import SystemUpdateDetails from "./SystemUpdateDetails";
 import Loading from "components/Loading";
 import SubTitle from "components/SubTitle";
+import { coreName } from "params";
 
 export default function SystemUpdate() {
   const coreProgressLogs = useSelector((state: any) =>
     getProgressLogsOfDnp(state, coreName)
   );
-  const isLoading = useSelector(getIsLoadingStrictById(loadingIdCoreUpdate));
+  const isLoading = useSelector(getIsLoadingStrictById(loadingIds.coreUpdate));
   const coreUpdateAvailable = useSelector(getCoreUpdateAvailable);
 
   return (

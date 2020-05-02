@@ -1,11 +1,9 @@
-// DEVICES
 import { api } from "api";
-import { ThunkAction } from "redux-thunk";
-import { AnyAction } from "redux";
 import { updateDevice } from "services/devices/actions";
-import { superAdminId } from "services/devices/data";
 import { confirm } from "components/ConfirmDialog";
 import { withToast } from "components/toast/Toast";
+import { superAdminId } from "params";
+import { AppThunk } from "store";
 
 /* Notice: addDevice, removeDevice, etc use redux-thunk
    Since there is no return value, and the state change
@@ -18,17 +16,13 @@ import { withToast } from "components/toast/Toast";
    api.methodName will never throw if message is true
  */
 
-export const addDevice = (
-  id: string
-): ThunkAction<void, {}, null, AnyAction> => () =>
+export const addDevice = (id: string): AppThunk => () =>
   withToast(() => api.deviceAdd({ id }), {
     message: `Adding ${id}...`,
     onSuccess: `Added ${id}`
   });
 
-export const removeDevice = (
-  id: string
-): ThunkAction<void, {}, null, AnyAction> => () =>
+export const removeDevice = (id: string): AppThunk => () =>
   confirm({
     title: `Removing ${id} device`,
     text: "The user using this device will lose access to this DAppNode ",
@@ -40,9 +34,7 @@ export const removeDevice = (
       })
   });
 
-export const resetDevice = (
-  id: string
-): ThunkAction<void, {}, null, AnyAction> => () => {
+export const resetDevice = (id: string): AppThunk => () => {
   const isSuperAdmin = id === superAdminId;
   confirm({
     title: isSuperAdmin
@@ -60,9 +52,7 @@ export const resetDevice = (
   });
 };
 
-export const toggleAdmin = (
-  id: string
-): ThunkAction<void, {}, null, AnyAction> => () =>
+export const toggleAdmin = (id: string): AppThunk => () =>
   withToast(() => api.deviceAdminToggle({ id }), {
     message: `Toggling ${id} admin...`,
     onSuccess: `Toggled ${id} admin`
@@ -70,12 +60,12 @@ export const toggleAdmin = (
 
 export const getDeviceCredentials = (
   id: string
-): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
+): AppThunk => async dispatch => {
   try {
     const data = await withToast(() => api.deviceCredentialsGet({ id }), {
       onError: true
     });
-    if (data) dispatch(updateDevice(id, data));
+    if (data) dispatch(updateDevice({ id, changes: data }));
   } catch (e) {
     console.error(`Error on getDeviceCredentials`, e);
   }

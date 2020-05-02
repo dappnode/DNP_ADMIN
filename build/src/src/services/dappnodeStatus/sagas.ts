@@ -2,9 +2,8 @@ import { put, call, all } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import { api } from "api";
 import * as a from "./actions";
-import * as t from "./types";
 import checkIpfsConnection from "./diagnoseFunctions/checkIpfsNode";
-import { CONNECTION_OPEN } from "services/connectionStatus";
+import { connectionOpen } from "services/connectionStatus/actions";
 import { wrapErrorsAndLoading } from "services/loadingStatus/sagas";
 import * as loadingIds from "services/loadingStatus/loadingIds";
 // Utils
@@ -167,12 +166,12 @@ function* fetchAllDappnodeStatus() {
 // takeEvery(actionType, watchers[actionType])
 export default rootWatcher([
   // Fetch everything
-  [CONNECTION_OPEN, fetchAllDappnodeStatus],
-  [t.FETCH_ALL_DAPPNODE_STATUS, fetchAllDappnodeStatus],
+  [connectionOpen.toString(), fetchAllDappnodeStatus],
+  [fetchAllDappnodeStatus.toString(), fetchAllDappnodeStatus],
   // Fetch single data
-  [t.FETCH_DAPPNODE_PARAMS, fetchDappnodeParams],
-  [t.FETCH_DAPPNODE_STATS, fetchDappnodeStats],
-  [t.FETCH_DAPPNODE_DIAGNOSE, fetchDappnodeDiagnose],
-  [t.FETCH_IF_PASSWORD_IS_INSECURE, checkIfPasswordIsInsecure],
-  [t.FETCH_MOUNTPOINTS, fetchMountpointData]
+  [a.fetchDappnodeParams.toString(), fetchDappnodeParams],
+  [a.fetchDappnodeStats.toString(), fetchDappnodeStats],
+  [a.fetchDappnodeDiagnose.toString(), fetchDappnodeDiagnose],
+  [a.fetchPasswordIsInsecure.toString(), checkIfPasswordIsInsecure],
+  [a.fetchMountpoints.toString(), fetchMountpointData]
 ]);

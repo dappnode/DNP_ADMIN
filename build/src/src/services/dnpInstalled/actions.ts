@@ -1,5 +1,4 @@
-import { ThunkAction } from "redux-thunk";
-import { AnyAction } from "redux";
+import { createAction } from "@reduxjs/toolkit";
 import { api } from "api";
 import { RequestStatus, PackageContainer, PackageDetailData } from "types";
 import {
@@ -12,6 +11,7 @@ import {
   UPDATE_DNP_INSTALLED_STATUS,
   UPDATE_DNP_INSTALLED_DATA_STATUS
 } from "./types";
+import { AppThunk } from "store";
 
 // Service > dnpInstalled
 
@@ -57,12 +57,7 @@ export function updateDnpInstalledDataStatus(
 
 // Redux-thunk actions
 
-export const fetchDnpInstalled = (): ThunkAction<
-  void,
-  {},
-  null,
-  AnyAction
-> => async dispatch => {
+export const fetchDnpInstalled = (): AppThunk => async dispatch => {
   try {
     dispatch(updateStatus({ loading: true }));
     dispatch(setDnpInstalled(await api.listPackages()));
@@ -74,7 +69,7 @@ export const fetchDnpInstalled = (): ThunkAction<
 
 export const fetchDnpInstalledData = (
   id: string
-): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
+): AppThunk => async dispatch => {
   const updateStatusDnp = (requestStatus: RequestStatus) =>
     updateDnpInstalledDataStatus(requestStatus, id);
   try {

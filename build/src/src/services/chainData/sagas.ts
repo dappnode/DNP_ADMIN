@@ -2,8 +2,7 @@ import { put, call } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import { api } from "api";
 import * as a from "./actions";
-import * as t from "./types";
-import { CONNECTION_OPEN } from "services/connectionStatus";
+import { connectionOpen } from "services/connectionStatus/actions";
 
 // Service > chainData
 
@@ -28,6 +27,6 @@ function* requestChainData() {
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 export default rootWatcher([
-  [CONNECTION_OPEN, requestChainData],
-  [t.REQUEST_CHAIN_DATA, requestChainData]
+  [connectionOpen.toString(), requestChainData],
+  [requestChainData.toString(), requestChainData]
 ]);

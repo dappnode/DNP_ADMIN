@@ -1,11 +1,23 @@
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, Action } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import thunk from "redux-thunk";
+import thunk, { ThunkAction } from "redux-thunk";
 import createSagaMiddleware from "redux-saga";
 
 // App modules
 import rootSaga from "./rootSaga";
-import rootReducer from "./rootReducer";
+import rootReducer, { RootState } from "./rootReducer";
+
+/**
+ * To reduce repetition, you might want to define a reusable AppThunk
+ * type once, in your store file, and then use that type whenever
+ * you write a thunk:
+ */
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
 
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware();

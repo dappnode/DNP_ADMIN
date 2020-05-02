@@ -1,3 +1,4 @@
+export const coreUpdate = "coreUpdate";
 export const dappnodeParams = "dappnodeParams";
 export const dappnodeStats = "dappnodeStats";
 export const dappnodeDiagnose = "dappnodeDiagnose";
@@ -9,6 +10,7 @@ export const passwordIsInsecure = "passwordIsInsecure";
 export const autoUpdateData = "autoUpdateData";
 export const identity = "identity";
 export const mountpoints = "mountpoints";
+export const notifications = "notifications";
 export const volumes = "volumes";
 export const systemInfo = "systemInfo";
 // Service > dnpDirectory

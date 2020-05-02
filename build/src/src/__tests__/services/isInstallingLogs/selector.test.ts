@@ -1,7 +1,8 @@
-import { mountPoint } from "services/isInstallingLogs/data";
 import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 import { ProgressLogsByDnp } from "types";
 import { IsInstallingLogsState } from "services/isInstallingLogs/types";
+
+const mountPoint = "isInstallingLogs";
 
 describe("service/isInstallingLogs", () => {
   describe("getProgressLogsByDnp", () => {

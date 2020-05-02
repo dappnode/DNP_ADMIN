@@ -1,28 +1,20 @@
-import {
-  UPDATE_USER_ACTION_LOGS,
-  PUSH_USER_ACTION_LOG,
-  FETCH_USER_ACTION_LOGS,
-  PushUserActionLog,
-  UpdateUserActionLogs
-} from "./types";
-import { UserActionLogWithCount } from "types";
+import { api } from "api";
+import { userActionLogsSlice } from "./reducer";
+import { AppThunk } from "store";
+import { parseUserActionLogsString } from "utils/parseUserActionLogsString";
 
 // Service > userActionLogs
 
-export const updateUserActionLogs = (
-  userActionLogs: UserActionLogWithCount[]
-): UpdateUserActionLogs => ({
-  type: UPDATE_USER_ACTION_LOGS,
-  userActionLogs
-});
+export const fetchUserActionLogs = (): AppThunk => async dispatch => {
+  try {
+    const userActionLogs = await api
+      .getUserActionLogs({})
+      .then(parseUserActionLogsString);
+    dispatch(updateUserActionLogs(userActionLogs));
+  } catch (e) {
+    console.error("Error fetching userActionLogs: ", e);
+  }
+};
 
-export const pushUserActionLog = (
-  userActionLog: UserActionLogWithCount
-): PushUserActionLog => ({
-  type: PUSH_USER_ACTION_LOG,
-  userActionLog
-});
-
-export const fetchUserActionLogs = () => ({
-  type: FETCH_USER_ACTION_LOGS
-});
+const { updateUserActionLogs, pushUserActionLog } = userActionLogsSlice.actions;
+export { updateUserActionLogs, pushUserActionLog };

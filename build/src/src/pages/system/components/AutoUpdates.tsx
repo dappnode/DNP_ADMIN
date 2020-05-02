@@ -6,16 +6,16 @@ import { api } from "api";
 import Card from "components/Card";
 import Alert from "react-bootstrap/Alert";
 import Switch from "components/Switch";
+import { withToast } from "components/toast/Toast";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 import { parseStaticDate, parseDiffDates } from "utils/dates";
+import { coreName, autoUpdateIds } from "params";
 // External
 import { getEthClientWarning } from "services/dappnodeStatus/selectors";
 import { activateFallbackPath } from "pages/system/data";
 import { getAutoUpdateData } from "services/dappnodeStatus/selectors";
 import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
-import { coreName } from "services/coreUpdate/data";
-import { autoUpdateIds } from "services/dappnodeStatus/data";
 import { rootPath as installerRootPath } from "pages/installer";
 import {
   rootPath as systemRootPath,
@@ -23,7 +23,6 @@ import {
 } from "pages/system/data";
 // Styles
 import "./autoUpdates.scss";
-import { withToast } from "components/toast/Toast";
 
 const { MY_PACKAGES, SYSTEM_PACKAGES } = autoUpdateIds;
 const getIsSinglePackage = (id: string) =>

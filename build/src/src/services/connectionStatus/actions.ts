@@ -1,24 +1,10 @@
-import {
-  CONNECTION_OPEN,
-  CONNECTION_CLOSE,
-  ConnectionOpen,
-  ConnectionClose
-} from "./types";
+import { createAction } from "@reduxjs/toolkit";
 
 // Service > connectionStatus
 
-export const connectionOpen = (): ConnectionOpen => ({
-  type: CONNECTION_OPEN
-});
+export const connectionOpen = createAction("connectionStatus/open");
 
-export const connectionClose = ({
-  error,
-  isNotAdmin
-}: {
+export const connectionClose = createAction<{
   error: string;
   isNotAdmin: boolean;
-}): ConnectionClose => ({
-  type: CONNECTION_CLOSE,
-  error,
-  isNotAdmin
-});
+}>("connectionStatus/close");

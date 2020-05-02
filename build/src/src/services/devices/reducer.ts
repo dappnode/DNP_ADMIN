@@ -1,41 +1,26 @@
-import { Reducer } from "redux";
-import {
-  AllReducerActions,
-  UPDATE_DEVICE,
-  UPDATE_DEVICES,
-  DevicesState
-} from "./types";
-import { VpnDevice } from "common/types";
+import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+import { VpnDevice, VpnDeviceCredentials } from "common/types";
+import { superAdminId } from "params";
 
 // Service > devices
 
-export const reducer: Reducer<DevicesState, AllReducerActions> = (
-  state = {},
-  action
-) => {
-  switch (action.type) {
-    case UPDATE_DEVICES:
-      return action.devices.reduce(
-        (obj: { [id: string]: VpnDevice }, device) => {
-          return { ...obj, [device.id]: device };
-        },
-        {}
-      );
+type VpnDeviceState = VpnDevice & Partial<VpnDeviceCredentials>;
 
-    case UPDATE_DEVICE:
-      if (!state[action.id]) {
-        console.error(`Attempting to update non-existant device ${action.id}`);
-        return state;
-      }
-      return {
-        ...state,
-        [action.id]: {
-          ...state[action.id],
-          ...action.device
-        }
-      };
+export const devicesAdapter = createEntityAdapter<VpnDeviceState>({
+  // Assume IDs are stored in a field other than `book.id`
+  selectId: device => device.id,
+  // Keep the "all IDs" array sorted based on book titles
+  sortComparer: (a, b) => (a.id === superAdminId ? -1 : 0)
+});
 
-    default:
-      return state;
+export const devicesSlice = createSlice({
+  name: "devices",
+  initialState: devicesAdapter.getInitialState(),
+  reducers: {
+    updateDevices: devicesAdapter.setAll,
+    updateDevice: devicesAdapter.updateOne
   }
-};
+});
+
+export const reducer = devicesSlice.reducer;
+

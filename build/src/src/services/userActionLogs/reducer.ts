@@ -1,25 +1,25 @@
-import {
-  UserActionLogsState,
-  AllReducerActions,
-  UPDATE_USER_ACTION_LOGS,
-  PUSH_USER_ACTION_LOG
-} from "./types";
-import { Reducer } from "redux";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { UserActionLogWithCount } from "types";
 
 // Service > userActionLogs
 
-export const reducer: Reducer<UserActionLogsState, AllReducerActions> = (
-  state = [],
-  action
-) => {
-  switch (action.type) {
-    case UPDATE_USER_ACTION_LOGS:
-      return action.userActionLogs;
+export const userActionLogsAdapter = createEntityAdapter<
+  UserActionLogWithCount
+>({
+  // Assume IDs are stored in a field other than `book.id`
+  selectId: device => device.timestamp,
+  // Keep the "all IDs" array sorted based on book titles
+  sortComparer: (a, b) =>
+    new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+});
 
-    case PUSH_USER_ACTION_LOG:
-      return [action.userActionLog, ...state];
-
-    default:
-      return state;
+export const userActionLogsSlice = createSlice({
+  name: "userActionLogs",
+  initialState: userActionLogsAdapter.getInitialState(),
+  reducers: {
+    updateUserActionLogs: userActionLogsAdapter.setAll,
+    pushUserActionLog: userActionLogsAdapter.addOne
   }
-};
+});
+
+export const reducer = userActionLogsSlice.reducer;

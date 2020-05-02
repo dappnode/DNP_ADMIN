@@ -1,14 +1,14 @@
 import { select, take, takeEvery, all } from "redux-saga/effects";
 import { getIsConnectionOpen } from "services/connectionStatus/selectors";
-import { CONNECTION_OPEN } from "services/connectionStatus";
+import { connectionOpen } from "services/connectionStatus/actions";
 
 /**
  * Blocks the execution of a saga until the WAMP connection is open
  */
 export function* assertConnectionOpen() {
-  const connectionOpen = yield select(getIsConnectionOpen);
-  if (!connectionOpen) {
-    yield take(CONNECTION_OPEN);
+  const isOpen = yield select(getIsConnectionOpen);
+  if (!isOpen) {
+    yield take(connectionOpen.toString());
   }
 }
 

@@ -1,39 +1,28 @@
-import { Reducer } from "redux";
-import {
-  ConnectionStatusState,
-  AllReducerActions,
-  CONNECTION_OPEN,
-  CONNECTION_CLOSE
-} from "./types";
+import { createReducer } from "@reduxjs/toolkit";
+import { connectionOpen, connectionClose } from "./actions";
 
 // Service > connectionStatus
 
-export const reducer: Reducer<ConnectionStatusState, AllReducerActions> = (
-  state = {
+export const reducer = createReducer<{
+  isOpen: boolean;
+  isNotAdmin: boolean;
+  error: string | null;
+}>(
+  {
     isOpen: false,
     isNotAdmin: false,
     error: null
   },
-  action
-) => {
-  switch (action.type) {
-    case CONNECTION_OPEN:
-      return {
-        ...state,
-        isOpen: true,
-        error: null,
-        isNotAdmin: false
-      };
-
-    case CONNECTION_CLOSE:
-      return {
-        ...state,
-        isOpen: false,
-        error: action.error,
-        isNotAdmin: action.isNotAdmin
-      };
-
-    default:
-      return state;
+  builder => {
+    builder.addCase(connectionOpen, () => ({
+      isOpen: true,
+      error: null,
+      isNotAdmin: false
+    }));
+    builder.addCase(connectionClose, (state, action) => ({
+      isOpen: false,
+      error: action.payload.error,
+      isNotAdmin: action.payload.isNotAdmin
+    }));
   }
-};
+);

@@ -1,20 +1,21 @@
 import { put, call, select } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import { api } from "api";
-import { loadingId, coreName } from "./data";
 // Actions
+import * as actions from "./actions";
 import {
   updateIsLoading,
   updateIsLoaded
 } from "services/loadingStatus/actions";
-import { CONNECTION_OPEN } from "services/connectionStatus";
+import { connectionOpen } from "services/connectionStatus/actions";
 import { clearIsInstallingLog } from "services/isInstallingLogs/actions";
 // Utilities
 import { CoreUpdateData } from "types";
-import { UPDATE_CORE } from "./types";
 import { updateCoreUpdateData, updateUpdatingCore } from "./actions";
 import { getUpdatingCore } from "./selectors";
 import { withToast } from "components/toast/Toast";
+import { coreName } from "params";
+import * as loadingIds from "services/loadingStatus/loadingIds";
 
 // Service > coreUpdate
 
@@ -62,14 +63,14 @@ export function* checkCoreUpdate() {
   try {
     console.log("Check core update");
     // If chain is not synced yet, cancel request.
-    yield put(updateIsLoading(loadingId));
+    yield put(updateIsLoading(loadingIds.coreUpdate));
 
     const coreUpdateData: CoreUpdateData = yield call(api.fetchCoreUpdateData, {
       version: coreVersion
     });
     yield put(updateCoreUpdateData(coreUpdateData));
 
-    yield put(updateIsLoaded(loadingId));
+    yield put(updateIsLoaded(loadingIds.coreUpdate));
 
     /* Log out current state */
     console.log(
@@ -129,6 +130,6 @@ function* updateCore() {
 // Each saga is mapped with its actionType using takeEvery
 // takeEvery(actionType, watchers[actionType])
 export default rootWatcher([
-  [CONNECTION_OPEN, checkCoreUpdate],
-  [UPDATE_CORE, updateCore]
+  [connectionOpen.toString(), checkCoreUpdate],
+  [actions.updateCore.toString(), updateCore]
 ]);

@@ -1,18 +1,8 @@
-import {
-  REQUEST_CHAIN_DATA,
-  UPDATE_CHAIN_DATA,
-  RequestChainData,
-  UpdateChainData
-} from "./types";
+import { createAction } from "@reduxjs/toolkit";
 import { ChainData } from "types";
 
 // Service > chainData
 
-export const requestChainData = (): RequestChainData => ({
-  type: REQUEST_CHAIN_DATA
-});
+export const requestChainData = createAction("chainData/request");
 
-export const updateChainData = (chainData: ChainData[]): UpdateChainData => ({
-  type: UPDATE_CHAIN_DATA,
-  chainData
-});
+export const updateChainData = createAction<ChainData[]>("chainData/update");

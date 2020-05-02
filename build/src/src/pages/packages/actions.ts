@@ -2,8 +2,6 @@
 import { confirm } from "components/ConfirmDialog";
 import { shortNameCapitalized as sn } from "utils/format";
 import { api } from "api";
-import { ThunkAction } from "redux-thunk";
-import { AnyAction } from "redux";
 // Selectors
 import {
   getDnpInstalledById,
@@ -12,7 +10,7 @@ import {
 import { withToast } from "components/toast/Toast";
 import { PackageEnvs } from "types";
 import { PackageContainer } from "common/types";
-import { RootState } from "rootReducer";
+import { AppThunk } from "store";
 
 /* Notice: togglePackage, restartPackage, etc use redux-thunk
    Since there is no return value, and the state change
@@ -30,7 +28,7 @@ import { RootState } from "rootReducer";
 export const updatePackageEnv = (
   id: string,
   envs: PackageEnvs
-): ThunkAction<void, {}, null, AnyAction> => () =>
+): AppThunk => () =>
   withToast(() => api.updatePackageEnv({ id, envs }), {
     message: `Updating ${id} envs: ${Object.keys(envs)}...`,
     onSuccess: `Updated ${id} envs`
@@ -38,17 +36,13 @@ export const updatePackageEnv = (
 
 // Used in package interface / controls
 
-export const togglePackage = (
-  id: string
-): ThunkAction<void, {}, null, AnyAction> => () =>
+export const togglePackage = (id: string): AppThunk => () =>
   withToast(() => api.togglePackage({ id }), {
     message: `Toggling ${sn(id)}...`,
     onSuccess: `Toggled ${sn(id)}`
   });
 
-export const restartPackage = (
-  id: string
-): ThunkAction<void, RootState, null, AnyAction> => async (_, getState) => {
+export const restartPackage = (id: string): AppThunk => async (_, getState) => {
   // If the DNP is not gracefully stopped, ask for confirmation to reset
   const dnp = getDnpInstalledById(getState(), id);
   if (!dnp || dnp.running || dnp.state !== "exited")
@@ -67,9 +61,10 @@ export const restartPackage = (
   });
 };
 
-export const restartPackageVolumes = (
-  id: string
-): ThunkAction<void, RootState, null, AnyAction> => async (_, getState) => {
+export const restartPackageVolumes = (id: string): AppThunk => async (
+  _,
+  getState
+) => {
   // Make sure there are no colliding volumes with this DNP
   const dnp = getDnpInstalledById(getState(), id);
 
@@ -109,9 +104,7 @@ export const restartPackageVolumes = (
   });
 };
 
-export const removePackage = (
-  id: string
-): ThunkAction<void, RootState, null, AnyAction> => async (_, getState) => {
+export const removePackage = (id: string): AppThunk => async (_, getState) => {
   const dnp = getDnpInstalledById(getState(), id);
   if (!dnp) throw Error(`DNP not found dnpList: ${id}`);
 

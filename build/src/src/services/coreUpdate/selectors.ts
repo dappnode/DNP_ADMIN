@@ -1,5 +1,5 @@
 import { RootState } from "rootReducer";
-import { coreName } from "./data";
+import { coreName } from "params";
 // Selectors
 import { getDnpInstalled } from "services/dnpInstalled/selectors";
 import { DependencyListItem, ManifestUpdateAlert } from "types";

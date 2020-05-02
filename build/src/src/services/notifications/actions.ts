@@ -1,5 +1,3 @@
-import { ThunkAction } from "redux-thunk";
-import { AnyAction } from "redux";
 import { api } from "api";
 import { PackageNotification } from "common/types";
 import {
@@ -8,7 +6,7 @@ import {
   PushNotification
 } from "./types";
 import { getNotifications } from "./selectors";
-import { RootState } from "rootReducer";
+import { AppThunk } from "store";
 
 // Service > notifications
 
@@ -23,12 +21,10 @@ export const pushNotification = (
   notification
 });
 
-export const viewedNotifications = (): ThunkAction<
-  void,
-  RootState,
-  null,
-  AnyAction
-> => async (dispatch, getState) => {
+export const viewedNotifications = (): AppThunk => async (
+  dispatch,
+  getState
+) => {
   // Mark notifications as viewed immmediatelly
   dispatch({
     type: VIEWED_NOTIFICATIONS
