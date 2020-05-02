@@ -1,3 +1,4 @@
+import { Reducer } from "redux";
 import {
   ConnectionStatusState,
   AllReducerActions,
@@ -7,16 +8,14 @@ import {
 
 // Service > connectionStatus
 
-const initialState: ConnectionStatusState = {
-  isOpen: false,
-  isNotAdmin: false,
-  error: null
-};
-
-export default function(
-  state: ConnectionStatusState = initialState,
-  action: AllReducerActions
-): ConnectionStatusState {
+export const reducer: Reducer<ConnectionStatusState, AllReducerActions> = (
+  state = {
+    isOpen: false,
+    isNotAdmin: false,
+    error: null
+  },
+  action
+) => {
   switch (action.type) {
     case CONNECTION_OPEN:
       return {
@@ -37,4 +36,4 @@ export default function(
     default:
       return state;
   }
-}
+};

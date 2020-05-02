@@ -1,20 +1,26 @@
-import { keyBy } from "lodash";
+import { Reducer } from "redux";
 import {
   AllReducerActions,
   UPDATE_DEVICE,
   UPDATE_DEVICES,
   DevicesState
 } from "./types";
+import { VpnDevice } from "common/types";
 
 // Service > devices
 
-export default function(
-  state: DevicesState = {},
-  action: AllReducerActions
-): DevicesState {
+export const reducer: Reducer<DevicesState, AllReducerActions> = (
+  state = {},
+  action
+) => {
   switch (action.type) {
     case UPDATE_DEVICES:
-      return keyBy(action.devices, device => device.id);
+      return action.devices.reduce(
+        (obj: { [id: string]: VpnDevice }, device) => {
+          return { ...obj, [device.id]: device };
+        },
+        {}
+      );
 
     case UPDATE_DEVICE:
       if (!state[action.id]) {
@@ -32,4 +38,4 @@ export default function(
     default:
       return state;
   }
-}
+};

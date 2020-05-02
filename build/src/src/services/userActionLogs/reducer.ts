@@ -4,13 +4,14 @@ import {
   UPDATE_USER_ACTION_LOGS,
   PUSH_USER_ACTION_LOG
 } from "./types";
+import { Reducer } from "redux";
 
 // Service > userActionLogs
 
-export default function(
-  state: UserActionLogsState = [],
-  action: AllReducerActions
-): UserActionLogsState {
+export const reducer: Reducer<UserActionLogsState, AllReducerActions> = (
+  state = [],
+  action
+) => {
   switch (action.type) {
     case UPDATE_USER_ACTION_LOGS:
       return action.userActionLogs;
@@ -21,4 +22,4 @@ export default function(
     default:
       return state;
   }
-}
+};

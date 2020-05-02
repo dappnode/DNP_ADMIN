@@ -1,8 +1,9 @@
 import * as actions from "./actions";
 import * as selectors from "./selectors";
-import reducer from "./reducer";
 import saga from "./sagas";
 import { mountPoint } from "./data";
+
+export { reducer } from "./reducer";
 
 /**
  * Service > devices
@@ -17,6 +18,5 @@ export default {
   mountPoint,
   actions,
   selectors,
-  reducer,
   saga
 };

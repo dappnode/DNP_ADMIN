@@ -4,18 +4,18 @@ import reduceReducers from "reduce-reducers";
 import merge from "deepmerge";
 
 // Reducers
-import chainData from "services/chainData/reducer";
-import connectionStatus from "services/connectionStatus/reducer";
-import coreUpdate from "services/coreUpdate/reducer";
-import dappnodeStatus from "services/dappnodeStatus/reducer";
-import devices from "services/devices/reducer";
-import dnpDirectory from "services/dnpDirectory/reducer";
-import dnpInstalled from "services/dnpInstalled/reducer";
-import dnpRequest from "services/dnpRequest/reducer";
-import isInstallingLogs from "services/isInstallingLogs/reducer";
-import loadingStatus from "services/loadingStatus/reducer";
-import notifications from "services/notifications/reducer";
-import userActionLogs from "services/userActionLogs/reducer";
+import { reducer as chainData } from "services/chainData/reducer";
+import { reducer as connectionStatus } from "services/connectionStatus/reducer";
+import { reducer as coreUpdate } from "services/coreUpdate/reducer";
+import { reducer as dappnodeStatus } from "services/dappnodeStatus/reducer";
+import { reducer as devices } from "services/devices/reducer";
+import { reducer as dnpDirectory } from "services/dnpDirectory/reducer";
+import { reducer as dnpInstalled } from "services/dnpInstalled/reducer";
+import { reducer as dnpRequest } from "services/dnpRequest/reducer";
+import { reducer as isInstallingLogs } from "services/isInstallingLogs/reducer";
+import { reducer as loadingStatus } from "services/loadingStatus/reducer";
+import { reducer as notifications } from "services/notifications/reducer";
+import { reducer as userActionLogs } from "services/userActionLogs/reducer";
 
 const rootReducer = combineReducers({
   chainData,

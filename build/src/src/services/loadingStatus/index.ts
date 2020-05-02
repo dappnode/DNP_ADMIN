@@ -1,6 +1,7 @@
 import * as selectors from "./selectors";
-import reducer from "./reducer";
 import { mountPoint } from "./data";
+
+export { reducer } from "./reducer";
 
 /**
  * Service > loadingStatus
@@ -19,6 +20,5 @@ import { mountPoint } from "./data";
 
 export default {
   mountPoint,
-  selectors,
-  reducer
+  selectors
 };

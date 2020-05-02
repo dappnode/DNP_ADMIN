@@ -1,9 +1,10 @@
 import * as actionTypes from "./types";
 import * as actions from "./actions";
 import * as selectors from "./selectors";
-import reducer from "./reducer";
 import saga from "./sagas";
 import { mountPoint } from "./data";
+
+export { reducer } from "./reducer";
 
 /**
  * Service > dappnodeStatus
@@ -16,6 +17,5 @@ export default {
   actionTypes,
   actions,
   selectors,
-  reducer,
   saga
 };

@@ -1,9 +1,10 @@
-import * as actions from "./actions";
-import * as selectors from "./selectors";
-import * as types from "./types";
-import reducer from "./reducer";
+export * as actions from "./actions";
+export * as selectors from "./selectors";
+export * as types from "./types";
 import saga from "./sagas";
-import { mountPoint } from "./data";
+export { mountPoint } from "./data";
+
+export { reducer } from "./reducer";
 
 /**
  * Service > chainData
@@ -15,10 +16,5 @@ import { mountPoint } from "./data";
  */
 
 export default {
-  mountPoint,
-  actions,
-  selectors,
-  reducer,
   saga,
-  types
 };

@@ -5,18 +5,17 @@ import {
   IsInstallingLogsState,
   CLEAR_IS_INSTALLING_LOG
 } from "./types";
+import { Reducer } from "redux";
 
 // Service > isInstallingLogs
 
-const initialState: IsInstallingLogsState = {
-  logs: {},
-  dnpNameToLogId: {}
-};
-
-export default function(
-  state: IsInstallingLogsState = initialState,
-  action: AllActionTypes
-): IsInstallingLogsState {
+export const reducer: Reducer<IsInstallingLogsState, AllActionTypes> = (
+  state = {
+    logs: {},
+    dnpNameToLogId: {}
+  },
+  action
+) => {
   switch (action.type) {
     case UPDATE_IS_INSTALLING_LOG:
       const prevId = state.dnpNameToLogId[action.dnpName];
@@ -48,4 +47,4 @@ export default function(
     default:
       return state;
   }
-}
+};

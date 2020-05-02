@@ -1,24 +1,23 @@
+import { Reducer } from "redux";
 import * as t from "./types";
 import { DappnodeStatusState, AllReducerActions } from "./types";
 
 // Service > dappnodeStatus
 
-const initialState: DappnodeStatusState = {
-  systemInfo: null,
-  stats: {},
-  diagnose: [],
-  ipfsConnectionStatus: null,
-  wifiStatus: null,
-  passwordIsInsecure: false,
-  autoUpdateData: null,
-  mountpoints: [],
-  volumes: []
-};
-
-export default function(
-  state: DappnodeStatusState = initialState,
-  action: AllReducerActions
-): DappnodeStatusState {
+export const reducer: Reducer<DappnodeStatusState, AllReducerActions> = (
+  state: DappnodeStatusState = {
+    systemInfo: null,
+    stats: {},
+    diagnose: [],
+    ipfsConnectionStatus: null,
+    wifiStatus: null,
+    passwordIsInsecure: false,
+    autoUpdateData: null,
+    mountpoints: [],
+    volumes: []
+  },
+  action
+) => {
   switch (action.type) {
     case t.SET_SYSTEM_INFO:
       return {
@@ -77,4 +76,4 @@ export default function(
     default:
       return state;
   }
-}
+};

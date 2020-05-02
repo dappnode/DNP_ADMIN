@@ -1,17 +1,17 @@
-import * as t from "./types";
-import { ChainDataState, AllReducerActions } from "./types";
+import { Reducer } from "redux";
+import { UPDATE_CHAIN_DATA, ChainDataState, AllReducerActions } from "./types";
 
 // Service > chainData
 
-export default function(
-  state: ChainDataState = [],
-  action: AllReducerActions
-): ChainDataState {
+export const reducer: Reducer<ChainDataState, AllReducerActions> = (
+  state = [],
+  action
+) => {
   switch (action.type) {
-    case t.UPDATE_CHAIN_DATA:
+    case UPDATE_CHAIN_DATA:
       return action.chainData;
 
     default:
       return state;
   }
-}
+};

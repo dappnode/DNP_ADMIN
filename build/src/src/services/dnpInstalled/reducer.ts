@@ -6,20 +6,19 @@ import {
   SET_DNP_INSTALLED_DATA,
   UPDATE_DNP_INSTALLED_DATA_STATUS
 } from "./types";
+import { Reducer } from "redux";
 
 // Service > dnpInstalled
 
-const initialState: DnpInstalledState = {
-  dnpInstalled: [],
-  requestStatus: {},
-  dnpInstalledData: {},
-  dnpInstalledDataRequestStatus: {}
-};
-
-export default function(
-  state: DnpInstalledState = initialState,
-  action: AllActionTypes
-): DnpInstalledState {
+export const reducer: Reducer<DnpInstalledState, AllActionTypes> = (
+  state = {
+    dnpInstalled: [],
+    requestStatus: {},
+    dnpInstalledData: {},
+    dnpInstalledDataRequestStatus: {}
+  },
+  action
+) => {
   switch (action.type) {
     case SET_DNP_INSTALLED:
       return {
@@ -54,4 +53,4 @@ export default function(
     default:
       return state;
   }
-}
+};

@@ -1,3 +1,4 @@
+import { Reducer } from "redux";
 import {
   CoreUpdateState,
   AllActionTypes,
@@ -7,15 +8,13 @@ import {
 
 // Service > coreUpdate
 
-const initialState: CoreUpdateState = {
-  coreUpdateData: null,
-  updatingCore: false
-};
-
-export default function(
-  state: CoreUpdateState = initialState,
-  action: AllActionTypes
-): CoreUpdateState {
+export const reducer: Reducer<CoreUpdateState, AllActionTypes> = (
+  state = {
+    coreUpdateData: null,
+    updatingCore: false
+  },
+  action
+) => {
   switch (action.type) {
     case UPDATE_CORE_UPDATE_DATA:
       return {
@@ -32,4 +31,4 @@ export default function(
     default:
       return state;
   }
-}
+};

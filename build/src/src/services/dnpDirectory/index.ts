@@ -1,7 +1,8 @@
 import * as actions from "./actions";
 import * as selectors from "./selectors";
-import reducer from "./reducer";
 import { mountPoint } from "./data";
+
+export { reducer } from "./reducer";
 
 /**
  * Service > dnpDirectory
@@ -19,6 +20,5 @@ import { mountPoint } from "./data";
 export default {
   mountPoint,
   actions,
-  selectors,
-  reducer
+  selectors
 };

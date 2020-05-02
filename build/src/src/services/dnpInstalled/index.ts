@@ -1,10 +1,11 @@
 import * as actions from "./actions";
 import * as selectors from "./selectors";
-import reducer from "./reducer";
 import { mountPoint } from "./data";
 import saga from "./sagas";
 
 // Service > dnpInstalled
+
+export { reducer } from "./reducer";
 
 /**
  * Service > dnpInstalled
@@ -20,6 +21,5 @@ export default {
   mountPoint,
   actions,
   selectors,
-  reducer,
   saga
 };

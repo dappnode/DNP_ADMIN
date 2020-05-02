@@ -6,18 +6,17 @@ import {
   DnpRequestState,
   UPDATE_DNP_REQUEST_STATUS
 } from "./types";
+import { Reducer } from "redux";
 
 // Service > dnpRequest
 
-const initialState: DnpRequestState = {
-  dnps: {},
-  requestStatus: {}
-};
-
-export default function(
-  state: DnpRequestState = initialState,
-  action: AllActionTypes
-): DnpRequestState {
+export const reducer: Reducer<DnpRequestState, AllActionTypes> = (
+  state = {
+    dnps: {},
+    requestStatus: {}
+  },
+  action
+) => {
   switch (action.type) {
     case UPDATE_DNP_REQUEST:
       return {
@@ -49,4 +48,4 @@ export default function(
     default:
       return state;
   }
-}
+};

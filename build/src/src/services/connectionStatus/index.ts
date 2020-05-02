@@ -1,6 +1,7 @@
 import * as selectors from "./selectors";
-import reducer from "./reducer";
 import { mountPoint } from "./data";
+
+export { reducer } from "./reducer";
 
 /**
  * Service > connectionStatus
@@ -16,6 +17,5 @@ export { CONNECTION_OPEN, CONNECTION_CLOSE } from "./types";
 
 export default {
   mountPoint,
-  selectors,
-  reducer
+  selectors
 };

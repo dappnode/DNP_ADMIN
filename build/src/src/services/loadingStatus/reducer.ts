@@ -5,6 +5,7 @@ import {
   LoadingStatusState,
   AllReducerActions
 } from "./types";
+import { Reducer } from "redux";
 
 // Service > loadingStatus
 
@@ -18,10 +19,10 @@ import {
  * [Tested]
  */
 
-export default function(
-  state: LoadingStatusState = {},
-  action: AllReducerActions
-): LoadingStatusState {
+export const reducer: Reducer<LoadingStatusState, AllReducerActions> = (
+  state = {},
+  action
+) => {
   switch (action.type) {
     case UPDATE_LOADING:
       return {
@@ -54,4 +55,4 @@ export default function(
     default:
       return state;
   }
-}
+};

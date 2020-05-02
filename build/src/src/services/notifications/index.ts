@@ -1,10 +1,11 @@
 import * as actions from "./actions";
 import * as selectors from "./selectors";
-import reducer from "./reducer";
 import saga from "./sagas";
 import { mountPoint } from "./data";
 
 // Service > notifications
+
+export { reducer } from "./reducer";
 
 /**
  * Service > chainData
@@ -19,6 +20,5 @@ export default {
   mountPoint,
   actions,
   selectors,
-  reducer,
   saga
 };

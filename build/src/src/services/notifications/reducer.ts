@@ -5,13 +5,13 @@ import {
   PUSH_NOTIFICATION,
   VIEWED_NOTIFICATIONS
 } from "./types";
+import { Reducer } from "redux";
 
 // Service > notifications
-
-export default function(
-  state: NotificationsState = {},
-  action: AllReducerActions
-): NotificationsState {
+export const reducer: Reducer<NotificationsState, AllReducerActions> = (
+  state = {},
+  action
+) => {
   switch (action.type) {
     case PUSH_NOTIFICATION:
       const newNotificationValues = {
@@ -36,4 +36,4 @@ export default function(
     default:
       return state;
   }
-}
+};
