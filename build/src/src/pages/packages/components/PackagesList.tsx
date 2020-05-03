@@ -15,18 +15,13 @@ import { MdRefresh, MdOpenInNew } from "react-icons/md";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 import { sortBy } from "lodash";
+import { rootPath as packagesRootPath } from "pages/packages";
 // Images
 import defaultAvatar from "img/defaultAvatar.png";
 import dappnodeIcon from "img/dappnode-logo-only.png";
 import { restartPackage } from "../actions";
 
-export const PackagesList = ({
-  moduleName,
-  coreDnps
-}: {
-  moduleName: string;
-  coreDnps: boolean;
-}) => {
+export const PackagesList = ({ coreDnps }: { coreDnps: boolean }) => {
   const dispatch = useDispatch();
   const dnps = useSelector(s.getFilteredPackages);
   const { loading, error } = useSelector(getDnpInstalledStatus);
@@ -45,8 +40,6 @@ export const PackagesList = ({
   );
   if (!filteredDnps.length) return <NoPackagesYet />;
 
-  const modulePath = moduleName.toLowerCase();
-
   return (
     <Card className={`list-grid dnps no-a-style`}>
       <header className="center">Status</header>
@@ -63,10 +56,10 @@ export const PackagesList = ({
               src={avatarUrl || (coreDnps ? dappnodeIcon : defaultAvatar)}
               alt="Avatar"
             />
-            <NavLink className="name" to={`/${modulePath}/${name}`}>
+            <NavLink className="name" to={`${packagesRootPath}/${name}`}>
               {shortNameCapitalized(name)}
             </NavLink>
-            <NavLink className="open" to={`/${modulePath}/${name}`}>
+            <NavLink className="open" to={`${packagesRootPath}/${name}`}>
               <MdOpenInNew />
             </NavLink>
             <MdRefresh

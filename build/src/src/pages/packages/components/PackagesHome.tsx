@@ -30,7 +30,7 @@ export function PackagesHome({ showCoreDnps }: { showCoreDnps: boolean }) {
         ))}
       </div>
 
-      <PackagesList moduleName={title} coreDnps={showCoreDnps} />
+      <PackagesList coreDnps={showCoreDnps} />
     </>
   );
 }

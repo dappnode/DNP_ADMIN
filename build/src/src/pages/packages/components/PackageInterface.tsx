@@ -33,8 +33,6 @@ export const PackageInterface: React.FC<
   // Fetching status
   const { loading, error } = useSelector(getDnpInstalledStatus);
   const areThereDnps = useSelector(s.areThereDnps);
-  // moduleName = "system" or "packages"
-  const moduleName = match.path.replace(/\//g, "");
   // Dnp data
   const dnp = useSelector((state: any) => s.getDnpById(state, id));
   const { data: dnpDetail } = useSWR([id, "packageDetailDataGet"], id =>
@@ -50,7 +48,7 @@ export const PackageInterface: React.FC<
         ) : error ? (
           <Error msg={`Error loading your DAppNode Packages: ${error}`} />
         ) : areThereDnps ? (
-          <NoDnpInstalled id={id} moduleName={moduleName} />
+          <NoDnpInstalled id={id} />
         ) : (
           <Error msg={`Unknown error, package not found`} />
         )}
