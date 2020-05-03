@@ -10,7 +10,6 @@ import Button from "components/Button";
 import { shortNameCapitalized } from "utils/format";
 import { MdAdd } from "react-icons/md";
 // Selectors
-import { getIsLoadingStrict } from "services/loadingStatus/selectors";
 import { getHostPortMappings } from "services/dnpInstalled/selectors";
 // Style
 import "./ports.scss";
@@ -19,7 +18,6 @@ import { PackageContainer, PortMapping } from "common/types";
 const maxPortNumber = 32768 - 1;
 
 export default function Ports({ dnp }: { dnp: PackageContainer }) {
-  const loading = useSelector(getIsLoadingStrict.dnpInstalled);
   const hostPortMapping = useSelector(getHostPortMappings);
 
   const portsFromDnp = useMemo(() => getPortsFromDnp(dnp), [dnp]);
@@ -155,8 +153,7 @@ export default function Ports({ dnp }: { dnp: PackageContainer }) {
       conflictingPort ||
       portOverTheMax ||
       arePortsTheSame ||
-      updating ||
-      loading
+      updating
   );
 
   return (

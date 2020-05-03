@@ -1,10 +1,5 @@
 import { api } from "api";
 import { AppThunk } from "store";
-import * as loadingIds from "services/loadingStatus/loadingIds";
-import {
-  updateIsLoading,
-  updateIsLoaded
-} from "services/loadingStatus/actions";
 import { notificationsSlice } from "./reducer";
 import { getNotifications } from "./selectors";
 
@@ -35,9 +30,7 @@ export const viewedNotifications = (): AppThunk => async (
 
 export const fetchNotifications = (): AppThunk => async dispatch => {
   try {
-    dispatch(updateIsLoading({ id: loadingIds.notifications }));
     const notifications = await api.notificationsGet();
-    dispatch(updateIsLoaded({ id: loadingIds.notifications }));
     for (const notification of notifications)
       dispatch(pushNotification(notification));
   } catch (e) {
