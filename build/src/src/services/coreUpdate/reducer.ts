@@ -1,35 +1,36 @@
-import {
-  CoreUpdateState,
-  AllActionTypes,
-  UPDATE_CORE_UPDATE_DATA,
-  UPDATE_UPDATING_CORE
-} from "./types";
+import { mapValues } from "lodash";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { CoreUpdateData, RequestStatus } from "common/types";
 
 // Service > coreUpdate
 
+interface CoreUpdateState {
+  data: CoreUpdateData | null;
+  updatingCore: boolean;
+  requestStatus: RequestStatus;
+}
+
 const initialState: CoreUpdateState = {
-  coreUpdateData: null,
-  updatingCore: false
+  data: null,
+  updatingCore: false,
+  requestStatus: {}
 };
 
-export default function(
-  state = initialState,
-  action: AllActionTypes
-): CoreUpdateState {
-  switch (action.type) {
-    case UPDATE_CORE_UPDATE_DATA:
-      return {
-        ...state,
-        coreUpdateData: action.coreUpdateData
-      };
-
-    case UPDATE_UPDATING_CORE:
-      return {
-        ...state,
-        updatingCore: action.updatingCore
-      };
-
-    default:
-      return state;
+export const coreUpdate = createSlice({
+  name: "coreUpdate",
+  initialState,
+  reducers: mapValues(
+    initialState,
+    (data, key) => (
+      state: typeof initialState,
+      action: PayloadAction<typeof data>
+    ) => ({ ...state, [key]: action.payload })
+  ) as {
+    [K in keyof CoreUpdateState]: (
+      state: CoreUpdateState,
+      action: PayloadAction<CoreUpdateState[K]>
+    ) => CoreUpdateState;
   }
-}
+});
+
+export const reducer = coreUpdate.reducer;

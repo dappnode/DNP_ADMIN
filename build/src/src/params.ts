@@ -11,6 +11,7 @@ export const wifiEnvSSID = "SSID";
 // DNP names
 export const wifiName = "wifi.dnp.dappnode.eth";
 export const ipfsName = "ipfs.dnp.dappnode.eth";
+export const coreName = "core.dnp.dappnode.eth";
 
 // NACL keys
 export const adminNaclSecretKey =
@@ -27,3 +28,18 @@ export const fullnodeHttpJsonRpc = "http://fullnode.dappnode:8545";
 
 // URLs / Links
 export const surveyUrl = "https://goo.gl/forms/DSy1J1OlQGpdyhD22";
+export const packageSurveyLink = "https://goo.gl/forms/EjVTHu6UBWBk60Z62";
+
+// AutoUpdate IDSs
+export const autoUpdateIds = {
+  MY_PACKAGES: "my-packages",
+  SYSTEM_PACKAGES: "system-packages"
+};
+
+// VPN
+export const superAdminId = "dappnode_admin";
+
+// Support, where to send issues
+const githubRepo = "DNP_ADMIN";
+const githubUsername = "dappnode";
+export const issueBaseUrl = `https://github.com/${githubUsername}/${githubRepo}/issues/new`;

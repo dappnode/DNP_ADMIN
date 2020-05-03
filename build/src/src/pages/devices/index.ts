@@ -1,4 +1,4 @@
-import DevicesRoot from "./components/DevicesRoot";
+import { DevicesRoot } from "./components/DevicesRoot";
 import * as data from "./data";
 
 export const rootPath = data.rootPath;

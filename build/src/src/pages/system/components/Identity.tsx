@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { api } from "api";
 import { confirm } from "components/ConfirmDialog";
 import { encrypt } from "utils/publicKeyEncryption";
@@ -11,7 +9,7 @@ import Card from "components/Card";
 import Button from "components/Button";
 import Form from "react-bootstrap/Form";
 import StatusIcon from "components/StatusIcon";
-import Loading from "components/generic/Loading";
+import Loading from "components/Loading";
 // External
 import {
   getIdentityAddress,
@@ -24,13 +22,10 @@ import blankCardSample from "img/blank-card-sample.png";
 // Style
 import "./identity.scss";
 
-function Identity({
-  identityAddress,
-  dappmanagerNaclPublicKey
-}: {
-  identityAddress?: string;
-  dappmanagerNaclPublicKey?: string;
-}) {
+export default function Identity() {
+  const identityAddress = useSelector(getIdentityAddress);
+  const dappmanagerNaclPublicKey = useSelector(getDappmanagerNaclPublicKey);
+
   const [showRealCard, setShowRealCard] = useState(false);
   const [seedPhrase, setSeedPhrase] = useState("");
   const [isOnProgress, setIsOnProgress] = useState(false);
@@ -143,21 +138,3 @@ function Identity({
     </>
   );
 }
-
-Identity.propTypes = {
-  identityAddress: PropTypes.string.isRequired
-};
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  identityAddress: getIdentityAddress,
-  dappmanagerNaclPublicKey: getDappmanagerNaclPublicKey
-});
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Identity);

@@ -1,6 +1,5 @@
-import { mountPoint } from "./data";
+import { RootState } from "rootReducer";
 import { isEmpty } from "lodash";
-import { ChainDataState } from "./types";
 import { ChainData } from "types";
 import {
   getEthClientStatus,
@@ -15,12 +14,10 @@ import { activateFallbackPath } from "pages/system/data";
 
 // Service > chainData
 
-const getLocal = (state: any): ChainDataState => state[mountPoint];
-
-export const getChainData = (state: any): ChainData[] => {
+export const getChainData = (state: RootState): ChainData[] => {
   // Legacy check, may not be necessary
   // Make sure all chainData objects exist and are populated
-  const chains = getLocal(state).filter(data => data && !isEmpty(data));
+  const chains = state.chainData.filter(data => data && !isEmpty(data));
 
   // Add repository mode chain item
   const repositoryResult = getRepositorySourceChainItem(state);
@@ -45,7 +42,7 @@ export const getChainData = (state: any): ChainData[] => {
  * @param state
  */
 function getRepositorySourceChainItem(
-  state: any
+  state: RootState
 ): Omit<ChainData, "dnpName"> | null {
   const target = getEthClientTarget(state);
   const fallback = getEthClientFallback(state);

@@ -10,7 +10,7 @@ describe("utils > computeSemverUpdateType", () => {
       { from: null, to: "/ipfs/Amasjdnja" }
     ];
     for (const { from, to } of cases) {
-      expect(computeSemverUpdateType(from, to)).toEqual(undefined);
+      expect(computeSemverUpdateType(from, to)).toEqual(null);
     }
   });
 

@@ -20,7 +20,7 @@ const ProgressBarWrapper = ({ progress }: { progress: number }) => {
 function parseMessagesType(messages: BaseDropdownMessage[]) {
   const notViewedTypes: { [type: string]: boolean } = {};
   for (const message of messages)
-    if (!message.viewed) notViewedTypes[message.type] = true;
+    if (!message.viewed && message.type) notViewedTypes[message.type] = true;
 
   for (const type of ["danger", "warning", "success"])
     if (notViewedTypes[type]) return type;
@@ -34,9 +34,9 @@ function areMessagesUnread(messages: BaseDropdownMessage[]) {
 type MessageType = "danger" | "warning" | "success";
 
 interface BaseDropdownMessage {
-  type: MessageType;
-  title: string;
-  body: string;
+  type?: MessageType;
+  title?: string | JSX.Element;
+  body?: string;
   help?: string; // href link to attach to help icon
   progress?: number;
   showProgress?: boolean;

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { api } from "api";
 import { confirm } from "components/ConfirmDialog";
 // Components
@@ -12,12 +11,18 @@ import { shortName } from "utils/format";
 import humanFS from "utils/humanFileSize";
 import newTabProps from "utils/newTabProps";
 import { PackageBackup } from "common/types";
-import { withToast } from "components/toast/Toast";
+import { withToast, withToastNoThrow } from "components/toast/Toast";
 
 const baseUrlUpload = "http://my.dappmanager.dnp.dappnode.eth:3000/upload";
 const baseUrlDownload = "http://my.dappmanager.dnp.dappnode.eth:3000/download";
 
-function Backup({ id, backup }: { id: string; backup: PackageBackup[] }) {
+export default function Backup({
+  id,
+  backup
+}: {
+  id: string;
+  backup: PackageBackup[];
+}) {
   const [progress, setProgress] = useState<{
     label: string;
     percent?: number;
@@ -73,7 +78,7 @@ function Backup({ id, backup }: { id: string; backup: PackageBackup[] }) {
         return setError(`Wrong response: ${fileId}`);
 
       setProgress({ label: "Restoring backup..." });
-      withToast(() => api.backupRestore({ id, backup, fileId }), {
+      withToastNoThrow(() => api.backupRestore({ id, backup, fileId }), {
         message: `Restoring backup for ${shortName(id)}...`,
         onSuccess: `Restored backup for ${shortName(id)}`
       }).then(() => {
@@ -196,11 +201,3 @@ function Backup({ id, backup }: { id: string; backup: PackageBackup[] }) {
     </Card>
   );
 }
-
-Backup.propTypes = {
-  dnp: PropTypes.shape({
-    name: PropTypes.string.isRequired
-  }).isRequired
-};
-
-export default Backup;

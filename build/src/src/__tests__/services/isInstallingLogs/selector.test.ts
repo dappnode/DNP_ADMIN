@@ -1,7 +1,7 @@
-import { mountPoint } from "services/isInstallingLogs/data";
 import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 import { ProgressLogsByDnp } from "types";
-import { IsInstallingLogsState } from "services/isInstallingLogs/types";
+
+const mountPoint = "isInstallingLogs";
 
 describe("service/isInstallingLogs", () => {
   describe("getProgressLogsByDnp", () => {
@@ -15,7 +15,7 @@ describe("service/isInstallingLogs", () => {
       [dnpName2]: "Downloading 2%..."
     };
 
-    const isInstallingLogsState: IsInstallingLogsState = {
+    const isInstallingLogsState = {
       logs: {
         [id]: progressLogs
       },
@@ -33,6 +33,7 @@ describe("service/isInstallingLogs", () => {
 
     const state = { [mountPoint]: isInstallingLogsState };
     it("Should a nicely formated object ready to query", () => {
+      // @ts-ignore
       expect(getProgressLogsByDnp(state)).toEqual(progressLogsByDnpExpected);
     });
 

@@ -1,5 +1,4 @@
 import { mountPoint } from "./data";
-import generateActionTypes from "utils/generateActionTypes";
 
 /**
  * Generates the actionTypes object = {
@@ -17,3 +16,29 @@ export default generateActionTypes(mountPoint, [
   "PUBLISH",
   "UPDATE_UI_MESSAGE"
 ]);
+
+/**
+ * ### Todo: delete this util
+ *
+ * Utility to ease the addition of actionTypes
+ *
+ * @param {string} moduleId = 'moduleName', name of the module
+ * @param {array} actionTypes = [
+ *   "UPDATE_DAPPNODE_IDENTITY",
+ *   "PUSH_NOTIFICATION",
+ *   ...
+ * ]
+ * @returns {object} actionTypes object = {
+ *   UPDATE_DAPPNODE_IDENTITY: "moduleName/UPDATE_DAPPNODE_IDENTITY",
+ *   PUSH_NOTIFICATION: "moduleName/PUSH_NOTIFICATION",
+ *   ...
+ * }
+ */
+function generateActionTypes(moduleId, actionTypes) {
+  const obj = {};
+  actionTypes.forEach(actionType => {
+    // prefixing each type with the module name helps preventing name collisions
+    obj[actionType] = moduleId + "/" + actionType;
+  });
+  return obj;
+}

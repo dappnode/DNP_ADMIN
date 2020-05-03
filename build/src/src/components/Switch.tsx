@@ -5,7 +5,7 @@ import { joinCssClass } from "utils/css";
 interface SwitchProps {
   checked: boolean;
   onToggle: (checked: boolean) => void;
-  label: string;
+  label?: string;
   id?: string;
   className?: string;
   highlightOnHover?: boolean;
@@ -14,7 +14,7 @@ interface SwitchProps {
 const Switch: React.FunctionComponent<SwitchProps> = ({
   checked,
   onToggle,
-  label,
+  label = "",
   id,
   className,
   highlightOnHover,

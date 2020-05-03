@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { fetchRegistry } from "../actions";
 import { createStructuredSelector } from "reselect";
 import { title } from "../data";
-import LoadingDots from "components/generic/LoadingDots";
 // Components
 import Title from "components/Title";
 
@@ -32,7 +31,7 @@ class Explore extends React.Component {
             <React.Fragment key={registry.name}>
               <div className="section-subtitle">
                 {registry.name}
-                {registry.fetching ? <LoadingDots /> : null}
+                {registry.fetching ? "Loading..." : null}
               </div>
 
               <div className="card mb-3">
@@ -46,7 +45,7 @@ class Explore extends React.Component {
                         <summary>
                           <span>{repo.name}</span>
                           {repo.fetching ? (
-                            <LoadingDots />
+                            "Loading..."
                           ) : latestVersion ? (
                             <span style={{ opacity: 0.4 }}>
                               {"  "}

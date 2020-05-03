@@ -1,5 +1,4 @@
-import reducer from "services/isInstallingLogs/reducer";
-import { IsInstallingLogsState } from "services/isInstallingLogs/types";
+import { reducer } from "services/isInstallingLogs/reducer";
 import {
   updateIsInstallingLog,
   clearIsInstallingLog
@@ -11,11 +10,11 @@ describe("services > isInstallingLogs > reducer", () => {
     const dnpName2 = "bitcoin.dnp.dappnode.eth";
     const id = dnpName1;
     const log = "Loading...";
-    let state: IsInstallingLogsState = {
+    let state = {
       logs: {},
       dnpNameToLogId: {}
     };
-    const stateFull: IsInstallingLogsState = {
+    const stateFull = {
       logs: {
         [id]: {
           [dnpName1]: log,
@@ -45,7 +44,7 @@ describe("services > isInstallingLogs > reducer", () => {
         dnpNameToLogId: {
           [dnpName1]: id
         }
-      } as IsInstallingLogsState);
+      });
     });
 
     it("Should update the log - updateIsInstallingLog", () => {
@@ -64,7 +63,7 @@ describe("services > isInstallingLogs > reducer", () => {
         dnpNameToLogId: {
           [dnpName1]: id
         }
-      } as IsInstallingLogsState);
+      });
     });
 
     it("Should add a second log - updateIsInstallingLog", () => {
@@ -83,7 +82,7 @@ describe("services > isInstallingLogs > reducer", () => {
       expect(state).toEqual({
         logs: {},
         dnpNameToLogId: {}
-      } as IsInstallingLogsState);
+      });
     });
 
     it("Should automatically clean older logs if the id for a dnpName has changed", () => {
@@ -104,7 +103,7 @@ describe("services > isInstallingLogs > reducer", () => {
           ...stateFull.dnpNameToLogId,
           [dnpName2]: dnpName2
         }
-      } as IsInstallingLogsState);
+      });
     });
   });
 });

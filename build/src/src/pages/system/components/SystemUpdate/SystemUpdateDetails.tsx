@@ -1,6 +1,5 @@
 import React from "react";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import DependencyList from "pages/installer/components/InstallCardComponents/DependencyList";
 import RenderMarkdown from "components/RenderMarkdown";
 // Actions
@@ -16,19 +15,13 @@ import Card from "components/Card";
 import Button from "components/Button";
 // Icons
 import { FaArrowRight } from "react-icons/fa";
-import { ManifestUpdateAlert, DependencyListItem } from "types";
 
-const SystemUpdateDetails = ({
-  coreDeps,
-  coreUpdateAlerts,
-  coreChangelog,
-  updateCore
-}: {
-  coreDeps: DependencyListItem[];
-  coreUpdateAlerts: ManifestUpdateAlert[];
-  coreChangelog?: string;
-  updateCore: () => void;
-}) => {
+export default function SystemUpdateDetails() {
+  const coreDeps = useSelector(getCoreDeps);
+  const coreUpdateAlerts = useSelector(getCoreUpdateAlerts);
+  const coreChangelog = useSelector(getCoreChangelog);
+  const dispatch = useDispatch();
+
   return (
     <Card className="system-update-grid" spacing>
       {coreChangelog && <RenderMarkdown source={coreChangelog} />}
@@ -52,25 +45,9 @@ const SystemUpdateDetails = ({
       {/* Dedicated per core version update and warnings */}
       <DependencyList deps={coreDeps} />
 
-      <Button variant="dappnode" onClick={updateCore}>
+      <Button variant="dappnode" onClick={() => dispatch(updateCore())}>
         Update
       </Button>
     </Card>
   );
-};
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  coreDeps: getCoreDeps,
-  coreUpdateAlerts: getCoreUpdateAlerts,
-  coreChangelog: getCoreChangelog
-});
-
-// Uses bindActionCreators to wrap action creators with dispatch
-const mapDispatchToProps = { updateCore };
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SystemUpdateDetails);
+}

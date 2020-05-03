@@ -3,8 +3,3 @@
 export const rootPath = "/support";
 export const title = "Support";
 export const activityPath = `${rootPath}/activity`;
-
-// Dedicated data
-const githubRepo = "DNP_ADMIN";
-const githubUsername = "dappnode";
-export const issueBaseUrl = `https://github.com/${githubUsername}/${githubRepo}/issues/new`;

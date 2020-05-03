@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { api } from "api";
 import Card from "components/Card";
 import Button from "components/Button";
@@ -9,7 +8,7 @@ import {
   getEthClientPrettyStatus,
   EthMultiClientsAndFallback
 } from "components/EthMultiClient";
-import { EthClientTarget, EthClientStatus, EthClientFallback } from "types";
+import { EthClientTarget, EthClientFallback } from "types";
 import {
   getEthClientTarget,
   getEthClientFallback,
@@ -19,18 +18,12 @@ import { changeEthClientTarget } from "pages/system/actions";
 import Alert from "react-bootstrap/Alert";
 import { withToast } from "components/toast/Toast";
 
-function Repository({
-  // Redux
-  ethClientTarget,
-  ethClientStatus,
-  ethClientFallback,
-  changeEthClientTarget
-}: {
-  ethClientTarget?: EthClientTarget | null;
-  ethClientStatus?: EthClientStatus | null;
-  ethClientFallback?: EthClientFallback;
-  changeEthClientTarget: (newTarget: EthClientTarget) => void;
-}) {
+export default function Repository() {
+  const ethClientTarget = useSelector(getEthClientTarget);
+  const ethClientStatus = useSelector(getEthClientStatus);
+  const ethClientFallback = useSelector(getEthClientFallback);
+  const dispatch = useDispatch();
+
   const [target, setTarget] = useState<EthClientTarget | null>(
     ethClientTarget || null
   );
@@ -40,7 +33,7 @@ function Repository({
   }, [ethClientTarget]);
 
   function changeClient() {
-    if (target) changeEthClientTarget(target);
+    if (target) dispatch(changeEthClientTarget(target));
   }
 
   async function changeFallback(newFallback: EthClientFallback) {
@@ -126,18 +119,3 @@ function Repository({
     </Card>
   );
 }
-
-const mapStateToProps = createStructuredSelector({
-  ethClientTarget: getEthClientTarget,
-  ethClientStatus: getEthClientStatus,
-  ethClientFallback: getEthClientFallback
-});
-
-const mapDispatchToProps = {
-  changeEthClientTarget
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Repository);

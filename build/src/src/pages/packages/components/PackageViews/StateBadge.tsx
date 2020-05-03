@@ -1,8 +1,7 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { ContainerStatus } from "types";
 
-function StateBadge({ state }: { state: ContainerStatus }) {
+export default function StateBadge({ state }: { state: ContainerStatus }) {
   const styleColor =
     state === "running"
       ? "success"
@@ -18,9 +17,3 @@ function StateBadge({ state }: { state: ContainerStatus }) {
     </span>
   );
 }
-
-StateBadge.propTypes = {
-  state: PropTypes.string.isRequired
-};
-
-export default StateBadge;

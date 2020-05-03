@@ -1,10 +1,8 @@
-import { mountPoint } from "./data";
-import { DnpDirectoryState } from "./types";
+import { RootState } from "rootReducer";
 
 // Service > dnpDirectory
 
-const getLocal = (state: any): DnpDirectoryState => state[mountPoint];
-
-export const getDnpDirectory = (state: any) => getLocal(state).directory;
-export const getDirectoryRequestStatus = (state: any) =>
-  getLocal(state).requestStatus;
+export const getDnpDirectory = (state: RootState) =>
+  state.dnpDirectory.directory;
+export const getDirectoryRequestStatus = (state: RootState) =>
+  state.dnpDirectory.requestStatus || {};

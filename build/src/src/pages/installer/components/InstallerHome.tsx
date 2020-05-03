@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RouteComponentProps, NavLink } from "react-router-dom";
-import { createStructuredSelector } from "reselect";
 import { throttle, isEmpty } from "lodash";
-import { DirectoryItem, RequestStatus } from "types";
 import { SelectedCategories } from "../types";
 import { title } from "../data";
 // This page
@@ -19,8 +17,8 @@ import DnpStore from "./DnpStore";
 import Title from "components/Title";
 import Input from "components/Input";
 import Button, { ButtonLight } from "components/Button";
-import Loading from "components/generic/Loading";
-import Error from "components/generic/Error";
+import Loading from "components/Loading";
+import Error from "components/Error";
 import Alert from "react-bootstrap/Alert";
 // Selectors
 import {
@@ -34,25 +32,15 @@ import { getEthClientWarning } from "services/dappnodeStatus/selectors";
 // Styles
 import "./installer.scss";
 
-interface InstallerHomeProps {
-  directory: DirectoryItem[];
-  requestStatus: RequestStatus;
-  ethClientWarning: string | null;
-  fetchDnpDirectory: () => void;
-}
-
-const InstallerHome: React.FunctionComponent<
-  InstallerHomeProps & RouteComponentProps
-> = ({
-  // variables
-  directory,
-  requestStatus,
-  ethClientWarning,
+export const InstallerHome: React.FC<RouteComponentProps> = ({
   // React Routes
-  history,
-  // Actions
-  fetchDnpDirectory
+  history
 }) => {
+  const directory = useSelector(getDnpDirectory);
+  const requestStatus = useSelector(getDirectoryRequestStatus);
+  const ethClientWarning = useSelector(getEthClientWarning);
+  const dispatch = useDispatch();
+
   const [query, setQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState(
     {} as SelectedCategories
@@ -60,8 +48,8 @@ const InstallerHome: React.FunctionComponent<
   const [showErrorDnps, setShowErrorDnps] = useState(false);
 
   useEffect(() => {
-    fetchDnpDirectory();
-  }, [fetchDnpDirectory]);
+    dispatch(fetchDnpDirectory());
+  }, [dispatch]);
 
   // Limit the number of requests [TESTED]
   const fetchQueryThrottled = useMemo(
@@ -185,18 +173,3 @@ const InstallerHome: React.FunctionComponent<
     </>
   );
 };
-
-const mapStateToProps = createStructuredSelector({
-  directory: getDnpDirectory,
-  requestStatus: getDirectoryRequestStatus,
-  ethClientWarning: getEthClientWarning
-});
-
-const mapDispatchToProps = {
-  fetchDnpDirectory
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InstallerHome);

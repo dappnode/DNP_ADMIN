@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import Card from "components/Card";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -27,20 +26,16 @@ import "./volumes.scss";
 const shortLength = 3;
 const minSize = 10 * 1024 * 1024;
 
-function VolumesGrid({
-  volumes,
-  // Actions
-  packageVolumeRemove,
-  volumeRemove
-}: {
-  volumes: VolumeData[];
-  volumeRemove: (name: string) => void;
-  packageVolumeRemove: (dnpName: string, volName: string) => void;
-}) {
+export default function VolumesGrid() {
+  const volumes = useSelector(getVolumes);
+  const dispatch = useDispatch();
+
   const [showAll, setShowAll] = useState(false);
 
+  console.log({ volumes });
+
   const getSize = (v: VolumeData) => v.size || (v.fileSystem || {}).used || 0;
-  const volumesFiltered = volumes
+  const volumesFiltered = [...volumes]
     .sort((v1, v2) => getSize(v2) - getSize(v1))
     .sort((v1, v2) => (v1.isOrphan && !v2.isOrphan ? -1 : 1))
     .filter(v => showAll || getSize(v) > minSize)
@@ -67,9 +62,9 @@ function VolumesGrid({
         const ownerPretty = getPrettyVolumeOwner(volData);
         const namePretty = getPrettyVolumeName(volData);
         const onDelete = isOrphan
-          ? () => volumeRemove(name)
+          ? () => dispatch(volumeRemove(name))
           : owner
-          ? () => packageVolumeRemove(owner, name)
+          ? () => dispatch(packageVolumeRemove(owner, name))
           : () => {};
         const isDeletable = Boolean(isOrphan || owner);
 
@@ -141,18 +136,3 @@ function VolumesGrid({
     </Card>
   );
 }
-
-const mapStateToProps = createStructuredSelector({
-  volumes: getVolumes
-});
-
-// Uses bindActionCreators to wrap action creators with dispatch
-const mapDispatchToProps = {
-  packageVolumeRemove,
-  volumeRemove
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(VolumesGrid);

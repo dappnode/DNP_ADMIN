@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useSelector } from "react-redux";
 import { api } from "api";
 import { wifiName, wifiEnvSSID, wifiEnvWPA_PASSPHRASE } from "params";
 // Components
@@ -11,13 +10,11 @@ import Switch from "components/Switch";
 // Style
 import "./changeHostUserPassword.scss";
 import { getWifiCredentials } from "services/dnpInstalled/selectors";
-import { withToast } from "components/toast/Toast";
+import { withToastNoThrow } from "components/toast/Toast";
 
-function ChangeWifiPassword({
-  wifiCredentials
-}: {
-  wifiCredentials: { ssid: string; pass: string } | null;
-}) {
+export default function ChangeWifiPassword() {
+  const wifiCredentials = useSelector(getWifiCredentials);
+
   const prevSsid = (wifiCredentials || {}).ssid || "";
   const [ssid, setSsid] = useState(prevSsid);
   const [password, setPassword] = useState("");
@@ -54,20 +51,15 @@ function ChangeWifiPassword({
     errors.length > 0 ||
     errorsConfirm.length > 0;
 
-  async function update() {
+  function update() {
     const envs = {
       [wifiEnvSSID]: ssid,
       [wifiEnvWPA_PASSPHRASE]: password
     };
-    if (!invalid)
-      try {
-        await withToast(() => api.updatePackageEnv({ id: wifiName, envs }), {
-          message: "Changing WIFI credentials...",
-          onSuccess: "Changed WIFI credentials"
-        });
-      } catch (e) {
-        console.error("Error on api.updatePackageEnv", e);
-      }
+    withToastNoThrow(() => api.updatePackageEnv({ id: wifiName, envs }), {
+      message: "Changing WIFI credentials...",
+      onSuccess: "Changed WIFI credentials"
+    });
   }
 
   return (
@@ -159,16 +151,3 @@ function ChangeWifiPassword({
     </Card>
   );
 }
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  wifiCredentials: getWifiCredentials
-});
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChangeWifiPassword);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { get, isEmpty } from "lodash";
-import Error from "components/generic/Error";
+import Error from "components/Error";
 import Form, { FormValidation, AjvError } from "react-jsonschema-form";
 import Button from "components/Button";
 import RenderMarkdown from "components/RenderMarkdown";
@@ -18,7 +18,7 @@ interface AjvErrorWithPath extends AjvError {
 }
 
 const widgets = {
-  [selectMountpointId]: SelectMountpoint
+  [selectMountpointId]: SelectMountpoint as any
 };
 
 // Memo this component to prevent expensive MarkDown parsing

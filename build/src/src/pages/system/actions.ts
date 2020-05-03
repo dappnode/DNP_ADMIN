@@ -1,22 +1,21 @@
 import { confirm } from "components/ConfirmDialog";
 import { api } from "api";
-import { ThunkAction } from "redux-thunk";
-import { AnyAction } from "redux";
 import { shortNameCapitalized, prettyVolumeName } from "utils/format";
 import { getEthClientPrettyName } from "components/EthMultiClient";
 // External actions
-import { fetchIfPasswordIsInsecure } from "services/dappnodeStatus/actions";
+import { fetchPasswordIsInsecure } from "services/dappnodeStatus/actions";
 // Selectors
 import { getDnpInstalledById } from "services/dnpInstalled/selectors";
 import { getEthClientTarget } from "services/dappnodeStatus/selectors";
 import { EthClientTarget } from "types";
 import { withToast } from "components/toast/Toast";
+import { AppThunk } from "store";
 
 // Redux Thunk actions
 
 export const changeEthClientTarget = (
   nextTarget: EthClientTarget
-): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+): AppThunk => async (_, getState) => {
   const prevTarget = getEthClientTarget(getState());
 
   // Make sure the target has changed or the call will error
@@ -60,15 +59,15 @@ export const changeEthClientTarget = (
 
 export const passwordChangeInBackground = (
   newPassword: string
-): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
+): AppThunk => async dispatch => {
   await api.passwordChange({ newPassword }).catch(console.error);
 
-  dispatch(fetchIfPasswordIsInsecure());
+  dispatch(fetchPasswordIsInsecure());
 };
 
 export const passwordChange = (
   newPassword: string
-): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
+): AppThunk => async dispatch => {
   // Display a dialog to confirm the password change
   await new Promise(resolve =>
     confirm({
@@ -85,12 +84,10 @@ export const passwordChange = (
     onSuccess: `Changed host user password`
   });
 
-  dispatch(fetchIfPasswordIsInsecure());
+  dispatch(fetchPasswordIsInsecure());
 };
 
-export const volumeRemove = (
-  name: string
-): ThunkAction<void, {}, null, AnyAction> => async dispatch => {
+export const volumeRemove = (name: string): AppThunk => async dispatch => {
   // Display a dialog to confirm the password change
   await new Promise(resolve =>
     confirm({
@@ -111,7 +108,7 @@ export const volumeRemove = (
 export const packageVolumeRemove = (
   dnpName: string,
   volName: string
-): ThunkAction<void, {}, null, AnyAction> => async (dispatch, getState) => {
+): AppThunk => async (dispatch, getState) => {
   // Make sure there are no colliding volumes with this DNP
   const dnp = getDnpInstalledById(getState(), dnpName);
   const prettyDnpName = shortNameCapitalized(dnpName);
@@ -145,7 +142,7 @@ export const packageVolumeRemove = (
     confirm({
       title: `Removing ${prettyVolRef}`,
       text: `Are you sure you want to permanently remove this volume? This action cannot be undone. If this DAppNode Package is a blockchain node, it will lose all the chain data and start syncing from scratch.`,
-      list: warningsList.length ? warningsList : null,
+      list: warningsList,
       label: "Remove",
       onClick: resolve
     })

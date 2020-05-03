@@ -1,7 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-function DataList({
+export default function DataList({
   title,
   data
 }: {
@@ -20,12 +19,3 @@ function DataList({
     </div>
   );
 }
-
-DataList.propTypes = {
-  title: PropTypes.string.isRequired,
-  data: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.func, PropTypes.object])
-  ).isRequired
-};
-
-export default DataList;

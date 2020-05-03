@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { api } from "api";
 import newTabProps from "utils/newTabProps";
 // Components
@@ -7,7 +6,7 @@ import Card from "components/Card";
 import Switch from "components/Switch";
 import Input from "components/Input";
 import Button from "components/Button";
-import Terminal from "./Terminal";
+import { Terminal } from "./Terminal";
 // Utils
 import { stringIncludes, stringSplit } from "utils/strings";
 
@@ -18,7 +17,7 @@ const terminalID = "terminal";
 
 const validateLines = (lines: number) => !isNaN(lines) && lines > 0;
 
-function Logs({ id }: { id: string }) {
+export default function Logs({ id }: { id: string }) {
   // User options
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [timestamps, setTimestamps] = useState(false);
@@ -127,9 +126,3 @@ function Logs({ id }: { id: string }) {
     </Card>
   );
 }
-
-Logs.propTypes = {
-  id: PropTypes.string.isRequired
-};
-
-export default Logs;

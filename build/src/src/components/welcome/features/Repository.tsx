@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { EthMultiClientsAndFallback } from "components/EthMultiClient";
 import { EthClientTarget, EthClientFallback } from "types";
 import { getEthClientTarget } from "services/dappnodeStatus/selectors";
@@ -15,16 +14,14 @@ import { api } from "api";
  * - Full node
  * There may be multiple available light-clients and fullnodes
  */
-function Repository({
+export default function Repository({
   onBack,
-  onNext,
-  // Redux
-  ethClientTarget
+  onNext
 }: {
   onBack?: () => void;
   onNext: () => void;
-  ethClientTarget?: EthClientTarget | null;
 }) {
+  const ethClientTarget = useSelector(getEthClientTarget);
   const [target, setTarget] = useState<EthClientTarget>("remote");
   // Use fallback by default
   const [fallback, setFallback] = useState<EthClientFallback>("on");
@@ -72,14 +69,3 @@ function Repository({
     </>
   );
 }
-
-const mapStateToProps = createStructuredSelector({
-  ethClientTarget: getEthClientTarget
-});
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Repository);

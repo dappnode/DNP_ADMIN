@@ -1,7 +1,6 @@
-import { mountPoint } from "./data";
-import { PackageNotification } from "types";
+import { RootState } from "rootReducer";
 
 // Service > notifications
 
-export const getNotifications = (state: any): PackageNotification[] =>
-  Object.values(state[mountPoint] || {});
+export const getNotifications = (state: RootState) =>
+  Object.values(state.notifications);

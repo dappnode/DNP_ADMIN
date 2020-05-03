@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { api } from "api";
-import { createStructuredSelector } from "reselect";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import isIpv4 from "utils/isIpv4";
-import { withToast } from "components/toast/Toast";
+import { withToastNoThrow } from "components/toast/Toast";
 // Components
 import Card from "components/Card";
 import Input from "components/Input";
@@ -11,22 +10,19 @@ import Button from "components/Button";
 // External
 import { getStaticIp } from "services/dappnodeStatus/selectors";
 
-function StaticIp({ staticIp = "" }) {
+export default function StaticIp() {
+  const staticIp = useSelector(getStaticIp);
   const [input, setInput] = useState(staticIp);
 
   useEffect(() => {
     setInput(staticIp);
   }, [staticIp]);
 
-  async function updateStaticIp(newStaticIp: string) {
-    try {
-      await withToast(() => api.setStaticIp({ staticIp: newStaticIp }), {
-        message: "Setting static ip...",
-        onSuccess: "Set static ip"
-      });
-    } catch (e) {
-      console.error("Error on setStaticIp", e);
-    }
+  function updateStaticIp(newStaticIp: string) {
+    withToastNoThrow(() => api.setStaticIp({ staticIp: newStaticIp }), {
+      message: "Setting static ip...",
+      onSuccess: "Set static ip"
+    });
   }
 
   return (
@@ -74,14 +70,3 @@ function StaticIp({ staticIp = "" }) {
     </Card>
   );
 }
-
-// Container
-
-const mapStateToProps = createStructuredSelector({
-  staticIp: getStaticIp
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(StaticIp);

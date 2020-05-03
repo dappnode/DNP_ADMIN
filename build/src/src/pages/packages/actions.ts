@@ -2,16 +2,15 @@
 import { confirm } from "components/ConfirmDialog";
 import { shortNameCapitalized as sn } from "utils/format";
 import { api } from "api";
-import { ThunkAction } from "redux-thunk";
-import { AnyAction } from "redux";
 // Selectors
 import {
   getDnpInstalledById,
   getDependantsOfId
 } from "services/dnpInstalled/selectors";
-import { withToast } from "components/toast/Toast";
+import { withToastNoThrow } from "components/toast/Toast";
 import { PackageEnvs } from "types";
 import { PackageContainer } from "common/types";
+import { AppThunk } from "store";
 
 /* Notice: togglePackage, restartPackage, etc use redux-thunk
    Since there is no return value, and the state change
@@ -29,25 +28,21 @@ import { PackageContainer } from "common/types";
 export const updatePackageEnv = (
   id: string,
   envs: PackageEnvs
-): ThunkAction<void, {}, null, AnyAction> => () =>
-  withToast(() => api.updatePackageEnv({ id, envs }), {
+): AppThunk => () =>
+  withToastNoThrow(() => api.updatePackageEnv({ id, envs }), {
     message: `Updating ${id} envs: ${Object.keys(envs)}...`,
     onSuccess: `Updated ${id} envs`
   });
 
 // Used in package interface / controls
 
-export const togglePackage = (
-  id: string
-): ThunkAction<void, {}, null, AnyAction> => () =>
-  withToast(() => api.togglePackage({ id }), {
+export const togglePackage = (id: string): AppThunk => () =>
+  withToastNoThrow(() => api.togglePackage({ id }), {
     message: `Toggling ${sn(id)}...`,
     onSuccess: `Toggled ${sn(id)}`
   });
 
-export const restartPackage = (
-  id: string
-): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+export const restartPackage = (id: string): AppThunk => async (_, getState) => {
   // If the DNP is not gracefully stopped, ask for confirmation to reset
   const dnp = getDnpInstalledById(getState(), id);
   if (!dnp || dnp.running || dnp.state !== "exited")
@@ -60,15 +55,16 @@ export const restartPackage = (
       });
     });
 
-  await withToast(() => api.restartPackage({ id }), {
+  await withToastNoThrow(() => api.restartPackage({ id }), {
     message: `Restarting ${sn(id)}...`,
     onSuccess: `Restarted ${sn(id)}`
   });
 };
 
-export const restartPackageVolumes = (
-  id: string
-): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+export const restartPackageVolumes = (id: string): AppThunk => async (
+  _,
+  getState
+) => {
   // Make sure there are no colliding volumes with this DNP
   const dnp = getDnpInstalledById(getState(), id);
 
@@ -95,22 +91,20 @@ export const restartPackageVolumes = (
       confirm({
         title: `Removing ${sn(id)} data`,
         text: `This action cannot be undone. If this DAppNode Package is a blockchain node, it will lose all the chain data and start syncing from scratch.`,
-        list: warningsList.length ? warningsList : null,
+        list: warningsList,
         label: "Remove volumes",
         onClick: resolve
       })
     );
   }
 
-  await withToast(() => api.restartPackageVolumes({ id }), {
+  await withToastNoThrow(() => api.restartPackageVolumes({ id }), {
     message: `Removing volumes of ${sn(id)}...`,
     onSuccess: `Removed volumes of ${sn(id)}`
   });
 };
 
-export const removePackage = (
-  id: string
-): ThunkAction<void, {}, null, AnyAction> => async (_, getState) => {
+export const removePackage = (id: string): AppThunk => async (_, getState) => {
   const dnp = getDnpInstalledById(getState(), id);
   if (!dnp) throw Error(`DNP not found dnpList: ${id}`);
 
@@ -169,7 +163,7 @@ export const removePackage = (
       })
     );
 
-  await withToast(() => api.removePackage({ id, deleteVolumes }), {
+  await withToastNoThrow(() => api.removePackage({ id, deleteVolumes }), {
     message: `Removing ${sn(id)} ${deleteVolumes ? " and volumes" : ""}...`,
     onSuccess: `Removed ${sn(id)}`
   });

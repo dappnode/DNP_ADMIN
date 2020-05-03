@@ -1,51 +1,54 @@
 import { omit, omitBy } from "lodash";
-import {
-  UPDATE_IS_INSTALLING_LOG,
-  AllActionTypes,
-  IsInstallingLogsState,
-  CLEAR_IS_INSTALLING_LOG
-} from "./types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { stripVersion } from "./utils";
 
 // Service > isInstallingLogs
 
-const initialState: IsInstallingLogsState = {
-  logs: {},
-  dnpNameToLogId: {}
-};
+interface IsInstallingLogsState {
+  logs: {
+    [logId: string]: {
+      [dnpName: string]: string; // Log: "Downloading 57%"
+    };
+  };
+  dnpNameToLogId: {
+    [dnpName: string]: string; // logId
+  };
+}
 
-export default function(
-  state = initialState,
-  action: AllActionTypes
-): IsInstallingLogsState {
-  switch (action.type) {
-    case UPDATE_IS_INSTALLING_LOG:
-      const prevId = state.dnpNameToLogId[action.dnpName];
-      const removePrevId = prevId && action.id !== prevId;
+export const isInstallingLogsSlice = createSlice({
+  name: "isInstallingLogs",
+  initialState: { logs: {}, dnpNameToLogId: {} } as IsInstallingLogsState,
+  reducers: {
+    updateIsInstallingLog: (
+      state,
+      action: PayloadAction<{ id: string; dnpName: string; log: string }>
+    ) => {
+      const id = stripVersion(action.payload.id);
+      const dnpName = stripVersion(action.payload.dnpName);
+      const log = action.payload.log;
+      const prevId = state.dnpNameToLogId[dnpName];
+      const removePrevId = prevId && id !== prevId;
       // If there is a double installation, prevent the install log to update
       // Otherwise there could be confusing messages on the UI, which will display both
 
       return {
         logs: {
           ...(removePrevId ? omit(state.logs, prevId) : state.logs),
-          [action.id]: {
-            ...(state.logs[action.id] || {}),
-            [action.dnpName]: action.log
-          }
+          [id]: { ...(state.logs[id] || {}), [dnpName]: log }
         },
-        dnpNameToLogId: {
-          ...state.dnpNameToLogId,
-          [action.dnpName]: action.id
-        }
+        dnpNameToLogId: { ...state.dnpNameToLogId, [dnpName]: id }
       };
+    },
 
-    case CLEAR_IS_INSTALLING_LOG:
+    clearIsInstallingLog: (state, action: PayloadAction<{ id: string }>) => {
+      const id = stripVersion(action.payload.id);
       return {
         ...state,
-        logs: omit(state.logs, action.id),
-        dnpNameToLogId: omitBy(state.dnpNameToLogId, id => id === action.id)
+        logs: omit(state.logs, id),
+        dnpNameToLogId: omitBy(state.dnpNameToLogId, _id => _id === id)
       };
-
-    default:
-      return state;
+    }
   }
-}
+});
+
+export const reducer = isInstallingLogsSlice.reducer;
