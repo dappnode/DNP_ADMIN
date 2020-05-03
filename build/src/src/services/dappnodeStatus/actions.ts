@@ -1,5 +1,7 @@
+import { api } from "api";
 import { createAction } from "@reduxjs/toolkit";
 import { dappnodeStatus } from "./reducer";
+import { AppThunk } from "store";
 
 // Service > dappnodeStatus
 
@@ -25,3 +27,16 @@ export const fetchDappnodeDiagnose = createAction("FETCH_DAPPNODE_DIAGNOSE");
 export const fetchPasswordIsInsecure = createAction(
   "FETCH_PASSWORD_IS_INSECURE"
 );
+
+export const fetchAutoUpdateData = (): AppThunk => async dispatch =>
+  withTryCatch(async () => {
+    dispatch(updateAutoUpdateData(await api.autoUpdateDataGet()));
+  }, "autoUpdateData");
+
+async function withTryCatch(fn: () => Promise<void>, id = "") {
+  try {
+    await fn();
+  } catch (e) {
+    console.error(`Error fetching ${id}`, e);
+  }
+}

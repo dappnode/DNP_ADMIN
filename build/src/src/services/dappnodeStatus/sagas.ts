@@ -103,21 +103,6 @@ const checkIfPasswordIsInsecure = wrapErrorsAndLoading(
 );
 
 /**
- * Get the auto-update data:
- * - settings
- * - registry
- * - pending
- */
-const fetchAutoUpdateData = wrapErrorsAndLoading(
-  loadingIds.autoUpdateData,
-  function*() {
-    // If there are no settings the return will be null
-    const autoUpdateData = yield call(api.autoUpdateDataGet);
-    yield put(a.updateAutoUpdateData(autoUpdateData) || {});
-  }
-);
-
-/**
  * Get DAppNode docker volumes
  */
 const fetchVolumes = wrapErrorsAndLoading(loadingIds.volumes, function*() {
@@ -139,7 +124,6 @@ function* fetchAllDappnodeStatus() {
       call(checkIpfsConnectionStatus),
       call(checkWifiStatus),
       call(checkIfPasswordIsInsecure),
-      call(fetchAutoUpdateData),
       call(fetchVolumes)
     ]);
   } catch (e) {

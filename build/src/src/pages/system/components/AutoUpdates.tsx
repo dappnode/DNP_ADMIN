@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { api } from "api";
 // Components
@@ -13,9 +13,10 @@ import { parseStaticDate, parseDiffDates } from "utils/dates";
 import { coreName, autoUpdateIds } from "params";
 // External
 import { getEthClientWarning } from "services/dappnodeStatus/selectors";
-import { activateFallbackPath } from "pages/system/data";
 import { getAutoUpdateData } from "services/dappnodeStatus/selectors";
 import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
+import { fetchAutoUpdateData } from "services/dappnodeStatus/actions";
+import { activateFallbackPath } from "pages/system/data";
 import { rootPath as installerRootPath } from "pages/installer";
 import {
   rootPath as systemRootPath,
@@ -35,6 +36,11 @@ export default function AutoUpdates() {
   const autoUpdateData = useSelector(getAutoUpdateData);
   const progressLogsByDnp = useSelector(getProgressLogsByDnp);
   const ethClientWarning = useSelector(getEthClientWarning);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAutoUpdateData());
+  }, [dispatch]);
 
   const { dnpsToShow = [] } = autoUpdateData || {};
   const someAutoUpdateIsEnabled =

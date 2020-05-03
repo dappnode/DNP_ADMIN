@@ -7,7 +7,6 @@ export const versionData = "versionData";
 export const ipfsConnectionStatus = "ipfsConnectionStatus";
 export const wifiStatus = "wifiStatus";
 export const passwordIsInsecure = "passwordIsInsecure";
-export const autoUpdateData = "autoUpdateData";
 export const identity = "identity";
 export const notifications = "notifications";
 export const volumes = "volumes";
