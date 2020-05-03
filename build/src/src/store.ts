@@ -1,10 +1,6 @@
 import { createStore, applyMiddleware, Action } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk, { ThunkAction } from "redux-thunk";
-import createSagaMiddleware from "redux-saga";
-
-// App modules
-import rootSaga from "./rootSaga";
 import rootReducer, { RootState } from "./rootReducer";
 
 /**
@@ -19,14 +15,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >;
 
-// create the saga middleware
-const sagaMiddleware = createSagaMiddleware();
-
-const middlewares = [
-  thunk,
-  // mount saga middleware on the Store
-  sagaMiddleware
-];
+const middlewares = [thunk];
 
 // Methodology from https://redux.js.org/recipes/configuring-your-store#integrating-the-devtools-extension
 // And https://github.com/zalmoxisus/redux-devtools-extension#13-use-redux-devtools-extension-package-from-npm
@@ -45,6 +34,3 @@ window.dispach = store.dispatch;
 window.store = store;
 
 export default store;
-
-// Run the saga
-sagaMiddleware.run(rootSaga);

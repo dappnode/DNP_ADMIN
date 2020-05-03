@@ -1,7 +1,7 @@
 import { api } from "api";
-import { createAction } from "@reduxjs/toolkit";
 import { dappnodeStatus } from "./reducer";
 import { AppThunk } from "store";
+import { wifiName } from "params";
 
 // Service > dappnodeStatus
 
@@ -16,19 +16,37 @@ export const updateVolumes = dappnodeStatus.actions.volumes;
 
 // Fetch
 
-export const fetchAllDappnodeStatus = createAction("FETCH_ALL_DAPPNODE_STATUS");
-export const fetchDappnodeParams = createAction("FETCH_DAPPNODE_PARAMS");
-export const fetchDappnodeStats = createAction("FETCH_DAPPNODE_STATS");
-export const fetchDappnodeDiagnose = createAction("FETCH_DAPPNODE_DIAGNOSE");
-export const fetchPasswordIsInsecure = createAction(
-  "FETCH_PASSWORD_IS_INSECURE"
-);
-
 export const fetchAutoUpdateData = (): AppThunk => async dispatch =>
   withTryCatch(async () => {
     dispatch(updateAutoUpdateData(await api.autoUpdateDataGet()));
   }, "autoUpdateData");
 
+export const fetchPasswordIsInsecure = (): AppThunk => async dispatch =>
+  withTryCatch(async () => {
+    dispatch(updatePasswordIsInsecure(await api.passwordIsSecure()));
+  }, "passwordIsSecure");
+
+export const fetchVolumes = (): AppThunk => async dispatch =>
+  withTryCatch(async () => {
+    dispatch(updateVolumes(await api.volumesGet()));
+  }, "volumesGet");
+
+export const fetchSystemInfo = (): AppThunk => async dispatch =>
+  withTryCatch(async () => {
+    dispatch(setSystemInfo(await api.systemInfoGet()));
+  }, "systemInfoGet");
+
+export const fetchWifiStatus = (): AppThunk => async dispatch =>
+  withTryCatch(async () => {
+    const logs = await api.logPackage({ id: wifiName });
+    const firstLogLine = logs.trim().split("\n")[0];
+    const running = !firstLogLine.includes("No interface found");
+    dispatch(updateWifiStatus({ running }));
+  }, "wifiStatus");
+
+/**
+ * Util to guard against throws in thunk actions
+ */
 async function withTryCatch(fn: () => Promise<void>, id = "") {
   try {
     await fn();
