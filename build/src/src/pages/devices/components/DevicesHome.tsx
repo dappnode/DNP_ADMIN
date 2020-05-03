@@ -36,7 +36,7 @@ export default function DevicesHome() {
   const toggleAdmin = (id: string) => dispatch(a.toggleAdmin(id));
 
   const [id, setId] = useState("");
-  const idTooLong = id.length === maxIdLength;
+  const idTooLong = id.length > maxIdLength;
   return (
     <>
       <Title title={title} />
