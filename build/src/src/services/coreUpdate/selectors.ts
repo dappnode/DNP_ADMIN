@@ -6,10 +6,11 @@ import { DependencyListItem, ManifestUpdateAlert } from "types";
 
 // Service > coreUpdate
 
-export const getCoreUpdateData = (state: RootState) =>
-  state.coreUpdate.coreUpdateData;
+export const getCoreUpdateData = (state: RootState) => state.coreUpdate.data;
 export const getUpdatingCore = (state: RootState) =>
   state.coreUpdate.updatingCore;
+export const getCoreRequestStatus = (state: RootState) =>
+  state.coreUpdate.requestStatus;
 
 /**
  * Returns core dependencies,

@@ -28,10 +28,7 @@ export const dappnodeStatus = createSlice({
     (data, key) => (
       state: typeof initialState,
       action: PayloadAction<typeof data>
-    ) => ({
-      ...state,
-      [key]: action.payload
-    })
+    ) => ({ ...state, [key]: action.payload })
   ) as {
     [K in keyof DappnodeStatusState]: (
       state: DappnodeStatusState,

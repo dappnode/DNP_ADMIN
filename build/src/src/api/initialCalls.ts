@@ -3,6 +3,7 @@ import { fetchDevices } from "services/devices/actions";
 import { fetchUserActionLogs } from "services/userActionLogs/actions";
 import { fetchNotifications } from "services/notifications/actions";
 import { fetchDnpInstalled } from "services/dnpInstalled/actions";
+import { fetchCoreUpdateData } from "services/coreUpdate/actions";
 
 export function initialCallsOnOpen() {
   // @ts-ignore
@@ -13,4 +14,6 @@ export function initialCallsOnOpen() {
   store.dispatch(fetchNotifications());
   // @ts-ignore
   store.dispatch(fetchDnpInstalled());
+  // @ts-ignore
+  store.dispatch(fetchCoreUpdateData());
 }

@@ -903,7 +903,7 @@ export const mockState: RootState = {
   },
 
   coreUpdate: {
-    coreUpdateData: {
+    data: {
       available: true,
       type: "patch",
       packages: [
@@ -925,7 +925,8 @@ export const mockState: RootState = {
       ],
       versionId: ""
     },
-    updatingCore: true
+    updatingCore: true,
+    requestStatus: {}
   },
 
   dappnodeStatus: {
