@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import useSWR, { mutate } from "swr";
+import { api } from "api";
 import Dropdown from "react-bootstrap/Dropdown";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "components/Button";
@@ -8,12 +9,6 @@ import { MdHome, MdRefresh } from "react-icons/md";
 import "./selectMountpoint.scss";
 import { joinCssClass } from "utils/css";
 import { MountpointData } from "types";
-import {
-  getIsLoadingStrict,
-  getLoadingError
-} from "services/loadingStatus/selectors";
-import { getMountpoints } from "services/dappnodeStatus/selectors";
-import { fetchMountpoints } from "services/dappnodeStatus/actions";
 import newTabProps from "utils/newTabProps";
 
 export const selectMountpointId = "selectMountpoint";
@@ -96,15 +91,12 @@ export default function SelectMountpoint({
     isLegacy?: boolean;
     prevPath?: string;
   };
-  // Own DAppNode props from redux
-  mountpoints: MountpointData[] | null;
-  isLoading: boolean;
-  loadingError?: string;
 }) {
-  const mountpointsApi = useSelector(getMountpoints);
-  const isLoading = useSelector(getIsLoadingStrict.mountpoints);
-  const loadingError = useSelector(getLoadingError.mountpoints);
-  const dispatch = useDispatch();
+  const mountpointsGetKey = "mountpointsGet";
+  const { data: mountpointsApi, error, isValidating } = useSWR(
+    [mountpointsGetKey],
+    () => api.mountpointsGet()
+  );
 
   const [showHelp, setShowHelp] = useState(false);
 
@@ -126,16 +118,12 @@ export default function SelectMountpoint({
     ({ mountpoint }) => mountpoint === value
   );
 
-  // Automatically fetch mountpoints on component load
-  useEffect(() => {
-    if (!mountpointsLoaded) dispatch(fetchMountpoints());
-  }, [mountpointsLoaded, dispatch]);
-
   // If the user has selected an invalid mountpoint and is not loading or already set,
   // reset the value to the host (default) to prevent problems
   useEffect(() => {
-    if (value && !selectedMountpoint && !alreadySet && !isLoading) onChange("");
-  }, [value, selectedMountpoint, alreadySet, isLoading, onChange]);
+    if (value && !selectedMountpoint && !alreadySet && !isValidating)
+      onChange("");
+  }, [value, selectedMountpoint, alreadySet, isValidating, onChange]);
 
   async function onSelectMountpoint(mountpoint: string) {
     if (isLegacy || alreadySet) return;
@@ -168,7 +156,7 @@ export default function SelectMountpoint({
                   <span>{prevPath}</span>
                   <small>(unknown device)</small>
                 </>
-              ) : isLoading ? (
+              ) : isValidating ? (
                 <span>Loading...</span>
               ) : (
                 <span>Select drive</span>
@@ -185,7 +173,7 @@ export default function SelectMountpoint({
               </Dropdown.Item>
             ))}
 
-            {isLoading && !mountpointsLoaded && (
+            {isValidating && !mountpointsLoaded && (
               <Dropdown.Item>Loading...</Dropdown.Item>
             )}
 
@@ -201,9 +189,10 @@ export default function SelectMountpoint({
 
         {!alreadySet && (
           <Button
-            onClick={fetchMountpoints}
-            disabled={isLoading}
-            className={"refresh " + joinCssClass({ loading: isLoading })}
+            // Manually trigger re-fetching of SWR
+            onClick={() => mutate(mountpointsGetKey)}
+            disabled={isValidating}
+            className={"refresh " + joinCssClass({ loading: isValidating })}
           >
             <MdRefresh />
             <span className="text">Refresh</span>
@@ -218,9 +207,9 @@ export default function SelectMountpoint({
         </div>
       )}
 
-      {loadingError && (
+      {error && (
         <div className="change-mountpoint-error">
-          Error detecting mountpoints: {loadingError}
+          Error detecting mountpoints: {error}
         </div>
       )}
     </>

@@ -3,7 +3,6 @@ import {
   SystemInfo,
   HostStats,
   Diagnose,
-  MountpointData,
   VolumeData,
   AutoUpdateDataView
 } from "types";
@@ -19,7 +18,6 @@ interface DappnodeStatusState {
   wifiStatus: { running: boolean } | null;
   passwordIsInsecure: boolean;
   autoUpdateData: AutoUpdateDataView | null;
-  mountpoints: MountpointData[];
   volumes: VolumeData[];
 }
 
@@ -31,7 +29,6 @@ const initialState: DappnodeStatusState = {
   wifiStatus: null,
   passwordIsInsecure: false,
   autoUpdateData: null,
-  mountpoints: [],
   volumes: []
 };
 

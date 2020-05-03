@@ -14,7 +14,6 @@ export const updateWifiStatus = dappnodeStatus.actions.wifiStatus;
 export const updatePasswordIsInsecure =
   dappnodeStatus.actions.passwordIsInsecure;
 export const updateAutoUpdateData = dappnodeStatus.actions.autoUpdateData;
-export const updateMountpoints = dappnodeStatus.actions.mountpoints;
 export const updateVolumes = dappnodeStatus.actions.volumes;
 
 // Fetch
@@ -26,4 +25,3 @@ export const fetchDappnodeDiagnose = createAction("FETCH_DAPPNODE_DIAGNOSE");
 export const fetchPasswordIsInsecure = createAction(
   "FETCH_PASSWORD_IS_INSECURE"
 );
-export const fetchMountpoints = createAction("FETCH_MOUNTPOINTS");

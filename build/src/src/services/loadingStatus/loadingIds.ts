@@ -9,7 +9,6 @@ export const wifiStatus = "wifiStatus";
 export const passwordIsInsecure = "passwordIsInsecure";
 export const autoUpdateData = "autoUpdateData";
 export const identity = "identity";
-export const mountpoints = "mountpoints";
 export const notifications = "notifications";
 export const volumes = "volumes";
 export const systemInfo = "systemInfo";

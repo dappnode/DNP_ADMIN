@@ -25,8 +25,6 @@ export const getAutoUpdateData = (state: RootState) =>
   state.dappnodeStatus.autoUpdateData;
 export const getIdentityAddress = (state: RootState) =>
   (getSystemInfo(state) || {}).identityAddress;
-export const getMountpoints = (state: RootState) =>
-  state.dappnodeStatus.mountpoints;
 export const getVolumes = (state: RootState) => state.dappnodeStatus.volumes;
 
 // Sub-sub local properties

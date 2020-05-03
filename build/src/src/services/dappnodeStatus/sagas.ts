@@ -9,7 +9,7 @@ import * as loadingIds from "services/loadingStatus/loadingIds";
 // Utils
 import { stringSplit, stringIncludes } from "utils/strings";
 import { wifiName } from "params";
-import { MountpointData, VolumeData } from "types";
+import { VolumeData } from "types";
 
 // Service > dappnodeStatus
 
@@ -118,19 +118,6 @@ const fetchAutoUpdateData = wrapErrorsAndLoading(
 );
 
 /**
- * Get DAppNode host mountpoints
- * ONLY FETCH on request, NOT on connection open
- */
-const fetchMountpointData = wrapErrorsAndLoading(
-  loadingIds.mountpoints,
-  function*() {
-    // If there are no settings the return will be null
-    const mountpoints: MountpointData[] = yield call(api.mountpointsGet);
-    yield put(a.updateMountpoints(mountpoints));
-  }
-);
-
-/**
  * Get DAppNode docker volumes
  */
 const fetchVolumes = wrapErrorsAndLoading(loadingIds.volumes, function*() {
@@ -172,6 +159,5 @@ export default rootWatcher([
   [a.fetchDappnodeParams.toString(), fetchDappnodeParams],
   [a.fetchDappnodeStats.toString(), fetchDappnodeStats],
   [a.fetchDappnodeDiagnose.toString(), fetchDappnodeDiagnose],
-  [a.fetchPasswordIsInsecure.toString(), checkIfPasswordIsInsecure],
-  [a.fetchMountpoints.toString(), fetchMountpointData]
+  [a.fetchPasswordIsInsecure.toString(), checkIfPasswordIsInsecure]
 ]);
