@@ -1,12 +1,12 @@
 import React from "react";
 import { title } from "../data";
-import { Link } from "react-router-dom";
 import newTabProps from "utils/newTabProps";
 // Components
 import Title from "components/Title";
 import Card from "components/Card";
 import SubTitle from "components/SubTitle";
 import { ButtonLight } from "components/Button";
+import "./sdk.scss"
 
 const SDK_GUIDE_LINK =
   "https://github.com/dappnode/DAppNodeSDK/wiki/DAppNode-SDK-tutorial";
@@ -15,16 +15,12 @@ const subRoutes = [
   {
     title: "Publish DAppNode Packages",
     subtitle: `To an Aragon's APM registry`,
-    route: "publish"
+    urlTag: "Publish",
+    url: "https://dappnode.github.io/publish"
   }
-  // {
-  //   title: "Explore repos",
-  //   subtitle: `Of Aragon's APM registries`,
-  //   route: "explore"
-  // }
 ];
 
-function SdkHome({ match }) {
+export default function SdkHome() {
   return (
     <>
       <Title title={title} />
@@ -67,19 +63,18 @@ function SdkHome({ match }) {
       </Card>
 
       <SubTitle>What can the SDK do?</SubTitle>
-      {subRoutes.map(({ title, subtitle, route }) => (
+      {subRoutes.map(({ title, subtitle, url, urlTag }) => (
         <Card key={title} className="sdk-link">
           <div>
             <h5 className="card-title">{title}</h5>
             <div style={{ opacity: "0.5" }}>{subtitle}</div>
           </div>
-          <Link to={match.url + "/" + route}>
-            <ButtonLight>{route}</ButtonLight>
-          </Link>
+          <a href={url} {...newTabProps}>
+            <ButtonLight>{urlTag}</ButtonLight>
+          </a>
         </Card>
       ))}
     </>
   );
 }
 
-export default SdkHome;
