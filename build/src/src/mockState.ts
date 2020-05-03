@@ -1368,8 +1368,6 @@ export const mockState: RootState = {
     }
   },
 
-  loadingStatus: {},
-
   notifications: {
     "diskSpaceRanOut-stoppedPackages": {
       id: "diskSpaceRanOut-stoppedPackages",
