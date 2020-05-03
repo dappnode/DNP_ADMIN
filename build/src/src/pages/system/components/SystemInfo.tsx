@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useApi } from "api";
-import { useDispatch } from "react-redux";
 // Own module
 import VolumesGrid from "./VolumesGrid";
 import { HostStats } from "pages/dashboard/components/HostStats";

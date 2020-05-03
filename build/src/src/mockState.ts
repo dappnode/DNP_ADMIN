@@ -648,7 +648,7 @@ const samplePackageContainer: PackageContainer = {
   avatarUrl: ""
 };
 
-const dnpRequest = {
+export const dnpRequest = {
   dnps: {
     [lightningNetworkMetadata.name]: {
       ...sampleRequestState,
@@ -819,7 +819,7 @@ const dnpRequest = {
   }
 };
 
-const mountpoints = [
+export const mountpoints = [
   {
     mountpoint: "",
     use: "87%",
@@ -858,13 +858,13 @@ const mountpoints = [
   }
 ];
 
-const hostStats = {
+export const hostStats = {
   cpu: "34%",
   disk: "96%",
   memory: "45%"
 };
 
-const devices = {
+export const devices = {
   ids: ["test-name", "other-user"],
   entities: {
     "test-name": { id: "test-name", admin: true, ip: "172.10.0.1" },
