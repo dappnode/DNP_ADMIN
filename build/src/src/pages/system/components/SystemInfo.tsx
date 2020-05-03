@@ -1,33 +1,26 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchDappnodeStats } from "services/dappnodeStatus/actions";
-// Selectors
-import { getDappnodeStats } from "services/dappnodeStatus/selectors";
+import { useApi } from "api";
+import { useDispatch } from "react-redux";
 // Own module
 import VolumesGrid from "./VolumesGrid";
-import StatsCard from "pages/dashboard/components/StatsCard";
+import { HostStats } from "pages/dashboard/components/HostStats";
 // Components
 import SubTitle from "components/SubTitle";
 
 export default function SystemInfo() {
-  const dappnodeStats = useSelector(getDappnodeStats);
-  const dispatch = useDispatch();
+  const stats = useApi.getStats();
 
   useEffect(() => {
-    const interval = setInterval(() => dispatch(fetchDappnodeStats), 5 * 1000);
+    const interval = setInterval(stats.revalidate, 5 * 1000);
     return () => {
       clearInterval(interval);
     };
-  }, [dispatch]);
+  }, [stats]);
 
   return (
     <>
       <SubTitle>Machine stats</SubTitle>
-      <div className="dashboard-cards">
-        {Object.entries(dappnodeStats).map(([id, percent]) => (
-          <StatsCard key={id} id={id} percent={percent} />
-        ))}
-      </div>
+      <HostStats />
 
       <SubTitle>Volumes</SubTitle>
       <VolumesGrid />

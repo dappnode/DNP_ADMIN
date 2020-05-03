@@ -42,7 +42,8 @@ export const useApi: {
   ) => responseInterface<ResolvedType<Routes[K]>, Error>;
 } = mapValues(api, (handler, route) => {
   return function(...args: any[]) {
-    const cacheKey = route + JSON.stringify(args);
+    const argsKey = args.length > 0 ? JSON.stringify(args) : "";
+    const cacheKey = route + argsKey;
     return useSWR([cacheKey, route], () => (handler as any)(...args));
   };
 });
