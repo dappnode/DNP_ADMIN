@@ -1,58 +1,44 @@
-import {
-  UPDATE_LOADING,
-  UPDATE_IS_LOADING,
-  UPDATE_IS_LOADED,
-  LoadingStatusState,
-  AllReducerActions
-} from "./types";
-import { Reducer } from "redux";
+import { merge } from "lodash";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Service > loadingStatus
 
-/**
- * @param state = {
- *   "loading-id": {
- *     isLoading: true,
- *     isLoaded: false,
- *     error: "RPC refused to connect"
- *   }, ... }
- * [Tested]
- */
-
-export const reducer: Reducer<LoadingStatusState, AllReducerActions> = (
-  state = {},
-  action
-) => {
-  switch (action.type) {
-    case UPDATE_LOADING:
-      return {
-        ...state,
-        [action.id]: {
-          ...(state[action.id] || {}),
-          isLoading: action.loading,
-          error: action.error
+export const dnpInstalledSlice = createSlice({
+  name: "loadingStatus",
+  initialState: {} as {
+    [loadingId: string]: {
+      isLoading: boolean;
+      isLoaded: boolean;
+      error?: string;
+    };
+  },
+  reducers: {
+    updateLoading: (
+      state,
+      action: PayloadAction<{ id: string; loading: boolean; error?: string }>
+    ) =>
+      merge(state, {
+        [action.payload.id]: {
+          isLoading: action.payload.loading,
+          error: action.payload.error
         }
-      };
-    case UPDATE_IS_LOADING:
-      return {
-        ...state,
-        [action.id]: {
-          ...(state[action.id] || {}),
+      }),
+
+    updateIsLoading: (state, action: PayloadAction<{ id: string }>) =>
+      merge(state, {
+        [action.payload.id]: {
           isLoading: true
         }
-      };
+      }),
 
-    case UPDATE_IS_LOADED:
-      return {
-        ...state,
-        [action.id]: {
-          ...(state[action.id] || {}),
+    updateIsLoaded: (state, action: PayloadAction<{ id: string }>) =>
+      merge(state, {
+        [action.payload.id]: {
           isLoading: false,
           isLoaded: true
         }
-      };
-
-    default:
-      return state;
+      })
   }
-};
+});
+
+export const reducer = dnpInstalledSlice.reducer;

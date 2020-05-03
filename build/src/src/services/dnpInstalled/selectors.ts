@@ -7,7 +7,7 @@ import {
   wifiEnvWPA_PASSPHRASE,
   wifiEnvSSID
 } from "params";
-import { PackageContainer, PackageDetailData } from "types";
+import { PackageContainer } from "types";
 
 // Service > dnpInstalled
 
@@ -15,10 +15,6 @@ export const getDnpInstalled = (state: RootState): PackageContainer[] =>
   state.dnpInstalled.dnpInstalled;
 export const getDnpInstalledStatus = (state: RootState) =>
   state.dnpInstalled.requestStatus;
-export const getDnpInstalledData = (
-  state: RootState
-): { [dnpName: string]: PackageDetailData } =>
-  state.dnpInstalled.dnpInstalledData;
 
 export const getWifiCredentials = (
   state: RootState
@@ -97,8 +93,3 @@ export const getDependantsOfId = (state: RootState, id: string) =>
   getDnpInstalled(state)
     .filter(dnp => dnp.dependencies && dnp.dependencies[id])
     .map(dnp => dnp.name);
-
-export const getDnpInstalledDataById = (
-  state: RootState,
-  id: string
-): PackageDetailData | undefined => getDnpInstalledData(state)[id];

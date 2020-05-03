@@ -9,13 +9,12 @@ import * as loadingIds from "services/loadingStatus/loadingIds";
 
 export const fetchDevices = (): AppThunk => async dispatch => {
   try {
-    dispatch(updateIsLoading(loadingIds.devices));
+    dispatch(updateIsLoading({ id: loadingIds.devices }));
     dispatch(updateDevices(await api.devicesList()));
-    dispatch(updateIsLoaded(loadingIds.devices));
+    dispatch(updateIsLoaded({ id: loadingIds.devices }));
   } catch (e) {
     console.error(`Error on fetchDevices: ${e.stack}`);
   }
 };
 
 export const updateDevices = devicesSlice.actions.updateDevices;
-export const updateDevice = devicesSlice.actions.updateDevice;

@@ -6,9 +6,7 @@ import { UserActionLogWithCount } from "types";
 export const userActionLogsAdapter = createEntityAdapter<
   UserActionLogWithCount
 >({
-  // Assume IDs are stored in a field other than `book.id`
-  selectId: device => device.timestamp,
-  // Keep the "all IDs" array sorted based on book titles
+  selectId: userActionLog => userActionLog.timestamp,
   sortComparer: (a, b) =>
     new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
 });

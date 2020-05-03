@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
+import useSWR from "swr";
+import { api } from "api";
 // This module
 import Info from "./PackageViews/Info";
 import { dnpSpecificList, dnpSpecific } from "./PackageViews/DnpSpecific";
@@ -21,16 +23,11 @@ import Title from "components/Title";
 // Utils
 import { shortNameCapitalized } from "utils/format";
 // Selectors
-import {
-  getDnpInstalledStatus,
-  getDnpInstalledDataById
-} from "services/dnpInstalled/selectors";
-import { fetchDnpInstalledData } from "services/dnpInstalled/actions";
+import { getDnpInstalledStatus } from "services/dnpInstalled/selectors";
 
 export const PackageInterface: React.FC<
   RouteComponentProps<{ id: string }>
 > = ({ match }) => {
-  const dispatch = useDispatch();
   const id = decodeURIComponent(match.params.id || "");
 
   // Fetching status
@@ -40,13 +37,9 @@ export const PackageInterface: React.FC<
   const moduleName = match.path.replace(/\//g, "");
   // Dnp data
   const dnp = useSelector((state: any) => s.getDnpById(state, id));
-  const dnpDetail = useSelector((state: any) =>
-    getDnpInstalledDataById(state, id)
+  const { data: dnpDetail } = useSWR([id, "packageDetailDataGet"], id =>
+    api.packageDetailDataGet({ id })
   );
-
-  useEffect(() => {
-    dispatch(fetchDnpInstalledData(id));
-  }, [id, dispatch]);
 
   if (!dnp) {
     return (

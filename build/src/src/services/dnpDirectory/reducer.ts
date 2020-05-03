@@ -1,11 +1,14 @@
 import { keyBy } from "lodash";
-import { DnpDirectoryState } from "./types";
 import { createReducer } from "@reduxjs/toolkit";
 import { setDnpDirectory, updateStatus } from "./actions";
+import { DirectoryItem, RequestStatus } from "common/types";
 
 // Service > dnpDirectory
 
-export const reducer = createReducer<DnpDirectoryState>(
+export const reducer = createReducer<{
+  directory: DirectoryItem[];
+  requestStatus: RequestStatus;
+}>(
   {
     directory: [],
     requestStatus: {}

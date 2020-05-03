@@ -1,6 +1,5 @@
 import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 import { ProgressLogsByDnp } from "types";
-import { IsInstallingLogsState } from "services/isInstallingLogs/types";
 
 const mountPoint = "isInstallingLogs";
 
@@ -16,7 +15,7 @@ describe("service/isInstallingLogs", () => {
       [dnpName2]: "Downloading 2%..."
     };
 
-    const isInstallingLogsState: IsInstallingLogsState = {
+    const isInstallingLogsState = {
       logs: {
         [id]: progressLogs
       },

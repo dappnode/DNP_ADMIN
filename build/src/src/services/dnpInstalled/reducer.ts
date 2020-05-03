@@ -1,56 +1,28 @@
-import {
-  AllActionTypes,
-  DnpInstalledState,
-  UPDATE_DNP_INSTALLED_STATUS,
-  SET_DNP_INSTALLED,
-  SET_DNP_INSTALLED_DATA,
-  UPDATE_DNP_INSTALLED_DATA_STATUS
-} from "./types";
-import { Reducer } from "redux";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { PackageContainer, RequestStatus } from "common/types";
 
 // Service > dnpInstalled
 
-export const reducer: Reducer<DnpInstalledState, AllActionTypes> = (
-  state = {
+export const dnpInstalledSlice = createSlice({
+  name: "dnpInstalled",
+  initialState: {
     dnpInstalled: [],
-    requestStatus: {},
-    dnpInstalledData: {},
-    dnpInstalledDataRequestStatus: {}
+    requestStatus: {}
+  } as {
+    dnpInstalled: PackageContainer[];
+    requestStatus: RequestStatus;
   },
-  action
-) => {
-  switch (action.type) {
-    case SET_DNP_INSTALLED:
-      return {
-        ...state,
-        dnpInstalled: action.dnpInstalled
-      };
+  reducers: {
+    setDnpInstalled: (state, action: PayloadAction<PackageContainer[]>) => ({
+      ...state,
+      dnpInstalled: action.payload
+    }),
 
-    case SET_DNP_INSTALLED_DATA:
-      return {
-        ...state,
-        dnpInstalledData: {
-          ...state.dnpInstalledData,
-          [action.id]: action.dnpInstalledData
-        }
-      };
-
-    case UPDATE_DNP_INSTALLED_STATUS:
-      return {
-        ...state,
-        requestStatus: action.requestStatus
-      };
-
-    case UPDATE_DNP_INSTALLED_DATA_STATUS:
-      return {
-        ...state,
-        dnpInstalledDataRequestStatus: {
-          ...state.dnpInstalledDataRequestStatus,
-          [action.id]: action.requestStatus
-        }
-      };
-
-    default:
-      return state;
+    updateStatus: (state, action: PayloadAction<RequestStatus>) => ({
+      ...state,
+      requestStatus: action.payload
+    })
   }
-};
+});
+
+export const reducer = dnpInstalledSlice.reducer;

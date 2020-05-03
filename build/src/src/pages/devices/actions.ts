@@ -1,5 +1,4 @@
 import { api } from "api";
-import { updateDevice } from "services/devices/actions";
 import { confirm } from "components/ConfirmDialog";
 import { withToast } from "components/toast/Toast";
 import { superAdminId } from "params";
@@ -57,16 +56,3 @@ export const toggleAdmin = (id: string): AppThunk => () =>
     message: `Toggling ${id} admin...`,
     onSuccess: `Toggled ${id} admin`
   });
-
-export const getDeviceCredentials = (
-  id: string
-): AppThunk => async dispatch => {
-  try {
-    const data = await withToast(() => api.deviceCredentialsGet({ id }), {
-      onError: true
-    });
-    if (data) dispatch(updateDevice({ id, changes: data }));
-  } catch (e) {
-    console.error(`Error on getDeviceCredentials`, e);
-  }
-};

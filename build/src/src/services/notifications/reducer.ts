@@ -1,39 +1,29 @@
 import { mapValues } from "lodash";
-import {
-  NotificationsState,
-  AllReducerActions,
-  PUSH_NOTIFICATION,
-  VIEWED_NOTIFICATIONS
-} from "./types";
-import { Reducer } from "redux";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { PackageNotificationDb, PackageNotification } from "common/types";
 
-// Service > notifications
-export const reducer: Reducer<NotificationsState, AllReducerActions> = (
-  state = {},
-  action
-) => {
-  switch (action.type) {
-    case PUSH_NOTIFICATION:
-      const newNotificationValues = {
+export const notificationsSlice = createSlice({
+  name: "notifications",
+  initialState: {} as {
+    [notificationId: string]: PackageNotificationDb;
+  },
+  reducers: {
+    viewedNotifications: state =>
+      mapValues(state, n => ({ ...n, viewed: true })),
+
+    pushNotification: (
+      state,
+      action: PayloadAction<PackageNotificationDb | PackageNotification>
+    ) => ({
+      ...state,
+      [action.payload.id]: {
         id: String(Math.random()).slice(2),
         timestamp: Date.now(),
-        viewed: false
-      };
-      return {
-        ...state,
-        [action.notification.id]: {
-          ...newNotificationValues,
-          ...action.notification
-        }
-      };
-
-    case VIEWED_NOTIFICATIONS:
-      return mapValues(state, notification => ({
-        ...notification,
-        viewed: true
-      }));
-
-    default:
-      return state;
+        viewed: false,
+        ...action.payload
+      }
+    })
   }
-};
+});
+
+export const reducer = notificationsSlice.reducer;

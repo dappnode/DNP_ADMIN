@@ -6,11 +6,11 @@ import { AppThunk } from "store";
 // Service > dnpDirectory
 
 export const setDnpDirectory = createAction<DirectoryItem[]>(
-  "SET_DNP_DIRECTORY"
+  "dnpDirectory/set"
 );
 
 export const updateStatus = createAction<RequestStatus>(
-  "UPDATE_DIRECTORY_STATUS"
+  "dnpDirectory/updateStatus"
 );
 
 // Redux-thunk actions

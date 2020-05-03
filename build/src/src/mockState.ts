@@ -1349,9 +1349,7 @@ export const mockState: RootState = {
         canBeFullnode: true,
         manifest: openEthereumManifest
       }
-    ],
-    dnpInstalledData: {},
-    dnpInstalledDataRequestStatus: {}
+    ]
   },
 
   isInstallingLogs: {

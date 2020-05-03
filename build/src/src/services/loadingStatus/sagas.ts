@@ -10,12 +10,12 @@ import { capitalize } from "utils/strings";
 export function wrapErrorsAndLoading(id: string, fn: any): any {
   return function*(action: any) {
     try {
-      yield put(a.updateLoading(id, true));
+      yield put(a.updateLoading({ id, loading: true }));
       const res = yield call(fn, action);
-      yield put(a.updateLoading(id, false));
+      yield put(a.updateLoading({ id, loading: false }));
       return res;
     } catch (e) {
-      yield put(a.updateLoading(id, false, e.message));
+      yield put(a.updateLoading({ id, loading: false, error: e.message }));
       console.error(`Error on fetch ${capitalize(id)}: ${e.stack}`);
     }
   };

@@ -63,14 +63,14 @@ export function* checkCoreUpdate() {
   try {
     console.log("Check core update");
     // If chain is not synced yet, cancel request.
-    yield put(updateIsLoading(loadingIds.coreUpdate));
+    yield put(updateIsLoading({ id: loadingIds.coreUpdate }));
 
     const coreUpdateData: CoreUpdateData = yield call(api.fetchCoreUpdateData, {
       version: coreVersion
     });
     yield put(updateCoreUpdateData(coreUpdateData));
 
-    yield put(updateIsLoaded(loadingIds.coreUpdate));
+    yield put(updateIsLoaded({ id: loadingIds.coreUpdate }));
 
     /* Log out current state */
     console.log(

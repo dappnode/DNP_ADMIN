@@ -1,32 +1,6 @@
-import { createAction } from "@reduxjs/toolkit";
-import {
-  UPDATE_LOADING,
-  UPDATE_IS_LOADING,
-  UPDATE_IS_LOADED,
-  UpdateLoading,
-  UpdateIsLoading,
-  UpdateIsLoaded
-} from "./types";
+import { dnpInstalledSlice } from "./reducer";
 
 // Service > loadingStatus
-
-export const updateLoading = (
-  id: string,
-  loading: boolean,
-  error?: string
-): UpdateLoading => ({
-  type: UPDATE_LOADING,
-  id,
-  loading,
-  error
-});
-
-export const updateIsLoading = (id: string): UpdateIsLoading => ({
-  type: UPDATE_IS_LOADING,
-  id
-});
-
-export const updateIsLoaded = (id: string): UpdateIsLoaded => ({
-  type: UPDATE_IS_LOADED,
-  id
-});
+export const updateLoading = dnpInstalledSlice.actions.updateLoading;
+export const updateIsLoading = dnpInstalledSlice.actions.updateIsLoading;
+export const updateIsLoaded = dnpInstalledSlice.actions.updateIsLoaded;

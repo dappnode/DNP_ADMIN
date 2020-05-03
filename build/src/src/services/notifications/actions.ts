@@ -1,12 +1,12 @@
 import { api } from "api";
-import { PackageNotification } from "common/types";
-import {
-  PUSH_NOTIFICATION,
-  VIEWED_NOTIFICATIONS,
-  PushNotification
-} from "./types";
-import { getNotifications } from "./selectors";
 import { AppThunk } from "store";
+import * as loadingIds from "services/loadingStatus/loadingIds";
+import {
+  updateIsLoading,
+  updateIsLoaded
+} from "services/loadingStatus/actions";
+import { notificationsSlice } from "./reducer";
+import { getNotifications } from "./selectors";
 
 // Service > notifications
 
@@ -14,21 +14,14 @@ import { AppThunk } from "store";
  * Using a `kwargs` form to make the `fromDappmanager` argument explicit
  * [Tested]
  */
-export const pushNotification = (
-  notification: PackageNotification
-): PushNotification => ({
-  type: PUSH_NOTIFICATION,
-  notification
-});
+export const pushNotification = notificationsSlice.actions.pushNotification;
 
 export const viewedNotifications = (): AppThunk => async (
   dispatch,
   getState
 ) => {
   // Mark notifications as viewed immmediatelly
-  dispatch({
-    type: VIEWED_NOTIFICATIONS
-  });
+  dispatch(notificationsSlice.actions.viewedNotifications());
 
   // Load notifications
   const notifications = getNotifications(getState());
@@ -37,5 +30,17 @@ export const viewedNotifications = (): AppThunk => async (
   if (ids.length) {
     // Send the ids to the dappmanager
     await api.notificationsRemove({ ids });
+  }
+};
+
+export const fetchNotifications = (): AppThunk => async dispatch => {
+  try {
+    dispatch(updateIsLoading({ id: loadingIds.notifications }));
+    const notifications = await api.notificationsGet();
+    dispatch(updateIsLoaded({ id: loadingIds.notifications }));
+    for (const notification of notifications)
+      dispatch(pushNotification(notification));
+  } catch (e) {
+    console.error("Error on notificationsGet", e);
   }
 };
