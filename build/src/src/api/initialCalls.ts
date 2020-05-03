@@ -1,6 +1,4 @@
-import store from "../store";
-import { fetchUserActionLogs } from "services/userActionLogs/actions";
-import { fetchNotifications } from "services/notifications/actions";
+import { store } from "../store";
 import { fetchDnpInstalled } from "services/dnpInstalled/actions";
 import { fetchCoreUpdateData } from "services/coreUpdate/actions";
 import {
@@ -11,21 +9,10 @@ import {
 } from "services/dappnodeStatus/actions";
 
 export function initialCallsOnOpen() {
-  // @ts-ignore
-  store.dispatch(fetchUserActionLogs());
-  // @ts-ignore
-  store.dispatch(fetchNotifications());
-  // @ts-ignore
-  store.dispatch(fetchDnpInstalled());
-  // @ts-ignore
-  store.dispatch(fetchCoreUpdateData());
-
-  // @ts-ignore
-  store.dispatch(fetchSystemInfo());
-  // @ts-ignore
-  store.dispatch(fetchVolumes());
-  // @ts-ignore
-  store.dispatch(fetchPasswordIsInsecure());
-  // @ts-ignore
-  store.dispatch(fetchWifiStatus());
+  store.dispatch<any>(fetchDnpInstalled());
+  store.dispatch<any>(fetchCoreUpdateData());
+  store.dispatch<any>(fetchSystemInfo());
+  store.dispatch<any>(fetchVolumes());
+  store.dispatch<any>(fetchPasswordIsInsecure());
+  store.dispatch<any>(fetchWifiStatus());
 }

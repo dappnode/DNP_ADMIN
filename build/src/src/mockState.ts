@@ -491,7 +491,6 @@ const trustlinesSetupSchema: SetupSchema = {
     }
   },
   required: ["role"],
-  // @ts-ignore
   dependencies: {
     role: {
       oneOf: [

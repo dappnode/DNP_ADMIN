@@ -1,4 +1,5 @@
-// @ts-ignore // No type definitions for "is-ipfs"
+// Pending: No type definitions for "is-ipfs"
+// @ts-ignore
 import isIPFS from "is-ipfs";
 
 function isMultihash(hash: string) {

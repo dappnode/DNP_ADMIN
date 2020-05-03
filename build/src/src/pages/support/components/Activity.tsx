@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getUserActionLogs } from "services/userActionLogs/selectors";
+import { fetchUserActionLogs } from "services/userActionLogs/actions";
 import { UserActionLogWithCount } from "types";
 // Components
 import CardList from "components/CardList";
@@ -22,6 +23,10 @@ function parseLevel(level: "error" | "warn" | "info"): string {
 
 export default function Activity() {
   const userActionLogs = useSelector(getUserActionLogs);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchUserActionLogs());
+  }, [dispatch]);
 
   // Force a re-render every 15 seconds for the timeFrom to show up correctly
   const [, setClock] = useState(0);

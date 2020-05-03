@@ -53,25 +53,21 @@ export function getEthClientType(target: EthClientTarget): string {
 export function getEthClientPrettyStatusError(
   statusError: EthClientStatusError
 ): string {
-  // Be safe against possible nested object errors
-  // @ts-ignore
-  if (!statusError.error) statusError.error = {};
-
   switch (statusError.code) {
     case "UNKNOWN_ERROR":
-      return `unknown error: ${statusError.error.message}`;
+      return `unknown error: ${(statusError.error || {}).message}`;
 
     case "STATE_NOT_SYNCED":
       return "state is not synced";
 
     case "STATE_CALL_ERROR":
-      return `state call error: ${statusError.error.message}`;
+      return `state call error: ${(statusError.error || {}).message}`;
 
     case "IS_SYNCING":
       return "is syncing";
 
     case "NOT_AVAILABLE":
-      return `not available: ${statusError.error.message}`;
+      return `not available: ${(statusError.error || {}).message}`;
 
     case "NOT_RUNNING":
       return "not running";
@@ -83,7 +79,7 @@ export function getEthClientPrettyStatusError(
       return "is installing";
 
     case "INSTALLING_ERROR":
-      return `install error: ${statusError.error.message}`;
+      return `install error: ${(statusError.error || {}).message}`;
 
     case "UNINSTALLED":
       return `client package has been removed`;

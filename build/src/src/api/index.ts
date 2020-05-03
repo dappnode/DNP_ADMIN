@@ -3,7 +3,7 @@ import autobahn from "autobahn";
 import useSWR, { responseInterface } from "swr";
 import { mapValues } from "lodash";
 import { wampUrl, wampRealm } from "params";
-import store from "../store";
+import { store } from "../store";
 import { stringIncludes } from "utils/strings";
 // Transport
 import { subscriptionsFactory, callRoute } from "common/transport/autobahn";
@@ -95,6 +95,12 @@ export const useSubscription: {
   };
 });
 
+declare global {
+  interface Window {
+    call: (event: string, args?: any[], kwargs?: any) => any;
+  }
+}
+
 /**
  * Connect to the WAMP with an autobahn client
  * Store the session and map subscriptions
@@ -119,7 +125,6 @@ export function start() {
     initialCallsOnOpen();
 
     // For testing:
-    // @ts-ignore
     window.call = (event, args, kwargs = {}) =>
       session.call(event, args, kwargs);
 
