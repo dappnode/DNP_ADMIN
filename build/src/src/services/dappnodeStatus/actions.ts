@@ -8,10 +8,6 @@ import { AppThunk } from "store";
 // Update
 
 export const setSystemInfo = dappnodeStatus.actions.systemInfo;
-export const updateDappnodeStats = dappnodeStatus.actions.stats;
-export const updateDappnodeDiagnose = dappnodeStatus.actions.diagnose;
-export const updateIpfsConnectionStatus =
-  dappnodeStatus.actions.ipfsConnectionStatus;
 export const updateWifiStatus = dappnodeStatus.actions.wifiStatus;
 export const updatePasswordIsInsecure =
   dappnodeStatus.actions.passwordIsInsecure;

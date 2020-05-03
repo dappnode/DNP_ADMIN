@@ -9,14 +9,6 @@ import { getEthClientPrettyStatusError } from "components/EthMultiClient";
 export const getSystemInfo = (state: RootState) =>
   state.dappnodeStatus.systemInfo;
 export const getDappnodeParams = (state: RootState) => getSystemInfo(state);
-export const getDappnodeStats = (state: RootState) =>
-  state.dappnodeStatus.stats;
-export const getDappnodeDiagnose = (state: RootState) =>
-  state.dappnodeStatus.diagnose;
-export const getVersionData = (state: RootState) =>
-  (state.dappnodeStatus.systemInfo || {}).versionData;
-export const getIpfsConnectionStatus = (state: RootState) =>
-  state.dappnodeStatus.ipfsConnectionStatus;
 export const getWifiStatus = (state: RootState) =>
   state.dappnodeStatus.wifiStatus;
 export const getPasswordIsInsecure = (state: RootState) =>
@@ -30,8 +22,6 @@ export const getVolumes = (state: RootState) => state.dappnodeStatus.volumes;
 // Sub-sub local properties
 export const getDappmanagerVersionData = (state: RootState) =>
   (getSystemInfo(state) || {}).versionData;
-export const getVpnVersionData = (state: RootState) =>
-  (getSystemInfo(state) || {}).versionDataVpn;
 export const getEthClientTarget = (state: RootState) =>
   (getSystemInfo(state) || {}).ethClientTarget;
 export const getEthClientFallback = (state: RootState) =>

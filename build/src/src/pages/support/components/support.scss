@@ -30,15 +30,24 @@
   display: block;
   /* Box sizing */
   max-height: 500px;
-}
 
-.github-issue-arrow {
-  font-size: 130%;
-  margin: 0px 10px;
-  opacity: 0.4;
-}
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-.github-issue-logo {
-  position: relative;
-  top: 6px;
+  .location,
+  .loader {
+    display: flex;
+    align-items: center;
+  }
+
+  .arrow {
+    font-size: 130%;
+    margin: 0px 10px;
+    opacity: 0.4;
+  }
+
+  .logo {
+    display: flex;
+  }
 }

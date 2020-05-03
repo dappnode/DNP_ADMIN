@@ -1,20 +1,11 @@
 import { mapValues } from "lodash";
-import {
-  SystemInfo,
-  HostStats,
-  Diagnose,
-  VolumeData,
-  AutoUpdateDataView
-} from "types";
+import { SystemInfo, VolumeData, AutoUpdateDataView } from "types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Service > dappnodeStatus
 
 interface DappnodeStatusState {
   systemInfo: SystemInfo | null;
-  stats: HostStats;
-  diagnose: Diagnose;
-  ipfsConnectionStatus: { resolves: boolean; error?: string } | null;
   wifiStatus: { running: boolean } | null;
   passwordIsInsecure: boolean;
   autoUpdateData: AutoUpdateDataView | null;
@@ -23,9 +14,6 @@ interface DappnodeStatusState {
 
 const initialState: DappnodeStatusState = {
   systemInfo: null,
-  stats: {},
-  diagnose: [],
-  ipfsConnectionStatus: null,
   wifiStatus: null,
   passwordIsInsecure: false,
   autoUpdateData: null,

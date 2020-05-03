@@ -38,3 +38,8 @@ export const autoUpdateIds = {
 
 // VPN
 export const superAdminId = "dappnode_admin";
+
+// Support, where to send issues
+const githubRepo = "DNP_ADMIN";
+const githubUsername = "dappnode";
+export const issueBaseUrl = `https://github.com/${githubUsername}/${githubRepo}/issues/new`;

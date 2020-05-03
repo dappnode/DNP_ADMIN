@@ -858,6 +858,12 @@ const mountpoints = [
   }
 ];
 
+const hostStats = {
+  cpu: "34%",
+  disk: "96%",
+  memory: "45%"
+};
+
 /**
  * Actual mockState
  * ================
@@ -960,13 +966,6 @@ export const mockState: RootState = {
         // "change-host-password"
       ]
     },
-    stats: {
-      cpu: "34%",
-      disk: "96%",
-      memory: "45%"
-    },
-    diagnose: [],
-    ipfsConnectionStatus: null,
     wifiStatus: { running: true },
     passwordIsInsecure: true,
     autoUpdateData: {

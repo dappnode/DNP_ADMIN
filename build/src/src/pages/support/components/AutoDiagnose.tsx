@@ -6,12 +6,10 @@ import { checkIpfsConnection } from "../diagnoseFunctions/ipfs";
 import { notEmpty } from "utils/typescript";
 import { DiagnoseResult } from "../types";
 import { getConnectionStatus } from "services/connectionStatus/selectors";
-import * as formatDiagnose from "./autoDiagnoseTexts";
+import * as formatDiagnose from "../formaters/autoDiagnoseTexts";
 // Components
 import Card from "components/Card";
 import Ok from "components/Ok";
-// Styles
-import "./support.css";
 
 export default function AutoDiagnose() {
   const connectionStatus = useSelector(getConnectionStatus);

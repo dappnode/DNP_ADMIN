@@ -13,7 +13,7 @@ import Report from "./Report";
 import Activity from "./Activity";
 import Title from "components/Title";
 // Styles
-import "./support.css";
+import "./support.scss";
 
 const SupportRoot: React.FC<RouteComponentProps> = ({ match }) => {
   const routes = [

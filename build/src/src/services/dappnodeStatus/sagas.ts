@@ -25,44 +25,6 @@ export const fetchDappnodeParams = wrapErrorsAndLoading(
 );
 
 /**
- * Calls getStats. The DAPPMANAGER will return the machine stats
- * stats = {
- *   cpu: "58%",
- *   memory: "25%",
- *   disk: "86%""
- * }
- */
-const fetchDappnodeStats = wrapErrorsAndLoading(
-  loadingIds.dappnodeStats,
-  function*() {
-    const dappnodeStats = yield call(api.getStats);
-    yield put(a.updateDappnodeStats(dappnodeStats));
-  }
-);
-
-const fetchVpnVersionData = wrapErrorsAndLoading(
-  loadingIds.versionData,
-  function*() {
-    // yield call(assertConnectionOpen);
-    // const vpnVersionData = yield call(apiOld.vpn.getVpnVersionData);
-    // yield put(a.updateVpnVersionData(vpnVersionData));
-  }
-);
-
-/**
- * Calls diagnose. The DAPPMANAGER will return various information about it:
- * - docker version
- * - docker-compose version
- */
-const fetchDappnodeDiagnose = wrapErrorsAndLoading(
-  loadingIds.dappnodeDiagnose,
-  function*() {
-    const dappnoseDiagnose = yield call(api.diagnose);
-    yield put(a.updateDappnodeDiagnose(dappnoseDiagnose));
-  }
-);
-
-/**
  * Get the logs of the WIFI package to check if it's running or not
  * `[Warning] No interface found. Entering sleep mode.`
  */
@@ -103,9 +65,6 @@ function* fetchAllDappnodeStatus() {
   try {
     yield all([
       call(fetchDappnodeParams),
-      call(fetchDappnodeStats),
-      call(fetchVpnVersionData),
-      call(fetchDappnodeDiagnose),
       call(checkWifiStatus),
       call(checkIfPasswordIsInsecure),
       call(fetchVolumes)
@@ -125,7 +84,5 @@ export default rootWatcher([
   [fetchAllDappnodeStatus.toString(), fetchAllDappnodeStatus],
   // Fetch single data
   [a.fetchDappnodeParams.toString(), fetchDappnodeParams],
-  [a.fetchDappnodeStats.toString(), fetchDappnodeStats],
-  [a.fetchDappnodeDiagnose.toString(), fetchDappnodeDiagnose],
   [a.fetchPasswordIsInsecure.toString(), checkIfPasswordIsInsecure]
 ]);
