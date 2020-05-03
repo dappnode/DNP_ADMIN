@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { api } from "api";
-import { withToast } from "components/toast/Toast";
+import { withToastNoThrow } from "components/toast/Toast";
 // Components
 import Card from "components/Card";
 import TableInputs from "components/TableInputs";
@@ -29,20 +29,15 @@ export default function Ports({ dnp }: { dnp: PackageContainer }) {
 
   async function onUpdateEnvsSubmit() {
     const id = dnp.name;
-    try {
-      setUpdating(true);
-      await withToast(
-        () => api.updatePortMappings({ id, portMappings: ports }),
-        {
-          message: `Updating ${shortNameCapitalized(id)} port mappings...`,
-          onSuccess: `Updated ${shortNameCapitalized(id)} port mappings`
-        }
-      );
-    } catch (e) {
-      console.error(`Error requesting Backup: ${e.message}`);
-    } finally {
-      setUpdating(false);
-    }
+    setUpdating(true);
+    await withToastNoThrow(
+      () => api.updatePortMappings({ id, portMappings: ports }),
+      {
+        message: `Updating ${shortNameCapitalized(id)} port mappings...`,
+        onSuccess: `Updated ${shortNameCapitalized(id)} port mappings`
+      }
+    );
+    setUpdating(false);
   }
 
   function addNewPort() {

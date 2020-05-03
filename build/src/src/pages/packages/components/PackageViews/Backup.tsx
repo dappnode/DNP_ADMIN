@@ -11,7 +11,7 @@ import { shortName } from "utils/format";
 import humanFS from "utils/humanFileSize";
 import newTabProps from "utils/newTabProps";
 import { PackageBackup } from "common/types";
-import { withToast } from "components/toast/Toast";
+import { withToast, withToastNoThrow } from "components/toast/Toast";
 
 const baseUrlUpload = "http://my.dappmanager.dnp.dappnode.eth:3000/upload";
 const baseUrlDownload = "http://my.dappmanager.dnp.dappnode.eth:3000/download";
@@ -78,7 +78,7 @@ export default function Backup({
         return setError(`Wrong response: ${fileId}`);
 
       setProgress({ label: "Restoring backup..." });
-      withToast(() => api.backupRestore({ id, backup, fileId }), {
+      withToastNoThrow(() => api.backupRestore({ id, backup, fileId }), {
         message: `Restoring backup for ${shortName(id)}...`,
         onSuccess: `Restored backup for ${shortName(id)}`
       }).then(() => {

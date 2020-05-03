@@ -7,7 +7,7 @@ import {
   getDnpInstalledById,
   getDependantsOfId
 } from "services/dnpInstalled/selectors";
-import { withToast } from "components/toast/Toast";
+import { withToastNoThrow } from "components/toast/Toast";
 import { PackageEnvs } from "types";
 import { PackageContainer } from "common/types";
 import { AppThunk } from "store";
@@ -29,7 +29,7 @@ export const updatePackageEnv = (
   id: string,
   envs: PackageEnvs
 ): AppThunk => () =>
-  withToast(() => api.updatePackageEnv({ id, envs }), {
+  withToastNoThrow(() => api.updatePackageEnv({ id, envs }), {
     message: `Updating ${id} envs: ${Object.keys(envs)}...`,
     onSuccess: `Updated ${id} envs`
   });
@@ -37,7 +37,7 @@ export const updatePackageEnv = (
 // Used in package interface / controls
 
 export const togglePackage = (id: string): AppThunk => () =>
-  withToast(() => api.togglePackage({ id }), {
+  withToastNoThrow(() => api.togglePackage({ id }), {
     message: `Toggling ${sn(id)}...`,
     onSuccess: `Toggled ${sn(id)}`
   });
@@ -55,7 +55,7 @@ export const restartPackage = (id: string): AppThunk => async (_, getState) => {
       });
     });
 
-  await withToast(() => api.restartPackage({ id }), {
+  await withToastNoThrow(() => api.restartPackage({ id }), {
     message: `Restarting ${sn(id)}...`,
     onSuccess: `Restarted ${sn(id)}`
   });
@@ -98,7 +98,7 @@ export const restartPackageVolumes = (id: string): AppThunk => async (
     );
   }
 
-  await withToast(() => api.restartPackageVolumes({ id }), {
+  await withToastNoThrow(() => api.restartPackageVolumes({ id }), {
     message: `Removing volumes of ${sn(id)}...`,
     onSuccess: `Removed volumes of ${sn(id)}`
   });
@@ -163,7 +163,7 @@ export const removePackage = (id: string): AppThunk => async (_, getState) => {
       })
     );
 
-  await withToast(() => api.removePackage({ id, deleteVolumes }), {
+  await withToastNoThrow(() => api.removePackage({ id, deleteVolumes }), {
     message: `Removing ${sn(id)} ${deleteVolumes ? " and volumes" : ""}...`,
     onSuccess: `Removed ${sn(id)}`
   });

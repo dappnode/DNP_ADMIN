@@ -106,13 +106,15 @@ const Toast = ({
   };
 };
 
+interface ToastOptions {
+  message?: string;
+  onSuccess?: string;
+  onError?: boolean | string;
+}
+
 export async function withToast<R>(
   fn: () => Promise<R>,
-  toastOptions?: {
-    message?: string;
-    onSuccess?: string;
-    onError?: boolean | string;
-  }
+  toastOptions?: ToastOptions
 ): Promise<R> {
   const { message, onSuccess, onError } = toastOptions || {};
 
@@ -133,6 +135,17 @@ export async function withToast<R>(
       Toast({ success: false, message: e.message });
     }
     throw e;
+  }
+}
+
+export async function withToastNoThrow<R>(
+  fn: () => Promise<R>,
+  toastOptions?: ToastOptions
+): Promise<void> {
+  try {
+    await withToast(fn, toastOptions);
+  } catch (e) {
+    console.error(e);
   }
 }
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { api } from "api";
 import { useSelector } from "react-redux";
 import isIpv4 from "utils/isIpv4";
-import { withToast } from "components/toast/Toast";
+import { withToastNoThrow } from "components/toast/Toast";
 // Components
 import Card from "components/Card";
 import Input from "components/Input";
@@ -18,15 +18,11 @@ export default function StaticIp() {
     setInput(staticIp);
   }, [staticIp]);
 
-  async function updateStaticIp(newStaticIp: string) {
-    try {
-      await withToast(() => api.setStaticIp({ staticIp: newStaticIp }), {
-        message: "Setting static ip...",
-        onSuccess: "Set static ip"
-      });
-    } catch (e) {
-      console.error("Error on setStaticIp", e);
-    }
+  function updateStaticIp(newStaticIp: string) {
+    withToastNoThrow(() => api.setStaticIp({ staticIp: newStaticIp }), {
+      message: "Setting static ip...",
+      onSuccess: "Set static ip"
+    });
   }
 
   return (

@@ -1,6 +1,6 @@
 import { api } from "api";
 import { confirm } from "components/ConfirmDialog";
-import { withToast } from "components/toast/Toast";
+import { withToastNoThrow } from "components/toast/Toast";
 import { superAdminId } from "params";
 import { AppThunk } from "store";
 
@@ -16,7 +16,7 @@ import { AppThunk } from "store";
  */
 
 export const addDevice = (id: string): AppThunk => () =>
-  withToast(() => api.deviceAdd({ id }), {
+  withToastNoThrow(() => api.deviceAdd({ id }), {
     message: `Adding ${id}...`,
     onSuccess: `Added ${id}`
   });
@@ -27,7 +27,7 @@ export const removeDevice = (id: string): AppThunk => () =>
     text: "The user using this device will lose access to this DAppNode ",
     label: "Remove",
     onClick: () =>
-      withToast(() => api.deviceRemove({ id }), {
+      withToastNoThrow(() => api.deviceRemove({ id }), {
         message: `Removing ${id}...`,
         onSuccess: `Removed ${id}`
       })
@@ -44,7 +44,7 @@ export const resetDevice = (id: string): AppThunk => () => {
       : "All profiles and links pointing to this device will no longer be valid",
     label: `Reset`,
     onClick: () =>
-      withToast(() => api.deviceReset({ id }), {
+      withToastNoThrow(() => api.deviceReset({ id }), {
         message: `Reseting ${id}...`,
         onSuccess: `Reseted ${id}`
       })
@@ -52,7 +52,7 @@ export const resetDevice = (id: string): AppThunk => () => {
 };
 
 export const toggleAdmin = (id: string): AppThunk => () =>
-  withToast(() => api.deviceAdminToggle({ id }), {
+  withToastNoThrow(() => api.deviceAdminToggle({ id }), {
     message: `Toggling ${id} admin...`,
     onSuccess: `Toggled ${id} admin`
   });
