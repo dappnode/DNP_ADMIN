@@ -11,16 +11,6 @@ const expectedString = "Hello and Welcome to IPFS!";
 const url = `${protocol}://${host}:${port}/api/v0/cat?arg=${hash}`;
 
 // Attempts to cat the readme file and expect it to contain 'Hello and Welcome to IPFS!'
-const checkIpfsConnection = retryable(async () => {
-  try {
-    const file = await fetchWithTimeout(url).then(res => res.text());
-    if (!stringIncludes(file, expectedString))
-      throw Error("Error parsing file");
-  } catch (e) {
-    e.message = `Error verifying IPFS: ${e.message}`;
-    throw e;
-  }
-});
 
 // Utils:
 
@@ -35,13 +25,25 @@ async function fetchWithTimeout(url: string, timeout = 3000): Promise<any> {
 
 /**
  * Attempts to cat a common IPFS hash.
- * @returns {object}
+ * @returns
  * - If the cat succeeds, returns { resolves: true }
  * - On error, returns { resolves: false, error: e.message }
  */
-export default async function checkIpfsConnectionWithTryCatch() {
+export async function checkIpfsConnection(): Promise<{
+  resolves: boolean;
+  error?: string;
+}> {
   try {
-    await checkIpfsConnection();
+    await retryable(async () => {
+      try {
+        const file = await fetchWithTimeout(url).then(res => res.text());
+        if (!stringIncludes(file, expectedString))
+          throw Error("Error parsing file");
+      } catch (e) {
+        e.message = `Error verifying IPFS: ${e.message}`;
+        throw e;
+      }
+    })();
     return { resolves: true };
   } catch (e) {
     return { resolves: false, error: e.message };

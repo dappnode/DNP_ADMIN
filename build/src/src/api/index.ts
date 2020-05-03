@@ -1,4 +1,5 @@
 import autobahn from "autobahn";
+import useSWR, { responseInterface } from "swr";
 import { mapValues } from "lodash";
 import { wampUrl, wampRealm } from "params";
 import store from "../store";
@@ -6,7 +7,7 @@ import { stringIncludes } from "utils/strings";
 // Transport
 import { subscriptionsFactory, callRoute } from "common/transport/autobahn";
 import { Subscriptions, subscriptionsData } from "common/subscriptions";
-import { Routes, routesData } from "common/routes";
+import { Routes, routesData, ResolvedType } from "common/routes";
 import { Args } from "common/transport/types";
 // Internal
 import {
@@ -32,6 +33,17 @@ export const api: Routes = mapValues(routesData, (data, route) => {
     if (!_session.isOpen) throw Error("Connection is not open");
 
     return await callRoute<any>(_session, route, args);
+  };
+});
+
+export const useApi: {
+  [K in keyof Routes]: (
+    ...args: Parameters<Routes[K]>
+  ) => responseInterface<ResolvedType<Routes[K]>, Error>;
+} = mapValues(api, (handler, route) => {
+  return function(...args: any[]) {
+    const cacheKey = route + JSON.stringify(args);
+    return useSWR([cacheKey, route], () => (handler as any)(...args));
   };
 });
 

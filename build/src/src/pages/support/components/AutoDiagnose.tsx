@@ -1,26 +1,42 @@
-import React, { useEffect } from "react";
-import * as s from "../selectors";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+import useSWR from "swr";
+import { useApi } from "api";
+import { useSelector } from "react-redux";
+import { checkIpfsConnection } from "../diagnoseFunctions/ipfs";
+import { notEmpty } from "utils/typescript";
+import { DiagnoseResult } from "../types";
+import { getConnectionStatus } from "services/connectionStatus/selectors";
+import * as formatDiagnose from "./autoDiagnoseTexts";
 // Components
 import Card from "components/Card";
-// Actions
-import { fetchAllDappnodeStatus } from "services/dappnodeStatus/actions";
-// Icon
 import Ok from "components/Ok";
 // Styles
 import "./support.css";
 
 export default function AutoDiagnose() {
-  const diagnoses = useSelector(s.getDiagnoses);
-  const dispatch = useDispatch();
+  const connectionStatus = useSelector(getConnectionStatus);
+  const systemInfo = useApi.systemInfoGet();
+  const hostStats = useApi.getStats();
+  const dnpInstalled = useApi.listPackages();
+  const ipfsConnection = useSWR(["ipfsConnection"], checkIpfsConnection);
 
-  useEffect(() => {
-    dispatch(fetchAllDappnodeStatus()); // = componentDidMount
-  }, [dispatch]);
+  const isOpen = connectionStatus.isOpen;
+  const diagnosesArray: DiagnoseResult[] = [
+    formatDiagnose.connection(connectionStatus),
+    formatDiagnose.ipfs(ipfsConnection),
+    ...(isOpen
+      ? [
+          formatDiagnose.openPorts(systemInfo),
+          formatDiagnose.noNatLoopback(systemInfo),
+          formatDiagnose.diskSpace(hostStats),
+          formatDiagnose.coreDnpsRunning(dnpInstalled)
+        ]
+      : [])
+  ].filter(notEmpty);
 
   return (
     <Card>
-      {diagnoses.map(({ loading, ok, msg, solutions }, i) => (
+      {diagnosesArray.map(({ loading, ok, msg, solutions }, i) => (
         <div key={i}>
           <Ok {...{ msg, ok, loading }} />
           {!ok && !loading && solutions ? (

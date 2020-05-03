@@ -2,7 +2,6 @@ import { put, call, all } from "redux-saga/effects";
 import { rootWatcher } from "utils/redux";
 import { api } from "api";
 import * as a from "./actions";
-import checkIpfsConnection from "./diagnoseFunctions/checkIpfsNode";
 import { connectionOpen } from "services/connectionStatus/actions";
 import { wrapErrorsAndLoading } from "services/loadingStatus/sagas";
 import * as loadingIds from "services/loadingStatus/loadingIds";
@@ -64,20 +63,6 @@ const fetchDappnodeDiagnose = wrapErrorsAndLoading(
 );
 
 /**
- * Calls checkIpfsConnection: Attempts to cat a common IPFS hash
- * - If the cat succeeds, returns { resolves: true }
- * - On error, returns { resolves: false, error: e.message }
- * Should never throw
- */
-const checkIpfsConnectionStatus = wrapErrorsAndLoading(
-  loadingIds.ipfsConnectionStatus,
-  function*() {
-    const { resolves, error } = yield call(checkIpfsConnection);
-    yield put(a.updateIpfsConnectionStatus({ resolves, error }));
-  }
-);
-
-/**
  * Get the logs of the WIFI package to check if it's running or not
  * `[Warning] No interface found. Entering sleep mode.`
  */
@@ -121,7 +106,6 @@ function* fetchAllDappnodeStatus() {
       call(fetchDappnodeStats),
       call(fetchVpnVersionData),
       call(fetchDappnodeDiagnose),
-      call(checkIpfsConnectionStatus),
       call(checkWifiStatus),
       call(checkIfPasswordIsInsecure),
       call(fetchVolumes)
