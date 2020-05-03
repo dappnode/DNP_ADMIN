@@ -1,10 +1,8 @@
 import store from "../store";
-import autobahn from "autobahn";
 import { Subscriptions } from "../common/subscriptions";
 // Actions to push received content
 import { pushNotification } from "services/notifications/actions";
 import { updateChainData } from "services/chainData/actions";
-import { updateDevices } from "services/devices/actions";
 import { pushUserActionLog } from "services/userActionLogs/actions";
 import {
   clearIsInstallingLog,
@@ -63,30 +61,5 @@ export function mapSubscriptionsToRedux(subscriptions: Subscriptions): void {
     // If we needed to pull the document from the web-server again (such as where
     // the document contents change dynamically) we would pass the argument as 'true'.
     window.location.reload(true);
-  });
-}
-
-export function legacyVpnSubscription(session: autobahn.Session) {
-  function subscribe<T>(event: string, cb: (arg: T) => void) {
-    // session.subscribe(topic, function(args, kwargs, details) )
-    session.subscribe(event, (arg: T) => {
-      try {
-        cb(arg);
-      } catch (e) {
-        console.error(`Error on WAMP ${event}: ${e.stack}`);
-      }
-    });
-  }
-
-  /**
-   * [VPN] (un-typed)
-   *
-   * @param {array} devices = [{
-   *   id: "MyPhone",
-   *   isAdmin: false
-   * }, ... ]
-   */
-  subscribe("devices.vpn.dnp.dappnode.eth", ([devices]: any[]) => {
-    store.dispatch(updateDevices(devices));
   });
 }

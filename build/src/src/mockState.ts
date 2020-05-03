@@ -864,6 +864,14 @@ const hostStats = {
   memory: "45%"
 };
 
+const devices = {
+  ids: ["test-name", "other-user"],
+  entities: {
+    "test-name": { id: "test-name", admin: true, ip: "172.10.0.1" },
+    "other-user": { id: "other-user", admin: false, ip: "172.10.0.2" }
+  }
+};
+
 /**
  * Actual mockState
  * ================
@@ -1080,14 +1088,6 @@ export const mockState: RootState = {
         isOrphan: true
       }
     ]
-  },
-
-  devices: {
-    ids: ["test-name", "other-user"],
-    entities: {
-      "test-name": { id: "test-name", admin: true, ip: "172.10.0.1" },
-      "other-user": { id: "other-user", admin: false, ip: "172.10.0.2" }
-    }
   },
 
   dnpDirectory: {

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { NavLink, RouteComponentProps } from "react-router-dom";
 import useSWR from "swr";
 import { api } from "api";
 import ClipboardJS from "clipboard";
 // Own module
 import { rootPath, title } from "../data";
-// Services
-import { getDeviceById } from "services/devices/selectors";
 // Components
 import Card from "components/Card";
 import Button from "components/Button";
@@ -98,7 +95,6 @@ export const DeviceDetails: React.FC<RouteComponentProps<{ id: string }>> = ({
   match
 }) => {
   const id = match.params.id;
-  const device = useSelector((state: any) => getDeviceById(state, id));
   const { data: credentials, error, isValidating } = useSWR(
     [id, "deviceCredentialsGet"],
     id => api.deviceCredentialsGet({ id })
@@ -109,11 +105,7 @@ export const DeviceDetails: React.FC<RouteComponentProps<{ id: string }>> = ({
       <Title title={title} subtitle={id} />
 
       {credentials ? (
-        <DeviceDetailsLoaded
-          admin={Boolean(device && device.admin)}
-          id={id}
-          url={credentials.url}
-        />
+        <DeviceDetailsLoaded admin={false} id={id} url={credentials.url} />
       ) : isValidating ? (
         <Loading msg="Loading device credentials..." />
       ) : error ? (

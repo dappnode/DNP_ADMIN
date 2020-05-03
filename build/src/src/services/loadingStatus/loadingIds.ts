@@ -1,1 +1,1 @@
-export const devices = "devices";
+export {};
