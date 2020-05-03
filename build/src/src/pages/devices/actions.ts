@@ -4,16 +4,8 @@ import { withToastNoThrow } from "components/toast/Toast";
 import { superAdminId } from "params";
 import { AppThunk } from "store";
 
-/* Notice: addDevice, removeDevice, etc use redux-thunk
-   Since there is no return value, and the state change
-   is triggered via a ws subscription there is not need
-   to handle this async action in a redux-saga.
-
-   That was the original method, but just calling the API
-   directly requires less boilerplate and is more clear
-
-   api.methodName will never throw if message is true
- */
+// Notice: addDevice, removeDevice, etc use redux-thunk Since there is no return
+// value, and the state change is triggered via a ws subscription
 
 export const addDevice = (id: string): AppThunk => () =>
   withToastNoThrow(() => api.deviceAdd({ id }), {

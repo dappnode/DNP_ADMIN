@@ -1,14 +1,6 @@
 # Admin UI
 
-The administrative user interface allows users to control and monitor their DAppNode. It is a React SPA, divided into losly coupled modules, which represent the available routes and main navigation paths. Each module has the following folder structure, which includes basic redux building blocks:
-
-- **components**: JSX components of the module. In the module's `index.js` the entrypoint or main component is exported as `component`. It is the component mounted in `App.js`.
-- **actions**: See [redux actions](https://redux.js.org/basics/actions)
-- **actionTypes**: Exports references to each action type string to minimize typo errors. See [redux action types](https://redux-resource.js.org/api-reference/action-types)
-- **reducer**: Exports a single reducer which is imported in [`src/rootReducer`](./src/rootReducer) and combined with other reducers. See [redux reducers](https://redux.js.org/basics/reducers)
-- **selectors**: See [redux selectors](https://redux.js.org/recipes/computing-derived-data)
-- **sagas**: Export a single generator function which is imported in [`src/rootSaga.js`](./src/rootSaga.js) and executed in paralel with all modules. See [redux-saga](https://redux-saga.js.org/) for further reference.
-- **constants**: Contains the name of the module and other invariants. Used to label the module in module aggreators.
+The administrative user interface allows users to control and monitor their DAppNode. It is a React SPA, divided into losly coupled modules, which represent the available routes and main navigation paths. Each module has the following folder structure, which includes basic redux building blocks.
 
 ## Admin UI <-> DAppNode communication
 

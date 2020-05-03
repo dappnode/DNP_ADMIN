@@ -1,12 +1,6 @@
 {
-  "extends": [
-    "react-app",
-    "plugin:prettier/recommended",
-    "plugin:redux-saga/recommended"
-  ],
-  "plugins": ["redux-saga"],
+  "extends": ["react-app", "plugin:prettier/recommended"],
   "rules": {
-    "redux-saga/no-unhandled-errors": "warn",
     "no-console": ["warn", { "allow": ["warn", "error"] }]
   }
 }
