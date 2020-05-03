@@ -238,7 +238,7 @@ export default function Ports({ dnp }: { dnp: PackageContainer }) {
  * @param dnp
  */
 function getPortsFromDnp(dnp: PackageContainer) {
-  return (dnp.ports || [])
+  return [...(dnp.ports || [])]
     .filter(({ host }) => host)
     .sort((a, b) => a.container - b.container)
     .sort((a, b) =>

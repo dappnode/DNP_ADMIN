@@ -32,8 +32,10 @@ export default function VolumesGrid() {
 
   const [showAll, setShowAll] = useState(false);
 
+  console.log({ volumes });
+
   const getSize = (v: VolumeData) => v.size || (v.fileSystem || {}).used || 0;
-  const volumesFiltered = volumes
+  const volumesFiltered = [...volumes]
     .sort((v1, v2) => getSize(v2) - getSize(v1))
     .sort((v1, v2) => (v1.isOrphan && !v2.isOrphan ? -1 : 1))
     .filter(v => showAll || getSize(v) > minSize)

@@ -64,7 +64,7 @@ export default function DevicesHome() {
         <header>Admin</header>
         <header>Reset</header>
         <header>Remove</header>
-        {devices
+        {[...devices]
           // Sort super admin device as first
           .sort(d1 => (d1.id === superAdminId ? -1 : 0))
           .map(({ id, admin }) => (
