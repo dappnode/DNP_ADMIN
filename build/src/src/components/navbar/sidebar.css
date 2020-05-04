@@ -39,7 +39,11 @@
 }
 .sidenav-item.selectable:hover svg,
 .sidenav-item.selectable.active svg {
-  opacity: 1;
+  opacity: 0.7;
+}
+
+.sidenav-item.selectable svg {
+  font-size: 1.5rem;
 }
 
 /* Funded-by

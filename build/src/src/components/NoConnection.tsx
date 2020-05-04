@@ -1,12 +1,12 @@
 import React from "react";
 import logo from "img/dappnode-logo-wide-min.png";
-import WifiOff from "Icons/WifiOff";
 import "./nonAdmin.css";
+import { FiWifiOff } from "react-icons/fi";
 
 const NoConnection = () => (
   <div className="standalone-container">
-    <div className="toplogo">
-      <WifiOff scale={3} />
+    <div className="toplogo" style={{ fontSize: "5rem" }}>
+      <FiWifiOff />
     </div>
     <div className="title">Could not connect to DAppNode</div>
     <div className="text">

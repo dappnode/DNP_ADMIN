@@ -2,14 +2,13 @@ import React from "react";
 import { useApi } from "api";
 // Components
 import Card from "components/Card";
-// Icon
-import Github from "Icons/Github";
 // Styles
 import RenderMarkdown from "components/RenderMarkdown";
 import { formatIssueBody, formatIssueUrl } from "../formaters/githubIssue";
 import { issueBaseUrl } from "params";
 import { PackageVersionData } from "common/types";
 import Ok from "components/Ok";
+import { FaGithub } from "react-icons/fa";
 
 export default function Report() {
   const dnpsReq = useApi.listPackages();
@@ -58,7 +57,7 @@ export default function Report() {
       <div className="github-issue-header">
         <span className="location">
           <span className="logo">
-            <Github scale={0.05} />
+            <FaGithub />
           </span>
           <span className="arrow">></span>
           <span>New issue</span>

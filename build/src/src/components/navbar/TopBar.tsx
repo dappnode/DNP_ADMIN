@@ -5,18 +5,17 @@ import ChainDataDropdown from "./dropdownMenus/ChainDataDropdown";
 import Notifications from "./dropdownMenus/Notifications";
 // Components
 import { toggleSideNav } from "./SideBar";
-// Icons
-import MenuBurger from "Icons/MenuBurger";
 // Styles
 import "./topbar.css";
 import "./notifications.css";
+import { MdMenu } from "react-icons/md";
 
 const TopBar = () => (
   <div id="topbar">
     {/* Left justified items */}
     <div className="left">
       <button className="sidenav-toggler" onClick={toggleSideNav}>
-        <MenuBurger />
+        <MdMenu />
       </button>
     </div>
     {/* Right justified items */}

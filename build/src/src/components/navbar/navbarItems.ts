@@ -4,13 +4,15 @@ import AragonLogo from "img/logos/aragon-min.png";
 import GivethLogo from "img/logos/giveth-min.png";
 import EcfLogo from "img/logos/ecf-min.png";
 // Icons
-import Dashboard from "Icons/Dashboard";
-import Devices from "Icons/Devices";
-import Folder from "Icons/Folder";
-import NewFolder from "Icons/NewFolder";
-import Settings from "Icons/Settings";
-import Build from "Icons/Build";
-import ContactSupport from "Icons/ContactSupport";
+import {
+  MdSettings,
+  MdBuild,
+  MdCreateNewFolder,
+  MdFolder,
+  MdHelp,
+  MdDevices,
+  MdDashboard
+} from "react-icons/md";
 
 export const fundedBy: { logo: string; text: string; link?: string }[] = [
   {
@@ -43,36 +45,36 @@ export const sidenavItems: {
   {
     name: "Dashboard",
     href: "/dashboard",
-    icon: Dashboard
+    icon: MdDashboard
   },
   {
     name: "Devices",
     href: "/devices",
-    icon: Devices
+    icon: MdDevices
   },
   {
     name: "DAppStore",
     href: "/installer",
-    icon: NewFolder
+    icon: MdCreateNewFolder
   },
   {
     name: "Packages",
     href: "/packages",
-    icon: Folder
+    icon: MdFolder
   },
   {
     name: "System",
     href: "/system",
-    icon: Settings
+    icon: MdSettings
   },
   {
     name: "Sdk",
     href: "/sdk",
-    icon: Build
+    icon: MdBuild
   },
   {
     name: "Support",
     href: "/support",
-    icon: ContactSupport
+    icon: MdHelp
   }
 ];

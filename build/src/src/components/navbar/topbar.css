@@ -35,6 +35,7 @@
 /* Sidenav toggler */
 
 .sidenav-toggler {
+  font-size: 30px;
   background: none;
   border: none;
   cursor: pointer;
