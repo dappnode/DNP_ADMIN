@@ -84,8 +84,6 @@ export function formatIssueUrl(body: string) {
   return issueBaseUrl + "?" + params.join("&");
 }
 
-export const getIssueUrlRaw = () => issueBaseUrl;
-
 /**
  * Utilities
  * =========

@@ -87,6 +87,11 @@
   &.dappnodeidentity > .menu {
     right: -6.45rem;
   }
+
+  // Regulate size of toggle icons
+  &.notifications .tn-dropdown-toggle svg {
+    font-size: 1.3rem;
+  }
 }
 
 .tn-dropdown-toggle {

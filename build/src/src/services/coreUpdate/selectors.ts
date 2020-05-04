@@ -1,12 +1,10 @@
 import { RootState } from "rootReducer";
-import { coreName } from "params";
 // Selectors
-import { getDnpInstalled } from "services/dnpInstalled/selectors";
 import { DependencyListItem, ManifestUpdateAlert } from "types";
 
 // Service > coreUpdate
 
-export const getCoreUpdateData = (state: RootState) => state.coreUpdate.data;
+const getCoreUpdateData = (state: RootState) => state.coreUpdate.data;
 export const getUpdatingCore = (state: RootState) =>
   state.coreUpdate.updatingCore;
 export const getCoreRequestStatus = (state: RootState) =>
@@ -56,15 +54,6 @@ export const getCoreUpdateAlerts = (
 ): ManifestUpdateAlert[] => {
   const coreUpdateData = getCoreUpdateData(state);
   return (coreUpdateData || {}).updateAlerts || [];
-};
-
-/**
- * Gets the core current version
- */
-export const getCoreCurrentVersion = (state: RootState): string | undefined => {
-  const dnpInstalled = getDnpInstalled(state);
-  const dnpCore = dnpInstalled.find(dnp => dnp.name === coreName);
-  return (dnpCore || {}).version;
 };
 
 export const getCoreUpdateAvailable = (state: RootState): boolean => {

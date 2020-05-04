@@ -7,7 +7,7 @@ import {
   fetchNotifications
 } from "services/notifications/actions";
 // Icons
-import Bell from "Icons/Bell";
+import { FaRegBell } from "react-icons/fa";
 
 export default function Notifications() {
   const notifications = useSelector(getNotifications);
@@ -20,7 +20,7 @@ export default function Notifications() {
     <BaseDropdown
       name="Notifications"
       messages={notifications}
-      Icon={Bell}
+      Icon={FaRegBell}
       onClick={() => dispatch(viewedNotifications())}
       moreVisible={true}
       className={"notifications"}

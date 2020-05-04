@@ -148,5 +148,3 @@ export async function withToastNoThrow<R>(
     console.error(e);
   }
 }
-
-export default Toast;

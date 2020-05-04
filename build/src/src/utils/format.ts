@@ -9,12 +9,6 @@ export function shortName(ens: string) {
   return stringSplit(ens, ".")[0];
 }
 
-export function repoName(ens: string) {
-  if (!ens || typeof ens !== "string") return ens;
-  if (!ens.includes(".")) return ens;
-  return stringSplit(ens, /\.(.+)/)[1];
-}
-
 /**
  * Pretifies a ENS name
  * "bitcoin.dnp.dappnode.eth" => "Bitcoin"
@@ -101,7 +95,7 @@ export function prettyVolumeName(
  * @param ownerDisplay "nginxproxydnpdappnodeeth"
  * @return "Nginxproxy"
  */
-export function prettyVolumeOwnerDisplay(ownerDisplay: string): string {
+function prettyVolumeOwnerDisplay(ownerDisplay: string): string {
   return shortNameCapitalized(
     ownerDisplay.replace(/dnpdappnodeeth|publicdappnodeeth/, "")
   );

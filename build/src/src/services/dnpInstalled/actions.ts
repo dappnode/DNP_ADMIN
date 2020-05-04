@@ -5,7 +5,7 @@ import { dnpInstalledSlice } from "./reducer";
 // Service > dnpInstalled
 
 export const setDnpInstalled = dnpInstalledSlice.actions.setDnpInstalled;
-export const updateStatus = dnpInstalledSlice.actions.updateStatus;
+const updateStatus = dnpInstalledSlice.actions.updateStatus;
 
 // Redux-thunk actions
 

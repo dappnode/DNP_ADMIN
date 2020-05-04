@@ -17,4 +17,4 @@ export const fetchUserActionLogs = (): AppThunk => async dispatch => {
 };
 
 const { updateUserActionLogs, pushUserActionLog } = userActionLogsSlice.actions;
-export { updateUserActionLogs, pushUserActionLog };
+export { pushUserActionLog };

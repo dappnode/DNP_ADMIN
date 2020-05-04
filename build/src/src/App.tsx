@@ -46,7 +46,6 @@ export default function App() {
               <Route
                 key={rootPath}
                 path={rootPath}
-                exact={rootPath === "/"}
                 render={props => (
                   <ErrorBoundary>
                     <RootComponent {...props} />

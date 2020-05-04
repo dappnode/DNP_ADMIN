@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-// Modules
-import installer from "pages/installer";
+import { coreName } from "params";
 // Selectors
 import { getProgressLogsOfDnp } from "services/isInstallingLogs/selectors";
 import {
@@ -14,8 +13,8 @@ import StatusIcon from "components/StatusIcon";
 import SystemUpdateDetails from "./SystemUpdateDetails";
 import Loading from "components/Loading";
 import SubTitle from "components/SubTitle";
-import { coreName } from "params";
 import ErrorView from "components/Error";
+import { ProgressLogsView } from "pages/installer/components/InstallCardComponents/ProgressLogsView";
 
 export default function SystemUpdate() {
   const coreProgressLogs = useSelector((state: any) =>
@@ -28,7 +27,7 @@ export default function SystemUpdate() {
     <>
       <SubTitle>Update</SubTitle>
       {/* This component will automatically hide if logs are empty */}
-      <installer.components.ProgressLogsView progressLogs={coreProgressLogs} />
+      <ProgressLogsView progressLogs={coreProgressLogs} />
 
       {coreUpdateAvailable ? (
         <SystemUpdateDetails />

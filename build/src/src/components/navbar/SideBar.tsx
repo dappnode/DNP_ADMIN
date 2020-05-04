@@ -79,7 +79,7 @@ export default function SideBar() {
             onClick={collapseSideNav}
             to={item.href}
           >
-            <item.icon scale={0.8} />
+            <item.icon />
             <span className="name svg-text">{item.name}</span>
           </NavLink>
         ))}

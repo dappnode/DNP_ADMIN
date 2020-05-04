@@ -11,7 +11,7 @@ import { isEmpty, throttle, pick } from "lodash";
 import { difference, isDeepEmpty } from "utils/lodashExtended";
 import { shortNameCapitalized, isDnpVerified } from "utils/format";
 // This module
-import ProgressLogsView from "./InstallCardComponents/ProgressLogsView";
+import { ProgressLogsView } from "./InstallCardComponents/ProgressLogsView";
 // Components
 import Info from "./Steps/Info";
 import SetupWizard from "./Steps/SetupWizard";
