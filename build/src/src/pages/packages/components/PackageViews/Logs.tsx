@@ -104,8 +104,7 @@ export default function Logs({ id }: { id: string }) {
       <Input
         placeholder="Number of lines to display..."
         value={lines}
-        // @ts-ignore
-        onValueChange={setLines}
+        onValueChange={newLines => setLines(parseInt(newLines) || 0)}
         type="number"
         prepend="Lines"
         append={

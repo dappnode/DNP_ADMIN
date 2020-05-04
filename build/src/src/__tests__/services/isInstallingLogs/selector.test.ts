@@ -1,5 +1,6 @@
 import { getProgressLogsByDnp } from "services/isInstallingLogs/selectors";
 import { ProgressLogsByDnp } from "types";
+import { RootState } from "rootReducer";
 
 const mountPoint = "isInstallingLogs";
 
@@ -31,10 +32,12 @@ describe("service/isInstallingLogs", () => {
       [dnpName2]: progressLogs
     };
 
-    const state = { [mountPoint]: isInstallingLogsState };
+    // Cast Partial state to state to keep the test without writing the rest of the state
+    const state = { [mountPoint]: isInstallingLogsState } as Partial<RootState>;
     it("Should a nicely formated object ready to query", () => {
-      // @ts-ignore
-      expect(getProgressLogsByDnp(state)).toEqual(progressLogsByDnpExpected);
+      expect(getProgressLogsByDnp(state as RootState)).toEqual(
+        progressLogsByDnpExpected
+      );
     });
 
     it("Should check that dnpName1 is installing", () => {

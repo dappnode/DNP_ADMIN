@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 // ##### TODO: Investigate if HashRouter is really required
 import { HashRouter as Router } from "react-router-dom";
 
-import store from "./store";
+import { store } from "./store";
 import App from "./App";
 import * as api from "./api";
 import { cleanObj } from "utils/objects";

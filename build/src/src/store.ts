@@ -1,7 +1,7 @@
-import { createStore, applyMiddleware, Action } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { Action, Reducer } from "redux";
 import thunk, { ThunkAction } from "redux-thunk";
 import rootReducer, { RootState } from "./rootReducer";
+import { configureStore } from "@reduxjs/toolkit";
 
 /**
  * To reduce repetition, you might want to define a reusable AppThunk
@@ -15,22 +15,17 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >;
 
-const middlewares = [thunk];
+export const store = configureStore({
+  // ### Todo: Fix type bug: 'state !== state', because state can be undefined
+  reducer: rootReducer as Reducer,
+  middleware: [thunk],
+  devTools: { actionsBlacklist: ["UPDATE_CHAIN_DATA"] }
+});
 
-// Methodology from https://redux.js.org/recipes/configuring-your-store#integrating-the-devtools-extension
-// And https://github.com/zalmoxisus/redux-devtools-extension#13-use-redux-devtools-extension-package-from-npm
-const actionsBlacklist = ["UPDATE_CHAIN_DATA"];
-const composedEnhancers = composeWithDevTools({ actionsBlacklist });
+declare global {
+  interface Window {
+    store: typeof store;
+  }
+}
 
-const store = createStore(
-  rootReducer as any, // new root reducer with router state,
-  composedEnhancers(applyMiddleware(...middlewares))
-);
-
-// ##### DEV
-// @ts-ignore
-window.dispach = store.dispatch;
-// @ts-ignore
 window.store = store;
-
-export default store;

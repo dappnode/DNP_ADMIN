@@ -115,7 +115,8 @@ export default function Identity() {
               placeholder="word1 word2..."
               value={seedPhrase}
               onChange={e => {
-                if (e.target) setSeedPhrase((e.target as any).value);
+                const target = e.target as HTMLTextAreaElement;
+                if (target) setSeedPhrase(target.value);
               }}
             />
           </div>

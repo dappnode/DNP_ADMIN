@@ -71,8 +71,8 @@ export default function Backup({
     xhr.addEventListener("load", e => {
       setProgress(undefined);
       if (!e.target) return setError(`No upload responseText`);
-      // @ts-ignore
-      const fileId = e.target.responseText;
+      // ### Pending bug: .responseText is not typed in XMLHttpRequestEventTarget
+      const fileId = (e.target as any).responseText;
       // if responseText is not a 32bytes hex, abort
       if (!/[0-9A-Fa-f]{64}/.test(fileId))
         return setError(`Wrong response: ${fileId}`);

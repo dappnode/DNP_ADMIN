@@ -1,4 +1,4 @@
-import store from "../store";
+import { store } from "../store";
 import { Subscriptions } from "../common/subscriptions";
 // Actions to push received content
 import { pushNotification } from "services/notifications/actions";
