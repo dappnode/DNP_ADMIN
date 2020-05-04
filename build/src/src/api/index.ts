@@ -57,7 +57,8 @@ export const useApi: {
   return function(...args: any[]) {
     const argsKey = args.length > 0 ? JSON.stringify(args) : "";
     const cacheKey = route + argsKey;
-    return useSWR([cacheKey, route], () => (handler as any)(...args));
+    const fetcher: (...args: any[]) => Promise<any> = handler;
+    return useSWR([cacheKey, route], () => fetcher(...args));
   };
 });
 

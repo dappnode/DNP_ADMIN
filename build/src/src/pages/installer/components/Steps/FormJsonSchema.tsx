@@ -18,7 +18,7 @@ interface AjvErrorWithPath extends AjvError {
 }
 
 const widgets = {
-  [selectMountpointId]: SelectMountpoint as any
+  [selectMountpointId]: SelectMountpoint
 };
 
 // Memo this component to prevent expensive MarkDown parsing
@@ -62,7 +62,7 @@ const FormJsonSchema: React.FunctionComponent<FormJsonSchemaProps> = ({
    * [NOTE]: internalFormData must be undefined or null to start with,
    * or it will trigger validation before typing
    */
-  const [internalFormData, setInternalFormData] = useState(undefined as any);
+  const [internalFormData, setInternalFormData] = useState<any>(undefined);
   const [callShowAdvancedEditor, setCallShowAdvancedEditor] = useState(false);
   const componentIsMounted = useRef(true);
   const formRef = useRef<Form<any>>(null);
