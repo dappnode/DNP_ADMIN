@@ -22,7 +22,7 @@ function parsePercent(s: string) {
  *   "dnpName2.dnp.dappnode.eth": "Loading...",
  * }
  */
-function ProgressLogsView({
+export function ProgressLogsView({
   progressLogs
 }: {
   progressLogs: ProgressLogs | undefined;
@@ -56,5 +56,3 @@ function ProgressLogsView({
     </Card>
   );
 }
-
-export default ProgressLogsView;

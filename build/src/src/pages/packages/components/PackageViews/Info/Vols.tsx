@@ -1,6 +1,5 @@
 import React from "react";
 import DataList from "./DataList";
-import { Soft } from "./Soft";
 import { prettyVolumeName, prettyBytes } from "utils/format";
 import { PackageContainer } from "types";
 
@@ -54,7 +53,7 @@ export default function Vols({
         })
         .map(({ name, size, extra }) => (
           <>
-            <Soft>{name}:</Soft> {size} {extra}
+            <span style={{ opacity: "0.5" }}>{name}:</span> {size} {extra}
           </>
         ))}
     />

@@ -6,11 +6,8 @@ import { getEthClientPrettyStatusError } from "components/EthMultiClient";
 // Service > dappnodeStatus
 
 // Sub-local properties
-export const getSystemInfo = (state: RootState) =>
-  state.dappnodeStatus.systemInfo;
+const getSystemInfo = (state: RootState) => state.dappnodeStatus.systemInfo;
 export const getDappnodeParams = (state: RootState) => getSystemInfo(state);
-export const getWifiStatus = (state: RootState) =>
-  state.dappnodeStatus.wifiStatus;
 export const getPasswordIsInsecure = (state: RootState) =>
   state.dappnodeStatus.passwordIsInsecure;
 export const getAutoUpdateData = (state: RootState) =>
@@ -20,8 +17,6 @@ export const getIdentityAddress = (state: RootState) =>
 export const getVolumes = (state: RootState) => state.dappnodeStatus.volumes;
 
 // Sub-sub local properties
-export const getDappmanagerVersionData = (state: RootState) =>
-  (getSystemInfo(state) || {}).versionData;
 export const getEthClientTarget = (state: RootState) =>
   (getSystemInfo(state) || {}).ethClientTarget;
 export const getEthClientFallback = (state: RootState) =>
@@ -74,7 +69,7 @@ export const getUpnpAvailable = (state: RootState) =>
   (getSystemInfo(state) || {}).upnpAvailable;
 
 export const getIsWifiRunning = (state: RootState) =>
-  (getWifiStatus(state) || {}).running;
+  (state.dappnodeStatus.wifiStatus || {}).running;
 
 export const getIsCoreAutoUpdateActive = createSelector(
   getAutoUpdateData,

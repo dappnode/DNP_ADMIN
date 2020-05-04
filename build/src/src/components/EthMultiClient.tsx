@@ -135,7 +135,7 @@ const clients: EthClientData[] = [
   }
 ];
 
-export interface EthClientData {
+interface EthClientData {
   title: string;
   description: string;
   options: EthClientTarget[];
@@ -173,7 +173,7 @@ function getOptionsMap(options?: EthClientTarget[]): OptionsMap {
  * - Full node
  * There may be multiple available light-clients and fullnodes
  */
-export function EthMultiClients({
+function EthMultiClients({
   target: selectedTarget,
   onTargetChange,
   showStats
@@ -241,7 +241,7 @@ export function EthMultiClients({
  * View and toggle using the fallback when using a non-remote eth multi client
  * This component should be used with EthMultiClients
  */
-export function EthMultiClientFallback({
+function EthMultiClientFallback({
   target,
   fallback,
   onFallbackChange

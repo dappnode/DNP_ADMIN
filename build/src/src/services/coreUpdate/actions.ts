@@ -41,9 +41,9 @@ const version = coreVersionDevSet || undefined;
 
 // Service > coreUpdate
 
-export const updateCoreUpdateData = coreUpdate.actions.data;
-export const updateUpdatingCore = coreUpdate.actions.updatingCore;
-export const updateCoreRequestStatus = coreUpdate.actions.requestStatus;
+const updateCoreUpdateData = coreUpdate.actions.data;
+const updateUpdatingCore = coreUpdate.actions.updatingCore;
+const updateCoreRequestStatus = coreUpdate.actions.requestStatus;
 
 /**
  * Does a call to `api.resolveRequest` with `id = core.dnp.dappnode.eth@latest`

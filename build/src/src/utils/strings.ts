@@ -61,12 +61,3 @@ export const stringSplit = (
   if (!separator) return [""];
   return s.split(separator);
 };
-
-/**
- * Converts constant case "SOME_BAR", to a sentence "Some bar"
- * @param {string} s
- */
-export const toSentence = (s: string): string => {
-  if (!s || typeof s !== "string") return s;
-  return capitalize(s.replace(new RegExp("_", "g"), " ").toLowerCase());
-};

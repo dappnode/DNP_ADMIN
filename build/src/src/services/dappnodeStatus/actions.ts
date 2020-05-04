@@ -8,11 +8,10 @@ import { wifiName } from "params";
 // Update
 
 export const setSystemInfo = dappnodeStatus.actions.systemInfo;
-export const updateWifiStatus = dappnodeStatus.actions.wifiStatus;
-export const updatePasswordIsInsecure =
-  dappnodeStatus.actions.passwordIsInsecure;
 export const updateAutoUpdateData = dappnodeStatus.actions.autoUpdateData;
 export const updateVolumes = dappnodeStatus.actions.volumes;
+const updateWifiStatus = dappnodeStatus.actions.wifiStatus;
+const updatePasswordIsInsecure = dappnodeStatus.actions.passwordIsInsecure;
 
 // Fetch
 

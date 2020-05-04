@@ -1,6 +1,6 @@
 import React from "react";
 
-export type ButtonType = "button" | "submit" | "reset" | undefined;
+type ButtonType = "button" | "submit" | "reset" | undefined;
 
 interface ButtonProps {
   variant?: string;
@@ -27,14 +27,6 @@ export const ButtonLight: React.FunctionComponent<
   ButtonProps & React.HTMLAttributes<HTMLButtonElement>
 > = props => (
   <Button variant={"outline-secondary"} {...props}>
-    {props.children}
-  </Button>
-);
-
-export const ButtonDanger: React.FunctionComponent<
-  ButtonProps & React.HTMLAttributes<HTMLButtonElement>
-> = props => (
-  <Button variant={"outline-danger"} {...props}>
     {props.children}
   </Button>
 );
