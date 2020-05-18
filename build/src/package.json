@@ -63,7 +63,7 @@
     "dev": "REACT_APP_MOCK_DATA=true yarn start",
     "generate": "node src/common/validation/generateSchemas",
     "prebuild": "npm run generate",
-    "build": "react-scripts build",
+    "build": "react-scripts --max_old_space_size=3800 build",
     "gzip": "gzip -r -k build",
     "test": "TEST=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
