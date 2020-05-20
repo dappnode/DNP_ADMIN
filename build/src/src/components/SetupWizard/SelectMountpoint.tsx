@@ -6,10 +6,10 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "components/Button";
 import { prettyBytes } from "utils/format";
 import { MdHome, MdRefresh } from "react-icons/md";
-import "./selectMountpoint.scss";
 import { joinCssClass } from "utils/css";
 import { MountpointData } from "types";
 import newTabProps from "utils/newTabProps";
+import "./selectMountpoint.scss";
 
 export const selectMountpointId = "selectMountpoint";
 const troubleshootUrl =

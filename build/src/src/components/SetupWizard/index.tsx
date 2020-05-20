@@ -5,7 +5,8 @@ import Card from "components/Card";
 import Alert from "react-bootstrap/Alert";
 import { UserSettingsAllDnps, SetupWizardAllDnps } from "types";
 import { shortNameCapitalized } from "utils/format";
-import OldEditor from "./OldEditor";
+import { EditorAdvanced } from "./EditorAdvanced";
+import { EditorV2 } from "./EditorV2";
 import {
   formDataToUserSettings,
   userSettingsToFormData,
@@ -13,67 +14,12 @@ import {
   filterActiveSetupWizard,
   isSetupWizardEmpty
 } from "pages/installer/parsers/formDataParser";
-import RenderMarkdown from "components/RenderMarkdown";
 import Button from "components/Button";
-import InputField from "./InputField";
-import {
-  parseSetupWizardErrors,
-  SetupWizardError
-} from "pages/installer/parsers/formDataErrors";
-import "./setupWizard.scss";
+import { parseSetupWizardErrors } from "pages/installer/parsers/formDataErrors";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
+import "./setupWizard.scss";
 
-function NewEditor({
-  setupWizard,
-  formData,
-  errors,
-  onNewFormData
-}: {
-  setupWizard: SetupWizardAllDnps;
-  formData: SetupWizardFormDataReturn;
-  errors: SetupWizardError[];
-  onNewFormData: (newFormData: SetupWizardFormDataReturn) => void;
-}) {
-  return (
-    <>
-      <div className="dnps-section">
-        {Object.entries(setupWizard).map(([dnpName, setupWizardDnp]) => (
-          <div className="dnp-section" key={dnpName}>
-            <div className="dnp-name">{shortNameCapitalized(dnpName)}</div>
-            {setupWizardDnp.fields.map(field => {
-              const { id } = field;
-              const ownErrors = errors.filter(
-                error => error.dnpName === dnpName && error.id === id
-              );
-              return (
-                <div key={id} className="field">
-                  <div className="title">{field.title}</div>
-                  <div className="description">
-                    <RenderMarkdown source={field.description} />
-                  </div>
-                  <InputField
-                    field={field}
-                    value={(formData[dnpName] || {})[id] || ""}
-                    onValueChange={newValue =>
-                      onNewFormData({ [dnpName]: { [id]: newValue } })
-                    }
-                  />
-                  {ownErrors.map(error => (
-                    <div key={error.type} className="error">
-                      {error.message}
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
-    </>
-  );
-}
-
-function SetupWizard({
+export function SetupWizard({
   setupWizard,
   userSettings: initialUserSettings,
   onSubmit,
@@ -144,9 +90,12 @@ function SetupWizard({
   return (
     <Card spacing noscroll className="setup-wizard">
       {showAdvanced ? (
-        <OldEditor userSettings={userSettings} onChange={onNewUserSettings} />
+        <EditorAdvanced
+          userSettings={userSettings}
+          onChange={onNewUserSettings}
+        />
       ) : (
-        <NewEditor
+        <EditorV2
           formData={formData}
           errors={visibleDataErrors}
           setupWizard={setupWizardActive}
@@ -184,5 +133,3 @@ function SetupWizard({
     </Card>
   );
 }
-
-export default SetupWizard;

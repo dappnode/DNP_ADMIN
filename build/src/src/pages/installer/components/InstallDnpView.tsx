@@ -14,7 +14,7 @@ import { shortNameCapitalized, isDnpVerified } from "utils/format";
 import { ProgressLogsView } from "./InstallCardComponents/ProgressLogsView";
 // Components
 import Info from "./Steps/Info";
-import SetupWizard from "./Steps/SetupWizard/SetupWizard";
+import { SetupWizard } from "components/SetupWizard";
 import Permissions from "./Steps/Permissions";
 import Disclaimer from "./Steps/Disclaimer";
 import HorizontalStepper from "./HorizontalStepper";

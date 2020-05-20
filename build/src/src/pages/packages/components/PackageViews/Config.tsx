@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import * as action from "../../actions";
 import merge from "deepmerge";
 // Components
-import SetupWizard from "pages/installer/components/Steps/SetupWizard/SetupWizard";
+import { SetupWizard } from "components/SetupWizard";
 // Utils
 import parseManifestEnvs from "pages/installer/parsers/parseManifestEnvs";
 import parseInstalledDnpEnvs from "pages/installer/parsers/parseInstalledDnpEnvs";

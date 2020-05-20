@@ -6,7 +6,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import Badge from "react-bootstrap/Badge";
 import { MdExpandMore, MdExpandLess, MdDelete } from "react-icons/md";
-import { MountpointDataView } from "pages/installer/components/Steps/SetupWizard/SelectMountpoint";
+import { MountpointDataView } from "components/SetupWizard/SelectMountpoint";
 import { rootPath as packagesRootPath } from "pages/packages/data";
 import {
   getPrettyVolumeName,

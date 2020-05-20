@@ -42,15 +42,13 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = ({
   );
 };
 
-interface OldEditorProps {
-  userSettings: UserSettingsAllDnps;
-  onChange: (newUserSettings: UserSettingsAllDnps) => void;
-}
-
-const OldEditor: React.FunctionComponent<OldEditorProps> = ({
+export function EditorAdvanced({
   userSettings,
   onChange
-}) => {
+}: {
+  userSettings: UserSettingsAllDnps;
+  onChange: (newUserSettings: UserSettingsAllDnps) => void;
+}) {
   return (
     <div className="dnps-section">
       {Object.entries(userSettings).map(([dnpName, dnpSettings]) => (
@@ -99,6 +97,4 @@ const OldEditor: React.FunctionComponent<OldEditorProps> = ({
       ))}
     </div>
   );
-};
-
-export default OldEditor;
+}
