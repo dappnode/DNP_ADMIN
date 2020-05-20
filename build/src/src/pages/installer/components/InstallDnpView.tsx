@@ -8,7 +8,7 @@ import {
   RouteComponentProps
 } from "react-router-dom";
 import { isEmpty, throttle, pick } from "lodash";
-import { difference, isDeepEmpty } from "utils/lodashExtended";
+import { difference } from "utils/lodashExtended";
 import { shortNameCapitalized, isDnpVerified } from "utils/format";
 // This module
 import { ProgressLogsView } from "./InstallCardComponents/ProgressLogsView";
@@ -23,11 +23,8 @@ import StatusIcon from "components/StatusIcon";
 // External
 import { rootPath as packagesRootPath } from "pages/packages/data";
 import { RequestedDnp, UserSettingsAllDnps, ProgressLogs } from "types";
-<<<<<<< v0.2.20
 import { withToast } from "components/toast/Toast";
-=======
 import { isSetupWizardEmpty } from "../parsers/formDataParser";
->>>>>>> Complete package / config view with setup wizard
 
 const BYPASS_CORE_RESTRICTION = "BYPASS_CORE_RESTRICTION";
 const SHOW_ADVANCED_EDITOR = "SHOW_ADVANCED_EDITOR";

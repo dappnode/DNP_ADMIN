@@ -81,11 +81,11 @@ export function MountpointDataView({
 export default function SelectMountpoint({
   // React JSON form data props
   value,
-  onChange,
+  onValueChange,
   options
 }: {
   value: string;
-  onChange: (value: string) => void;
+  onValueChange: (value: string) => void;
   options?: {
     alreadySet?: boolean;
     isLegacy?: boolean;
@@ -122,12 +122,12 @@ export default function SelectMountpoint({
   // reset the value to the host (default) to prevent problems
   useEffect(() => {
     if (value && !selectedMountpoint && !alreadySet && !isValidating)
-      onChange("");
-  }, [value, selectedMountpoint, alreadySet, isValidating, onChange]);
+      onValueChange("");
+  }, [value, selectedMountpoint, alreadySet, isValidating, onValueChange]);
 
   async function onSelectMountpoint(mountpoint: string) {
     if (isLegacy || alreadySet) return;
-    onChange(mountpoint);
+    onValueChange(mountpoint);
   }
 
   return (

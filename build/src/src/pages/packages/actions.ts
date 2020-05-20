@@ -14,22 +14,14 @@ import { AppThunk } from "store";
 
 // Used in package interface / envs
 
-<<<<<<< v0.2.20:build/src/src/pages/packages/actions.ts
 export const updatePackageEnv = (
   id: string,
   envs: PackageEnvs
 ): AppThunk => () =>
   withToastNoThrow(() => api.updatePackageEnv({ id, envs }), {
-    message: `Updating ${id} envs: ${Object.keys(envs)}...`,
+    message: `Updating ${id} envs: ${Object.keys(envs).join(", ")}...`,
     onSuccess: `Updated ${id} envs`
   });
-=======
-export const updatePackageEnv = (id, envs) => () =>
-  api.updatePackageEnv(
-    { id, envs, restart: true },
-    { toastMessage: `Updating ${sn(id)} ${Object.keys(envs).join(", ")}...` }
-  );
->>>>>>> Complete package / config view with setup wizard:build/src/src/pages/packages/actions.js
 
 // Used in package interface / controls
 

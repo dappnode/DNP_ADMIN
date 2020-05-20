@@ -6,7 +6,6 @@ import {
   SpecialPermission,
   SetupWizard
 } from "types";
-import { SetupSchema, SetupUiJson } from "types-own";
 import { USER_SETTING_DISABLE_TAG } from "params";
 import { RootState } from "rootReducer";
 
@@ -143,7 +142,7 @@ const lightningNetworkSetup: UserSettings = {
   }
 };
 
-const lightningNetworkUserSettingsInstalled: UserSettings = {
+export const lightningNetworkUserSettingsInstalled: UserSettings = {
   portMappings: { "9735": "9735" },
   namedVolumeMountpoints: { lndconfig_data: "/usr/media_0" },
   environment: {
@@ -188,106 +187,6 @@ Content from cell 1 | Content from cell 2
 Content in the first column | Content in the second column
 
         `;
-
-/**
- * Vipnode
- */
-
-const vipnodeMetadata = {
-  name: "vipnode.dnp.dappnode.eth",
-  version: "0.1.0",
-  upstreamVersion: "2.2.1",
-  shortDescription: "Economic incentive for running Ethereum full nodes",
-  description:
-    "[Vipnode](https://vipnode.org)'s goal is to allow the Ethereum network to remain decentralized by creating a financial marketplace for more people to run full nodes and serve native light clients. Check this [medium article](https://medium.com/vipnode/an-economic-incentive-for-running-ethereum-full-nodes-ecc0c9ebe22) to understand the motivation behind this project and this [2.0 release article](https://medium.com/vipnode/vipnode-2-0-released-9af1d65b4552) for a tutorial on how to use Vipnode.",
-  avatar: "https://ipfs.io/ipfs/Qmen3srZXEHncMM2RPsgVKkPbkJPTMN9SNFVEAQQY4a7Nf",
-  type: "service",
-  author:
-    "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
-  categories: ["Economic incentive"],
-  links: {
-    homepage: "https://github.com/dappnode/DAppNodePackage-vipnode"
-  },
-  wizard: {},
-  disclaimer: {
-    message:
-      "This software is experimental, presented 'as is' and inherently carries risks. By installing it, you acknowledge that DAppNode Association has done its best to mitigate these risks and accept to waive any liability or responsibility for DAppNode in case of any shortage, discrepancy, damage, loss or destruction of any digital asset managed within this DAppNode package."
-  },
-  repository: {
-    type: "git",
-    url: "https://github.com/dappnode/DAppNodePackage-vipnode.git"
-  },
-  bugs: {
-    url: "https://github.com/dappnode/DAppNodePackage-vipnode/issues"
-  },
-  license: "GPL-3.0"
-};
-
-const vipnodeSetup: UserSettings = {
-  environment: { PAYOUT_ADDRESS: "", NODE_TYPE: "client" }
-};
-
-const vipnodeSetupWizard: SetupWizard = {
-  version: "2",
-  fields: [
-    {
-      id: "nodeType",
-      title: "Node type",
-      description: "What's the type of your node, **bold** \n\n - 1 \n - 2",
-      required: true,
-      enum: ["client", "host"],
-      target: {
-        type: "environment",
-        name: "NODE_TYPE"
-      }
-    },
-    {
-      id: "payoutAddress",
-      title: "Payout address",
-      description: "Define an payout address",
-      required: true,
-      pattern: "^0x[a-fA-F0-9]{40}$",
-      patternErrorMessage: "Must be a valid address (0x1fd16a...)",
-      target: {
-        type: "environment",
-        name: "PAYOUT_ADDRESS"
-      },
-      if: {
-        required: ["nodeType"],
-        type: "object",
-        properties: {
-          nodeType: { enum: ["host"] }
-        }
-      }
-    },
-    {
-      id: "keystore",
-      title: "Keystore",
-      description: "Upload your keystore file",
-      required: true,
-      target: {
-        type: "fileUpload",
-        path: "/usr/config.json"
-      },
-      if: {
-        required: ["nodeType"],
-        type: "object",
-        properties: {
-          nodeType: { enum: ["host"] }
-        }
-      }
-    },
-    {
-      id: "dataMountpoint",
-      title: "Data mountpoint",
-      description: "Where to store Vipnode's data",
-      target: {
-        type: "namedVolumeMountpoint",
-        volumeName: "data"
-      }
-    }
-  ]
-};
 
 /**
  * Raiden
@@ -542,8 +441,8 @@ const bitcoinSetupWizard: SetupWizard = {
  * Ethchain
  */
 
-const ethchainMetadata = {
-  name: "ethchain.dnp.dappnode.eth",
+const openEthereumMetadata = {
+  name: "open-ethereum.dnp.dappnode.eth",
   version: "0.2.6",
   description:
     "Dappnode package responsible for providing the Ethereum blockchain, based on Parity v2.5.8-stable",
@@ -835,42 +734,6 @@ export const dnpRequest = {
       }
     },
 
-    [vipnodeMetadata.name]: {
-      ...sampleRequestState,
-      name: vipnodeMetadata.name,
-      reqVersion: vipnodeMetadata.version,
-      semVersion: vipnodeMetadata.version,
-      avatarUrl: vipnodeAvatar,
-      metadata: vipnodeMetadata,
-
-      imageSize: 10000000,
-      isUpdated: false,
-      isInstalled: true,
-
-      settings: {
-        [vipnodeMetadata.name]: vipnodeSetup
-      },
-      setupWizard: {
-        [vipnodeMetadata.name]: vipnodeSetupWizard
-      },
-
-      request: {
-        compatible: {
-          requiresCoreUpdate: false,
-          resolving: false,
-          isCompatible: true,
-          error: "",
-          dnps: {
-            [vipnodeMetadata.name]: { from: "0.2.0", to: "0.2.5" }
-          }
-        },
-        available: {
-          isAvailable: true,
-          message: ""
-        }
-      }
-    },
-
     [trustlinesMetadata.name]: {
       ...sampleRequestState,
       name: trustlinesMetadata.name,
@@ -914,54 +777,6 @@ export const dnpRequest = {
 
       settings: {
         [raidenTestnetMetadata.name]: raidenTestnetSetup
-      }
-    },
-
-    "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy": {
-      ...sampleRequestState,
-      name: vipnodeMetadata.name,
-      reqVersion: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
-      origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
-      avatarUrl: vipnodeAvatar,
-      metadata: vipnodeMetadata,
-
-      imageSize: 10000000,
-      isUpdated: false,
-      isInstalled: true,
-
-      settings: {},
-
-      setupWizard: {
-        [vipnodeMetadata.name]: vipnodeSetupWizard,
-        // Sample setup wizard to see two package forms together
-        "dependency.dnp.dappnode.eth": {
-          version: "2",
-          fields: [
-            {
-              id: "sample",
-              target: { type: "environment", name: "SAMPLE" },
-              title: "Sample",
-              description: "Sample!",
-              required: true
-            }
-          ]
-        }
-      },
-
-      request: {
-        compatible: {
-          requiresCoreUpdate: false,
-          resolving: false,
-          isCompatible: true,
-          error: "",
-          dnps: {
-            "vipnode.dnp.dappnode.eth": { from: "0.2.0", to: "0.2.5" }
-          }
-        },
-        available: {
-          isAvailable: true,
-          message: ""
-        }
       }
     },
 
@@ -1392,74 +1207,7 @@ export const mockState: RootState = {
         envs: {
           ENV_NAME: "ENV_VALUE"
         },
-        gettingStarted: `
-  **Accessing the ADMIN UI**
-  
-  Once the node is synced, you can access your LN node [admin UI here](https://lightning-network.dappnode)
-  
-  **How to download macaroons**
-  
-  Usually Lightning Network applications require files called *macaroons* for authorizations to perform operations on the LND node. There are many types depending on the level of access.
-  To download the admin macaroon, you should go to the Admin panel of DAppnode: 
-  Packages -> My packages -> Lightning-Network -> File manager\nThen input in the 'Download from DNP' field:
-  \`\`\`
-  /config/data/chain/bitcoin/mainnet/admin.macaroon
-  \`\`\`
-  
-  **How to use Joule extension with DAppNode**
-  
-  Joule is an extension available for many browsers which lets you use your node to make payments, invoices, open channels and more. Check the website: https://lightningjoule.com/
-  * To run Joule, first you need to download these macaroons in a safe folder, as described above:
-  \`\`\`
-  /config/data/chain/bitcoin/mainnet/admin.macaroon
-  /config/data/chain/bitcoin/mainnet/readonly.macaroon
-  \`\`\`
-  * When asked on the type of node, select Remote and then enter the following url: 
-     https://lightning-network.dappnode:8080
-     * You will need to accept the SSL certificate in the next step
-  * Upload the macaroons, choose a password to encrypt the data, and you're ready to go!
-  * **Enjoy!** But be aware both LND and RTL are beta software .Only use funds you can afford to lose.  Don't be completely #Reckless ;) 
-  
-  <img src="https://i.imgur.com/66P7Aei.png" width="500px" height="100%"> 
-  
-   ![](https://i.imgur.com/66P7Aei.png) 
-   
-   
-   ![](https://i.ibb.co/cvw9f9K/download.png)
-  
-  
-  **Blockquotes**
-  
-  As Kanye West said:
-  
-  > We're living the future so
-  > the present is our past.      
-  
-  
-  **Syntax highlighting**
-  
-  \`\`\`js
-  function fancyAlert(arg) {
-    if(arg) {
-      $.facebox({div:'#foo'})
-    }
-  }
-  \`\`\`
-  
-  
-  **Task Lists**
-  - [x]  this is a complete item
-  - [ ]  this is an incomplete item
-  
-  
-  **Tables**
-  
-  First Header | Second Header
-  ------------ | -------------
-  Content from cell 1 | Content from cell 2
-  Content in the first column | Content in the second column
-  
-          `,
+        gettingStarted: lightningNetworkGettingStarted,
         gettingStartedShow: true
       },
       {
@@ -1512,7 +1260,7 @@ export const mockState: RootState = {
         envs: {},
         avatarUrl: "https://pbs.twimg.com/media/DOnE7skW4AQ-FBd.png",
         canBeFullnode: true,
-        manifest: openEthereumManifest
+        manifest: openEthereumMetadata
       }
     ]
   },

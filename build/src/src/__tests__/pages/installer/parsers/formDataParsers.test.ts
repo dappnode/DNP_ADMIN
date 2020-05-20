@@ -1,8 +1,6 @@
 import {
   formDataToUserSettings,
-  userSettingsToFormData,
-  cleanInitialFormData,
-  getUserSettingsDataErrors
+  userSettingsToFormData
 } from "pages/installer/parsers/formDataParser";
 import { SetupWizardFormDataReturn } from "pages/installer/types";
 import { UserSettingsAllDnps, SetupTargetAllDnps } from "types";
@@ -161,70 +159,5 @@ describe("formDataToUserSettings", () => {
     );
 
     expect(formDataResult).toEqual(formData);
-  });
-});
-
-describe("cleanInitialFormData", () => {
-  it("should clean empty formData", () => {
-    const formData = {
-      "geth.dnp.dappnode.eth": {
-        address: ""
-      }
-    };
-    expect(cleanInitialFormData(formData)).toEqual(undefined);
-  });
-
-  it("should not edit an properties with data", () => {
-    const formData = {
-      "geth.dnp.dappnode.eth": {
-        address: "0x12356123",
-        emptyProp: ""
-      },
-      "dep.dnp.dappnode.eth": {
-        moreEmpty: ""
-      }
-    };
-    expect(cleanInitialFormData(formData)).toEqual({
-      "geth.dnp.dappnode.eth": {
-        address: "0x12356123"
-      }
-    });
-  });
-});
-
-describe("getUserSettingsDataErrors", () => {
-  describe("namedVolumeMountpoints", () => {
-    const dnpName = "bitcoin.dnp.dappnode.eth";
-    const volName = "data";
-    const getUserSettings = (newPath: string): UserSettingsAllDnps => ({
-      [dnpName]: {
-        namedVolumeMountpoints: { [volName]: newPath }
-      }
-    });
-    const errorMessage = `Mountpoint path for '${dnpName}' '${volName}' must be an absolute path`;
-
-    it("Should accept a new bind path", () => {
-      const newUserSettings = getUserSettings("/dev1/custom");
-      const errors = getUserSettingsDataErrors(newUserSettings);
-      expect(errors).toEqual([]);
-    });
-
-    it("Should accept an empty path", () => {
-      const newUserSettings = getUserSettings("");
-      const errors = getUserSettingsDataErrors(newUserSettings);
-      expect(errors).toEqual([]);
-    });
-
-    it("Should reject a name", () => {
-      const newUserSettings = getUserSettings("data2");
-      const errors = getUserSettingsDataErrors(newUserSettings);
-      expect(errors).toEqual([errorMessage]);
-    });
-
-    it("Should reject a relative path", () => {
-      const newUserSettings = getUserSettings("~/.root/data");
-      const errors = getUserSettingsDataErrors(newUserSettings);
-      expect(errors).toEqual([errorMessage]);
-    });
   });
 });
