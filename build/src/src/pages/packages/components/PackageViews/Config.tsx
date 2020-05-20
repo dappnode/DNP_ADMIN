@@ -7,7 +7,6 @@ import { SetupWizard } from "components/SetupWizard";
 // Utils
 import parseManifestEnvs from "pages/installer/parsers/parseManifestEnvs";
 import parseInstalledDnpEnvs from "pages/installer/parsers/parseInstalledDnpEnvs";
-import { sortBy } from "lodash";
 import {
   PackageContainer,
   PackageEnvs,
@@ -66,8 +65,6 @@ export default function Config({
       );
   }, [dnp]);
 
-  const envsArray = sortBy(Object.values(envs), env => env.index);
-
   function onSubmit(newUserSettings: UserSettingsAllDnps) {
     if (!dnp || !dnp.name)
       return console.error(
@@ -83,9 +80,6 @@ export default function Config({
       );
     }
   }
-
-  // If there are no ENVs don't render the component
-  if (!envsArray.length) return null;
 
   return (
     <SetupWizard

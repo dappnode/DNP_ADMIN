@@ -5,7 +5,8 @@ import {
   DirectoryItem,
   SpecialPermission,
   SetupWizard,
-  ChainData
+  ChainData,
+  PackageDetailData
 } from "../src/common/types";
 
 function getDescription(manifest: {
@@ -1044,8 +1045,21 @@ export const dnpInstalled: PackageContainer[] = [
     avatarUrl: "https://pbs.twimg.com/media/DOnE7skW4AQ-FBd.png",
     canBeFullnode: true,
     manifest: openEthereumMetadata
+  },
+  {
+    ...samplePackageContainer,
+    name: raidenMetadata.name,
+    isCore: false,
+    avatarUrl: raidenAvatar
   }
 ];
+
+export const packagesDetailData: { [id: string]: PackageDetailData } = {
+  [raidenMetadata.name]: {
+    setupWizard: raidenSetupWizard,
+    userSettings: raidenTestnetSetup
+  }
+};
 
 /**
  * ==========

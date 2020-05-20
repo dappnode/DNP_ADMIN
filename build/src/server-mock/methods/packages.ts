@@ -7,10 +7,15 @@ import {
   DirectoryItem,
   RequestedDnp
 } from "../../src/common";
-import { directory, dnpRequests, dnpInstalled } from "../mockData";
+import {
+  directory,
+  dnpRequests,
+  dnpInstalled,
+  packagesDetailData
+} from "../mockData";
 
 const packages = new Map<string, PackageContainer>(
-  dnpInstalled.map(pkg => [pkg.id, pkg])
+  dnpInstalled.map(pkg => [pkg.name, pkg])
 );
 
 function update(
@@ -216,10 +221,14 @@ export async function listPackages(): Promise<PackageContainer[]> {
 /**
  * Get package detail information
  */
-export async function packageDetailDataGet(kwargs: {
+export async function packageDetailDataGet({
+  id
+}: {
   id: string;
 }): Promise<PackageDetailData> {
-  return {};
+  const packageDetailData = packagesDetailData[id];
+  if (!packageDetailData) throw Error(`No detail data for ${id}`);
+  return packageDetailData;
 }
 
 /**

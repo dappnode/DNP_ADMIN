@@ -4,6 +4,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 import useSWR from "swr";
 import { api } from "api";
+import { isEmpty } from "lodash";
 // This module
 import Info from "./PackageViews/Info";
 import { dnpSpecificList, dnpSpecific } from "./PackageViews/DnpSpecific";
@@ -81,7 +82,7 @@ export const PackageInterface: React.FC<
       name: "Config",
       subPath: "config",
       render: () => <Config dnp={dnp} dnpDetail={dnpDetail} />,
-      available: Object.keys(dnp.envs || {}).length
+      available: !isEmpty(dnp.envs) || !isEmpty((dnpDetail || {}).setupWizard)
     },
     {
       name: "Ports",

@@ -32,7 +32,7 @@ export default function InputField({
         <Input
           value={value}
           onValueChange={onValueChange}
-          type={field.secret ? "password" : "text"}
+          type={isSecret(field) ? "password" : "text"}
         />
       );
   } else if (field.target.type === "fileUpload") {
@@ -52,4 +52,17 @@ export default function InputField({
   } else {
     return <div>Unknown target type</div>;
   }
+}
+
+function isSecret(field: SetupWizardField): boolean {
+  const secretRegex = /(secret|passphrase|password)/i;
+  if (typeof field.secret === "boolean") return field.secret;
+  return (
+    secretRegex.test(field.id) ||
+    Boolean(
+      field.target &&
+        field.target.type === "environment" &&
+        secretRegex.test(field.target.name)
+    )
+  );
 }
