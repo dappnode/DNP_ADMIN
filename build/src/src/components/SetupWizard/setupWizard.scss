@@ -67,3 +67,12 @@
     }
   }
 }
+
+.input-field-secret-toggle {
+  display: flex !important;
+  font-size: 20px !important;
+  border-color: #ced4da !important;
+  svg {
+    opacity: 0.7;
+  }
+}
