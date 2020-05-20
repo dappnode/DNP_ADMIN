@@ -23,8 +23,8 @@ import {
 import { initialCallsOnOpen } from "./initialCalls";
 import { PubSub } from "./utils";
 
-const url = wampUrl;
-const realm = wampRealm;
+const url = process.env.REACT_APP_WAMP_URL || wampUrl;
+const realm = process.env.REACT_APP_REALM || wampRealm;
 
 let _session: autobahn.Session;
 
@@ -95,12 +95,6 @@ export const useSubscription: {
     }, [callback]);
   };
 });
-
-declare global {
-  interface Window {
-    call: (event: string, args?: any[], kwargs?: any) => any;
-  }
-}
 
 /**
  * Connect to the WAMP with an autobahn client

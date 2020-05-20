@@ -4,10 +4,9 @@ import {
   RequestedDnp,
   DirectoryItem,
   SpecialPermission,
-  SetupWizard
-} from "types";
-import { USER_SETTING_DISABLE_TAG } from "params";
-import { RootState } from "rootReducer";
+  SetupWizard,
+  ChainData
+} from "../src/common/types";
 
 function getDescription(manifest: {
   shortDescription?: string;
@@ -16,7 +15,7 @@ function getDescription(manifest: {
   return manifest.shortDescription || manifest.description;
 }
 
-const coreName = "core.dnp.dappnode.eth";
+export const coreName = "core.dnp.dappnode.eth";
 
 /**
  * Avatars
@@ -279,9 +278,6 @@ const raidenSetup: UserSettings = {
     RAIDEN_KEYSTORE_PASSWORD: "",
     RAIDEN_ADDRESS: "",
     EXTRA_OPTS: "--disable-debug-logfile"
-  },
-  fileUploads: {
-    "/usr/src/app-set": USER_SETTING_DISABLE_TAG
   }
 };
 
@@ -380,8 +376,7 @@ const bitcoinUserSettings: UserSettings = {
     BTC_RPCPASSWORD: "dappnode",
     BTC_TXINDEX: "1",
     BTC_PRUNE: "0"
-  },
-  allNamedVolumeMountpoint: USER_SETTING_DISABLE_TAG
+  }
 };
 
 const bitcoinSetupWizard: SetupWizard = {
@@ -656,150 +651,136 @@ const samplePackageContainer: PackageContainer = {
   avatarUrl: ""
 };
 
-export const dnpRequest = {
-  dnps: {
-    [lightningNetworkMetadata.name]: {
-      ...sampleRequestState,
-      name: lightningNetworkMetadata.name,
-      reqVersion: lightningNetworkMetadata.version,
-      semVersion: lightningNetworkMetadata.version,
-      avatarUrl: lightningNetworkAvatar,
-      metadata: lightningNetworkMetadata,
+export const dnpRequests: { [dnpName: string]: RequestedDnp } = {
+  [lightningNetworkMetadata.name]: {
+    ...sampleRequestState,
+    name: lightningNetworkMetadata.name,
+    reqVersion: lightningNetworkMetadata.version,
+    semVersion: lightningNetworkMetadata.version,
+    avatarUrl: lightningNetworkAvatar,
+    metadata: lightningNetworkMetadata,
 
-      imageSize: 19872630,
-      isUpdated: false,
-      isInstalled: false,
+    imageSize: 19872630,
+    isUpdated: false,
+    isInstalled: false,
 
-      settings: {
-        [lightningNetworkMetadata.name]: lightningNetworkSetup,
-        [bitcoinMetadata.name]: bitcoinUserSettings
-      },
-      setupWizard: {
-        [lightningNetworkMetadata.name]: lightningNetworkSetupWizard,
-        [bitcoinMetadata.name]: bitcoinSetupWizard
-      },
+    settings: {
+      [lightningNetworkMetadata.name]: lightningNetworkSetup,
+      [bitcoinMetadata.name]: bitcoinUserSettings
+    },
+    setupWizard: {
+      [lightningNetworkMetadata.name]: lightningNetworkSetupWizard,
+      [bitcoinMetadata.name]: bitcoinSetupWizard
+    },
 
-      request: {
-        compatible: {
-          requiresCoreUpdate: false,
-          resolving: false,
-          isCompatible: true,
-          error: "",
-          dnps: {
-            [lightningNetworkMetadata.name]: { to: "0.2.2" },
-            [bitcoinMetadata.name]: { from: "0.2.5", to: "0.2.5" }
-          }
-        },
-        available: {
-          isAvailable: true,
-          message: ""
+    request: {
+      compatible: {
+        requiresCoreUpdate: false,
+        resolving: false,
+        isCompatible: true,
+        error: "",
+        dnps: {
+          [lightningNetworkMetadata.name]: { to: "0.2.2" },
+          [bitcoinMetadata.name]: { from: "0.2.5", to: "0.2.5" }
         }
-      }
-    },
-
-    [bitcoinMetadata.name]: {
-      ...sampleRequestState,
-      name: bitcoinMetadata.name,
-      reqVersion: bitcoinMetadata.version,
-      semVersion: bitcoinMetadata.version,
-      avatarUrl: bitcoinAvatar,
-      metadata: bitcoinMetadata,
-
-      imageSize: 37273582,
-      isUpdated: false,
-      isInstalled: true,
-
-      settings: {
-        [bitcoinMetadata.name]: bitcoinUserSettings
       },
-      setupWizard: {
-        [bitcoinMetadata.name]: bitcoinSetupWizard
-      },
-
-      request: {
-        compatible: {
-          requiresCoreUpdate: false,
-          resolving: false,
-          isCompatible: true,
-          error: "",
-          dnps: {
-            [bitcoinMetadata.name]: { from: "0.2.10", to: "0.2.5" },
-            "dependency.dnp.dappnode.eth": { from: "0.0.0", to: "1.2.0" }
-          }
-        },
-        available: {
-          isAvailable: true,
-          message: ""
-        }
+      available: {
+        isAvailable: true,
+        message: ""
       }
-    },
-
-    [trustlinesMetadata.name]: {
-      ...sampleRequestState,
-      name: trustlinesMetadata.name,
-      reqVersion: trustlinesMetadata.version,
-      semVersion: trustlinesMetadata.version,
-      avatarUrl: trustlinesAvatar,
-      metadata: trustlinesMetadata,
-      specialPermissions: trustlinesSpecialPermissions,
-
-      settings: {
-        [trustlinesMetadata.name]: trustlinesSetup
-      },
-      setupWizard: {
-        [trustlinesMetadata.name]: trustlinesSetupWizard
-      }
-    },
-
-    [raidenMetadata.name]: {
-      ...sampleRequestState,
-      name: raidenMetadata.name,
-      reqVersion: raidenMetadata.version,
-      semVersion: raidenMetadata.version,
-      avatarUrl: raidenAvatar,
-      metadata: raidenMetadata,
-
-      settings: {
-        [raidenMetadata.name]: raidenSetup
-      },
-      setupWizard: {
-        [raidenMetadata.name]: raidenSetupWizard
-      }
-    },
-
-    [raidenTestnetMetadata.name]: {
-      ...sampleRequestState,
-      name: raidenTestnetMetadata.name,
-      reqVersion: raidenTestnetMetadata.version,
-      semVersion: raidenTestnetMetadata.version,
-      avatarUrl: raidenTestnetAvatar,
-      metadata: raidenTestnetMetadata,
-
-      settings: {
-        [raidenTestnetMetadata.name]: raidenTestnetSetup
-      }
-    },
-
-    [isInstallingDnp]: {
-      ...sampleRequestState,
-      name: isInstallingDnp,
-      reqVersion: "0.1.0",
-      semVersion: "0.1.0",
-      avatarUrl: isInstallingAvatar,
-      metadata: isInstallingMetadata
     }
   },
 
-  requestStatus: {
-    "lightning-network.dnp.dappnode.eth": {
-      loading: true
+  [bitcoinMetadata.name]: {
+    ...sampleRequestState,
+    name: bitcoinMetadata.name,
+    reqVersion: bitcoinMetadata.version,
+    semVersion: bitcoinMetadata.version,
+    avatarUrl: bitcoinAvatar,
+    metadata: bitcoinMetadata,
+
+    imageSize: 37273582,
+    isUpdated: false,
+    isInstalled: true,
+
+    settings: {
+      [bitcoinMetadata.name]: bitcoinUserSettings
     },
-    [inLoadingDnp]: {
-      loading: true
+    setupWizard: {
+      [bitcoinMetadata.name]: bitcoinSetupWizard
     },
-    [inErrorDnp]: {
-      error: "Demo error to simulate load failure"
+
+    request: {
+      compatible: {
+        requiresCoreUpdate: false,
+        resolving: false,
+        isCompatible: true,
+        error: "",
+        dnps: {
+          [bitcoinMetadata.name]: { from: "0.2.10", to: "0.2.5" },
+          "dependency.dnp.dappnode.eth": { from: "0.0.0", to: "1.2.0" }
+        }
+      },
+      available: {
+        isAvailable: true,
+        message: ""
+      }
     }
+  },
+
+  [trustlinesMetadata.name]: {
+    ...sampleRequestState,
+    name: trustlinesMetadata.name,
+    reqVersion: trustlinesMetadata.version,
+    semVersion: trustlinesMetadata.version,
+    avatarUrl: trustlinesAvatar,
+    metadata: trustlinesMetadata,
+    specialPermissions: trustlinesSpecialPermissions,
+
+    settings: {
+      [trustlinesMetadata.name]: trustlinesSetup
+    },
+    setupWizard: {
+      [trustlinesMetadata.name]: trustlinesSetupWizard
+    }
+  },
+
+  [raidenMetadata.name]: {
+    ...sampleRequestState,
+    name: raidenMetadata.name,
+    reqVersion: raidenMetadata.version,
+    semVersion: raidenMetadata.version,
+    avatarUrl: raidenAvatar,
+    metadata: raidenMetadata,
+
+    settings: {
+      [raidenMetadata.name]: raidenSetup
+    },
+    setupWizard: {
+      [raidenMetadata.name]: raidenSetupWizard
+    }
+  },
+
+  [raidenTestnetMetadata.name]: {
+    ...sampleRequestState,
+    name: raidenTestnetMetadata.name,
+    reqVersion: raidenTestnetMetadata.version,
+    semVersion: raidenTestnetMetadata.version,
+    avatarUrl: raidenTestnetAvatar,
+    metadata: raidenTestnetMetadata,
+
+    settings: {
+      [raidenTestnetMetadata.name]: raidenTestnetSetup
+    }
+  },
+
+  [isInstallingDnp]: {
+    ...sampleRequestState,
+    name: isInstallingDnp,
+    reqVersion: "0.1.0",
+    semVersion: "0.1.0",
+    avatarUrl: isInstallingAvatar,
+    metadata: isInstallingMetadata
   }
 };
 
@@ -861,410 +842,218 @@ export const devices = {
  * ================
  */
 
+export const directory: DirectoryItem[] = [
+  {
+    ...sampleDirectoryState,
+    name: "bitcoin.dnp.dappnode.eth",
+    description: getDescription(bitcoinMetadata),
+    avatarUrl: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png"
+  },
+  {
+    ...sampleDirectoryState,
+    name: "lightning-network.dnp.dappnode.eth",
+    description: getDescription(lightningNetworkMetadata),
+    avatarUrl: lightningNetworkAvatar,
+    categories: ["Payment channels", "Economic incentive"]
+  },
+  {
+    ...sampleDirectoryState,
+    name: "raiden.dnp.dappnode.eth",
+    description: getDescription(raidenMetadata),
+    avatarUrl: raidenAvatar,
+    isFeatured: true,
+    featuredStyle: {
+      featuredBackground: "linear-gradient(67deg, #000000, #2f3c3e)",
+      featuredColor: "white",
+      featuredAvatarFilter: "invert(1)"
+    },
+    categories: ["Payment channels"]
+  },
+  {
+    ...sampleDirectoryState,
+    name: "raiden-testnet.dnp.dappnode.eth",
+    description: getDescription(raidenTestnetMetadata),
+    avatarUrl: raidenTestnetAvatar,
+    isInstalled: true,
+    categories: ["Developer tools"]
+  },
+  {
+    ...sampleDirectoryState,
+    name: "trustlines.dnp.dappnode.eth",
+    description: getDescription(trustlinesMetadata),
+    avatarUrl: trustlinesAvatar,
+    isFeatured: true,
+    featuredStyle: {
+      featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
+      featuredColor: "white"
+    },
+    categories: ["Blockchain"]
+  },
+  {
+    ...sampleDirectoryState,
+    name: isUpdatedDnp,
+    description: "Sample package in udpated state",
+    isInstalled: true,
+    isUpdated: true,
+    avatarUrl: isUpdatedAvatar
+  },
+  {
+    ...sampleDirectoryState,
+    name: isInstallingDnp,
+    description: getDescription(isInstallingMetadata),
+    avatarUrl: isInstallingAvatar
+  },
+  {
+    ...sampleDirectoryState,
+    name: inErrorDnp,
+    description: "Sample package in error state",
+    avatarUrl: inErrorAvatar
+  },
+  {
+    ...sampleDirectoryState,
+    name: inLoadingDnp,
+    description: "Sample package in loading state",
+    avatarUrl: inLoadingAvatar
+  },
+  {
+    status: "loading",
+    name: "fetch-loads.dnp.dappnode.eth",
+    whitelisted: true,
+    isFeatured: false,
+    message:
+      "Loading manifest and more stuff really long text that goes on and on and more stuff 57%"
+  },
+  {
+    status: "error",
+    name: "fetch-fails.dnp.dappnode.eth",
+    whitelisted: true,
+    isFeatured: false,
+    message: "Can't download manifest"
+  }
+];
+
+export const chainData: ChainData[] = [
+  {
+    dnpName: "geth.dnp.dappnode.eth",
+    syncing: true,
+    error: false,
+    message: [
+      "Blocks synced: 543000 / 654000",
+      "States pulled: 25314123 / 154762142"
+    ].join("\n\n"),
+    help: "http://geth.io"
+  },
+  {
+    dnpName: "rinkeby.dnp.dappnode.eth",
+    syncing: true,
+    error: false,
+    message: "Blocks synced: 543000 / 654000",
+    progress: 0.83027522935
+  }
+];
+
+export const dnpInstalled: PackageContainer[] = [
+  {
+    ...samplePackageContainer,
+    name: "admin.dnp.dappnode.eth",
+    isCore: true,
+    state: "exited"
+  },
+  {
+    ...samplePackageContainer,
+    name: coreName,
+    isCore: true,
+    version: "0.2.3",
+    state: "exited"
+  },
+  {
+    ...samplePackageContainer,
+    name: lightningNetworkMetadata.name,
+    origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
+    isDnp: true,
+    version: "0.1.0",
+    state: "running",
+    ports: [
+      {
+        host: 30303,
+        container: 30303,
+        protocol: "TCP"
+      },
+      {
+        host: 30303,
+        container: 30303,
+        protocol: "UDP"
+      }
+    ],
+    volumes: [],
+    manifest: lightningNetworkMetadata,
+    envs: {
+      ENV_NAME: "ENV_VALUE"
+    },
+    gettingStarted: lightningNetworkGettingStarted,
+    gettingStartedShow: true
+  },
+  {
+    ...samplePackageContainer,
+    name: "wifi.dnp.dappnode.eth",
+    isCore: true,
+    envs: {
+      SSID: "DAppNodeWIFI",
+      WPA_PASSPHRASE: "dappnode"
+    }
+  },
+  {
+    ...samplePackageContainer,
+    name: "openethereum.dnp.dappnode.eth",
+    isCore: false,
+    version: "0.2.6",
+    state: "running",
+    ports: [
+      {
+        host: 30303,
+        container: 30303,
+        protocol: "TCP"
+      },
+      {
+        host: 30303,
+        container: 30303,
+        protocol: "UDP"
+      }
+    ],
+    volumes: [
+      {
+        host: "/var/lib/docker/volumes/paritydnpdappnodeeth_data/_data",
+        container: "/app/.parity",
+        name: "paritydnpdappnodeeth_data",
+        users: ["parity.dnp.dappnode.eth"],
+        owner: "parity.dnp.dappnode.eth",
+        isOwner: true,
+        size: 71570000000
+      },
+      {
+        host: "/var/lib/docker/volumes/paritydnpdappnodeeth_geth/_data",
+        container: "/root/.ethereum/",
+        name: "paritydnpdappnodeeth_geth",
+        users: ["parity.dnp.dappnode.eth"],
+        owner: "parity.dnp.dappnode.eth",
+        isOwner: true,
+        size: 94620000000
+      }
+    ],
+    envs: {},
+    avatarUrl: "https://pbs.twimg.com/media/DOnE7skW4AQ-FBd.png",
+    canBeFullnode: true,
+    manifest: openEthereumMetadata
+  }
+];
+
 /**
  * ==========
  * dnpRequest
  * ==========
  */
 
-export const mockState: RootState = {
-  chainData: [
-    {
-      dnpName: "geth.dnp.dappnode.eth",
-      syncing: true,
-      error: false,
-      message: [
-        "Blocks synced: 543000 / 654000",
-        "States pulled: 25314123 / 154762142"
-      ].join("\n\n"),
-      help: "http://geth.io"
-    },
-    {
-      dnpName: "rinkeby.dnp.dappnode.eth",
-      syncing: true,
-      error: false,
-      message: "Blocks synced: 543000 / 654000",
-      progress: 0.83027522935
-    }
-  ],
-
-  connectionStatus: {
-    isOpen: true,
-    isNotAdmin: false,
-    error: null
-  },
-
-  coreUpdate: {
-    data: {
-      available: true,
-      type: "patch",
-      packages: [
-        {
-          name: "admin.dnp.dappnode.eth",
-          from: "0.2.0",
-          to: "0.2.6",
-          warningOnInstall: "Warning on **install**"
-        }
-      ],
-      changelog:
-        "Major improvements to the 0.2 version https://github.com/dappnode/DAppNode/wiki/DAppNode-Migration-guide-to-OpenVPN",
-      updateAlerts: [
-        {
-          from: "0.2.0",
-          to: "0.2.0",
-          message: "Conditional update alert: **Markdown**"
-        }
-      ],
-      versionId: ""
-    },
-    updatingCore: true,
-    requestStatus: {}
-  },
-
-  dappnodeStatus: {
-    systemInfo: {
-      versionData: {
-        branch: "test",
-        commit: "a5a5a5a5",
-        version: "0.2.0"
-      },
-      versionDataVpn: {
-        branch: "test",
-        commit: "a8a8a8a8",
-        version: "0.2.1"
-      },
-      ip: "85.84.83.82",
-      name: "My-DAppNode",
-      staticIp: "", // "85.84.83.82",
-      domain: "1234acbd.dyndns.io",
-      upnpAvailable: true,
-      noNatLoopback: false,
-      alertToOpenPorts: false,
-      internalIp: "192.168.0.1",
-      dappmanagerNaclPublicKey: "cYo1NA7/+PQ22PeqrRNGhs1B84SY/fuomNtURj5SUmQ=",
-      identityAddress: "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B",
-      ethClientTarget: "openethereum",
-      ethClientFallback: "off",
-      ethClientStatus: {
-        ok: false,
-        code: "STATE_CALL_ERROR",
-        error: { message: "Some Error", stack: "Some Error\nline 56 file.ts" }
-      },
-      ethProvider: "http://geth.dappnode:8545",
-      fullnodeDomainTarget: "geth.dnp.dappnode.eth",
-      newFeatureIds: [
-        // "repository",
-        // "repository-fallback",
-        // "system-auto-updates",
-        // "change-host-password"
-      ]
-    },
-    wifiStatus: { running: true },
-    passwordIsInsecure: true,
-    autoUpdateData: {
-      settings: {
-        "system-packages": { enabled: true },
-        "my-packages": { enabled: true },
-        "bitcoin.dnp.dappnode.eth": { enabled: false },
-        "lightning-network.dnp.dappnode.eth": { enabled: true }
-      },
-      registry: {
-        [coreName]: {
-          "0.2.4": { updated: 1563304834738, successful: true },
-          "0.2.5": { updated: 1563304834738, successful: false }
-        },
-        "bitcoin.dnp.dappnode.eth": {
-          "0.1.1": { updated: 1563304834738, successful: true },
-          "0.1.2": { updated: 1563304834738, successful: true }
-        },
-        "lightning-network.dnp.dappnode.eth": {
-          "0.1.1": { updated: 1565284039677, successful: true }
-        }
-      },
-      pending: {
-        [coreName]: {
-          version: "0.2.4",
-          firstSeen: 1563218436285,
-          scheduledUpdate: 1563304834738,
-          completedDelay: true
-        },
-        "bitcoin.dnp.dappnode.eth": {
-          version: "0.1.2",
-          firstSeen: 1563218436285,
-          scheduledUpdate: 1563304834738,
-          completedDelay: false
-        }
-      },
-
-      dnpsToShow: [
-        {
-          id: "system-packages",
-          displayName: "System packages",
-          enabled: true,
-          feedback: { scheduled: 1566645310441 }
-        },
-        {
-          id: "my-packages",
-          displayName: "My packages",
-          enabled: true,
-          feedback: {}
-        },
-        {
-          id: "bitcoin.dnp.dappnode.eth",
-          displayName: "Bitcoin",
-          enabled: false,
-          feedback: { updated: 1563304834738 }
-        },
-        {
-          id: "lightning-network.dnp.dappnode.eth",
-          displayName: "LN",
-          enabled: true,
-          feedback: {
-            inQueue: true,
-            errorMessage:
-              "More lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
-          }
-        }
-      ]
-    },
-    volumes: [
-      {
-        name: "gethdnpdappnodeeth_data",
-        owner: undefined,
-        nameDisplay: "data",
-        ownerDisplay: "gethdnpdappnodeeth",
-        createdAt: 1569346006000,
-        mountpoint: "",
-        size: 161254123,
-        refCount: 0,
-        isOrphan: true
-      },
-      {
-        name: "lightning-networkpublicdappnodeeth_data",
-        owner: "lightning-network.public.dappnode.eth",
-        nameDisplay: "data",
-        ownerDisplay: "lightning-networkpublicdappnodeeth",
-        createdAt: 1569146006000,
-        mountpoint: "/media/usb0",
-        size: 0,
-        fileSystem: {
-          mountpoint: "/media/usb0",
-          use: "89%",
-          used: 198642520,
-          total: 235782040,
-          free: 25092776,
-          vendor: "SanDisk",
-          model: "Ultra_USB_3.0"
-        },
-        refCount: 2,
-        isOrphan: false
-      },
-      {
-        name:
-          "d19f0771fe2e5b813cf0d138a77eddc33ae3fd6afc1cc6daf0fba42ed73e36ae",
-        owner: undefined,
-        nameDisplay: "",
-        ownerDisplay: "",
-        createdAt: 1569306006000,
-        mountpoint: "",
-        size: 24,
-        refCount: 0,
-        isOrphan: true
-      }
-    ]
-  },
-
-  dnpDirectory: {
-    requestStatus: {},
-    directory: [
-      {
-        ...sampleDirectoryState,
-        name: "bitcoin.dnp.dappnode.eth",
-        description: getDescription(bitcoinMetadata),
-        avatarUrl: "https://en.bitcoin.it/w/images/en/2/29/BC_Logo_.png"
-      },
-      {
-        ...sampleDirectoryState,
-        name: "lightning-network.dnp.dappnode.eth",
-        description: getDescription(lightningNetworkMetadata),
-        avatarUrl: lightningNetworkAvatar,
-        categories: ["Payment channels", "Economic incentive"]
-      },
-      {
-        ...sampleDirectoryState,
-        name: "raiden.dnp.dappnode.eth",
-        description: getDescription(raidenMetadata),
-        avatarUrl: raidenAvatar,
-        isFeatured: true,
-        featuredStyle: {
-          featuredBackground: "linear-gradient(67deg, #000000, #2f3c3e)",
-          featuredColor: "white",
-          featuredAvatarFilter: "invert(1)"
-        },
-        categories: ["Payment channels"]
-      },
-      {
-        ...sampleDirectoryState,
-        name: "raiden-testnet.dnp.dappnode.eth",
-        description: getDescription(raidenTestnetMetadata),
-        avatarUrl: raidenTestnetAvatar,
-        isInstalled: true,
-        categories: ["Developer tools"]
-      },
-      {
-        ...sampleDirectoryState,
-        name: "trustlines.dnp.dappnode.eth",
-        description: getDescription(trustlinesMetadata),
-        avatarUrl: trustlinesAvatar,
-        isFeatured: true,
-        featuredStyle: {
-          featuredBackground: "linear-gradient(67deg, #140a0a, #512424)",
-          featuredColor: "white"
-        },
-        categories: ["Blockchain"]
-      },
-      {
-        ...sampleDirectoryState,
-        name: isUpdatedDnp,
-        description: "Sample package in udpated state",
-        isInstalled: true,
-        isUpdated: true,
-        avatarUrl: isUpdatedAvatar
-      },
-      {
-        ...sampleDirectoryState,
-        name: isInstallingDnp,
-        description: getDescription(isInstallingMetadata),
-        avatarUrl: isInstallingAvatar
-      },
-      {
-        ...sampleDirectoryState,
-        name: inErrorDnp,
-        description: "Sample package in error state",
-        avatarUrl: inErrorAvatar
-      },
-      {
-        ...sampleDirectoryState,
-        name: inLoadingDnp,
-        description: "Sample package in loading state",
-        avatarUrl: inLoadingAvatar
-      },
-      {
-        status: "loading",
-        name: "fetch-loads.dnp.dappnode.eth",
-        whitelisted: true,
-        isFeatured: false,
-        message:
-          "Loading manifest and more stuff really long text that goes on and on and more stuff 57%"
-      },
-      {
-        status: "error",
-        name: "fetch-fails.dnp.dappnode.eth",
-        whitelisted: true,
-        isFeatured: false,
-        message: "Can't download manifest"
-      }
-    ]
-  },
-
-  dnpInstalled: {
-    requestStatus: {},
-    dnpInstalled: [
-      {
-        ...samplePackageContainer,
-        name: "admin.dnp.dappnode.eth",
-        isCore: true,
-        state: "exited"
-      },
-      {
-        ...samplePackageContainer,
-        name: coreName,
-        isCore: true,
-        version: "0.2.3",
-        state: "exited"
-      },
-      {
-        ...samplePackageContainer,
-        name: lightningNetworkMetadata.name,
-        origin: "/ipfs/QmcQPSzajUUKP1j4rsnGRCcAqfnuGSFnCcC4fnmf6eUqcy",
-        isDnp: true,
-        version: "0.1.0",
-        state: "running",
-        ports: [
-          {
-            host: 30303,
-            container: 30303,
-            protocol: "TCP"
-          },
-          {
-            host: 30303,
-            container: 30303,
-            protocol: "UDP"
-          }
-        ],
-        volumes: [],
-        manifest: lightningNetworkMetadata,
-        envs: {
-          ENV_NAME: "ENV_VALUE"
-        },
-        gettingStarted: lightningNetworkGettingStarted,
-        gettingStartedShow: true
-      },
-      {
-        ...samplePackageContainer,
-        name: "wifi.dnp.dappnode.eth",
-        isCore: true,
-        envs: {
-          SSID: "DAppNodeWIFI",
-          WPA_PASSPHRASE: "dappnode"
-        }
-      },
-      {
-        ...samplePackageContainer,
-        name: "openethereum.dnp.dappnode.eth",
-        isCore: false,
-        version: "0.2.6",
-        state: "running",
-        ports: [
-          {
-            host: 30303,
-            container: 30303,
-            protocol: "TCP"
-          },
-          {
-            host: 30303,
-            container: 30303,
-            protocol: "UDP"
-          }
-        ],
-        volumes: [
-          {
-            host: "/var/lib/docker/volumes/paritydnpdappnodeeth_data/_data",
-            container: "/app/.parity",
-            name: "paritydnpdappnodeeth_data",
-            users: ["parity.dnp.dappnode.eth"],
-            owner: "parity.dnp.dappnode.eth",
-            isOwner: true,
-            size: 71570000000
-          },
-          {
-            host: "/var/lib/docker/volumes/paritydnpdappnodeeth_geth/_data",
-            container: "/root/.ethereum/",
-            name: "paritydnpdappnodeeth_geth",
-            users: ["parity.dnp.dappnode.eth"],
-            owner: "parity.dnp.dappnode.eth",
-            isOwner: true,
-            size: 94620000000
-          }
-        ],
-        envs: {},
-        avatarUrl: "https://pbs.twimg.com/media/DOnE7skW4AQ-FBd.png",
-        canBeFullnode: true,
-        manifest: openEthereumMetadata
-      }
-    ]
-  },
-
+export const mockState = {
   isInstallingLogs: {
     /* Core update */
     logs: {
@@ -1282,36 +1071,6 @@ export const mockState: RootState = {
     dnpNameToLogId: {
       [isInstallingDnp]: isInstallingDnp,
       [coreName]: coreName
-    }
-  },
-
-  notifications: {
-    "diskSpaceRanOut-stoppedPackages": {
-      id: "diskSpaceRanOut-stoppedPackages",
-      type: "danger",
-      title: "Disk space ran out, stopped packages",
-      body: "Available disk space gone wrong ".repeat(10),
-      timestamp: 153834824,
-      viewed: false
-    }
-  },
-
-  userActionLogs: {
-    ids: ["2019-02-01T19:09:16.503Z"],
-    entities: {
-      "2019-02-01T19:09:16.503Z": {
-        event: "installPackage.dappmanager.dnp.dappnode.eth",
-        kwargs: {
-          id: "rinkeby.dnp.dappnode.eth",
-          userSetVols: {},
-          userSetPorts: {},
-          options: {}
-        },
-        level: "error",
-        message: "Timeout to cancel expired",
-        stack: "Error: Timeout to cancel expired↵  ...",
-        timestamp: "2019-02-01T19:09:16.503Z"
-      }
     }
   }
 };

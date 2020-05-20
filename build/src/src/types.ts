@@ -14,6 +14,13 @@ export interface DiagnoseObj {
 
 declare global {
   interface Window {
+    /**
+     * Git version data injected at build time
+     */
     versionData?: PackageVersionData;
+    /**
+     * Autobahn session.call
+     */
+    call: (event: string, args?: any[], kwargs?: any) => any;
   }
 }
