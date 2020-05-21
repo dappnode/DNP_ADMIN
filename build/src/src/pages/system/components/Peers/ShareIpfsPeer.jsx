@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import ClipboardJS from "clipboard";
 import styled from "styled-components";
-import { ipfsApiUrl } from "../../data";
+import * as ipfs from "utils/ipfs";
 // Components
 import Card from "components/Card";
 import Button from "components/Button";
@@ -54,9 +54,7 @@ function ShareIpfsPeer({ dappnodeParams, matchUrl }) {
     async function getPeerId() {
       try {
         setLoading(true);
-        const res = await fetch(`${ipfsApiUrl}/id`);
-        if (!res.ok) throw Error(res.statusText);
-        const data = await res.json();
+        const data = await ipfs.getId();
         setPeerId(data.ID);
       } catch (e) {
         console.error(`Error on getPeerId: ${e.stack}`);
