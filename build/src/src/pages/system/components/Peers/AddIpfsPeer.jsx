@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { ipfsApiUrl } from "../../data";
+import * as ipfs from "utils/ipfs";
 // Components
 import Card from "components/Card";
 import Input from "components/Input";
 import Button from "components/Button";
 import Ok from "components/Ok";
-import { stringIncludes } from "utils/strings";
 
 /**
  * peer = "/dns4/1bc3641738cbe2b1.dyndns.dappnode.io/tcp/4001/ipfs/QmWAcZZCvqVnJ6J9946qxEMaAbkUj6FiiVWakizVKfnfDL"
@@ -40,26 +39,6 @@ export default function AddIpfsPeer({ peerFromUrl }) {
   const [peerInput, setPeerInput] = useState("");
   const [addStat, setAddStat] = useState({});
 
-  async function addSwarmConnection(peer) {
-    const res = await fetchJson(`${ipfsApiUrl}/swarm/connect?arg=${peer}`);
-    if (res.Type === "error") {
-      console.error(`Error on addSwarmConnection:`, res);
-      if (stringIncludes(res.Message, "dial attempt failed"))
-        throw Error("Can't connect to peer");
-      else if (stringIncludes(res.Message, "dial to self attempt"))
-        throw Error("You can't add yourself");
-      else throw Error(res.Message);
-    }
-  }
-
-  async function addBootstrap(peer) {
-    const res = await fetchJson(`${ipfsApiUrl}/bootstrap/add?arg=${peer}`);
-    if (!(res.Peers || []).includes(peer)) {
-      console.error(`Error on addBootstrap:`, res);
-      throw Error(`Error adding bootstrap node`);
-    }
-  }
-
   const addIpfsPeer = useMemo(
     () => async peer => {
       try {
@@ -70,14 +49,14 @@ export default function AddIpfsPeer({ peerFromUrl }) {
           ok: false,
           msg: "Connecting to peer..."
         }));
-        await addSwarmConnection(peer);
+        await ipfs.addSwarmConnection(peer);
         setAddStat(s => ({
           ...s,
           loading: true,
           ok: false,
           msg: "Adding peer to boostrap list"
         }));
-        await addBootstrap(peer);
+        await ipfs.addBootstrap(peer);
         setAddStat(s => ({
           ...s,
           loading: false,
@@ -136,15 +115,4 @@ export default function AddIpfsPeer({ peerFromUrl }) {
       </Card>
     </>
   );
-}
-
-// Utils
-
-/**
- * Fetch JSON data
- * @param {string} url
- * @returns {object}
- */
-function fetchJson(url) {
-  return fetch(url).then(r => r.json());
 }

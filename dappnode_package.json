@@ -1,6 +1,6 @@
 {
   "name": "admin.dnp.dappnode.eth",
-  "version": "0.2.19",
+  "version": "0.2.20",
   "description": "Dappnode package responsible for providing the administrative user interface",
   "type": "dncore",
   "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
