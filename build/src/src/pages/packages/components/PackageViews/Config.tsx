@@ -3,17 +3,20 @@ import { useDispatch } from "react-redux";
 import * as action from "../../actions";
 import merge from "deepmerge";
 // Components
-import Card from "components/Card";
-import TableInputs from "components/TableInputs";
-import { ButtonLight } from "components/Button";
+import { SetupWizard } from "components/SetupWizard";
 // Utils
 import parseManifestEnvs from "pages/installer/parsers/parseManifestEnvs";
 import parseInstalledDnpEnvs from "pages/installer/parsers/parseInstalledDnpEnvs";
-import { sortBy } from "lodash";
-import { PackageContainer, PackageEnvs, ManifestWithImage } from "common/types";
+import {
+  PackageContainer,
+  PackageEnvs,
+  ManifestWithImage,
+  UserSettingsAllDnps,
+  PackageDetailData
+} from "common/types";
 import { EnvsVerbose } from "pages/installer/types";
 
-function stringifyEnvs(envs: EnvsVerbose) {
+function stringifyEnvs(envs: EnvsVerbose): PackageEnvs {
   const envsReduced: PackageEnvs = {};
   for (const { name, value } of Object.values(envs)) {
     envsReduced[name] = value;
@@ -21,9 +24,23 @@ function stringifyEnvs(envs: EnvsVerbose) {
   return envsReduced;
 }
 
-export default function Config({ dnp }: { dnp: PackageContainer }) {
+export default function Config({
+  dnp,
+  dnpDetail
+}: {
+  dnp?: PackageContainer;
+  dnpDetail?: PackageDetailData;
+}) {
   const dispatch = useDispatch();
   const [envs, setEnvs] = useState<EnvsVerbose>({});
+
+  const name = dnp ? dnp.name : "dnp";
+  const environment = dnp ? dnp.envs : {};
+  const setupWizardDnp = (dnpDetail || {}).setupWizard;
+  const userSettingsDnp = (dnpDetail || {}).userSettings;
+  const setupWizard = setupWizardDnp ? { [name]: setupWizardDnp } : {};
+  const userSettings = userSettingsDnp ? { [name]: { environment } } : {};
+
   useEffect(() => {
     /**
      * Mix the ENVs from the manifest and the already set on the DNP
@@ -39,40 +56,37 @@ export default function Config({ dnp }: { dnp: PackageContainer }) {
      *   }
      * }
      */
-    setEnvs(
-      merge(
-        parseManifestEnvs(dnp.manifest as ManifestWithImage | undefined),
-        parseInstalledDnpEnvs(dnp)
-      )
-    );
+    if (dnp)
+      setEnvs(
+        merge(
+          parseManifestEnvs(dnp.manifest as ManifestWithImage | undefined),
+          parseInstalledDnpEnvs(dnp)
+        )
+      );
   }, [dnp]);
 
-  const envsArray = sortBy(Object.values(envs), env => env.index);
+  function onSubmit(newUserSettings: UserSettingsAllDnps) {
+    if (!dnp || !dnp.name)
+      return console.error(
+        `Can't update ENVs because dnp.name not defined`,
+        dnp
+      );
 
-  // If there are no ENVs don't render the component
-  if (!envsArray.length) return null;
+    const newEnvs = newUserSettings[name].environment;
+    if (newEnvs) {
+      // Merge ENVs just in case the setupWizard does not return the full object
+      dispatch(
+        action.updatePackageEnv(dnp.name, merge(stringifyEnvs(envs), newEnvs))
+      );
+    }
+  }
 
   return (
-    <Card spacing>
-      <TableInputs
-        headers={["Name", "Value"]}
-        content={envsArray.map(({ name, value = "" }) => [
-          { lock: true, value: name },
-          {
-            placeholder: "enter value...",
-            value,
-            onValueChange: (value: string) =>
-              setEnvs(envs => ({ ...envs, [name]: { ...envs[name], value } }))
-          }
-        ])}
-      />
-      <ButtonLight
-        onClick={() =>
-          dispatch(action.updatePackageEnv(dnp.name, stringifyEnvs(envs)))
-        }
-      >
-        Update environment variables
-      </ButtonLight>
-    </Card>
+    <SetupWizard
+      setupWizard={setupWizard}
+      userSettings={userSettings}
+      onSubmit={onSubmit}
+      submitTag="Update"
+    />
   );
 }

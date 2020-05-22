@@ -1,11 +1,30 @@
-import { mapValues, isEmpty, omitBy } from "lodash";
+import { mapValues, isEmpty } from "lodash";
 import deepmerge from "deepmerge";
-import { UserSettingsAllDnps, UserSettings, SetupTargetAllDnps } from "types";
-import { SetupWizardFormDataReturn } from "../types";
+import Ajv from "ajv";
 import {
-  MOUNTPOINT_DEVICE_LEGACY_TAG,
-  USER_SETTING_DISABLE_TAG
-} from "../../../params";
+  UserSettingsAllDnps,
+  UserSettings,
+  SetupTargetAllDnps,
+  SetupWizardAllDnps
+} from "types";
+import { SetupWizardFormDataReturn } from "../types";
+import { SetupSchema } from "types-own";
+
+const ajv = new Ajv({ allErrors: true });
+
+/**
+ * Extract setup target objects from the setupWizard
+ * @param setupWizard
+ */
+export function setupWizardToSetupTarget(
+  setupWizard: SetupWizardAllDnps
+): SetupTargetAllDnps {
+  return mapValues(setupWizard, setupWizardDnp =>
+    setupWizardDnp.fields.reduce((targets, field) => {
+      return { ...targets, [field.id]: field.target };
+    }, {})
+  );
+}
 
 /**
  * Iterate the formData and find if there's a definition for that property
@@ -142,51 +161,66 @@ export function userSettingsToFormData(
 }
 
 /**
- * Removes empty keys to prevent react-json-schema-form to start validating
- * empty fields before the user starts typing, resulting in bad UX
+ * Filter by only the active fields according to their provided rules
+ * and the current values of the setupWizard
  * @param formData
+ * @param setupWizard
  */
-export function cleanInitialFormData(
+export function filterActiveSetupWizard(
+  setupWizard: SetupWizardAllDnps,
   formData: SetupWizardFormDataReturn
-): SetupWizardFormDataReturn | undefined {
-  const _obj = omitBy(
-    mapValues(formData, formDataDnp =>
-      omitBy(formDataDnp, value => typeof value === "string" && !value)
-    ),
-    isEmpty
-  );
-  return isEmpty(_obj) ? undefined : _obj;
+): SetupWizardAllDnps {
+  return mapValues(setupWizard, (setupWizardDnp, dnpName) => ({
+    ...setupWizardDnp,
+    fields: setupWizardDnp.fields.filter(field => {
+      if (field.if) {
+        try {
+          return ajv.validate(correctJsonSchema(field.if), formData[dnpName]);
+        } catch (e) {
+          console.log(`Validation error ${dnpName} ${field.id}`, e);
+          return false;
+        }
+      } else {
+        return true;
+      }
+    })
+  }));
 }
 
-/* eslint-disable-next-line no-useless-escape */
-const isAbsolute = (path: string) => /^\/[^\/]+/.test(path);
+/**
+ * Utility to enforce a correct JSON schema syntax
+ * Maybe the user has not used a proper JSON schema.
+ * field.if MUST be = { type: "object", properties: {...} }
+ * If it doesn't follow this structure, it will be forced
+ * @param schemaOrProperties
+ */
+function correctJsonSchema(schemaOrProperties: any): SetupSchema {
+  if (typeof schemaOrProperties.properties === "object") {
+    const schema = schemaOrProperties;
+    return {
+      type: "object",
+      ...schema
+    };
+  } else {
+    const properties = schemaOrProperties;
+    return {
+      type: "object",
+      properties,
+      required: Object.keys(properties)
+    };
+  }
+}
 
 /**
- * Enforces rules on user settings:
- * - namedVolumeMountpoints: must be absolute paths. Renaming for a different named volume is not allowed
+ * Check if the entire setupWizard is empty or has 0 fields
+ * @param setupWizard
  */
-export function getUserSettingsDataErrors(
-  dataAllDnps: UserSettingsAllDnps
-): string[] {
-  const errors: string[] = [];
-  for (const [dnpName, data] of Object.entries(dataAllDnps)) {
-    if (data.namedVolumeMountpoints) {
-      for (const [volName, volPath] of Object.entries(
-        data.namedVolumeMountpoints
-      )) {
-        if (
-          volPath &&
-          !(
-            isAbsolute(volPath) ||
-            volPath.startsWith(MOUNTPOINT_DEVICE_LEGACY_TAG) ||
-            volPath.startsWith(USER_SETTING_DISABLE_TAG)
-          )
-        )
-          errors.push(
-            `Mountpoint path for '${dnpName}' '${volName}' must be an absolute path`
-          );
-      }
-    }
-  }
-  return errors;
+export function isSetupWizardEmpty(setupWizard?: SetupWizardAllDnps): boolean {
+  return (
+    !setupWizard ||
+    isEmpty(setupWizard) ||
+    Object.values(setupWizard).every(
+      setupWizardDnp => isEmpty(setupWizardDnp) || !setupWizardDnp.fields.length
+    )
+  );
 }

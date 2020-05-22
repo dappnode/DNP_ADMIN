@@ -1,12 +1,9 @@
 import React from "react";
-import { orderBy, isEmpty, mapValues } from "lodash";
+import { orderBy, isEmpty } from "lodash";
 // Components
 import TableInputs from "components/TableInputs";
 import { UserSettingsAllDnps } from "types";
 import { shortNameCapitalized } from "utils/format";
-import Button from "components/Button";
-import deepmerge from "deepmerge";
-import "./oldEditor.scss";
 
 interface EditableTableProps {
   headers: string[];
@@ -45,42 +42,24 @@ const EditableTable: React.FunctionComponent<EditableTableProps> = ({
   );
 };
 
-interface OldEditorProps {
-  userSettings: UserSettingsAllDnps;
-  initialUserSettings: UserSettingsAllDnps;
-  onSubmit: () => void;
-  onChange: (newUserSettings: UserSettingsAllDnps) => void;
-  onCancel: () => void;
-  onHideAdvancedEditor: () => void;
-  canBeHidded: boolean;
-}
-
-const OldEditor: React.FunctionComponent<OldEditorProps> = ({
+export function EditorAdvanced({
   userSettings,
-  initialUserSettings,
-  onCancel,
-  onSubmit,
-  onChange,
-  onHideAdvancedEditor,
-  canBeHidded
-}) => {
-  function setSettingsMerge(newSetting: UserSettingsAllDnps) {
-    onChange(deepmerge(userSettings, newSetting));
-  }
-
+  onChange
+}: {
+  userSettings: UserSettingsAllDnps;
+  onChange: (newUserSettings: UserSettingsAllDnps) => void;
+}) {
   return (
-    <>
+    <div className="dnps-section">
       {Object.entries(userSettings).map(([dnpName, dnpSettings]) => (
-        <React.Fragment key={dnpName}>
-          <div className="old-editor-subtitle">
-            {shortNameCapitalized(dnpName)}
-          </div>
+        <div className="dnp-section" key={dnpName}>
+          <div className="dnp-name">{shortNameCapitalized(dnpName)}</div>
           <EditableTable
             headers={["Env name", "Env value"]}
             placeholder="enter value..."
             values={dnpSettings.environment}
             setValue={(valueId, envValue) =>
-              setSettingsMerge({
+              onChange({
                 [dnpName]: {
                   environment: { [valueId]: envValue }
                 }
@@ -92,7 +71,7 @@ const OldEditor: React.FunctionComponent<OldEditorProps> = ({
             placeholder="Ephemeral port if unspecified"
             values={dnpSettings.portMappings}
             setValue={(valueId, hostPort) =>
-              setSettingsMerge({
+              onChange({
                 [dnpName]: {
                   portMappings: { [valueId]: hostPort }
                 }
@@ -106,43 +85,16 @@ const OldEditor: React.FunctionComponent<OldEditorProps> = ({
             headers={["Volume name", "Custom mountpoint path"]}
             placeholder="default docker location if unspecified"
             values={dnpSettings.namedVolumeMountpoints}
-            disabledValues={mapValues(
-              (initialUserSettings[dnpName] || {}).namedVolumeMountpoints || {},
-              Boolean
-            )}
             setValue={(valueId, mountpointHostPath) =>
-              setSettingsMerge({
+              onChange({
                 [dnpName]: {
                   namedVolumeMountpoints: { [valueId]: mountpointHostPath }
                 }
               })
             }
           />
-        </React.Fragment>
-      ))}
-
-      {/* To match the spacing of FormJsonSchema */}
-      <div className="old-editor-actions">
-        <div>
-          <Button
-            style={{ marginRight: "var(--default-spacing)" }}
-            onClick={onCancel}
-          >
-            Back
-          </Button>
-          <Button variant="dappnode" onClick={() => onSubmit()}>
-            Submit
-          </Button>
         </div>
-
-        {canBeHidded && (
-          <div className="subtle-header" onClick={onHideAdvancedEditor}>
-            Hide advanced editor
-          </div>
-        )}
-      </div>
-    </>
+      ))}
+    </div>
   );
-};
-
-export default OldEditor;
+}

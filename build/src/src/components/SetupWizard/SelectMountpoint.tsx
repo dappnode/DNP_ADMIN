@@ -6,10 +6,10 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "components/Button";
 import { prettyBytes } from "utils/format";
 import { MdHome, MdRefresh } from "react-icons/md";
-import "./selectMountpoint.scss";
 import { joinCssClass } from "utils/css";
 import { MountpointData } from "types";
 import newTabProps from "utils/newTabProps";
+import "./selectMountpoint.scss";
 
 export const selectMountpointId = "selectMountpoint";
 const troubleshootUrl =
@@ -81,11 +81,11 @@ export function MountpointDataView({
 export default function SelectMountpoint({
   // React JSON form data props
   value,
-  onChange,
+  onValueChange,
   options
 }: {
   value: string;
-  onChange: (value: string) => void;
+  onValueChange: (value: string) => void;
   options?: {
     alreadySet?: boolean;
     isLegacy?: boolean;
@@ -122,12 +122,12 @@ export default function SelectMountpoint({
   // reset the value to the host (default) to prevent problems
   useEffect(() => {
     if (value && !selectedMountpoint && !alreadySet && !isValidating)
-      onChange("");
-  }, [value, selectedMountpoint, alreadySet, isValidating, onChange]);
+      onValueChange("");
+  }, [value, selectedMountpoint, alreadySet, isValidating, onValueChange]);
 
   async function onSelectMountpoint(mountpoint: string) {
     if (isLegacy || alreadySet) return;
-    onChange(mountpoint);
+    onValueChange(mountpoint);
   }
 
   return (
@@ -167,7 +167,9 @@ export default function SelectMountpoint({
             {mountpoints.map(fileSystem => (
               <Dropdown.Item
                 key={fileSystem.mountpoint}
-                onClick={() => onSelectMountpoint(fileSystem.mountpoint)}
+                onClick={() => {
+                  onSelectMountpoint(fileSystem.mountpoint);
+                }}
               >
                 <MountpointDataView fileSystem={fileSystem} />
               </Dropdown.Item>

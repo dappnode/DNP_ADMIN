@@ -11,8 +11,8 @@ export default function Select({
 }) {
   return (
     <select
-      className="form-control"
       value={value}
+      className="form-control"
       onChange={e => onValueChange(e.target.value)}
     >
       {options.map(option => (

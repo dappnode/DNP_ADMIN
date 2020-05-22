@@ -19,7 +19,7 @@ export const updatePackageEnv = (
   envs: PackageEnvs
 ): AppThunk => () =>
   withToastNoThrow(() => api.updatePackageEnv({ id, envs }), {
-    message: `Updating ${id} envs: ${Object.keys(envs)}...`,
+    message: `Updating ${id} envs: ${Object.keys(envs).join(", ")}...`,
     onSuccess: `Updated ${id} envs`
   });
 
