@@ -12,6 +12,7 @@ export const wifiEnvSSID = "SSID";
 export const wifiName = "wifi.dnp.dappnode.eth";
 export const ipfsName = "ipfs.dnp.dappnode.eth";
 export const coreName = "core.dnp.dappnode.eth";
+export const dappmanagerName = "dappmanager.dnp.dappnode.eth";
 
 // NACL keys
 export const adminNaclSecretKey =

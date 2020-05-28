@@ -11,6 +11,7 @@ import { withToastNoThrow } from "components/toast/Toast";
 import { PackageEnvs } from "types";
 import { PackageContainer } from "common/types";
 import { AppThunk } from "store";
+import { continueIfCalleDisconnected } from "api/utils";
 
 // Used in package interface / envs
 
@@ -44,10 +45,14 @@ export const restartPackage = (id: string): AppThunk => async (_, getState) => {
       });
     });
 
-  await withToastNoThrow(() => api.restartPackage({ id }), {
-    message: `Restarting ${sn(id)}...`,
-    onSuccess: `Restarted ${sn(id)}`
-  });
+  await withToastNoThrow(
+    // If call errors with "callee disconnected", resolve with success
+    continueIfCalleDisconnected(() => api.restartPackage({ id }), id),
+    {
+      message: `Restarting ${sn(id)}...`,
+      onSuccess: `Restarted ${sn(id)}`
+    }
+  );
 };
 
 export const restartPackageVolumes = (id: string): AppThunk => async (

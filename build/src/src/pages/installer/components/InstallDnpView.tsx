@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { api } from "api";
+import { useDispatch } from "react-redux";
 import {
   Switch,
   Route,
@@ -25,6 +26,11 @@ import { rootPath as packagesRootPath } from "pages/packages/data";
 import { RequestedDnp, UserSettingsAllDnps, ProgressLogs } from "types";
 import { withToast } from "components/toast/Toast";
 import { isSetupWizardEmpty } from "../parsers/formDataParser";
+import { clearIsInstallingLog } from "services/isInstallingLogs/actions";
+import {
+  isCallDisconnectedError,
+  continueIfCalleDisconnected
+} from "api/utils";
 
 const BYPASS_CORE_RESTRICTION = "BYPASS_CORE_RESTRICTION";
 const SHOW_ADVANCED_EDITOR = "SHOW_ADVANCED_EDITOR";
@@ -56,6 +62,7 @@ const InstallDnpView: React.FunctionComponent<
   const [options, setOptions] = useState({} as { [optionId: string]: boolean });
   const [showSuccess, setShowSuccess] = useState(false);
   const [isInstalling, setIsInstalling] = useState(false);
+  const dispatch = useDispatch();
 
   const { name, reqVersion, settings, metadata, setupWizard } = dnp;
   const isCore = metadata.type === "dncore";
@@ -100,10 +107,14 @@ const InstallDnpView: React.FunctionComponent<
     console.log("Installing DNP", kwargs);
     try {
       setIsInstalling(true);
-      await withToast(() => api.installPackage(kwargs), {
-        message: `Installing ${shortNameCapitalized(name)}...`,
-        onSuccess: `Installed ${shortNameCapitalized(name)}`
-      });
+      await withToast(
+        // If call errors with "callee disconnected", resolve with success
+        continueIfCalleDisconnected(() => api.installPackage(kwargs), name),
+        {
+          message: `Installing ${shortNameCapitalized(name)}...`,
+          onSuccess: `Installed ${shortNameCapitalized(name)}`
+        }
+      );
       // Re-direct user to package page if installation is successful
       if (componentIsMounted.current) {
         setIsInstalling(false);
@@ -117,6 +128,8 @@ const InstallDnpView: React.FunctionComponent<
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      dispatch(clearIsInstallingLog({ id: name }));
     }
   };
   // Prevent a burst of install calls
