@@ -9,9 +9,10 @@ import Button from "components/Button";
 import { Terminal } from "./Terminal";
 // Utils
 import { stringIncludes, stringSplit } from "utils/strings";
+import { urlJoin } from "utils/url";
+import { apiUrl } from "params";
 
-const baseUrlDownloadAll =
-  "http://my.dappmanager.dnp.dappnode.eth:3000/container-logs";
+const baseUrlDownloadAll = urlJoin(apiUrl, "container-logs");
 const refreshInterval = 2 * 1000;
 const terminalID = "terminal";
 

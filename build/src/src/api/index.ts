@@ -1,12 +1,10 @@
 import { useEffect } from "react";
-import autobahn from "autobahn";
+import io from "socket.io-client";
 import useSWR, { responseInterface } from "swr";
 import { mapValues } from "lodash";
-import { wampUrl, wampRealm } from "params";
 import { store } from "../store";
-import { stringIncludes } from "utils/strings";
 // Transport
-import { subscriptionsFactory, callRoute } from "common/transport/autobahn";
+import { subscriptionsFactory } from "common/transport/socketIo";
 import {
   Subscriptions,
   subscriptionsData,
@@ -22,32 +20,49 @@ import {
 } from "services/connectionStatus/actions";
 import { initialCallsOnOpen } from "./initialCalls";
 import { PubSub } from "./utils";
+import { parseRpcResponse } from "common/transport/jsonRpc";
+import { urlJoin } from "utils/url";
+import { apiUrl } from "params";
 
-const url = process.env.REACT_APP_WAMP_URL || wampUrl;
-const realm = process.env.REACT_APP_REALM || wampRealm;
-
-let _session: autobahn.Session;
+const apiRpcUrl = urlJoin(apiUrl + "/rpc");
+const socketIoUrl = apiUrl;
 
 /**
- * Bridges events from the autobahn client to any consumer in the App
+ * Bridges events from the API websockets client to any consumer in the App
  * All WAMP events will be emitted in this PubSub instance
  * If a part of the App wants to subscribe to an event just do
  * ```
- * wampEventBridge.on(route, callback)
+ * apiEventBridge.on(route, callback)
  * ```
  * Or use the hook `useSubscription`
  */
-const wampEventBridge = new PubSub();
+const apiEventBridge = new PubSub();
 
-export const api: Routes = mapValues(routesData, (data, route) => {
-  return async function(...args: any[]) {
-    // If session is not available, fail gently
-    if (!_session) throw Error("Session object is not defined");
-    if (!_session.isOpen) throw Error("Connection is not open");
+/**
+ * Call a RPC route
+ * @param route "restartPackage"
+ * @param args ["bitcoin.dnp.dappnode.eth"]
+ */
+export async function callRoute<R>(route: string, args: any[]): Promise<R> {
+  const res = await fetch(apiRpcUrl, {
+    method: "post",
+    body: JSON.stringify({ method: route, params: args }),
+    headers: { "Content-Type": "application/json" }
+  });
 
-    return await callRoute<any>(_session, route, args);
-  };
-});
+  // Non-RPC reponse
+  const body = await res.json();
+  if (!res.ok)
+    throw Error(`${res.status} ${res.statusText} ${body.message || ""}`);
+
+  // RPC response are always code 200
+  return parseRpcResponse<R>(body);
+}
+
+export const api: Routes = mapValues(
+  routesData,
+  (data, route) => (...args: any[]) => callRoute<any>(route, args)
+);
 
 export const useApi: {
   [K in keyof Routes]: (
@@ -56,14 +71,13 @@ export const useApi: {
 } = mapValues(api, (handler, route) => {
   return function(...args: any[]) {
     const argsKey = args.length > 0 ? JSON.stringify(args) : "";
-    const cacheKey = route + argsKey;
     const fetcher: (...args: any[]) => Promise<any> = handler;
-    return useSWR([cacheKey, route], () => fetcher(...args));
+    return useSWR([route, argsKey], () => fetcher(...args));
   };
 });
 
 /**
- * Bridges events from the autobahn client to any consumer in the App
+ * Bridges events from the API websockets client to any consumer in the App
  * **Note**: this callback MUST be memoized
  * or the hook will unsubscribe and re-subscribe the new callback on each
  * re-render.
@@ -88,62 +102,66 @@ export const useSubscription: {
 } = mapValues(subscriptionsData, (data, route) => {
   return function(callback: (...args: any) => void) {
     useEffect(() => {
-      wampEventBridge.on(route, callback);
+      apiEventBridge.on(route, callback);
       return () => {
-        wampEventBridge.off(route, callback);
+        apiEventBridge.off(route, callback);
       };
     }, [callback]);
   };
 });
 
 /**
- * Connect to the WAMP with an autobahn client
+ * Connect to the server's API
  * Store the session and map subscriptions
  */
 export function start() {
-  const connection = new autobahn.Connection({ url, realm });
+  const socket = io(socketIoUrl);
 
-  connection.onopen = session => {
-    _session = session;
-    // Start subscriptions
-
+  socket.on("connect", function(...args: any) {
     const subscriptions = subscriptionsFactory<Subscriptions>(
-      session,
+      socket,
       subscriptionsData,
       { loggerMiddleware: subscriptionsLoggerMiddleware }
     );
     mapValues(subscriptions, (handler, route) => {
-      handler.on((...args) => wampEventBridge.emit(route, ...args));
+      handler.on((...args) => apiEventBridge.emit(route, ...args));
     });
 
     mapSubscriptionsToRedux(subscriptions);
     initialCallsOnOpen();
 
     // For testing:
-    window.call = (event, args, kwargs = {}) =>
-      session.call(event, args, kwargs);
+    window.call = (event, args) => socket.emit(event, args);
 
     // Delay announcing session is open until everything is setup
     store.dispatch(connectionOpen());
-    console.log("CONNECTED to \nurl: " + url + " \nrealm: " + realm);
-  };
+    console.log(`SocketIO connected to ${socket.io.uri}, ID ${socket.id}`);
+  });
 
-  // connection closed, lost or unable to connect
-  connection.onclose = (reason, details) => {
-    store.dispatch(
-      connectionClose({
-        error: [reason, (details || {}).message].filter(x => x).join(" - "),
-        isNotAdmin: stringIncludes(
-          details.message,
-          "could not authenticate session"
-        )
-      })
-    );
-    console.error("CONNECTION_CLOSE", { reason, details });
-    return false;
-  };
+  function handleConnectionError(err: Error | string): void {
+    const errorMessage = err instanceof Error ? err.message : err;
+    fetch(apiUrl).then(res => {
+      if (res.ok) {
+        // Warn that subscriptions are disabled
+        store.dispatch(connectionOpen());
+      } else {
+        store.dispatch(
+          connectionClose({
+            error: errorMessage,
+            isNotAdmin: false
+          })
+        );
+      }
+    });
 
-  connection.open();
+    console.error("SocketIO connection closed", errorMessage);
+  }
+
+  // Handles server errors
+  socket.io.on("connect_error", handleConnectionError);
+
+  // Handles individual socket errors
+  socket.on("disconnect", handleConnectionError);
 }
 
 const subscriptionsLoggerMiddleware = {

@@ -1,3 +1,8 @@
+// JSON RPC API
+export const apiUrl =
+  process.env.REACT_APP_API_URL ||
+  "http://my.dappmanager.dnp.dappnode.eth:3000/";
+
 // WAMP
 export const wampUrl = "ws://my.wamp.dnp.dappnode.eth:8080/ws";
 export const wampRealm = "dappnode_admin";

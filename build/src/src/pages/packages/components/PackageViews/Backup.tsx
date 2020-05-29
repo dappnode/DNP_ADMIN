@@ -12,9 +12,11 @@ import humanFS from "utils/humanFileSize";
 import newTabProps from "utils/newTabProps";
 import { PackageBackup } from "common/types";
 import { withToast, withToastNoThrow } from "components/toast/Toast";
+import { urlJoin } from "utils/url";
+import { apiUrl } from "params";
 
-const baseUrlUpload = "http://my.dappmanager.dnp.dappnode.eth:3000/upload";
-const baseUrlDownload = "http://my.dappmanager.dnp.dappnode.eth:3000/download";
+const baseUrlUpload = urlJoin(apiUrl, "upload");
+const baseUrlDownload = urlJoin(apiUrl, "download");
 
 export default function Backup({
   id,

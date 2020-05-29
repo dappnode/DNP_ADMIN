@@ -9,6 +9,11 @@
     margin-left: 0.5rem;
   }
 
+  > a,
+  > button {
+    flex: none;
+  }
+
   @media screen and (max-width: 40rem) {
     display: block;
     p {
