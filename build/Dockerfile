@@ -27,7 +27,7 @@ COPY build/src_openvpn .
 RUN yarn run build
 RUN node injectToHtml
 
-FROM nginx:1.12-alpine
+FROM nginx:1.17-alpine
 RUN mkdir -p /usr/www/adminui && mkdir -p /usr/www/openvpn && mkdir -p /usr/www/openvpn/cred
 COPY --from=build-deps-adminui /usr/src/app/build /usr/www/adminui
 COPY --from=build-deps-openvpn /usr/src/app/build /usr/www/openvpn

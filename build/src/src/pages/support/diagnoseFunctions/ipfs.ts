@@ -10,13 +10,13 @@ const hash = "QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB";
 const expectedString = "Hello and Welcome to IPFS!";
 const url = `${protocol}://${host}:${port}/api/v0/cat?arg=${hash}`;
 
-// Attempts to cat the readme file and expect it to contain 'Hello and Welcome to IPFS!'
+const timeout = 3000;
 
 // Utils:
 
-async function fetchWithTimeout(url: string, timeout = 3000): Promise<any> {
+async function fetchWithTimeout(url: string): Promise<any> {
   return Promise.race([
-    fetch(url),
+    fetch(url, { method: "POST" }),
     new Promise((_, reject) =>
       setTimeout(() => reject(new Error("timeout")), timeout)
     )
