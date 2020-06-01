@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useApi, useSubscription } from "api";
+import React, { useState } from "react";
+import { api, useApi } from "api";
 import { NavLink } from "react-router-dom";
 // Own module
-import * as a from "../actions";
 import { title, maxIdLength } from "../data";
 import coerceDeviceName from "../helpers/coerceDeviceName";
 // Components
+import { confirm } from "components/ConfirmDialog";
+import { withToastNoThrow } from "components/toast/Toast";
 import Input from "components/Input";
 import Button from "components/Button";
 import Title from "components/Title";
@@ -18,63 +18,100 @@ import { ButtonLight } from "components/Button";
 // Icons
 import { MdDelete, MdRefresh } from "react-icons/md";
 import { superAdminId } from "params";
-import { VpnDevice } from "common/types";
 
 export default function DevicesHome() {
-  const [devices, setDevices] = useState<VpnDevice[]>();
+  const [input, setInput] = useState("");
   const devicesReq = useApi.devicesList();
 
-  useSubscription.devices(setDevices);
-  useEffect(() => {
-    setDevices(devicesReq.data);
-  }, [devicesReq.data]);
+  // Actions
 
-  const dispatch = useDispatch();
-  const addDevice = (id: string) => dispatch(a.addDevice(id));
-  const removeDevice = (id: string) => dispatch(a.removeDevice(id));
-  const resetDevice = (id: string) => dispatch(a.resetDevice(id));
-  const toggleAdmin = (id: string) => dispatch(a.toggleAdmin(id));
+  function addDevice(id: string) {
+    withToastNoThrow(() => api.deviceAdd({ id }), {
+      message: `Adding ${id}...`,
+      onSuccess: `Added ${id}`
+    }).then(devicesReq.revalidate);
+  }
 
-  const [id, setId] = useState("");
-  const idTooLong = id.length > maxIdLength;
+  function removeDevice(id: string) {
+    confirm({
+      title: `Removing ${id} device`,
+      text: "The user using this device will lose access to this DAppNode ",
+      label: "Remove",
+      onClick: () =>
+        withToastNoThrow(() => api.deviceRemove({ id }), {
+          message: `Removing ${id}...`,
+          onSuccess: `Removed ${id}`
+        }).then(devicesReq.revalidate)
+    });
+  }
+
+  function resetDevice(id: string) {
+    const isSuperAdmin = id === superAdminId;
+    confirm({
+      title: isSuperAdmin
+        ? `WARNING! Reseting super admin`
+        : `Reseting ${id} device`,
+      text: isSuperAdmin
+        ? "You should only reset the credentials of the super admin if you suspect an unwanted party gained access to this credentials. If that is the case, reset the credentials, BUT download and install the new credentials IMMEDIATELY. Otherwise, you will lose access to your DAppNode when this connection stops"
+        : "All profiles and links pointing to this device will no longer be valid",
+      label: `Reset`,
+      onClick: () =>
+        withToastNoThrow(() => api.deviceReset({ id }), {
+          message: `Reseting ${id}...`,
+          onSuccess: `Reseted ${id}`
+        }).then(devicesReq.revalidate)
+    });
+  }
+
+  function toggleAdmin(id: string) {
+    withToastNoThrow(() => api.deviceAdminToggle({ id }), {
+      message: `Toggling ${id} admin...`,
+      onSuccess: `Toggled ${id} admin`
+    }).then(devicesReq.revalidate);
+  }
+
+  // Input errors
+
+  const errors: string[] = [];
+  if (input.length > maxIdLength)
+    errors.push(`Device name must be shorter than {maxIdLength} characters`);
+
   return (
     <>
       <Title title={title} />
 
       <Input
         placeholder="Device's unique name"
-        value={id}
+        value={input}
         // Ensure id contains only alphanumeric characters
-        onValueChange={value => setId(coerceDeviceName(value))}
+        onValueChange={value => setInput(coerceDeviceName(value))}
         onEnterPress={() => {
-          addDevice(id);
-          setId("");
+          addDevice(input);
+          setInput("");
         }}
         append={
           <Button
             variant="dappnode"
-            onClick={() => addDevice(id)}
-            disabled={idTooLong}
+            onClick={() => addDevice(input)}
+            disabled={errors.length > 0}
           >
             Add device
           </Button>
         }
       />
 
-      {idTooLong ? (
-        <div className="color-danger">
-          Device name must be shorter than {maxIdLength} characters
-        </div>
-      ) : null}
+      {errors.map(error => (
+        <div className="color-danger">{error}</div>
+      ))}
 
-      {devices ? (
+      {devicesReq.data ? (
         <Card className="list-grid devices">
           <header>Name</header>
           <header className="center">Credentials</header>
           <header>Admin</header>
           <header>Reset</header>
           <header>Remove</header>
-          {[...devices]
+          {[...devicesReq.data]
             // Sort super admin device as first
             .sort(d1 => (d1.id === superAdminId ? -1 : 0))
             .map(({ id, admin }) => (

@@ -50,8 +50,17 @@ export async function callRoute<R>(route: string, args: any[]): Promise<R> {
     headers: { "Content-Type": "application/json" }
   });
 
-  // Non-RPC reponse
-  const body = await res.json();
+  // If body is not JSON log it to get info about the error. Express may respond with HTML
+  const bodyText = await res.text();
+  let body: any;
+  try {
+    body = JSON.parse(bodyText);
+  } catch (e) {
+    throw Error(
+      `Error parsing JSON body (${res.status} ${res.statusText}): ${e.message}\n${bodyText}`
+    );
+  }
+
   if (!res.ok)
     throw Error(`${res.status} ${res.statusText} ${body.message || ""}`);
 
