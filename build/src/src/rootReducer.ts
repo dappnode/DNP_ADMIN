@@ -9,7 +9,6 @@ import { reducer as dnpDirectory } from "services/dnpDirectory/reducer";
 import { reducer as dnpInstalled } from "services/dnpInstalled/reducer";
 import { reducer as isInstallingLogs } from "services/isInstallingLogs/reducer";
 import { reducer as notifications } from "services/notifications/reducer";
-import { reducer as userActionLogs } from "services/userActionLogs/reducer";
 
 export const rootReducer = combineReducers({
   chainData,
@@ -19,8 +18,7 @@ export const rootReducer = combineReducers({
   dnpDirectory,
   dnpInstalled,
   isInstallingLogs,
-  notifications,
-  userActionLogs
+  notifications
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

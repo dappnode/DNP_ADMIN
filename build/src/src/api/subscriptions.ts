@@ -3,7 +3,6 @@ import { Subscriptions } from "../common/subscriptions";
 // Actions to push received content
 import { pushNotification } from "services/notifications/actions";
 import { updateChainData } from "services/chainData/actions";
-import { pushUserActionLog } from "services/userActionLogs/actions";
 import {
   clearIsInstallingLog,
   updateIsInstallingLog
@@ -45,10 +44,6 @@ export function mapSubscriptionsToRedux(subscriptions: Subscriptions): void {
 
   subscriptions.systemInfo.on(systemInfo => {
     store.dispatch(setSystemInfo(systemInfo));
-  });
-
-  subscriptions.userActionLog.on(userActionLog => {
-    store.dispatch(pushUserActionLog(userActionLog));
   });
 
   subscriptions.volumes.on(volumes => {

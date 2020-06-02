@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getUserActionLogs } from "services/userActionLogs/selectors";
-import { fetchUserActionLogs } from "services/userActionLogs/actions";
-import { UserActionLogWithCount } from "types";
+import React, { useState, useEffect, useMemo } from "react";
+import { useSubscription, useApi } from "api";
+import { UserActionLog } from "types";
 // Components
 import CardList from "components/CardList";
+import ErrorView from "components/Error";
+import Loading from "components/Loading";
 // Utils
 import { parseStaticDate } from "utils/dates";
 import { stringifyObjSafe } from "utils/objects";
 import { stringSplit } from "utils/strings";
 // Own module
 import "./activity.css";
+import Button from "components/Button";
 
 const badgeClass = "badge badge-pill badge-";
 
@@ -22,20 +23,13 @@ function parseLevel(level: "error" | "warn" | "info"): string {
 }
 
 export default function Activity() {
-  const userActionLogs = useSelector(getUserActionLogs);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchUserActionLogs());
-  }, [dispatch]);
+  const [count, setCount] = useState(50);
+  const userActionLogs = useApi.getUserActionLogs({ first: count });
+  useSubscription.userActionLog(userActionLogs.revalidate);
 
-  // Force a re-render every 15 seconds for the timeFrom to show up correctly
-  const [, setClock] = useState(0);
-  useEffect(() => {
-    const interval = setInterval(() => setClock(n => n + 1), 15 * 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  function loadMore() {
+    setCount(n => n + 50);
+  }
 
   function download() {
     var dataStr =
@@ -64,21 +58,49 @@ export default function Activity() {
       </a>
 
       {/* Activity list */}
-      <CardList>
-        {userActionLogs.map((log, i) => (
-          <ActivityItem key={i} log={log} />
-        ))}
-      </CardList>
+      {userActionLogs.data ? (
+        <CardList>
+          {userActionLogs.data.map((log, i) => (
+            <ActivityItem key={i} log={log} />
+          ))}
+        </CardList>
+      ) : userActionLogs.error ? (
+        <ErrorView msg={userActionLogs.error.message}></ErrorView>
+      ) : userActionLogs.isValidating ? (
+        <Loading msg="Loading user action logs" />
+      ) : null}
+
+      {userActionLogs.data && userActionLogs.data.length === count && (
+        <Button onClick={loadMore}>Load more</Button>
+      )}
     </>
   );
 }
 
-function ActivityItem({ log }: { log: UserActionLogWithCount }) {
+function ActivityItem({ log }: { log: UserActionLog }) {
   const [collapsed, setCollapsed] = useState(true);
 
   const type = parseLevel(log.level);
   const date = parseStaticDate(log.timestamp);
   const eventShort = stringSplit(log.event, ".")[0];
+
+  // Force a re-render every 15 seconds for the timeFrom to show up correctly
+  const [, setClock] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => setClock(n => n + 1), 15 * 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  // memo JSON.stringify to prevent re-running it every time the clock is refreshed
+  const argsString = useMemo(
+    () =>
+      Array.isArray(log.args) && log.args.length === 1
+        ? stringifyObjSafe(log.args[0])
+        : stringifyObjSafe(log.args),
+    [log.args]
+  );
 
   return (
     <div className="user-log">
@@ -111,8 +133,8 @@ function ActivityItem({ log }: { log: UserActionLogWithCount }) {
       </div>
       <div className={collapsed ? "hide" : "show"}>
         <div className={"error-stack" + (collapsed ? " hide" : "")}>
-          {log.stack ? log.stack + "\n\n" : null}
-          {log.kwargs ? "kwargs = " + stringifyObjSafe(log.kwargs) + "\n" : ""}
+          {log.stack ? `${log.stack}\n\n` : null}
+          {argsString ? argsString : ""}
         </div>
       </div>
     </div>
