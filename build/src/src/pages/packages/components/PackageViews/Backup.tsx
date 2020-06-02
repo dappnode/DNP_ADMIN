@@ -12,11 +12,10 @@ import humanFS from "utils/humanFileSize";
 import newTabProps from "utils/newTabProps";
 import { PackageBackup } from "common/types";
 import { withToast, withToastNoThrow } from "components/toast/Toast";
-import { urlJoin } from "utils/url";
-import { apiUrl } from "params";
+import { apiUrls } from "params";
 
-const baseUrlUpload = urlJoin(apiUrl, "upload");
-const baseUrlDownload = urlJoin(apiUrl, "download");
+const baseUrlUpload = apiUrls.upload;
+const baseUrlDownload = apiUrls.download;
 
 export default function Backup({
   id,

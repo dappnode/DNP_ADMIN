@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSubscription, useApi } from "api";
 import { UserActionLog } from "types";
+import { apiUrls } from "params";
 // Components
 import CardList from "components/CardList";
 import ErrorView from "components/Error";
 import Loading from "components/Loading";
+import Button from "components/Button";
 // Utils
 import { parseStaticDate } from "utils/dates";
 import { stringifyObjSafe } from "utils/objects";
 import { stringSplit } from "utils/strings";
+import newTabProps from "utils/newTabProps";
 // Own module
 import "./activity.css";
-import Button from "components/Button";
 
 const badgeClass = "badge badge-pill badge-";
+const downloadUserActionLogsUrl = apiUrls.userActionLogs;
 
 function parseLevel(level: "error" | "warn" | "info"): string {
   if (level === "error") return "danger";
@@ -31,18 +34,6 @@ export default function Activity() {
     setCount(n => n + 50);
   }
 
-  function download() {
-    var dataStr =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(userActionLogs, null, 2));
-    var dlAnchorElem = document.getElementById("downloadAnchorElem");
-    if (dlAnchorElem) {
-      dlAnchorElem.setAttribute("href", dataStr);
-      dlAnchorElem.setAttribute("download", "DAppNodeLogs.json");
-      dlAnchorElem.click();
-    }
-  }
-
   return (
     <>
       <p>
@@ -50,12 +41,16 @@ export default function Activity() {
         the error in the list below, tap on it and copy everything in the
         expanded grey text area.
       </p>
-      <button className="btn btn-dappnode mb-4" onClick={download}>
-        Download all logs
-      </button>
-      <a id="downloadAnchorElem" style={{ display: "none" }} href="/">
-        Download Anchor
-      </a>
+
+      <div>
+        <a
+          href={downloadUserActionLogsUrl}
+          {...newTabProps}
+          className="no-a-style"
+        >
+          <Button variant="dappnode"> Download all logs</Button>
+        </a>
+      </div>
 
       {/* Activity list */}
       {userActionLogs.data ? (

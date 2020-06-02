@@ -9,10 +9,9 @@ import Button from "components/Button";
 import { Terminal } from "./Terminal";
 // Utils
 import { stringIncludes, stringSplit } from "utils/strings";
-import { urlJoin } from "utils/url";
-import { apiUrl } from "params";
+import { apiUrls } from "params";
 
-const baseUrlDownloadAll = urlJoin(apiUrl, "container-logs");
+const baseUrlDownloadAll = apiUrls.containerLogs;
 const refreshInterval = 2 * 1000;
 const terminalID = "terminal";
 
