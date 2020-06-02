@@ -12,6 +12,7 @@ RUN apt-get update && apt-get --yes install git jq
 ADD .git .git
 ADD dappnode_package.json .
 RUN ./getVersionData.sh
+ENV REACT_APP_API_URL http://my.dappmanager.dnp.dappnode.eth:3000/
 RUN yarn run build
 
 FROM node:10.15.3 as build-deps-openvpn

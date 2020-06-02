@@ -27,10 +27,7 @@ import { RequestedDnp, UserSettingsAllDnps, ProgressLogs } from "types";
 import { withToast } from "components/toast/Toast";
 import { isSetupWizardEmpty } from "../parsers/formDataParser";
 import { clearIsInstallingLog } from "services/isInstallingLogs/actions";
-import {
-  isCallDisconnectedError,
-  continueIfCalleDisconnected
-} from "api/utils";
+import { continueIfCalleDisconnected } from "api/utils";
 
 const BYPASS_CORE_RESTRICTION = "BYPASS_CORE_RESTRICTION";
 const SHOW_ADVANCED_EDITOR = "SHOW_ADVANCED_EDITOR";

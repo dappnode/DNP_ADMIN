@@ -4,3 +4,6 @@ build/src_openvpn/node_modules
 build/src_openvpn/npm-debug.log
 build/src*/node_modules
 build/src*/npm-debug.log
+
+# Mock server is only for developing
+build/src/server-mock

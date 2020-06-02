@@ -30,7 +30,7 @@ export class PubSub extends EventTarget {
  * is changed for a regular HTTP RPC
  * @param e
  */
-export function isCallDisconnectedError(e: Error): boolean {
+function isCallDisconnectedError(e: Error): boolean {
   return e.message.includes("wamp.error.canceled");
 }
 
