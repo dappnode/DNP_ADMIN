@@ -7,6 +7,7 @@ import { pickBy } from "lodash";
 export function stringifyObjSafe<T extends { [key: string]: any }>(
   obj: T
 ): string {
+  if (!obj) return "";
   try {
     return JSON.stringify(obj, null, 2);
   } catch (e) {

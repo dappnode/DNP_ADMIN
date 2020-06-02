@@ -16,7 +16,8 @@ import {
   PackageDetailData,
   SystemInfo,
   PortMapping,
-  VolumeData
+  VolumeData,
+  UserActionLog
 } from "../../src/common";
 import { coreName } from "../mockData";
 
@@ -238,47 +239,6 @@ export async function getStats(): Promise<HostStats> {
     memory: "46%",
     disk: "57%"
   };
-}
-
-/**
- * Returns the user action logs. This logs are stored in a different
- * file and format, and are meant to ease user support
- * The list is ordered from newest to oldest
- * - Newest log has index = 0
- * - If the param fromLog is out of bounds, the result will be an empty array: []
- *
- * @param fromLog, default value = 0
- * @param numLogs, default value = 50
- * @returns logs, stringified userActionLog JSON objects appended on new lines
- * To parse, by newline and then parse each line individually.
- * userActionLog = {
- *   level: "info" | "error", {string}
- *   event: "installPackage.dnp.dappnode.eth", {string}
- *   message: "Successfully install DNP", {string} Returned message from the call function
- *   result: { data: "contents" }, {*} Returned result from the call function
- *   kwargs: { id: "dnpName" }, {object} RPC key-word arguments
- * // Only if error
- *   message: e.message, {string}
- *   stack.e.stack {string}
- * }
- */
-export async function getUserActionLogs(kwargs: {
-  fromLog?: number;
-  numLogs?: number;
-}): Promise<string> {
-  return JSON.stringify({
-    event: "installPackage.dappmanager.dnp.dappnode.eth",
-    kwargs: {
-      id: "rinkeby.dnp.dappnode.eth",
-      userSetVols: {},
-      userSetPorts: {},
-      options: {}
-    },
-    level: "error",
-    message: "Timeout to cancel expired",
-    stack: "Error: Timeout to cancel expired↵  ...",
-    timestamp: "2019-02-01T19:09:16.503Z"
-  });
 }
 
 /**

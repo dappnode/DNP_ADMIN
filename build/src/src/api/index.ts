@@ -21,10 +21,9 @@ import {
 import { initialCallsOnOpen } from "./initialCalls";
 import { PubSub } from "./utils";
 import { parseRpcResponse } from "common/transport/jsonRpc";
-import { urlJoin } from "utils/url";
-import { apiUrl } from "params";
+import { apiUrl, apiUrls } from "params";
 
-const apiRpcUrl = urlJoin(apiUrl + "/rpc");
+const apiRpcUrl = apiUrls.rpc;
 const socketIoUrl = apiUrl;
 
 /**
